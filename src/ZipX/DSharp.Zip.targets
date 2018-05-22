@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0">
+  <UsingTask TaskName="Zip" AssemblyFile="..\..\tools\bin\ScriptSharp.Internal.ZipBuilder.dll" />
+  <Target Name="BuildZip" AfterTargets="Build">
+    <PropertyGroup>
+      <SourceDirectory>$(SolutionDir)</SourceDirectory>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <NuGetProperties Include="buildPath=$(SourceDirectory)Core\Build\bin\$(Configuration)\net461;
+                                consolePath=$(SourceDirectory)Core\App\bin\$(Configuration)\net461;
+                                fxCopPath=$(SourceDirectory)Tools\FxCop\bin\$(Configuration)\net461;
+                                deploymentPath=$(SourceDirectory)Tools\Deployment\bin\$(Configuration)\net461;
+                                testingPath=$(SourceDirectory)Tools\Testing\bin\$(Configuration)\net461;
+                                configuration=$(Configuration)" />
+    </ItemGroup>
+    
+    <MakeDir Directories="$(OutputPath)Packages" />
+    <XmlPoke Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" Query="/package/x:metadata/x:version" Value="$(PackageVersion)" XmlInputPath="%(NuSpec.Identity)" />
+    <XmlPoke Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" Query="//x:dependencies/x:dependency/@version" Value="$(PackageVersion)" XmlInputPath="%(NuSpec.Identity)" />
+    
+    <Exec Command="$(ProjectDir)..\..\tools\bin\nuget pack %(NuSpec.Identity) -OutputDirectory $(OutputPath)Packages -NoPackageAnalysis -Properties @(NuGetProperties)" />
+    
+    <Zip ZipLevel="9" Files="@(ItemClass)" ZipFileName="$(OutputPath)ItemTemplates\Script%2523\Class.zip" WorkingDirectory="ItemTemplates\Class" />
+    <Zip ZipLevel="9" Files="@(ItemPage)" ZipFileName="$(OutputPath)ItemTemplates\Script%2523\Page.zip" WorkingDirectory="ItemTemplates\Page" />
+    <Zip ZipLevel="9" Files="@(ItemResource)" ZipFileName="$(OutputPath)ItemTemplates\Script%2523\Resource.zip" WorkingDirectory="ItemTemplates\Resource" />
+    <Zip ZipLevel="9" Files="@(ItemTestClass)" ZipFileName="$(OutputPath)ItemTemplates\Script%2523\TestClass.zip" WorkingDirectory="ItemTemplates\TestClass" />
+    <Zip ZipLevel="9" Files="@(ProjectHTMLApp)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\HTMLApplication.zip" WorkingDirectory="ProjectTemplates\HTMLApplication" />
+    <Zip ZipLevel="9" Files="@(ProjectHTMLModule)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\HTMLModule.zip" WorkingDirectory="ProjectTemplates\HTMLModule" />
+    <Zip ZipLevel="9" Files="@(ProjectUnitTest)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\UnitTest.zip" WorkingDirectory="ProjectTemplates\UnitTest" />
+    <Zip ZipLevel="9" Files="@(ProjectImportLibrary)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\ImportLibrary.zip" WorkingDirectory="ProjectTemplates\ImportLibrary" />
+    <Copy SourceFiles="@(Content)" DestinationFolder="$(OutputPath)" />
+    <ItemGroup>
+      <VsixFiles Include="$(OutputPath)**\*.*" Exclude="*.vsix" />
+    </ItemGroup>
+    <Zip ZipLevel="9" Files="@(VsixFiles)" WorkingDirectory="$(OutputPath)" ZipFileName="$(OutputPath)ScriptSharp.vsix" />
+  </Target>
+  <Target Name="CleanZip" AfterTargets="Clean">
+    <Delete Files="$(OutputPath)ScriptSharp.vsix" />
+    <RemoveDir Directories="$(OutputPath)" />
+  </Target>
+  <Target Name="RebuildZip" DependsOnTargets="CleanZip;BuildZip" AfterTargets="Rebuild" />
+  <Target Name="RestorePackageVersion" AfterTargets="Build">
+    <XmlPoke Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" Query="/package/x:metadata/x:version" Value="$(AssemblyVersion)" XmlInputPath="%(NuSpec.Identity)" />
+    <XmlPoke Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" Query="//x:dependencies/x:dependency/@version" Value="$(AssemblyVersion)" XmlInputPath="%(NuSpec.Identity)" />
+  </Target>
+</Project>

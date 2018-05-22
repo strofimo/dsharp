@@ -1,17 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <UsingTask TaskName="Zip" AssemblyFile="..\..\tools\bin\ScriptSharp.Internal.ZipBuilder.dll" />
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <NuSpec Include="Packages\Core.nuspec" />
-    <None Include="Packages\Core\Install.ps1" />
-    <None Include="Packages\Core\Reset.psm1" />
-    <None Include="Packages\Core\Uninstall.ps1" />
-    <None Include="Packages\Core\ScriptSharp.PlaceHolder.txt" />
+    <None Include="Packages\Core\Install.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Packages\Core\Reset.psm1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Packages\Core\Uninstall.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Packages\Core\ScriptSharp.PlaceHolder.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <NuSpec Include="Packages\FxCop.nuspec" />
-    <None Include="Packages\FxCop\Install.ps1" />
-    <None Include="Packages\FxCop\ScriptSharp.PlaceHolder.txt" />
+    <None Include="Packages\FxCop\Install.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Packages\FxCop\ScriptSharp.PlaceHolder.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <NuSpec Include="Packages\Lib.HTML.nuspec" />
     <NuSpec Include="Packages\Testing.nuspec" />
     <NuSpec Include="Packages\Runtime.nuspec" />
@@ -91,39 +102,32 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Packages\Core.nuspec">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\FxCop.nuspec">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Lib.HTML.nuspec">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Runtime.nuspec">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Runtime\Install.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Runtime\Reset.psm1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Runtime\Uninstall.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Testing.nuspec">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
-  <Target Name="Build">
-    <MakeDir Directories="$(OutputPath)Packages" />
-    <XmlPoke Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" Query="/package/x:metadata/x:version" Value="$(PackageVersion)" XmlInputPath="%(NuSpec.Identity)" />
-    <XmlPoke Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" Query="//x:dependencies/x:dependency/@version" Value="$(PackageVersion)" XmlInputPath="%(NuSpec.Identity)" />
-    <Exec Command="$(ProjectDir)..\..\tools\bin\nuget pack %(NuSpec.Identity) -OutputDirectory $(OutputPath)Packages -NoPackageAnalysis" />
-    <Zip ZipLevel="9" Files="@(ItemClass)" ZipFileName="$(OutputPath)ItemTemplates\Script%2523\Class.zip" WorkingDirectory="ItemTemplates\Class" />
-    <Zip ZipLevel="9" Files="@(ItemPage)" ZipFileName="$(OutputPath)ItemTemplates\Script%2523\Page.zip" WorkingDirectory="ItemTemplates\Page" />
-    <Zip ZipLevel="9" Files="@(ItemJQueryPage)" ZipFileName="$(OutputPath)ItemTemplates\Script%2523\jQueryPage.zip" WorkingDirectory="ItemTemplates\jQueryPage" />
-    <Zip ZipLevel="9" Files="@(ItemJQueryPlugin)" ZipFileName="$(OutputPath)ItemTemplates\Script%2523\jQueryPlugin.zip" WorkingDirectory="ItemTemplates\jQueryPlugin" />
-    <Zip ZipLevel="9" Files="@(ItemResource)" ZipFileName="$(OutputPath)ItemTemplates\Script%2523\Resource.zip" WorkingDirectory="ItemTemplates\Resource" />
-    <Zip ZipLevel="9" Files="@(ItemTestClass)" ZipFileName="$(OutputPath)ItemTemplates\Script%2523\TestClass.zip" WorkingDirectory="ItemTemplates\TestClass" />
-    <Zip ZipLevel="9" Files="@(ProjectHTMLApp)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\HTMLApplication.zip" WorkingDirectory="ProjectTemplates\HTMLApplication" />
-    <Zip ZipLevel="9" Files="@(ProjectHTMLModule)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\HTMLModule.zip" WorkingDirectory="ProjectTemplates\HTMLModule" />
-    <Zip ZipLevel="9" Files="@(ProjectJQueryApp)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\jQueryApplication.zip" WorkingDirectory="ProjectTemplates\jQueryApplication" />
-    <Zip ZipLevel="9" Files="@(ProjectJQueryPlugin)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\jQueryPlugin.zip" WorkingDirectory="ProjectTemplates\jQueryPlugin" />
-    <Zip ZipLevel="9" Files="@(ProjectNodeApp)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\NodeApplication.zip" WorkingDirectory="ProjectTemplates\NodeApplication" />
-    <Zip ZipLevel="9" Files="@(ProjectNodeModule)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\NodeModule.zip" WorkingDirectory="ProjectTemplates\NodeModule" />
-    <Zip ZipLevel="9" Files="@(ProjectUnitTest)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\UnitTest.zip" WorkingDirectory="ProjectTemplates\UnitTest" />
-    <Zip ZipLevel="9" Files="@(ProjectImportLibrary)" ZipFileName="$(OutputPath)ProjectTemplates\Script%2523\ImportLibrary.zip" WorkingDirectory="ProjectTemplates\ImportLibrary" />
-    <Copy SourceFiles="@(Content)" DestinationFolder="$(OutputPath)" />
-    <ItemGroup>
-      <VsixFiles Include="$(OutputPath)**\*.*" Exclude="*.vsix" />
-    </ItemGroup>
-    <Zip ZipLevel="9" Files="@(VsixFiles)" WorkingDirectory="$(OutputPath)" ZipFileName="$(OutputPath)..\ScriptSharp.vsix" />
-  </Target>
-  <Target Name="Clean">
-    <Delete Files="$(OutputPath)..\ScriptSharp.vsix" />
-    <RemoveDir Directories="$(OutputPath)" />
-  </Target>
-  <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
-  <Target Name="RestorePackageVersion" AfterTargets="Build">
-    <XmlPoke Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" Query="/package/x:metadata/x:version" Value="$(AssemblyVersion)" XmlInputPath="%(NuSpec.Identity)" />
-    <XmlPoke Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" Query="//x:dependencies/x:dependency/@version" Value="$(AssemblyVersion)" XmlInputPath="%(NuSpec.Identity)" />
-  </Target>
+  <Import Project="$(ProjectDir)DSharp.Zip.targets" Condition="Exists('$(ProjectDir)DSharp.Zip.targets')" />
 </Project>

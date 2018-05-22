@@ -2,7 +2,7 @@
 <package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>ScriptSharp.FxCop</id>
-    <version>1.0.0.0</version>
+    <version>1.0.180522.135604</version>
     <title>Script# FxCop Rules</title>
     <authors>Nikhil Kothari</authors>
     <copyright>Copyright (c) 2012, Nikhil Kothari</copyright>
@@ -18,7 +18,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
   </metadata>
   <files>
-    <file src="..\..\..\bin\Release\ScriptSharp.FxCop.dll" target="tools" />
+    <file src="$fxCopPath$\ScriptSharp.FxCop.dll" target="tools" />
     <file src="FxCop\Install.ps1" target="tools" />
     <file src="FxCop\ScriptSharp.PlaceHolder.txt" target="content" />
   </files>
