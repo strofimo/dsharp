@@ -117,15 +117,6 @@ namespace ScriptSharp.Tests {
         }
 
         [TestMethod]
-        public void TestMetadata() {
-            RunTest((c) => {
-                c.AddReference("Lib.dll").
-                  AddSource("Code.cs");
-                c.Options.InternalTestType = "metadata";
-            });
-        }
-
-        [TestMethod]
         public void TestMinimization() {
             RunTest((c) => {
                 c.AddReference("Script.Web.dll").

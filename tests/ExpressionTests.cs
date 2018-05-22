@@ -111,9 +111,8 @@ namespace ScriptSharp.Tests {
         [TestMethod]
         public void TestGenerics() {
             RunTest((c) => {
-                c.AddReference("Script.Web.dll").
-                  AddReference("Script.jQuery.dll").
-                  AddSource("Code.cs");
+                c.AddReference("Script.Web.dll")
+                .AddSource("Code.cs");
             });
         }
 

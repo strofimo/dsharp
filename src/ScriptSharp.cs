@@ -7,9 +7,8 @@ using System;
 using System.Reflection;
 
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("http://www.scriptsharp.com")]
-[assembly: AssemblyProduct("Script#")]
-[assembly: AssemblyCopyright("Copyright © 2012")]
+[assembly: AssemblyProduct("DSharp")]
+[assembly: AssemblyCopyright("Copyright © 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]

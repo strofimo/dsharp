@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss', 'jquery'], function(ss, $) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // ExpressionTests.Foo
@@ -16,16 +16,12 @@ define('test', ['ss', 'jquery'], function(ss, $) {
     var f2 = this._func;
     ss.trim(f2(11));
     var d = {};
-    var s5 = $.extend(d, d)['abc'].toString(10);
     var keys = ss.keyCount(d);
     var b = ss.keyExists(d, 'abc');
     delete d.abc;
     for (var $key1 in d) {
       var de = { key: $key1, value: d[$key1] };
     }
-    $.ajax('http://example.com').success(function(html) {
-      alert(html);
-    });
     var json = '';
     var f = JSON.parse(json).setup().run().cleanup();
     var name = document.getElementById('nameTB').value;

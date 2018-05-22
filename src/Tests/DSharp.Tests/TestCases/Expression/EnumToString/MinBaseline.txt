@@ -1,0 +1,33 @@
+"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+
+  // ExpressionTests.App
+
+  function App() {
+  }
+  var App$ = {
+    test: function(arg) {
+      var s1 = (0).toString();
+      var s2 = (2).toString();
+      var s3 = 'starting';
+      var s4 = (0).toString();
+    },
+    $0: function(m, c, s, t) {
+      var mstr = m.toString();
+      var cstr = c.toString();
+      var sstr = s;
+      var tstr = t.toString();
+    }
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      App: ss.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

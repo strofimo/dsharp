@@ -1,0 +1,99 @@
+"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+
+  // ExpressionTests.Button
+
+  function Button() {
+  }
+  Button.add_test = function(value) {
+    Button.__test = ss.bindAdd(Button.__test, value);
+  };
+  Button.remove_test = function(value) {
+    Button.__test = ss.bindSub(Button.__test, value);
+  };
+  var Button$ = {
+    add_click: function(value) {
+      this.__click = ss.bindAdd(this.__click, value);
+    },
+    remove_click: function(value) {
+      this.__click = ss.bindSub(this.__click, value);
+    },
+    add_aaa: function(value) {
+      if (this._aaa == null) {
+        this._aaa = value;
+      }
+      else {
+        this._aaa = ss.bindAdd(this._aaa, value);
+      }
+    },
+    remove_aaa: function(value) {
+      this._aaa = ss.bindSub(this._aaa, value);
+    },
+    add_bbb: function(value) {
+      if (this._bbb == null) {
+        this._bbb = value;
+      }
+      else {
+        this._bbb = ss.bindAdd(this._bbb, value);
+      }
+    },
+    remove_bbb: function(value) {
+      this._bbb = ss.bindSub(this._bbb, value);
+    }
+  };
+
+
+  // ExpressionTests.App
+
+  function App() {
+    this._btn.add_click(ss.bind('_onClickButton', this));
+    this._btn.add_click(ss.bind('_onClickButton', this));
+    this._btn.add_click(ss.bind('_onClickButton', this));
+    this._btn.remove_click(ss.bind('_onClickButton', this));
+    this._btn.remove_click(ss.bind('_onClickButton', this));
+    this._btn.remove_click(ss.bind('_onClickButton', this));
+    Button.add_test(App._onTestButton);
+    Button.add_test(App._onTestButton);
+    Button.add_test(App._onTestButton);
+    Button.remove_test(App._onTestButton);
+    Button.remove_test(App._onTestButton);
+    Button.remove_test(App._onTestButton);
+    this._btn.add_aaa(ss.bind('_onAAAButton', this));
+    this._btn.add_aaa(ss.bind('_onAAAButton', this));
+    this._btn.add_aaa(ss.bind('_onAAAButton', this));
+    this._btn.remove_aaa(ss.bind('_onAAAButton', this));
+    this._btn.remove_aaa(ss.bind('_onAAAButton', this));
+    this._btn.remove_aaa(ss.bind('_onAAAButton', this));
+  }
+  App._onTestButton = function(sender, e) {
+  };
+  var App$ = {
+    _onAAAButton: function(sender, e) {
+    },
+    _onClickButton: function(sender, e) {
+    }
+  };
+
+
+  // ExpressionTests.FooEventArgs
+
+  function FooEventArgs() {
+    ss.EventArgs.call(this);
+  }
+  var FooEventArgs$ = {
+
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      Button: ss.defineClass(Button, Button$, [], null),
+      App: ss.defineClass(App, App$, [], null),
+      FooEventArgs: ss.defineClass(FooEventArgs, FooEventArgs$, [], ss.EventArgs)
+    });
+
+
+  return $exports;
+});

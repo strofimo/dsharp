@@ -27,7 +27,7 @@
   </WizardExtension>
   <WizardData>
     <packages repository="extension" repositoryId="ScriptSharp.Extension.Templates">
-      <package id="ScriptSharp.Testing" version="0.8" />
+      <package id="ScriptSharp.Testing" version="1.0.1.7" />
     </packages>
   </WizardData>
 </VSTemplate>

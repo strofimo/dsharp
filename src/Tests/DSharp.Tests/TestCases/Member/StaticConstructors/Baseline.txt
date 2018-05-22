@@ -1,0 +1,85 @@
+"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+
+  // MemberTests.Behavior
+
+  function Behavior(e, name) {
+  }
+  var Behavior$ = {
+
+  };
+
+
+  // MemberTests.MyClass
+
+  function MyClass(d) {
+  }
+  var MyClass$ = {
+
+  };
+
+
+  // MemberTests.MyClassEmpty
+
+  function MyClassEmpty() {
+  }
+  var MyClassEmpty$ = {
+
+  };
+
+
+  // MemberTests.MyClassSimple
+
+  function MyClassSimple() {
+  }
+  var MyClassSimple$ = {
+
+  };
+
+
+  // MemberTests.MyClassSimpleMulti
+
+  function MyClassSimpleMulti() {
+  }
+  var MyClassSimpleMulti$ = {
+
+  };
+
+
+  // MemberTests.MyBehavior
+
+  function MyBehavior(element) {
+    Behavior.call(this, element, 'myBehavior');
+  }
+  var MyBehavior$ = {
+
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      Behavior: ss.defineClass(Behavior, Behavior$, [Element, String], null),
+      MyClass: ss.defineClass(MyClass, MyClass$, [Date], null),
+      MyClassEmpty: ss.defineClass(MyClassEmpty, MyClassEmpty$, [], null),
+      MyClassSimple: ss.defineClass(MyClassSimple, MyClassSimple$, [], null),
+      MyClassSimpleMulti: ss.defineClass(MyClassSimpleMulti, MyClassSimpleMulti$, [], null),
+      MyBehavior: ss.defineClass(MyBehavior, MyBehavior$, [Element], Behavior)
+    });
+
+  MyClass.instance = new MyClass(ss.now());
+  alert('simple static ctor');
+  alert('simple static ctor with multiple statements');
+  document.getElementById('foo').innerHTML = '...';
+  (function() {
+    var e = document.body;
+    var b = true;
+    if (!b) {
+      return;
+    }
+    new MyBehavior(e);
+  })();
+
+  return $exports;
+});

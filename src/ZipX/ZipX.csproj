@@ -1,14 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <UsingTask TaskName="Zip" AssemblyFile="..\..\tools\bin\ScriptSharp.Internal.ZipBuilder.dll" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4123C976-739E-42A2-87FB-E04D163BC99C}</ProjectGuid>
-    <OutputPath>..\..\bin\Zip\</OutputPath>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <NuSpec Include="Packages\Core.nuspec" />
@@ -19,42 +12,71 @@
     <NuSpec Include="Packages\FxCop.nuspec" />
     <None Include="Packages\FxCop\Install.ps1" />
     <None Include="Packages\FxCop\ScriptSharp.PlaceHolder.txt" />
-    <NuSpec Include="Packages\Lib.BingMaps.nuspec" />
     <NuSpec Include="Packages\Lib.HTML.nuspec" />
-    <NuSpec Include="Packages\Lib.jQuery.nuspec" />
-    <NuSpec Include="Packages\Lib.jQuery.UI.nuspec" />
-    <NuSpec Include="Packages\Lib.jQuery.History.nuspec" />
-    <NuSpec Include="Packages\Lib.jQuery.Templating.nuspec" />
-    <NuSpec Include="Packages\Lib.jQuery.Validation.nuspec" />
-    <NuSpec Include="Packages\Lib.Knockout.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.Express.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.Restify.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.Mongo.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.Neo4j.nuspec" />
-    <NuSpec Include="Packages\Lib.Node.Azure.nuspec" />
     <NuSpec Include="Packages\Testing.nuspec" />
     <NuSpec Include="Packages\Runtime.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ItemClass Include="ItemTemplates\Class\*" />
     <ItemPage Include="ItemTemplates\Page\*" />
-    <ItemJQueryPage Include="ItemTemplates\jQueryPage\*" />
-    <ItemJQueryPlugin Include="ItemTemplates\jQueryPlugin\*" />
+    <ItemJQueryPage Include="ItemTemplates\jQueryPage\jQueryPage.vstemplate" />
+    <ItemJQueryPage Include="ItemTemplates\jQueryPage\Page.cs" />
+    <ItemJQueryPlugin Include="ItemTemplates\jQueryPlugin\jQueryPlugin.vstemplate" />
+    <ItemJQueryPlugin Include="ItemTemplates\jQueryPlugin\Plugin.cs" />
     <ItemResource Include="ItemTemplates\Resource\*" />
     <ItemTestClass Include="ItemTemplates\TestClass\*" />
   </ItemGroup>
   <ItemGroup>
     <ProjectHTMLApp Include="ProjectTemplates\HTMLApplication\*" />
     <ProjectHTMLModule Include="ProjectTemplates\HTMLModule\*" />
-    <ProjectJQueryApp Include="ProjectTemplates\jQueryApplication\*" />
-    <ProjectJQueryPlugin Include="ProjectTemplates\jQueryPlugin\*" />
-    <ProjectNodeApp Include="ProjectTemplates\NodeApplication\*" />
-    <ProjectNodeModule Include="ProjectTemplates\NodeModule\*" />
+    <ProjectJQueryApp Include="ProjectTemplates\jQueryApplication\Application.csproj" />
+    <ProjectJQueryApp Include="ProjectTemplates\jQueryApplication\AssemblyInfo.cs" />
+    <ProjectJQueryApp Include="ProjectTemplates\jQueryApplication\FxCop.ruleset" />
+    <ProjectJQueryApp Include="ProjectTemplates\jQueryApplication\jQueryApplication.vstemplate" />
+    <ProjectJQueryApp Include="ProjectTemplates\jQueryApplication\Page.cs" />
+    <ProjectJQueryPlugin Include="ProjectTemplates\jQueryPlugin\AssemblyInfo.cs" />
+    <ProjectJQueryPlugin Include="ProjectTemplates\jQueryPlugin\FxCop.ruleset" />
+    <ProjectJQueryPlugin Include="ProjectTemplates\jQueryPlugin\jQueryPlugin.vstemplate" />
+    <ProjectJQueryPlugin Include="ProjectTemplates\jQueryPlugin\Plugin.cs" />
+    <ProjectJQueryPlugin Include="ProjectTemplates\jQueryPlugin\Plugin.csproj" />
+    <ProjectNodeApp Include="ProjectTemplates\NodeApplication\Application.csproj" />
+    <ProjectNodeApp Include="ProjectTemplates\NodeApplication\AssemblyInfo.cs" />
+    <ProjectNodeApp Include="ProjectTemplates\NodeApplication\Class1.cs" />
+    <ProjectNodeApp Include="ProjectTemplates\NodeApplication\FxCop.ruleset" />
+    <ProjectNodeApp Include="ProjectTemplates\NodeApplication\NodeApplication.vstemplate" />
+    <ProjectNodeModule Include="ProjectTemplates\NodeModule\AssemblyInfo.cs" />
+    <ProjectNodeModule Include="ProjectTemplates\NodeModule\Class1.cs" />
+    <ProjectNodeModule Include="ProjectTemplates\NodeModule\FxCop.ruleset" />
+    <ProjectNodeModule Include="ProjectTemplates\NodeModule\Module.csproj" />
+    <ProjectNodeModule Include="ProjectTemplates\NodeModule\NodeModule.vstemplate" />
     <ProjectUnitTest Include="ProjectTemplates\UnitTest\*" />
     <ProjectImportLibrary Include="ProjectTemplates\ImportLibrary\*" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="ItemTemplates\Class\Class.cs" />
+    <Compile Remove="ItemTemplates\Page\Page.cs" />
+    <Compile Remove="ItemTemplates\TestClass\TestClass.cs" />
+    <Compile Remove="ProjectTemplates\HTMLApplication\AssemblyInfo.cs" />
+    <Compile Remove="ProjectTemplates\HTMLApplication\Page.cs" />
+    <Compile Remove="ProjectTemplates\HTMLModule\AssemblyInfo.cs" />
+    <Compile Remove="ProjectTemplates\HTMLModule\Class1.cs" />
+    <Compile Remove="ProjectTemplates\ImportLibrary\AssemblyInfo.cs" />
+    <Compile Remove="ProjectTemplates\ImportLibrary\Class1.cs" />
+    <Compile Remove="ProjectTemplates\UnitTest\AssemblyInfo.cs" />
+    <Compile Remove="ProjectTemplates\UnitTest\TestClass1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ItemTemplates\Class\Class.cs" />
+    <Content Include="ItemTemplates\Page\Page.cs" />
+    <Content Include="ItemTemplates\TestClass\TestClass.cs" />
+    <Content Include="ProjectTemplates\HTMLApplication\AssemblyInfo.cs" />
+    <Content Include="ProjectTemplates\HTMLApplication\Page.cs" />
+    <Content Include="ProjectTemplates\HTMLModule\AssemblyInfo.cs" />
+    <Content Include="ProjectTemplates\HTMLModule\Class1.cs" />
+    <Content Include="ProjectTemplates\ImportLibrary\AssemblyInfo.cs" />
+    <Content Include="ProjectTemplates\ImportLibrary\Class1.cs" />
+    <Content Include="ProjectTemplates\UnitTest\AssemblyInfo.cs" />
+    <Content Include="ProjectTemplates\UnitTest\TestClass1.cs" />
     <Content Include="VSIX\Extension.vsixmanifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

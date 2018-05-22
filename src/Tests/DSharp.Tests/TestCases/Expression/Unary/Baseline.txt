@@ -1,0 +1,58 @@
+"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+
+  // ExpressionTests.Data
+
+  function Data() {
+    this._value = 0;
+  }
+  var Data$ = {
+    $get_Value: function() {
+      return this._value;
+    },
+    $set_Value: function(value) {
+      this._value = value;
+      return value;
+    }
+  };
+
+
+  // ExpressionTests.App
+
+  function App() {
+  }
+  var App$ = {
+    test: function(arg) {
+      var xyz = ~arg;
+      var f = (!arg);
+      f = !f;
+      var m = arg;
+      m++;
+      var n = ++m;
+      m--;
+      n = --m;
+      n = -m;
+      n = m;
+      n = 1;
+      n = 1 + (2);
+      var s = (!f).toString();
+      var num = 1.01;
+      s = (~num).toExponential();
+      var d = new Data();
+      d.Value++;
+      ++d.Value;
+    }
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      Data: ss.defineClass(Data, Data$, [], null),
+      App: ss.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

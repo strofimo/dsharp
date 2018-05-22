@@ -22,8 +22,8 @@
   </WizardExtension>
   <WizardData>
     <packages repository="extension" repositoryId="ScriptSharp.Extension.Templates">
-      <package id="ScriptSharp" version="0.8" />
-      <package id="ScriptSharp.Lib.HTML" version="0.8" />
+      <package id="ScriptSharp" version="1.0.1.7" />
+      <package id="ScriptSharp.Lib.HTML" version="1.0.1.7" />
     </packages>
   </WizardData>
 </VSTemplate>

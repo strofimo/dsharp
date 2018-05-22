@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Html;
 using System.Runtime.CompilerServices;
 using System.Serialization;
-using jQueryApi;
 
 [assembly: ScriptAssembly("test")]
 
@@ -27,17 +26,12 @@ namespace ExpressionTests {
             f2(11).Trim();
             
             Dictionary<string, int> d = new Dictionary<string, int>();
-            string s5 = jQuery.ExtendDictionary<string, int>(d, d)["abc"].ToString(10);
             int keys = d.Count;
             bool b = d.ContainsKey("abc");
             d.Remove("abc");
             
             foreach (KeyValuePair<string, int> de in d) {
             }
-            
-            jQuery.AjaxRequest<string>("http://example.com").Success(delegate(string html) {
-                Window.Alert(html);
-            });
             
             string json = "";
             Foo f = Json.ParseData<Foo>(json).Setup().Run().Cleanup();

@@ -558,17 +558,17 @@ namespace System.Runtime.Serialization {
     [ScriptIgnore]
     public sealed class DataContractAttribute : Attribute {
 
-        public bool IsReference {
+        public extern bool IsReference {
             get;
             set;
         }
 
-        public string Name {
+        public extern string Name {
             get;
             set;
         }
 
-        public string Namespace {
+        public extern string Namespace {
             get;
             set;
         }
@@ -579,22 +579,22 @@ namespace System.Runtime.Serialization {
     [ScriptIgnore]
     public sealed class DataMemberAttribute : Attribute {
 
-        public bool EmitDefaultValue {
+        public extern bool EmitDefaultValue {
             get;
             set;
         }
 
-        public bool IsReference {
+        public extern bool IsReference {
             get;
             set;
         }
 
-        public string Name {
+        public extern string Name {
             get;
             set;
         }
 
-        public int Order {
+        public extern int Order {
             get;
             set;
         }
