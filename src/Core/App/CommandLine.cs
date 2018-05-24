@@ -8,125 +8,124 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 
-namespace ScriptSharp {
+namespace ScriptSharp
+{
+    internal sealed class CommandLine
+    {
+        private IDictionary options;
 
-    internal sealed class CommandLine {
+        public string[] Arguments { get; }
 
-        private string[] _arguments;
-        private IDictionary _options;
-        private bool _showHelp;
-        private bool _hideAbout;
+        public bool HideAbout { get; }
 
-        public CommandLine(string[] args) {
-            if (args == null) {
-                throw new ArgumentNullException("args");
-            }
+        public bool ShowHelp { get; }
+
+        public CommandLine(string[] args)
+        {
+            if (args == null) throw new ArgumentNullException("args");
+
             args = ExpandResponseFileArguments(args);
 
             ArrayList argList = new ArrayList();
 
-            for (int i = 0; i < args.Length; i++) {
+            for (int i = 0; i < args.Length; i++)
+            {
                 char c = args[i][0];
-                if ((c != '/') && (c != '-')) {
+
+                if (c != '/' && c != '-')
+                {
                     argList.Add(args[i]);
                 }
-                else {
+                else
+                {
                     int index = args[i].IndexOf(':');
-                    if (index == -1) {
+
+                    if (index == -1)
+                    {
                         string option = args[i].Substring(1);
-                        if ((String.Compare(option, "help", StringComparison.OrdinalIgnoreCase) == 0) ||
-                            (String.Compare(option, "?", StringComparison.Ordinal) == 0)) {
-                            _showHelp = true;
-                        }
-                        else if (String.Compare(option, "nologo", StringComparison.OrdinalIgnoreCase) == 0) {
-                            _hideAbout = true;
-                        }
-                        else {
-                            Options[option] = String.Empty;
-                        }
+
+                        if (string.Compare(option, "help", StringComparison.OrdinalIgnoreCase) == 0 ||
+                            string.Compare(option, "?", StringComparison.Ordinal) == 0)
+                            ShowHelp = true;
+                        else if (string.Compare(option, "nologo", StringComparison.OrdinalIgnoreCase) == 0)
+                            HideAbout = true;
+                        else
+                            Options[option] = string.Empty;
                     }
-                    else {
+                    else
+                    {
                         string optionName = args[i].Substring(1, index - 1);
                         string optionValue = args[i].Substring(index + 1);
 
-                        if (Options.Contains(optionName)) {
+                        if (Options.Contains(optionName))
+                        {
                             object existingValue = Options[optionName];
-                            if (existingValue is string) {
+
+                            if (existingValue is string)
+                            {
                                 ArrayList valueList = new ArrayList();
                                 valueList.Add(existingValue);
                                 valueList.Add(optionValue);
 
                                 Options[optionName] = valueList;
                             }
-                            else {
+                            else
+                            {
                                 Debug.Assert(existingValue is ArrayList);
 
-                                ArrayList valueList = (ArrayList)existingValue;
+                                ArrayList valueList = (ArrayList) existingValue;
                                 valueList.Add(optionValue);
                             }
                         }
-                        else {
+                        else
+                        {
                             Options[optionName] = optionValue;
                         }
                     }
                 }
             }
-            _arguments = (string[])argList.ToArray(typeof(string));
+
+            Arguments = (string[]) argList.ToArray(typeof(string));
         }
 
-        public string[] Arguments {
-            get {
-                return _arguments;
+        public IDictionary Options
+        {
+            get
+            {
+                if (options == null) options = new HybridDictionary(true);
+
+                return options;
             }
         }
 
-        public bool HideAbout {
-            get {
-                return _hideAbout;
-            }
-        }
-
-        public IDictionary Options {
-            get {
-                if (_options == null) {
-                    _options = new HybridDictionary(true);
-                }
-                return _options;
-            }
-        }
-
-        public bool ShowHelp {
-            get {
-                return _showHelp;
-            }
-        }
-
-        private string[] ExpandResponseFileArguments(string[] args) {
+        private static string[] ExpandResponseFileArguments(IReadOnlyList<string> args)
+        {
             List<string> expandedArgs = new List<string>();
 
-            for (int i = 0; i < args.Length; i++) {
-                if ((args[i].Length > 1) && args[i].StartsWith("@")) {
+            for (int i = 0; i < args.Count; i++)
+                if (args[i].Length > 1 && args[i].StartsWith("@"))
+                {
                     string responseFile = args[i].Substring(1);
 
-                    if (File.Exists(responseFile)) {
-                        using (TextReader reader = File.OpenText(responseFile)) {
+                    if (File.Exists(responseFile))
+                        using (TextReader reader = File.OpenText(responseFile))
+                        {
                             string line;
-                            while ((line = reader.ReadLine()) != null) {
+
+                            while ((line = reader.ReadLine()) != null)
+                            {
                                 line = line.Trim();
-                                if (line.Length > 0) {
-                                    expandedArgs.Add(line);
-                                }
+
+                                if (line.Length > 0) expandedArgs.Add(line);
                             }
                         }
-                    }
                 }
-                else {
+                else
+                {
                     expandedArgs.Add(args[i]);
                 }
-            }
 
             return expandedArgs.ToArray();
         }

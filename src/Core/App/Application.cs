@@ -13,13 +13,13 @@ namespace ScriptSharp
 {
     internal static class Application
     {
-        private static readonly string AboutTextFormat = @"
+        private const string ABOUT_TEXT_FORMAT = @"
 Script# Compiler v{0} (C# to JavaScript compiler)
 Written by Nikhil Kothari.
 More information at http://projects.nikhilk.net/ScriptSharp.
 ";
 
-        private static readonly string UsageText = @"
+        private const string USAGE_TEXT = @"
 Usage:
   ssc [/nologo] [/?]
       [/debug]
@@ -59,10 +59,6 @@ Usage:
             List<IStreamSource> sources = new List<IStreamSource>();
             List<IStreamSource> resources = new List<IStreamSource>();
             List<string> defines = new List<string>();
-            List<string> scripts = new List<string>();
-            bool debug = false;
-            bool includeTests = false;
-            bool minimize = true;
             IStreamSource scriptFile = null;
             IStreamSourceResolver includeResolver = null;
 
@@ -76,18 +72,18 @@ Usage:
                 {
                     continue;
                 }
+
                 sources.Add(new FileInputStreamSource(fileName));
             }
 
             object referencesObject = commandLine.Options["ref"];
-            if (referencesObject is string)
-            {
-                references.Add((string)referencesObject);
-            }
-            else if (referencesObject is ArrayList)
-            {
-                ArrayList referenceList = (ArrayList)referencesObject;
 
+            if (referencesObject is string s)
+            {
+                references.Add(s);
+            }
+            else if (referencesObject is ArrayList referenceList)
+            {
                 foreach (string reference in referenceList)
                 {
                     // TODO: This is a hack... something in the .net 4 build system causes
@@ -97,19 +93,19 @@ Usage:
                     {
                         continue;
                     }
+
                     references.Add(reference);
                 }
             }
 
             object resourcesObject = commandLine.Options["res"];
-            if (resourcesObject is string)
-            {
-                resources.Add(new FileInputStreamSource((string)resourcesObject));
-            }
-            else if (resourcesObject is ArrayList)
-            {
-                ArrayList resourceList = (ArrayList)resourcesObject;
 
+            if (resourcesObject is string s1)
+            {
+                resources.Add(new FileInputStreamSource(s1));
+            }
+            else if (resourcesObject is ArrayList resourceList)
+            {
                 foreach (string resource in resourceList)
                 {
                     resources.Add(new FileInputStreamSource(resource));
@@ -117,67 +113,70 @@ Usage:
             }
 
             object definesObject = commandLine.Options["D"];
-            if (definesObject is string)
-            {
-                defines.Add((string)definesObject);
-            }
-            else if (definesObject is ArrayList)
-            {
-                ArrayList definesList = (ArrayList)definesObject;
 
+            if (definesObject is string s2)
+            {
+                defines.Add(s2);
+            }
+            else if (definesObject is ArrayList definesList)
+            {
                 foreach (string definedVariable in definesList)
                 {
                     defines.Add(definedVariable);
                 }
             }
 
-            string scriptFilePath = null;
             if (commandLine.Options.Contains("out"))
             {
-                scriptFilePath = (string)commandLine.Options["out"];
+                string scriptFilePath = (string) commandLine.Options["out"];
+
                 if (scriptFilePath.IndexOfAny(Path.GetInvalidPathChars()) < 0)
                 {
                     scriptFile = new FileOutputStreamSource(scriptFilePath);
                 }
             }
 
-            debug = commandLine.Options.Contains("debug");
+            bool debug = commandLine.Options.Contains("debug");
+
             if (debug && !defines.Contains("DEBUG"))
             {
                 defines.Add("DEBUG");
             }
 
-            includeTests = commandLine.Options.Contains("tests");
-            minimize = commandLine.Options.Contains("minimize");
+            bool includeTests = commandLine.Options.Contains("tests");
+            bool minimize = commandLine.Options.Contains("minimize");
 
             if (commandLine.Options.Contains("inc"))
             {
-                string basePath = (string)commandLine.Options["inc"];
+                string basePath = (string) commandLine.Options["inc"];
                 includeResolver = new IncludeResolver(basePath);
             }
 
-            CompilerOptions compilerOptions = new CompilerOptions();
-            compilerOptions.IncludeTests = includeTests;
-            compilerOptions.Defines = defines;
-            compilerOptions.Minimize = minimize;
-            compilerOptions.References = references;
-            compilerOptions.Sources = sources;
-            compilerOptions.Resources = resources;
-            compilerOptions.ScriptFile = scriptFile;
-            compilerOptions.IncludeResolver = includeResolver;
+            CompilerOptions compilerOptions = new CompilerOptions
+            {
+                IncludeTests = includeTests,
+                Defines = defines,
+                Minimize = minimize,
+                References = references,
+                Sources = sources,
+                Resources = resources,
+                ScriptFile = scriptFile,
+                IncludeResolver = includeResolver,
+                InternalTestMode = commandLine.Options.Contains("test")
+            };
 
-            compilerOptions.InternalTestMode = commandLine.Options.Contains("test");
             if (compilerOptions.InternalTestMode)
             {
-                compilerOptions.InternalTestType = (string)commandLine.Options["test"];
+                compilerOptions.InternalTestType = (string) commandLine.Options["test"];
             }
 
             return compilerOptions;
         }
 
-        public static bool Execute(string[] args)
+        private static bool Execute(string[] args)
         {
             CommandLine commandLine = new CommandLine(args);
+
             if (commandLine.Options.Contains("attach"))
             {
                 Debug.Fail("Attach");
@@ -185,16 +184,17 @@ Usage:
 
             if (commandLine.ShowHelp)
             {
-                ShowUsage(/* message */ String.Empty);
+                ShowUsage(string.Empty);
+
                 return true;
             }
 
             CompilerOptions compilerOptions = CreateCompilerOptions(commandLine);
 
-            string errorMessage;
-            if (compilerOptions.Validate(out errorMessage) == false)
+            if (compilerOptions.Validate(out string errorMessage) == false)
             {
                 ShowUsage(errorMessage);
+
                 return false;
             }
 
@@ -209,7 +209,7 @@ Usage:
             return true;
 #else
             return success;
-#endif // DEBUG
+#endif
         }
 
         private static string GetVersion()
@@ -223,39 +223,42 @@ Usage:
         [STAThread]
         public static int Main(string[] args)
         {
-            bool success = Application.Execute(args);
+            bool success = Execute(args);
+
             return success ? 0 : 1;
         }
 
         private static void ShowAbout()
         {
             string version = GetVersion();
-            string aboutText = String.Format(AboutTextFormat, version);
+            string aboutText = string.Format(ABOUT_TEXT_FORMAT, version);
 
             Console.WriteLine(aboutText);
         }
 
         private static void ShowUsage(string message)
         {
-            if (String.IsNullOrEmpty(message) == false)
+            if (string.IsNullOrEmpty(message) == false)
             {
                 Console.WriteLine(message);
             }
-            Console.WriteLine(UsageText);
+
+            Console.WriteLine(USAGE_TEXT);
         }
 
         private sealed class IncludeResolver : IStreamSourceResolver
         {
-            private string _basePath;
+            private readonly string basePath;
 
             public IncludeResolver(string basePath)
             {
-                _basePath = basePath;
+                this.basePath = basePath;
             }
 
             public IStreamSource Resolve(string name)
             {
-                string path = Path.Combine(_basePath, name);
+                string path = Path.Combine(basePath, name);
+
                 if (File.Exists(path))
                 {
                     return new FileInputStreamSource(path, name);

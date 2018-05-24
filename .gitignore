@@ -8,3 +8,4 @@ packages/
 Tests/*/Scripts
 TestResults/
 .vs/
+.idea/

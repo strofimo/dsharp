@@ -3,57 +3,55 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace ScriptSharp {
+namespace ScriptSharp
+{
+    internal class FileOutputStreamSource : IStreamSource
+    {
+        private readonly string pathTest;
 
-    internal class FileOutputStreamSource : IStreamSource {
-
-        private string _path;
-        private string _name;
-
-        public FileOutputStreamSource(string path)
-            : this(path, path) {
+        public FileOutputStreamSource(string pathTest)
+            : this(pathTest, pathTest)
+        {
         }
 
-        public FileOutputStreamSource(string path, string name) {
-            _path = path;
-            _name = name;
+        protected FileOutputStreamSource(string pathTest, string name)
+        {
+            this.pathTest = pathTest;
+            Name = name;
         }
 
-        public string FullName {
-            get {
-                return Path.GetFullPath(_path);
-            }
-        }
+        public string FullName => Path.GetFullPath(pathTest);
 
-        public string Name {
-            get {
-                return _name;
-            }
-        }
+        public string Name { get; }
 
-        public void CloseStream(Stream stream) {
+        public void CloseStream(Stream stream)
+        {
             Debug.Assert(stream != null);
             Debug.Assert(stream is FileStream);
 
             stream.Close();
         }
 
-        public Stream GetStream() {
-            try {
+        public Stream GetStream()
+        {
+            try
+            {
                 string file = FullName;
 
                 string directory = Path.GetDirectoryName(file);
-                if (Directory.Exists(directory) == false) {
+
+                if (!Directory.Exists(directory))
+                {
                     Directory.CreateDirectory(directory);
                 }
 
                 return new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.None);
             }
-            catch {
+            catch
+            {
                 return null;
             }
         }

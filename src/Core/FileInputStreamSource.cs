@@ -3,50 +3,46 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace ScriptSharp {
+namespace ScriptSharp
+{
+    internal class FileInputStreamSource : IStreamSource
+    {
+        private readonly string path;
 
-    internal class FileInputStreamSource : IStreamSource {
+        public string FullName => Path.GetFullPath(path);
 
-        private string _path;
-        private string _name;
+        public string Name { get; }
 
         public FileInputStreamSource(string path)
-            : this(path, path) {
+            : this(path, path)
+        {
         }
 
-        public FileInputStreamSource(string path, string name) {
-            _path = path;
-            _name = name;
+        public FileInputStreamSource(string path, string name)
+        {
+            this.path = path;
+            Name = name;
         }
 
-        public string FullName {
-            get {
-                return Path.GetFullPath(_path);
-            }
-        }
-
-        public string Name {
-            get {
-                return _name;
-            }
-        }
-
-        public void CloseStream(Stream stream) {
+        public void CloseStream(Stream stream)
+        {
             Debug.Assert(stream != null);
             Debug.Assert(stream is FileStream);
 
             stream.Close();
         }
 
-        public Stream GetStream() {
-            try {
+        public Stream GetStream()
+        {
+            try
+            {
                 return new FileStream(FullName, FileMode.Open, FileAccess.Read, FileShare.Read);
             }
-            catch {
+            catch
+            {
                 return null;
             }
         }
