@@ -729,10 +729,22 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\Core\Build\Build.csproj" />
-    <ProjectReference Include="..\src\Core\Compiler\Compiler.csproj" />
-    <ProjectReference Include="..\src\Tools\Deployment\Deployment.csproj" />
-    <ProjectReference Include="..\src\Tools\Testing\Testing.csproj" />
+    <ProjectReference Include="..\src\Core\Build\Build.csproj">
+      <Project>{BE1E0A21-F6C0-4698-B405-66FC2BB289F4}</Project>
+      <Name>Build</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\Core\Compiler\Compiler.csproj">
+      <Project>{9F14036F-673F-418E-B817-7E2289D7F3F6}</Project>
+      <Name>Compiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\Tools\Deployment\Deployment.csproj">
+      <Project>{9D59077D-1A05-4D6C-A1A4-FB748D200578}</Project>
+      <Name>Deployment</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\Tools\Testing\Testing.csproj">
+      <Project>{31456150-1093-407F-9231-58D0F663945D}</Project>
+      <Name>Testing</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

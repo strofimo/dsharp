@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0">
+  <PropertyGroup>
+    <SourceDirectory>$(SolutionDir)</SourceDirectory>
+    <OutputDirectory>$(ProjectDir)Output\</OutputDirectory>
+  </PropertyGroup>
+  
+  <Target Name="BuildPackages" AfterTargets="Build">
+    <ItemGroup>
+      <NuGetProperties Include="buildPath=$(SourceDirectory)Core\Build\bin\$(Configuration)\net461;
+                                consolePath=$(SourceDirectory)Core\App\bin\$(Configuration)\net461;
+                                version=$(PackageVersion);
+                                configuration=$(Configuration)" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(OutputDirectory)Packages" />
+    
+    <Exec Command="$(ProjectDir)..\..\tools\bin\nuget pack %(NuSpec.Identity) -OutputDirectory $(OutputDirectory)Packages -NoPackageAnalysis -Properties @(NuGetProperties)" />
+  </Target>
+  
+  <Target Name="CleanPackages" AfterTargets="Clean">
+    <Delete Files="$(OutputDirectory)**\*.nupkg" />
+  </Target>
+  
+  <Target Name="RebuildPackages" DependsOnTargets="CleanPackages;BuildPackages" AfterTargets="Rebuild" />
+</Project>

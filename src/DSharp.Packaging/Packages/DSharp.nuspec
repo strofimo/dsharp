@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>DSharp</id>
+    <version>$version$</version>
+    <title>DSharp</title>
+    <authors>Derivco Ipswich</authors>
+    <copyright>Copyright (c) 2018, Derivco Ipswich</copyright>
+    <summary>DSharp lets you author your HTML5 apps in C# and compile them into JavaScript.</summary>
+    <description>
+      This package contains the DSharp compiler and the associated mscorlib.dll assembly that all DSharp projects reference.
+      It also includes msbuild support for easily using DSharp within Visual Studio.
+    </description>
+    <tags>script javascript ajax html html5 mobile dsharp compiler tool</tags>
+    <language>en-US</language>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+      <dependency id="AjaxMin" version="5.14.5506.26202" />
+      <dependency id="Microsoft.Build.Utilities.Core" version="15.6.85" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$buildPath$\ScriptSharp.dll" target="tools" />
+    <file src="$buildPath$\ScriptSharp.Build.dll" target="tools" />
+    <file src="$buildPath$\ScriptSharp.targets" target="tools" />
+    <file src="..\..\..\bin\$configuration$\mscorlib.dll" target="tools" />
+    <file src="..\..\..\bin\$configuration$\mscorlib.xml" target="tools" />
+    <file src="..\..\..\bin\$configuration$\ss.js" target="tools" />
+    <file src="..\..\..\bin\$configuration$\ss.min.js" target="tools" />
+    <file src="$consolePath$\ssc.exe" target="tools" />
+    <file src="Core\Install.ps1" target="tools" />
+    <file src="Core\Uninstall.ps1" target="tools" />
+    <file src="Core\Reset.psm1" target="tools" />
+  </files>
+</package>

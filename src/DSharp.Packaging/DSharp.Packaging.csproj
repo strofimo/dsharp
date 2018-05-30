@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <NuSpec Include="Packages\DSharp.nuspec" />
+    <NuSpec Include="Packages\DSharp.HTML.nuspec" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Remove="Output\**" />
+    <EmbeddedResource Remove="Output\**" />
+    <None Remove="Output\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="Packages\Core\Install.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Packages\Core\Reset.psm1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Packages\Core\Uninstall.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\DSharp.nuspec">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\DSharp.HTML.nuspec">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Runtime\Install.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Runtime\Reset.psm1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Packages\Runtime\Uninstall.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+  <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
+  <Import Project="$(ProjectDir)DSharp.Zip.targets" Condition="Exists('$(ProjectDir)DSharp.Zip.targets')" />
+</Project>
