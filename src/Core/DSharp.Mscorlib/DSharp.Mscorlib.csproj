@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <RootNamespace>System</RootNamespace>
+    <AssemblyName>mscorlib</AssemblyName>
+    <CompilerResponseFile Condition=" $(MSBuildToolsVersion) &gt;= 13.0 ">AdditionalCompilerOptions.txt</CompilerResponseFile>
+    <NoStdLib>True</NoStdLib>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <AdditionalExplicitAssemblyReferences />
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
+    <LangVersion>ISO-2</LangVersion>
+  </PropertyGroup>
+
+  <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
+ </Project>

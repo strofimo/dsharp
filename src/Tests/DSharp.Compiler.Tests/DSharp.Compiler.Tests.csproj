@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Compiler\Compiler.csproj" />
+    <ProjectReference Include="..\..\DSharp.Compiler.TestFramework\DSharp.Compiler.TestFramework.csproj" />
   </ItemGroup>
 
   <ItemGroup>
