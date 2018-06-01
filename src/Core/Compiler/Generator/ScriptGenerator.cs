@@ -77,10 +77,6 @@ namespace ScriptSharp.Generator {
                             continue;
                         }
 
-                        if (type.IsTestType && (_options.IncludeTests == false)) {
-                            continue;
-                        }
-
                         if ((type.Type == SymbolType.Enumeration) &&
                             ((type.IsPublic == false) || ((EnumerationSymbol)type).Constants)) {
                             // Internal enums can be skipped since their values have been inlined.
@@ -200,15 +196,6 @@ namespace ScriptSharp.Generator {
             foreach (TypeSymbol type in types) {
                 if (type.Type == SymbolType.Class) {
                     TypeGenerator.GenerateClassConstructorScript(this, (ClassSymbol)type);
-                }
-            }
-
-            if (_options.IncludeTests) {
-                foreach (TypeSymbol type in types) {
-                    ClassSymbol classSymbol = type as ClassSymbol;
-                    if ((classSymbol != null) && classSymbol.IsTestClass) {
-                        TestGenerator.GenerateScript(this, classSymbol);
-                    }
                 }
             }
 

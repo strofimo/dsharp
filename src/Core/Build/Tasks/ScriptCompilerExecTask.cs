@@ -48,15 +48,6 @@ namespace ScriptSharp.Tasks {
             }
         }
 
-        public bool IncludeTests {
-            get {
-                return _tests;
-            }
-            set {
-                _tests = value;
-            }
-        }
-
         public string Locale {
             get {
                 if (_locale == null) {
@@ -138,7 +129,6 @@ namespace ScriptSharp.Tasks {
 
         private bool Compile() {
             CompilerOptions options = new CompilerOptions();
-            options.IncludeTests = IncludeTests;
             options.Minimize = Minimize;
             options.Defines = GetDefines();
             options.References = GetReferences();

@@ -171,10 +171,7 @@ namespace ScriptSharp.Tasks {
         private bool Compile(IEnumerable<ITaskItem> sourceItems, IEnumerable<ITaskItem> resourceItems, string locale) {
             ITaskItem scriptTaskItem;
 
-            CompilerOptions options =
-                CreateOptions(sourceItems, resourceItems, locale,
-                              /* includeTests */ false, /* minimize */ false,
-                              out scriptTaskItem);
+            CompilerOptions options = CreateOptions(sourceItems, resourceItems, locale, false, out scriptTaskItem);
 
             string errorMessage = String.Empty;
             if (options.Validate(out errorMessage) == false) {
@@ -197,26 +194,8 @@ namespace ScriptSharp.Tasks {
                 return false;
             }
 
-            if (options.HasTestTypes) {
-                CompilerOptions testOptions =
-                    CreateOptions(sourceItems, resourceItems, locale,
-                                  /* includeTests */ true, /* minimize */ false,
-                                  out scriptTaskItem);
-                ScriptCompiler testCompiler = new ScriptCompiler(this);
-                testCompiler.Compile(testOptions);
-                if (_hasErrors == false) {
-                    OnScriptFileGenerated(scriptTaskItem, testOptions, /* copyReferences */ false);
-                }
-                else {
-                    return false;
-                }
-            }
-
             if (_minimize) {
-                CompilerOptions minimizeOptions =
-                    CreateOptions(sourceItems, resourceItems, locale,
-                    /* includeTests */ false, /* minimize */ true,
-                                    out scriptTaskItem);
+                CompilerOptions minimizeOptions = CreateOptions(sourceItems, resourceItems, locale, true, out scriptTaskItem);
                 ScriptCompiler minimizingCompiler = new ScriptCompiler(this);
                 minimizingCompiler.Compile(minimizeOptions);
                 if (_hasErrors == false) {
@@ -232,10 +211,9 @@ namespace ScriptSharp.Tasks {
         }
 
         private CompilerOptions CreateOptions(IEnumerable<ITaskItem> sourceItems, IEnumerable<ITaskItem> resourceItems,
-                                              string locale, bool includeTests, bool minimize,
+                                              string locale, bool minimize,
                                               out ITaskItem outputScriptItem) {
             CompilerOptions options = new CompilerOptions();
-            options.IncludeTests = includeTests;
             options.Minimize = minimize;
             options.Defines = GetDefines();
             options.References = GetReferences();
@@ -243,7 +221,7 @@ namespace ScriptSharp.Tasks {
             options.Resources = GetResources(resourceItems, locale);
             options.IncludeResolver = this;
 
-            string scriptFilePath = GetScriptFilePath(locale, minimize, includeTests);
+            string scriptFilePath = GetScriptFilePath(locale, minimize);
             outputScriptItem = new TaskItem(scriptFilePath);
             options.ScriptFile = new TaskItemOutputStreamSource(outputScriptItem);
 
@@ -391,13 +369,13 @@ namespace ScriptSharp.Tasks {
             return resources;
         }
 
-        private string GetScriptFilePath(string locale, bool minimize, bool includeTests) {
+        private string GetScriptFilePath(string locale, bool minimize) {
             string scriptName = ScriptName;
             if (String.IsNullOrEmpty(scriptName)) {
                 scriptName = Path.GetFileName(_assembly.ItemSpec);
             }
 
-            string extension = includeTests ? "test.js" : (minimize ? "min.js" : "js");
+            string extension = minimize ? "min.js" : "js";
             if (String.IsNullOrEmpty(locale) == false) {
                 extension = locale + "." + extension;
             }

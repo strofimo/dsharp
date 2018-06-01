@@ -39,11 +39,6 @@ namespace ScriptSharp.Compiler {
                         continue;
                     }
 
-                    if (type.IsTestType && !_options.IncludeTests) {
-                        // Ignore test types, if tests are not to be compiled
-                        continue;
-                    }
-
                     switch (type.Type) {
                         case SymbolType.Class:
                             BuildCode((ClassSymbol)type);

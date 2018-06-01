@@ -168,12 +168,6 @@ namespace ScriptSharp.ScriptModel {
             }
         }
 
-        public bool IsTestType {
-            get {
-                return _testType;
-            }
-        }
-
         public ICollection<MemberSymbol> Members {
             get {
                 return _members;

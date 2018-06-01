@@ -116,16 +116,17 @@ namespace ScriptSharp.Tests {
             }, "MultipleIncBaseline.txt");
         }
 
-        [TestMethod]
-        public void TestMinimization() {
-            RunTest((c) => {
-                c.AddReference("Script.Web.dll").
-                  AddReference("Lib.dll").
-                  AddSource("Code.cs");
-                c.Options.Minimize = true;
-                c.Options.InternalTestType = "minimizationMap";
-            });
-        }
+        //TODO: Replace test with a sample minimiser. Don't set the compilers internal test mode. Instead test that minimisation works correctly
+        //[TestMethod]
+        //public void TestMinimization() {
+        //    RunTest((c) => {
+        //        c.AddReference("Script.Web.dll").
+        //          AddReference("Lib.dll").
+        //          AddSource("Code.cs");
+        //        c.Options.Minimize = true;
+        //        c.Options.InternalTestType = "minimizationMap";
+        //    });
+        //}
 
         [TestMethod]
         public void TestResources() {
@@ -182,7 +183,6 @@ namespace ScriptSharp.Tests {
 
             RunTest((c) => {
                 c.AddSource("Code.cs");
-                c.Options.IncludeTests = true;
             }, "TestBaseline.txt");
         }
     }

@@ -34,10 +34,6 @@ namespace ScriptSharp {
         private ICollection<TypeSymbol> _appSymbols;
         private bool _hasErrors;
 
-#if DEBUG
-        private string _testOutput;
-#endif
-
         public ScriptCompiler()
             : this(null) {
         }
@@ -81,6 +77,7 @@ namespace ScriptSharp {
             }
         }
 
+        //TODO: Look at removing the internal testing type mechanism in favour of testing the compiler correctly.
         private void BuildMetadata() {
             if ((_options.Resources != null) && (_options.Resources.Count != 0)) {
                 ResourcesBuilder resourcesBuilder = new ResourcesBuilder(_symbols);
@@ -122,35 +119,6 @@ namespace ScriptSharp {
                 }
             }
 
-            // Capture whether there are any test types in the project
-            // when not compiling the test flavor script. This is used to determine
-            // if the test flavor script should be compiled in the build task.
-
-            if (_options.IncludeTests == false) {
-                foreach (TypeSymbol appType in _appSymbols) {
-                    if (appType.IsApplicationType && appType.IsTestType) {
-                        _options.HasTestTypes = true;
-                    }
-                }
-            }
-
-#if DEBUG
-            if (_options.InternalTestType == "metadata") {
-                StringWriter testWriter = new StringWriter();
-
-                testWriter.WriteLine("Metadata");
-                testWriter.WriteLine("================================================================");
-
-                SymbolSetDumper symbolDumper = new SymbolSetDumper(testWriter);
-                symbolDumper.DumpSymbols(_symbols);
-
-                testWriter.WriteLine();
-                testWriter.WriteLine();
-
-                _testOutput = testWriter.ToString();
-            }
-#endif // DEBUG
-
             ISymbolTransformer transformer = null;
             if (_options.Minimize) {
                 transformer = new SymbolObfuscator();
@@ -162,30 +130,6 @@ namespace ScriptSharp {
             if (transformer != null) {
                 SymbolSetTransformer symbolSetTransformer = new SymbolSetTransformer(transformer);
                 ICollection<Symbol> transformedSymbols = symbolSetTransformer.TransformSymbolSet(_symbols, /* useInheritanceOrder */ true);
-
-#if DEBUG
-                if (_options.InternalTestType == "minimizationMap") {
-                    StringWriter testWriter = new StringWriter();
-
-                    testWriter.WriteLine("Minimization Map");
-                    testWriter.WriteLine("================================================================");
-
-                    List<Symbol> sortedTransformedSymbols = new List<Symbol>(transformedSymbols);
-                    sortedTransformedSymbols.Sort(delegate(Symbol s1, Symbol s2) {
-                        return String.Compare(s1.Name, s2.Name);
-                    });
-
-                    foreach (Symbol transformedSymbol in sortedTransformedSymbols) {
-                        Debug.Assert(transformedSymbol is MemberSymbol);
-                        testWriter.WriteLine("    Member '" + transformedSymbol.Name + "' renamed to '" + transformedSymbol.GeneratedName + "'");
-                    }
-
-                    testWriter.WriteLine();
-                    testWriter.WriteLine();
-
-                    _testOutput = testWriter.ToString();
-                }
-#endif // DEBUG
             }
         }
 
@@ -239,18 +183,6 @@ namespace ScriptSharp {
                 }
 
                 outputWriter = new StreamWriter(outputStream, new UTF8Encoding(false));
-
-#if DEBUG
-                if (_options.InternalTestMode) {
-                    if (_testOutput != null) {
-                        outputWriter.Write(_testOutput);
-                        outputWriter.WriteLine("Script");
-                        outputWriter.WriteLine("================================================================");
-                        outputWriter.WriteLine();
-                        outputWriter.WriteLine();
-                    }
-                }
-#endif // DEBUG
 
                 string script = GenerateScriptWithTemplate();
                 outputWriter.Write(script);

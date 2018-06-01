@@ -29,12 +29,7 @@ namespace ScriptSharp.CodeModel {
             _hasErrors = false;
 
             string filePath = source.FullName;
-#if DEBUG
-            if (_options.InternalTestMode) {
-                // This ensures in file paths are just file names in test output.
-                filePath = Path.GetFileName(filePath);
-            }
-#endif // DEBUG
+
             char[] buffer = GetBuffer(source);
             if (buffer == null) {
                 _errorHandler.ReportError("Unable to read from file " + filePath, filePath);

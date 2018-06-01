@@ -35,7 +35,6 @@ namespace ScriptSharp.Tests.Core {
 
             _options = new CompilerOptions();
             _options.Minimize = false;
-            _options.InternalTestMode = true;
             _options.Defines = new string[] { };
         }
 

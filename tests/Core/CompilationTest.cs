@@ -34,7 +34,6 @@ namespace ScriptSharp.Tests.Core {
             if (avoidStandardReferences == false) {
                 compilation.AddReference("mscorlib.dll");
             }
-            compilation.Options.InternalTestMode = true;
 
             return compilation;
         }

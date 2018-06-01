@@ -1,1 +1,0 @@
-window.c = { "script": 'c' };

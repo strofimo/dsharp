@@ -154,7 +154,6 @@ Usage:
 
             CompilerOptions compilerOptions = new CompilerOptions
             {
-                IncludeTests = includeTests,
                 Defines = defines,
                 Minimize = minimize,
                 References = references,
@@ -162,13 +161,7 @@ Usage:
                 Resources = resources,
                 ScriptFile = scriptFile,
                 IncludeResolver = includeResolver,
-                InternalTestMode = commandLine.Options.Contains("test")
             };
-
-            if (compilerOptions.InternalTestMode)
-            {
-                compilerOptions.InternalTestType = (string) commandLine.Options["test"];
-            }
 
             return compilerOptions;
         }
