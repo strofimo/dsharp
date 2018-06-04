@@ -1,0 +1,265 @@
+"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+
+  // BasicTests.Suit
+
+  var Suit = {
+    heart: 0, 
+    spade: 1, 
+    club: 2, 
+    diamond: 3
+  };
+
+
+  // BasicTests.IInterface
+
+  function IInterface() { }
+
+
+  // BasicTests.RecordClass
+
+  function RecordClass(count) {
+    var $o = {};
+    return $o;
+  }
+
+
+  // BasicTests.BaseClass
+
+  function BaseClass(domElement, name, count) {
+    /// <summary>
+    /// Represents a base class.
+    /// </summary>
+    /// <param name="domElement" type="Object" domElement="true">
+    /// The parent element.
+    /// </param>
+    /// <param name="name" type="String">
+    /// The name.
+    /// </param>
+    /// <param name="count" type="Number" integer="true">
+    /// The count.
+    /// </param>
+    /// <field name="constantField" type="Number" integer="true" static="true">
+    /// A constant field.
+    /// </field>
+    /// <field name="staticField" type="String" static="true">
+    /// A static field.
+    /// </field>
+    /// <field name="instanceField" type="Number" integer="true">
+    /// An instance field.
+    /// </field>
+    /// <field name="_domElement" type="Object" domElement="true">
+    /// A private field.
+    /// </field>
+    /// <field name="__initialized" type="Function">
+    /// </field>
+    this.instanceField = 0;
+    this._domElement = domElement;
+  }
+  ss.createPropertyGet(BaseClass, 'TotalCount', function() {
+    /// <summary>
+    /// Gets the total count.
+    /// </summary>
+    /// <value type="Number" integer="true"></value>
+    return 0;
+  });
+  BaseClass.staticMethod = function(length) {
+    /// <summary>
+    /// A static method.
+    /// </summary>
+    /// <param name="length" type="Number" integer="true">
+    /// The length.
+    /// </param>
+  };
+  var BaseClass$ = {
+    $get_Name: function() {
+      /// <summary>
+      /// Gets or sets the name.
+      /// </summary>
+      /// <value type="String"></value>
+      return null;
+    },
+    $set_Name: function(value) {
+      /// <summary>
+      /// Gets or sets the name.
+      /// </summary>
+      /// <value type="String"></value>
+      return value;
+    },
+    $get_DOMElement: function() {
+      /// <summary>
+      /// Gets or sets the element.
+      /// </summary>
+      /// <value type="Object" domElement="true"></value>
+      return null;
+    },
+    $set_DOMElement: function(value) {
+      /// <summary>
+      /// Gets or sets the element.
+      /// </summary>
+      /// <value type="Object" domElement="true"></value>
+      return value;
+    },
+    $get_Count: function() {
+      /// <summary>
+      /// Gets the count.
+      /// </summary>
+      /// <value type="Number" integer="true"></value>
+      return 0;
+    },
+    $get_PrivateName: function() {
+      /// <summary>
+      /// Gets the private name.
+      /// </summary>
+      /// <value type="String"></value>
+      return null;
+    },
+    add_initialized: function(value) {
+      /// <summary>
+      /// Adds or removes a delegate for the Initialized event.
+      /// </summary>
+      /// <param name="value" type="Function" />
+      this.__initialized = ss.bindAdd(this.__initialized, value);
+    },
+    remove_initialized: function(value) {
+      /// <summary>
+      /// Adds or removes a delegate for the Initialized event.
+      /// </summary>
+      /// <param name="value" type="Function" />
+      this.__initialized = ss.bindSub(this.__initialized, value);
+    },
+    method1: function() {
+      /// <summary>
+      /// Empty method.
+      /// </summary>
+    },
+    method2: function() {
+      /// <summary>
+      /// Method with return value.
+      /// </summary>
+      /// <returns type="String"></returns>
+      return null;
+    },
+    method3: function(first, last) {
+      /// <summary>
+      /// Method with params.
+      /// </summary>
+      /// <param name="first" type="String">
+      /// The first name.
+      /// </param>
+      /// <param name="last" type="String">
+      /// The last name.
+      /// </param>
+    },
+    method4: function(count) {
+      /// <summary>
+      /// Method with both params and return value.
+      /// </summary>
+      /// <param name="count" type="Number" integer="true">
+      /// The count.
+      /// </param>
+      /// <returns type="Array" elementType="String"></returns>
+      return null;
+    },
+    onInitialized: function() {
+      /// <summary>
+      /// Raises the Initialized event.
+      /// </summary>
+      if (this.__initialized != null) {
+      }
+    },
+    _privateMethod: function(count) {
+      /// <summary>
+      /// Private method.
+      /// </summary>
+      /// <param name="count" type="Number" integer="true">
+      /// The count.
+      /// </param>
+    },
+    get_item: function(ids) {
+      /// <summary>
+      /// Gets item by identifiers.
+      /// </summary>
+      /// <param name="ids" type="Array" elementType="Number" elementInteger="true">
+      /// The identifiers.
+      /// </param>
+      /// <param name="value" type="String">
+      /// </param>
+      /// <returns type="String"></returns>
+      return null;
+    }
+  };
+
+
+  // BasicTests.InternalClass
+
+  function InternalClass() {
+    /// <summary>
+    /// An internal class.
+    /// </summary>
+  }
+  var InternalClass$ = {
+
+  };
+
+
+  // BasicTests.InternalClassWithNoComments
+
+  function InternalClassWithNoComments() {
+  }
+  var InternalClassWithNoComments$ = {
+
+  };
+
+
+  // BasicTests.GlobalMethodsClass
+
+  $global.run = function() {
+    /// <summary>
+    /// Runs.
+    /// </summary>
+  };
+
+
+  // BasicTests.DerivedClass
+
+  function DerivedClass() {
+    /// <summary>
+    /// Represents a derived class.
+    /// </summary>
+    BaseClass.call(this, null, null, 0);
+  }
+  var DerivedClass$ = {
+    method3: function(first, last) {
+      /// <summary>
+      /// Overriden method with params.
+      /// </summary>
+      /// <param name="first" type="String">
+      /// The first name.
+      /// </param>
+      /// <param name="last" type="String">
+      /// The last name.
+      /// </param>
+    }
+  };
+
+
+  var $exports = ss.module('test',
+    {
+      InternalClass: ss.defineClass(InternalClass, InternalClass$, [], null),
+      InternalClassWithNoComments: ss.defineClass(InternalClassWithNoComments, InternalClassWithNoComments$, [], null)
+    },
+    {
+      Suit: Suit,
+      IInterface: ss.defineInterface(IInterface),
+      RecordClass: RecordClass,
+      BaseClass: ss.defineClass(BaseClass, BaseClass$, [Element, String, Number], null),
+      DerivedClass: ss.defineClass(DerivedClass, DerivedClass$, [], BaseClass)
+    });
+
+  BaseClass.constantField = 3;
+
+  return $exports;
+});

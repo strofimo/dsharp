@@ -1,0 +1,40 @@
+"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+
+  // TypeTests.App
+
+  function App() {
+  }
+  var App$ = {
+    method: function() {
+      var i = 10;
+      var b = true;
+      var flag;
+      var num;
+      var num2;
+      var num3 = 100;
+      var xyz = false;
+      var ch;
+      var hasValue = ss.isValue(xyz) || ss.isValue(num3);
+      var num3_ = num3;
+      var f = (ss.isValue(flag)) ? flag : true;
+      xyz = true;
+      num2 = 10;
+      num = 1;
+      var boolVal = (flag || false);
+      var textVal = (ch || '');
+      var numVal = (num3 || 0);
+    }
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      App: ss.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

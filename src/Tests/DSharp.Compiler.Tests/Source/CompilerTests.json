@@ -1,0 +1,114 @@
+﻿[
+  {
+    "Category": "Basic",
+    "Tests": [
+      {
+        "Name": "Lists",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "Defines": [ "DEBUG" ]
+      },
+      {
+        "Name": "Guid",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "Defines": [ "DEBUG" ]
+      },
+      {
+        "Name": "Conditionals_Debug",
+        "SourceFolder": "Conditionals",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "DebugBaseline.txt",
+        "Defines": [ "DEBUG" ]
+      },
+      {
+        "Name": "Conditionals_Trace",
+        "SourceFolder": "Conditionals",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "TraceBaseline.txt",
+        "Defines": [ "TRACE" ]
+      },
+      {
+        "Name": "Dependencies_Baseline_1",
+        "SourceFolder": "Dependencies",
+        "SourceFiles": [ "Code1.cs" ],
+        "ComparisonFile": "Code1Baseline.txt",
+        "References": [ "Lib1.dll", "Lib2.dll", "Lib3.dll" ]
+      },
+      {
+        "Name": "Dependencies_Baseline_2",
+        "SourceFolder": "Dependencies",
+        "SourceFiles": [ "Code2.cs" ],
+        "ComparisonFile": "Code2Baseline.txt",
+        "References": [ "Lib1.dll", "Lib2.dll", "Lib3.dll" ]
+      },
+      {
+        "Name": "Dependencies_Baseline_3",
+        "SourceFolder": "Dependencies",
+        "SourceFiles": [ "Code3.cs" ],
+        "ComparisonFile": "Code3Baseline.txt",
+        "References": [ "Script.Web.dll", "Lib1.dll", "Lib2.dll", "Lib3.dll" ]
+      },
+      {
+        "Name": "Dependencies_Baseline_4",
+        "SourceFolder": "Dependencies",
+        "SourceFiles": [ "Code4.cs" ],
+        "ComparisonFile": "Code4Baseline.txt",
+        "References": [ "Script.Web.dll", "Lib1.dll", "Lib2.dll", "Lib3.dll" ]
+      },
+      {
+        "Name": "DocComments",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "References": [ "Script.Web.dll" ],
+        "DocumentCommentFile": "DocComments.xml"
+      },
+      {
+        "Name": "Flags",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "Defines": [ "ABC" ]
+      },
+      {
+        "Name": "Single_Includes",
+        "SourceFolder": "Includes",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "SingleIncBaseline.txt"
+      },
+      {
+        "Name": "Multiple_Includes",
+        "SourceFolder": "Includes",
+        "SourceFiles": [ "Code.cs" ],
+        "Defines": [ "MULTIPLE_INCLUDE" ],
+        "ComparisonFile": "MultipleIncBaseline.txt"
+      },
+      {
+        "Name": "Default_Loader",
+        "SourceFolder": "Simple",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "DefaultBaseline.txt"
+      },
+      {
+        "Name": "Simple_Loader",
+        "SourceFolder": "Simple",
+        "SourceFiles": [ "Code.cs" ],
+        "Defines": [ "SIMPLE_TEMPLATE" ],
+        "ComparisonFile": "SimpleBaseline.txt"
+      },
+      {
+        "Name": "AMD_Loader",
+        "SourceFolder": "Simple",
+        "SourceFiles": [ "Code.cs" ],
+        "Defines": [ "AMD_TEMPLATE" ],
+        "ComparisonFile": "AMDBaseline.txt"
+      },
+      {
+        "Name": "Resources",
+        "SourceFiles": [ "Code.cs", "Strings1.Designer.cs", "Strings2.Designer.cs" ],
+        "Resources": [ "Strings1.resx", "Strings1.fr.resx", "Strings1.fr-FR.resx", "Strings2.resx" ],
+        "Defines": [ "DEBUG" ],
+        "ComparisonFile": "Baseline.txt"
+      }
+    ]
+  }
+]
