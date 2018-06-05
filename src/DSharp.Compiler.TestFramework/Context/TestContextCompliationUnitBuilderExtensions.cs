@@ -12,7 +12,8 @@ namespace DSharp.Compiler.TestFramework.Context
                 .AddReferences(testContext.References.Select(file => file.FullName).ToArray())
                 .AddResources(testContext.Resources?.Select(file => file.FullName)?.ToArray())
                 .AddCommentFile(testContext.CommentFile?.FullName)
-                .AddStreamResolver(testContext.StreamSourceResolver);
+                .AddStreamResolver(testContext.StreamSourceResolver)
+                .WithCompilationOptions(testContext.CompilationOptions);
         }
     }
 }

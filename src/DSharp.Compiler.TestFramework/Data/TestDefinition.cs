@@ -17,5 +17,12 @@
         public string[] Defines { get; set; }
 
         public string DocumentCommentFile { get; set; }
+
+        public TestCompilationOptionsDefintion Options { get; set; }
+    }
+
+    public class TestCompilationOptionsDefintion
+    {
+        public bool Minimize { get; set; }
     }
 }

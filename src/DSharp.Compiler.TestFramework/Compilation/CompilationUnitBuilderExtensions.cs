@@ -71,5 +71,15 @@ namespace DSharp.Compiler.TestFramework
 
             return compilationUnitBuilder;
         }
+
+        public static ICompilationUnitBuilder WithCompilationOptions(this ICompilationUnitBuilder compilationUnitBuilder, TestContextCompliationOptions compliationOptions)
+        {
+            if(compliationOptions != null)
+            {
+                compilationUnitBuilder.Options.Minimize = compliationOptions.Minimize;
+            }
+
+            return compilationUnitBuilder;
+        }
     }
 }

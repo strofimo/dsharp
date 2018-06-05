@@ -7,5 +7,7 @@ namespace DSharp.Compiler.TestFramework.Data
         IEnumerable<TestCategoryDefinition> GetCategories();
 
         TestDefinition GetCategoryTest(string category, string testName);
+
+        void LoadDefinitions();
     }
 }

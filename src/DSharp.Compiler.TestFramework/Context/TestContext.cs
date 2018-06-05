@@ -18,5 +18,7 @@ namespace DSharp.Compiler.TestFramework
         public IStreamSourceResolver StreamSourceResolver { get; internal set; }
 
         public FileInfo[] Resources { get; internal set; }
+
+        public TestContextCompliationOptions CompilationOptions { get; internal set; }
     }
 }

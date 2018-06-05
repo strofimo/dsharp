@@ -13,8 +13,9 @@ namespace DSharp.Compiler.TestFramework.Data
 
         public TestDataProvider(string filePath)
         {
-            this.filePath = filePath;
-            LoadDefinitions();
+            this.filePath = Path.IsPathRooted(filePath)
+                ? filePath
+                : Path.GetFullPath(filePath);
         }
 
         public IEnumerable<TestCategoryDefinition> GetCategories()
@@ -30,7 +31,7 @@ namespace DSharp.Compiler.TestFramework.Data
                 .FirstOrDefault((test) => string.Equals(testName, test.Name, StringComparison.CurrentCultureIgnoreCase));
         }
 
-        private void LoadDefinitions()
+        public void LoadDefinitions()
         {
             FileInfo configurationFile = new FileInfo(filePath);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DSharp.Compiler.TestFramework.Data;
+using Mapster;
 
 namespace DSharp.Compiler.TestFramework
 {
@@ -15,6 +16,8 @@ namespace DSharp.Compiler.TestFramework
         {
             this.rootDirectory = rootDirectory;
             this.testDataProvider = testDataProvider;
+
+            testDataProvider.LoadDefinitions();
         }
 
         public ITestContext GetContext(string category, string testName)
@@ -46,7 +49,8 @@ namespace DSharp.Compiler.TestFramework
                 ExpectedOutput = comparisonFile,
                 CommentFile = commentFile,
                 StreamSourceResolver = new LocalTestContextStreamResolver(new DirectoryInfo(testFilesPath)),
-                Resources = resourceFiles.ToArray()
+                Resources = resourceFiles.ToArray(),
+                CompilationOptions = testData.Options.Adapt<TestContextCompliationOptions>()
             };
         }
 

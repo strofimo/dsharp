@@ -18,5 +18,7 @@ namespace DSharp.Compiler.TestFramework
         FileInfo CommentFile { get; }
 
         IStreamSourceResolver StreamSourceResolver { get; }
+
+        TestContextCompliationOptions CompilationOptions { get; }
     }
 }
