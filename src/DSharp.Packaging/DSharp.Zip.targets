@@ -7,15 +7,16 @@
   
   <Target Name="BuildPackages" AfterTargets="Build">
     <ItemGroup>
-      <NuGetProperties Include="buildPath=$(SourceDirectory)Core\Build\bin\$(Configuration)\net461;
-                                consolePath=$(SourceDirectory)Core\App\bin\$(Configuration)\net461;
+      <NuGetProperties Include="libPath=$(SourceDirectory)Output\$(Configuration);
+                                buildPath=$(SourceDirectory)DSharp.Build\bin\$(Configuration)\net461;
+                                consolePath=$(SourceDirectory)DSharp.Shell\bin\$(Configuration)\net461;
                                 version=$(PackageVersion);
                                 configuration=$(Configuration)" />
     </ItemGroup>
 
     <MakeDir Directories="$(OutputDirectory)Packages" />
     
-    <Exec Command="$(ProjectDir)..\..\tools\bin\nuget pack %(NuSpec.Identity) -OutputDirectory $(OutputDirectory)Packages -NoPackageAnalysis -Properties @(NuGetProperties)" />
+    <Exec Command="$(SolutionDir)Tools\bin\nuget pack %(NuSpec.Identity) -OutputDirectory $(OutputDirectory)Packages -NoPackageAnalysis -Properties @(NuGetProperties)" />
   </Target>
   
   <Target Name="CleanPackages" AfterTargets="Clean">

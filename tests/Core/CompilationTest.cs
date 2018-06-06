@@ -10,7 +10,7 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text;
 
-namespace ScriptSharp.Tests.Core {
+namespace DSharp.Tests.Core {
 
     public abstract class CompilationTest {
 

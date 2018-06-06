@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>DSharp.Shell</RootNamespace>
+    <AssemblyName>DSharp.Shell</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)DSharp.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\FileInputStreamSource.cs">
+      <Link>FileInputStreamSource.cs</Link>
+    </Compile>
+    <Compile Include="..\FileOutputStreamSource.cs">
+      <Link>FileOutputStreamSource.cs</Link>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.6.85" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\DSharp.Compiler\DSharp.Compiler.csproj" />
+  </ItemGroup>
+  
+  <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
+</Project>

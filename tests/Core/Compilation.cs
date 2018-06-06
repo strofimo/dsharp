@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ScriptSharp.Tests.Core {
+namespace DSharp.Tests.Core {
 
     public sealed class Compilation : IErrorHandler, IStreamSourceResolver {
 

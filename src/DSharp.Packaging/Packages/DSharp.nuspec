@@ -20,14 +20,14 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$buildPath$\ScriptSharp.dll" target="tools" />
-    <file src="$buildPath$\ScriptSharp.Build.dll" target="tools" />
-    <file src="$buildPath$\ScriptSharp.targets" target="tools" />
-    <file src="..\..\..\bin\$configuration$\mscorlib.dll" target="tools" />
-    <file src="..\..\..\bin\$configuration$\mscorlib.xml" target="tools" />
-    <file src="..\..\..\bin\$configuration$\ss.js" target="tools" />
-    <file src="..\..\..\bin\$configuration$\ss.min.js" target="tools" />
-    <file src="$consolePath$\ssc.exe" target="tools" />
+    <file src="$buildPath$\DSharp.Compiler.dll" target="tools" />
+    <file src="$buildPath$\DSharp.Build.dll" target="tools" />
+    <file src="$buildPath$\DSharp.targets" target="tools" />
+    <file src="$libPath$\mscorlib.dll" target="tools" />
+    <file src="$libPath$\mscorlib.xml" target="tools" />
+    <file src="$libPath$\ss.js" target="tools" />
+    <file src="$libPath$\ss.min.js" target="tools" />
+    <file src="$consolePath$\DSharp.Shell.exe" target="tools" />
     <file src="Core\Install.ps1" target="tools" />
     <file src="Core\Uninstall.ps1" target="tools" />
     <file src="Core\Reset.psm1" target="tools" />

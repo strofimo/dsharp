@@ -8,7 +8,7 @@
     <copyright>Copyright (c) 2018, Derivco Ipswich</copyright>
     <summary>Allows you to reference HTML DOM and related APIs to create browser-based DSharp applications.</summary>
     <description>
-      This package contains contains the Script.Web assembly that allows you to reference and program against DOM and related APIs when creating HTML5/browser-based applications with DSharp.
+      This package contains contains the DSharp.Web assembly that allows you to reference and program against DOM and related APIs when creating HTML5/browser-based applications with DSharp.
     </description>
     <tags>script javascript ajax html html5 dsharp</tags>
     <language>en-US</language>
@@ -18,7 +18,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\..\bin\$configuration$\Script.Web.dll" target="lib" />
-    <file src="..\..\..\bin\$configuration$\Script.Web.xml" target="lib" />
+    <file src="$libPath$\DSharp.Web.dll" target="lib" />
+    <file src="$libPath$\DSharp.Web.xml" target="lib" />
   </files>
 </package>

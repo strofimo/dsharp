@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>DSharp.Deployment</RootNamespace>
+    <AssemblyName>DSharp.Deployment</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)DSharp.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="ScriptSharpWeb.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Engine" Version="15.6.85" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.6.85" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build" />
+  </ItemGroup>
+  <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
+</Project>
