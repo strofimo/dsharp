@@ -9,3 +9,6 @@ Tests/*/Scripts
 TestResults/
 .vs/
 .idea/
+node_modules/
+dist/
+src/Output/**

@@ -70,7 +70,6 @@
     <Compile Include="Collections\Generic\ListCallback.cs" />
     <Compile Include="Collections\Generic\ListItemFilterCallback.cs" />
     <Compile Include="Collections\Generic\ListFilterCallback.cs" />
-    <Compile Include="Collections\Generic\ObservableCollection.cs" />
     <Compile Include="Collections\Generic\Stack.cs" />
     <Compile Include="Collections\Generic\Queue.cs" />
     <Compile Include="Collections\Generic\Dictionary.cs" />
@@ -82,16 +81,12 @@
     <Compile Include="Collections\Generic\IEnumerator.cs" />
     <Compile Include="Collections\ICollection.cs" />
     <Compile Include="Collections\IReadonlyCollection.cs" />
-    <Compile Include="Collections\ObservableCollection.cs" />
     <Compile Include="Callback.cs" />
     <Compile Include="ComponentModel\IApplication.cs" />
     <Compile Include="ComponentModel\IEventManager.cs" />
     <Compile Include="ComponentModel\DependencyAttribute.cs" />
     <Compile Include="ComponentModel\IInitializable.cs" />
     <Compile Include="ComponentModel\IContainer.cs" />
-    <Compile Include="ComponentModel\ObserverManager.cs" />
-    <Compile Include="ComponentModel\IObserver.cs" />
-    <Compile Include="ComponentModel\Observable.cs" />
     <Compile Include="Export.cs" />
     <Compile Include="Diagnostics\SyntaxValidationAttribute.cs" />
     <Compile Include="NotImplementedException.cs" />
