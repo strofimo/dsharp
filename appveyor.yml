@@ -5,11 +5,7 @@ pull_requests:
 
 branches:
   only:
-    - master
-    - develop
-    - feature\/\w.*
-  except:
-    - task\/\w.*
+    - feature/Build-Modernisation
 
 image: Visual Studio 2017
 
@@ -19,10 +15,8 @@ nuget:
 configuration: Release
 
 before_build:
-  - cmd: nuget restore src/ScriptSharp.sln
+  - cmd: nuget restore src/DSharp.sln
 
 build:
-  project: src/ScriptSharp.sln
+  project: src/DSharp.sln
   verbosity: detailed
-
-test: off
