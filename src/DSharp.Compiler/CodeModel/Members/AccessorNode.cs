@@ -3,47 +3,43 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Statements;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class AccessorNode : ParseNode {
-
-        private AtomicNameNode _name;
-        private BlockStatementNode _implementation;
-        private ParseNodeList _attributes;
-        private Modifiers _modifiers;
+namespace DSharp.Compiler.CodeModel.Members
+{
+    internal sealed class AccessorNode : ParseNode
+    {
+        private readonly AtomicNameNode name;
+        private ParseNodeList attributes;
 
         public AccessorNode(Token token,
                             ParseNodeList attributes,
                             AtomicNameNode name,
                             BlockStatementNode body,
                             Modifiers modifiers)
-            : base(ParseNodeType.AccessorDeclaration, token) {
-            _name = (AtomicNameNode)GetParentedNode(name);
-            _implementation = (BlockStatementNode)GetParentedNode(body);
-            _attributes = GetParentedNodeList(attributes);
-            _modifiers = modifiers;
+            : base(ParseNodeType.AccessorDeclaration, token)
+        {
+            this.name = (AtomicNameNode) GetParentedNode(name);
+            Implementation = (BlockStatementNode) GetParentedNode(body);
+            this.attributes = GetParentedNodeList(attributes);
+            Modifiers = modifiers;
         }
 
-        public BlockStatementNode Implementation {
-            get {
-                return _implementation;
-            }
-        }
+        public BlockStatementNode Implementation { get; }
 
-        public Modifiers Modifiers {
-            get {
-                return _modifiers;
-            }
-        }
+        public Modifiers Modifiers { get; }
 
-        public AccessorType Type {
-            get {
-                if (_name.Name.Equals("get")) {
+        public AccessorType Type
+        {
+            get
+            {
+                if (name.Name.Equals("get"))
+                {
                     return AccessorType.Get;
                 }
+
                 return AccessorType.Set;
             }
         }

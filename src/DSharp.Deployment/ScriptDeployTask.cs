@@ -11,7 +11,7 @@ using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace ScriptSharp.Tasks
+namespace DSharp.Deployment
 {
     public sealed class ScriptDeployTask : Task
     {
@@ -42,7 +42,7 @@ namespace ScriptSharp.Tasks
         {
             get
             {
-                if (String.IsNullOrEmpty(scriptsPath))
+                if (string.IsNullOrEmpty(scriptsPath))
                 {
                     return "Scripts";
                 }
@@ -132,7 +132,7 @@ namespace ScriptSharp.Tasks
                 }
 
                 string scriptsFile = GetScriptsFile(project, referencePath);
-                if (String.IsNullOrEmpty(scriptsFile))
+                if (string.IsNullOrEmpty(scriptsFile))
                 {
                     Log.LogError("Unable to find scripts list for project {0}.", referenceName);
                     return false;

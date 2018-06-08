@@ -3,43 +3,27 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class ArrayNewNode : ExpressionNode {
-
-        private ParseNode _typeReference;
-        private ParseNode _expressionList;
-        private ParseNode _initializerExpression;
-
+namespace DSharp.Compiler.CodeModel.Expressions
+{
+    internal sealed class ArrayNewNode : ExpressionNode
+    {
         public ArrayNewNode(Token token,
                             ParseNode typeReference,
                             ParseNode expressionList,
                             ParseNode initializerExpression)
-            : base(ParseNodeType.ArrayNew, token) {
-            _typeReference = GetParentedNode(typeReference);
-            _expressionList = GetParentedNode(expressionList);
-            _initializerExpression = GetParentedNode(initializerExpression);
+            : base(ParseNodeType.ArrayNew, token)
+        {
+            TypeReference = GetParentedNode(typeReference);
+            ExpressionList = GetParentedNode(expressionList);
+            InitializerExpression = GetParentedNode(initializerExpression);
         }
 
-        public ParseNode ExpressionList {
-            get {
-                return _expressionList;
-            }
-        }
+        public ParseNode ExpressionList { get; }
 
-        public ParseNode InitializerExpression {
-            get {
-                return _initializerExpression;
-            }
-        }
+        public ParseNode InitializerExpression { get; }
 
-        public ParseNode TypeReference {
-            get {
-                return _typeReference;
-            }
-        }
+        public ParseNode TypeReference { get; }
     }
 }

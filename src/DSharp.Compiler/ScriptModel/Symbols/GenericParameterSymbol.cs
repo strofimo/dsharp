@@ -3,35 +3,19 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class GenericParameterSymbol : TypeSymbol {
-
-        private int _index;
-        private bool _typeParameter;
-
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
+    internal sealed class GenericParameterSymbol : TypeSymbol
+    {
         public GenericParameterSymbol(int index, string name, bool typeParameter, NamespaceSymbol parent)
-            : base(SymbolType.GenericParameter, name, parent) {
-            _index = index;
-            _typeParameter = typeParameter;
+            : base(SymbolType.GenericParameter, name, parent)
+        {
+            Index = index;
+            IsTypeParameter = typeParameter;
         }
 
-        public int Index {
-            get {
-                return _index;
-            }
-        }
+        public int Index { get; }
 
-        public bool IsTypeParameter {
-            get {
-                return _typeParameter;
-            }
-        }
+        public bool IsTypeParameter { get; }
     }
 }

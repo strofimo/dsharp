@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ScriptSharp;
+using DSharp.Compiler.TestFramework.Compilation.Sources;
+using DSharp.Compiler.TestFramework.Context;
 
-namespace DSharp.Compiler.TestFramework
+namespace DSharp.Compiler.TestFramework.Compilation
 {
     public static class CompilationUnitBuilderExtensions
     {

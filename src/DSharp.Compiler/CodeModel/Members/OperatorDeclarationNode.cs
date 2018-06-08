@@ -3,15 +3,15 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Statements;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Members
+{
     // NOTE: Not supported in conversion
-    internal sealed class OperatorDeclarationNode : MethodDeclarationNode {
-
-        public TokenType operatorTokenType;
+    internal sealed class OperatorDeclarationNode : MethodDeclarationNode
+    {
+        public TokenType OperatorTokenType;
 
         public OperatorDeclarationNode(Token token,
                                        ParseNodeList attributes,
@@ -20,8 +20,10 @@ namespace ScriptSharp.CodeModel {
                                        ParseNode returnType,
                                        ParseNodeList formals,
                                        BlockStatementNode body)
-            : base(ParseNodeType.OperatorDeclaration, token, attributes, modifiers, returnType, /* name */ null, formals, body) {
-            this.operatorTokenType = operatorNodeType;
+            : base(ParseNodeType.OperatorDeclaration, token, attributes, modifiers, returnType, /* name */ null,
+                formals, body)
+        {
+            OperatorTokenType = operatorNodeType;
         }
     }
 }

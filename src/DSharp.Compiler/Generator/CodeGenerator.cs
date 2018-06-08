@@ -3,92 +3,113 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-using System.IO;
-using ScriptSharp;
-using ScriptSharp.Compiler;
-using ScriptSharp.ScriptModel;
+using DSharp.Compiler.ScriptModel.Statements;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.Generator {
-
-    internal static class CodeGenerator {
-
-        private static void GenerateImplementationScript(ScriptGenerator generator, MemberSymbol symbol, SymbolImplementation implementation) {
+namespace DSharp.Compiler.Generator
+{
+    internal static class CodeGenerator
+    {
+        private static void GenerateImplementationScript(ScriptGenerator generator, MemberSymbol symbol,
+                                                         SymbolImplementation implementation)
+        {
             generator.StartImplementation(implementation);
-            try {
+
+            try
+            {
                 bool generateThisCacheStatement = false;
 
-                if ((symbol.Visibility & MemberVisibility.Static) == 0) {
-                    CodeMemberSymbol codeMemberSymbol = symbol as CodeMemberSymbol;
-                    if ((codeMemberSymbol != null) && (codeMemberSymbol.AnonymousMethods != null)) {
-                        foreach (AnonymousMethodSymbol anonymousMethod in codeMemberSymbol.AnonymousMethods) {
-                            if ((anonymousMethod.Visibility & MemberVisibility.Static) == 0) {
+                if ((symbol.Visibility & MemberVisibility.Static) == 0)
+                {
+                    if (symbol is CodeMemberSymbol codeMemberSymbol && codeMemberSymbol.AnonymousMethods != null)
+                    {
+                        foreach (AnonymousMethodSymbol anonymousMethod in codeMemberSymbol.AnonymousMethods)
+                            if ((anonymousMethod.Visibility & MemberVisibility.Static) == 0)
+                            {
                                 generateThisCacheStatement = true;
+
                                 break;
                             }
-                        }
                     }
                 }
 
-                if (generateThisCacheStatement) {
+                if (generateThisCacheStatement)
+                {
                     ScriptTextWriter writer = generator.Writer;
 
                     writer.WriteLine("var $this = this;");
                     writer.WriteLine();
                 }
 
-                foreach (Statement statement in implementation.Statements) {
+                foreach (Statement statement in implementation.Statements)
                     StatementGenerator.GenerateStatement(generator, symbol, statement);
-                }
             }
-            finally {
+            finally
+            {
                 generator.EndImplementation();
             }
         }
 
-        public static void GenerateScript(ScriptGenerator generator, EventSymbol symbol, bool add) {
+        public static void GenerateScript(ScriptGenerator generator, EventSymbol symbol, bool add)
+        {
             SymbolImplementation accessorImpl;
-            if (add) {
+
+            if (add)
+            {
                 accessorImpl = symbol.AdderImplementation;
             }
-            else {
+            else
+            {
                 accessorImpl = symbol.RemoverImplementation;
             }
+
             GenerateImplementationScript(generator, symbol, accessorImpl);
         }
 
-        public static void GenerateScript(ScriptGenerator generator, FieldSymbol symbol) {
+        public static void GenerateScript(ScriptGenerator generator, FieldSymbol symbol)
+        {
             GenerateImplementationScript(generator, symbol, symbol.Implementation);
         }
 
-        public static void GenerateScript(ScriptGenerator generator, MethodSymbol symbol) {
+        public static void GenerateScript(ScriptGenerator generator, MethodSymbol symbol)
+        {
             GenerateImplementationScript(generator, symbol, symbol.Implementation);
         }
 
-        public static void GenerateScript(ScriptGenerator generator, AnonymousMethodSymbol symbol) {
+        public static void GenerateScript(ScriptGenerator generator, AnonymousMethodSymbol symbol)
+        {
             GenerateImplementationScript(generator, symbol, symbol.Implementation);
         }
 
-        public static void GenerateScript(ScriptGenerator generator, PropertySymbol symbol, bool getter) {
+        public static void GenerateScript(ScriptGenerator generator, PropertySymbol symbol, bool getter)
+        {
             SymbolImplementation accessorImpl;
-            if (getter) {
+
+            if (getter)
+            {
                 accessorImpl = symbol.GetterImplementation;
             }
-            else {
+            else
+            {
                 accessorImpl = symbol.SetterImplementation;
             }
+
             GenerateImplementationScript(generator, symbol, accessorImpl);
         }
 
-        public static void GenerateScript(ScriptGenerator generator, IndexerSymbol symbol, bool getter) {
+        public static void GenerateScript(ScriptGenerator generator, IndexerSymbol symbol, bool getter)
+        {
             SymbolImplementation accessorImpl;
-            if (getter) {
+
+            if (getter)
+            {
                 accessorImpl = symbol.GetterImplementation;
             }
-            else {
+            else
+            {
                 accessorImpl = symbol.SetterImplementation;
             }
+
             GenerateImplementationScript(generator, symbol, accessorImpl);
         }
     }

@@ -3,12 +3,10 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-
-namespace ScriptSharp.ScriptModel {
-
-    internal enum ExpressionType {
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal enum ExpressionType
+    {
         Literal = 0,
 
         Local = 1,
@@ -55,6 +53,6 @@ namespace ScriptSharp.ScriptModel {
 
         InlineScript = 22,
 
-        NewDelegate = 23,
+        NewDelegate = 23
     }
 }

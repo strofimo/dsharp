@@ -3,24 +3,18 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class ExpressionListNode : ParseNode {
-
-        private ParseNodeList _expressions;
-
+namespace DSharp.Compiler.CodeModel.Expressions
+{
+    internal sealed class ExpressionListNode : ParseNode
+    {
         public ExpressionListNode(Token token, ParseNodeList expressions)
-            : base(ParseNodeType.ExpressionList, token) {
-            _expressions = GetParentedNodeList(expressions);
+            : base(ParseNodeType.ExpressionList, token)
+        {
+            Expressions = GetParentedNodeList(expressions);
         }
 
-        public ParseNodeList Expressions {
-            get {
-                return _expressions;
-            }
-        }
+        public ParseNodeList Expressions { get; }
     }
 }

@@ -5,27 +5,27 @@
 
 using System;
 
-namespace ScriptSharp.Testing {
+namespace DSharp.Compiler.TestFramework.Web.WebServer {
 
     internal sealed class WebTestLogEventArgs : EventArgs {
 
-        private bool _succeeded;
-        private string _log;
+        private readonly bool succeeded;
+        private readonly string log;
 
         internal WebTestLogEventArgs(bool succeeded, string log) {
-            _succeeded = succeeded;
-            _log = log;
+            this.succeeded = succeeded;
+            this.log = log;
         }
 
         public string Log {
             get {
-                return _log;
+                return log;
             }
         }
 
         public bool Succeeded {
             get {
-                return _succeeded;
+                return succeeded;
             }
         }
     }

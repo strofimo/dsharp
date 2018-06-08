@@ -8,22 +8,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
-namespace ScriptSharp.Testing.WebServer {
+namespace DSharp.Compiler.TestFramework.Web.WebServer {
 
     internal sealed class WebTestHttpServer : HttpServer {
 
-        private Uri _baseUri;
-        private string[] _contentRoots;
+        private readonly Uri baseUri;
+        private readonly string[] contentRoots;
 
-        private Dictionary<string, Tuple<string, string>> _registeredContent;
+        private readonly Dictionary<string, Tuple<string, string>> registeredContent;
 
         public WebTestHttpServer(string[] contentRoots) {
-            _contentRoots = contentRoots;
-            _baseUri = new Uri("http://localhost/", UriKind.Absolute);
+            this.contentRoots = contentRoots;
+            baseUri = new Uri("http://localhost/", UriKind.Absolute);
 
             Initialize(HandleGetRequest, HandlePostRequest);
 
-            _registeredContent =
+            registeredContent =
                 new Dictionary<string, Tuple<string, string>>(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -32,17 +32,17 @@ namespace ScriptSharp.Testing.WebServer {
         private string GetContentType(string path) {
             string extension = Path.GetExtension(path).ToLowerInvariant();
 
-            if ((String.CompareOrdinal(extension, ".htm") == 0) ||
-                (String.CompareOrdinal(extension, ".html") == 0)) {
+            if ((string.CompareOrdinal(extension, ".htm") == 0) ||
+                (string.CompareOrdinal(extension, ".html") == 0)) {
                 return "text/html";
             }
-            else if (String.CompareOrdinal(extension, ".js") == 0) {
+            else if (string.CompareOrdinal(extension, ".js") == 0) {
                 return "text/javascript";
             }
-            else if (String.CompareOrdinal(extension, ".css") == 0) {
+            else if (string.CompareOrdinal(extension, ".css") == 0) {
                 return "text/css";
             }
-            else if (String.CompareOrdinal(extension, ".png") == 0) {
+            else if (string.CompareOrdinal(extension, ".png") == 0) {
                 return "image/png";
             }
 
@@ -51,7 +51,7 @@ namespace ScriptSharp.Testing.WebServer {
 
         private string GetResolvedPath(string urlPath, out string cleanedUrlPath) {
             Uri relativeUri = new Uri(urlPath, UriKind.Relative);
-            Uri resolvedUri = new Uri(_baseUri, relativeUri);
+            Uri resolvedUri = new Uri(baseUri, relativeUri);
 
             // Get the cleaned up path with the leading slash trimmed off
             cleanedUrlPath = resolvedUri.LocalPath;
@@ -59,16 +59,14 @@ namespace ScriptSharp.Testing.WebServer {
         }
 
         private void HandleGetRequest(HttpMessage message) {
-            string urlPath;
-            string path = GetResolvedPath(message.Path, out urlPath);
+            string path = GetResolvedPath(message.Path, out string urlPath);
 
-            Tuple<string, string> content;
-            if (_registeredContent.TryGetValue(urlPath, out content)) {
+            if (registeredContent.TryGetValue(urlPath, out Tuple<string, string> content)) {
                 message.WriteContent(content.Item1, content.Item2);
                 return;
             }
 
-            foreach (string contentRoot in _contentRoots) {
+            foreach (string contentRoot in contentRoots) {
                 string possiblePath = Path.Combine(contentRoot, path);
                 if (File.Exists(possiblePath)) {
                     message.WriteFile(possiblePath, GetContentType(possiblePath));
@@ -83,10 +81,10 @@ namespace ScriptSharp.Testing.WebServer {
             string path = message.Path;
 
             bool? success = null;
-            if (String.CompareOrdinal(path, "/log/success") == 0) {
+            if (string.CompareOrdinal(path, "/log/success") == 0) {
                 success = true;
             }
-            else if (String.CompareOrdinal(path, "/log/failure") == 0) {
+            else if (string.CompareOrdinal(path, "/log/failure") == 0) {
                 success = false;
             }
 
@@ -107,7 +105,7 @@ namespace ScriptSharp.Testing.WebServer {
 
         public void RegisterContent(string path, string data, string contentType) {
             Tuple<string, string> content = new Tuple<string, string>(data, contentType);
-            _registeredContent[path] = content;
+            registeredContent[path] = content;
         }
     }
 }

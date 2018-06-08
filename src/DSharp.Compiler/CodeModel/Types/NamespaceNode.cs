@@ -3,68 +3,58 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class NamespaceNode : ParseNode {
-
-        private string _name;
-        private ParseNodeList _externAliases;
-        private ParseNodeList _usingClauses;
-        private ParseNodeList _members;
+namespace DSharp.Compiler.CodeModel.Types
+{
+    internal sealed class NamespaceNode : ParseNode
+    {
+        private ParseNodeList externAliases;
 
         public NamespaceNode(Token token, NameNode nameNode,
                              ParseNodeList externAliases,
                              ParseNodeList usingClauses,
                              ParseNodeList members)
-            : base(ParseNodeType.Namespace, token) {
-            _name = nameNode.Name;
-            _externAliases = GetParentedNodeList(externAliases);
-            _usingClauses = GetParentedNodeList(usingClauses);
-            _members = GetParentedNodeList(members);
+            : base(ParseNodeType.Namespace, token)
+        {
+            Name = nameNode.Name;
+            this.externAliases = GetParentedNodeList(externAliases);
+            UsingClauses = GetParentedNodeList(usingClauses);
+            Members = GetParentedNodeList(members);
         }
 
         public NamespaceNode(Token token, string name,
                              ParseNodeList usingClauses,
                              ParseNodeList members)
-            : base(ParseNodeType.Namespace, token) {
-            _name = name;
-            _usingClauses = GetParentedNodeList(usingClauses);
-            _members = GetParentedNodeList(members);
+            : base(ParseNodeType.Namespace, token)
+        {
+            Name = name;
+            UsingClauses = GetParentedNodeList(usingClauses);
+            Members = GetParentedNodeList(members);
         }
 
-        public ParseNodeList Members {
-            get {
-                return _members;
-            }
-        }
+        public ParseNodeList Members { get; }
 
-        public string Name {
-            get {
-                return _name;
-            }
-        }
+        public string Name { get; }
 
-        public ParseNodeList UsingClauses {
-            get {
-                return _usingClauses;
-            }
-        }
+        public ParseNodeList UsingClauses { get; private set; }
 
-        internal void IncludeCompilationUnitUsingClauses() {
-            CompilationUnitNode compilationUnit = (CompilationUnitNode)parent;
-            if (compilationUnit.UsingClauses.Count != 0) {
+        internal void IncludeCompilationUnitUsingClauses()
+        {
+            CompilationUnitNode compilationUnit = (CompilationUnitNode) Parent;
+
+            if (compilationUnit.UsingClauses.Count != 0)
+            {
                 ParseNodeList mergedUsings = new ParseNodeList();
                 mergedUsings.Append(compilationUnit.UsingClauses);
 
-                if (_usingClauses.Count != 0) {
-                    mergedUsings.Append(_usingClauses);
+                if (UsingClauses.Count != 0)
+                {
+                    mergedUsings.Append(UsingClauses);
                 }
 
-                _usingClauses = GetParentedNodeList(mergedUsings);
+                UsingClauses = GetParentedNodeList(mergedUsings);
             }
         }
     }

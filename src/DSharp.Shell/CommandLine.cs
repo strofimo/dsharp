@@ -10,7 +10,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 
-namespace ScriptSharp
+namespace DSharp.Shell
 {
     internal sealed class CommandLine
     {

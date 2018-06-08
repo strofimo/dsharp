@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using DSharp.Compiler.TestFramework;
+using DSharp.Compiler.TestFramework.Compilation;
+using DSharp.Compiler.TestFramework.Context;
 using DSharp.Compiler.TestFramework.Data;
 
 namespace DSharp.Compiler.Tests.Fixtures

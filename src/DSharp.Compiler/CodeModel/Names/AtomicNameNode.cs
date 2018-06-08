@@ -3,35 +3,25 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal class AtomicNameNode : NameNode {
-
-        private IdentifierToken _identifier;
-
+namespace DSharp.Compiler.CodeModel.Names
+{
+    internal class AtomicNameNode : NameNode
+    {
         public AtomicNameNode(IdentifierToken identifier)
-            : this(ParseNodeType.Name, identifier) {
+            : this(ParseNodeType.Name, identifier)
+        {
         }
 
         protected AtomicNameNode(ParseNodeType nodeType, IdentifierToken identifier)
-            : base(nodeType, identifier) {
-            _identifier = identifier;
+            : base(nodeType, identifier)
+        {
+            Identifier = identifier;
         }
 
-        public IdentifierToken Identifier {
-            get {
-                return _identifier;
-            }
-        }
+        public IdentifierToken Identifier { get; }
 
-        protected sealed override ParseNodeList List {
-            get {
-                return new ParseNodeList(this);
-            }
-        }
+        protected sealed override ParseNodeList List => new ParseNodeList(this);
     }
 }

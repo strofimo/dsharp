@@ -3,25 +3,21 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal class UsingNamespaceNode : ParseNode {
-
-        private NameNode _namespaceNameNode;
+namespace DSharp.Compiler.CodeModel.Types
+{
+    internal class UsingNamespaceNode : ParseNode
+    {
+        private readonly NameNode namespaceNameNode;
 
         public UsingNamespaceNode(Token token, NameNode namespaceName)
-            : base(ParseNodeType.UsingNamespace, token) {
-            _namespaceNameNode = (NameNode)GetParentedNode(namespaceName);
+            : base(ParseNodeType.UsingNamespace, token)
+        {
+            namespaceNameNode = (NameNode) GetParentedNode(namespaceName);
         }
 
-        public string ReferencedNamespace {
-            get {
-                return _namespaceNameNode.Name;
-            }
-        }
+        public string ReferencedNamespace => namespaceNameNode.Name;
     }
 }

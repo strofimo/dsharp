@@ -3,39 +3,47 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Text;
 
-namespace ScriptSharp.Parser {
+namespace DSharp.Compiler.Parser
+{
+    internal sealed class PreprocessorLexer
+    {
+        private readonly PreprocessorKeywords keywords;
+        private readonly NameTable nameTable;
+        private readonly StringBuilder value;
 
-    internal sealed class PreprocessorLexer {
+        private TextBuffer text;
 
-        private TextBuffer _text;
-        private NameTable _nameTable;
-        private PreprocessorKeywords _keywords;
-        private StringBuilder _value;
-
-        public PreprocessorLexer(NameTable symbolTable) {
-            _value = new StringBuilder();
-            _nameTable = symbolTable;
-            _keywords = new PreprocessorKeywords(symbolTable);
+        public PreprocessorLexer(NameTable symbolTable)
+        {
+            value = new StringBuilder();
+            nameTable = symbolTable;
+            keywords = new PreprocessorKeywords(symbolTable);
         }
+
+        public bool Eof => PeekChar() == '\0';
 
         public event ErrorEventHandler OnError;
 
-        public PreprocessorToken NextToken(TextBuffer text) {
-            _text = text;
+        public PreprocessorToken NextToken(TextBuffer text)
+        {
+            this.text = text;
 
             SkipWhiteSpace();
             BufferPosition position = text.Position;
 
             char ch = PeekChar();
-            if (ch == '\0' || IsLineSeparator(ch)) {
-                return NewPPToken(PreprocessorTokenType.EndOfLine, position);
+
+            if (ch == '\0' || IsLineSeparator(ch))
+            {
+                return NewPpToken(PreprocessorTokenType.EndOfLine, position);
             }
 
             ch = NextChar();
-            switch (ch) {
+
+            switch (ch)
+            {
                 case '0':
                 case '1':
                 case '2':
@@ -45,174 +53,222 @@ namespace ScriptSharp.Parser {
                 case '6':
                 case '7':
                 case '8':
-                case '9': {
-                        int intValue = (ch - '0');
-                        while (IsDigit(PeekChar())) {
-                            int value10 = intValue * 10;
-                            if (value10 < intValue) {
-                                ReportError(LexError.NumericConstantOverflow);
-                            }
-                            else {
-                                intValue = value10 + (NextChar() - '0');
-                            }
-                        }
+                case '9':
+                {
+                    int intValue = ch - '0';
 
-                        return new PreprocessorIntToken(intValue, position);
+                    while (IsDigit(PeekChar()))
+                    {
+                        int value10 = intValue * 10;
+
+                        if (value10 < intValue)
+                        {
+                            ReportError(LexError.NumericConstantOverflow);
+                        }
+                        else
+                        {
+                            intValue = value10 + (NextChar() - '0');
+                        }
                     }
+
+                    return new PreprocessorIntToken(intValue, position);
+                }
 
                 case '=':
-                    if (PeekChar() == '=') {
+
+                    if (PeekChar() == '=')
+                    {
                         NextChar();
-                        return NewPPToken(PreprocessorTokenType.EqualEqual, position);
+
+                        return NewPpToken(PreprocessorTokenType.EqualEqual, position);
                     }
+
                     break;
 
                 case '!':
-                    if (PeekChar() == '=') {
+
+                    if (PeekChar() == '=')
+                    {
                         NextChar();
-                        return NewPPToken(PreprocessorTokenType.NotEqual, position);
+
+                        return NewPpToken(PreprocessorTokenType.NotEqual, position);
                     }
-                    else {
-                        return NewPPToken(PreprocessorTokenType.Not, position);
+                    else
+                    {
+                        return NewPpToken(PreprocessorTokenType.Not, position);
                     }
 
                 case '&':
-                    if (PeekChar() == '&') {
+
+                    if (PeekChar() == '&')
+                    {
                         NextChar();
-                        return NewPPToken(PreprocessorTokenType.And, position);
+
+                        return NewPpToken(PreprocessorTokenType.And, position);
                     }
+
                     break;
 
                 case '|':
-                    if (PeekChar() == '|') {
+
+                    if (PeekChar() == '|')
+                    {
                         NextChar();
-                        return NewPPToken(PreprocessorTokenType.Or, position);
+
+                        return NewPpToken(PreprocessorTokenType.Or, position);
                     }
+
                     break;
 
                 case '(':
-                    return NewPPToken(PreprocessorTokenType.OpenParen, position);
+
+                    return NewPpToken(PreprocessorTokenType.OpenParen, position);
 
                 case ')':
-                    return NewPPToken(PreprocessorTokenType.CloseParen, position);
+
+                    return NewPpToken(PreprocessorTokenType.CloseParen, position);
 
                 case '"':
-                    _value.Length = 0;
-                    while ((ch = PeekChar()) != '"') {
-                        if (EOF) {
+                    value.Length = 0;
+
+                    while ((ch = PeekChar()) != '"')
+                    {
+                        if (Eof)
+                        {
                             ReportError(LexError.UnexpectedEndOfFileString);
+
                             break;
                         }
-                        else if (IsLineSeparator(ch)) {
+
+                        if (IsLineSeparator(ch))
+                        {
                             ReportError(LexError.WhiteSpaceInConstant);
+
                             break;
                         }
-                        _value.Append(ch);
+
+                        value.Append(ch);
                         NextChar();
                     }
+
                     NextChar();
-                    return new PreprocessorStringToken(_value.ToString(), position);
+
+                    return new PreprocessorStringToken(value.ToString(), position);
 
                 case '/':
-                    if (PeekChar() == '/') {
+
+                    if (PeekChar() == '/')
+                    {
                         IgnoreRestOfLine();
-                        return NewPPToken(PreprocessorTokenType.EndOfLine, position);
+
+                        return NewPpToken(PreprocessorTokenType.EndOfLine, position);
                     }
+
                     break;
 
                 default:
-                    if (IsLineSeparator(ch)) {
-                        return NewPPToken(PreprocessorTokenType.EndOfLine, position);
+
+                    if (IsLineSeparator(ch))
+                    {
+                        return NewPpToken(PreprocessorTokenType.EndOfLine, position);
                     }
 
-                    if (!IsIdentifierChar(ch)) {
+                    if (!IsIdentifierChar(ch))
+                    {
                         break;
                     }
 
-                    _value.Length = 0;
-                    _value.Append(ch);
-                    while (IsIdentifierChar(PeekChar())) {
-                        _value.Append(NextChar());
+                    value.Length = 0;
+                    value.Append(ch);
+                    while (IsIdentifierChar(PeekChar())) value.Append(NextChar());
+                    Name id = nameTable.Add(value);
+                    PreprocessorTokenType type = keywords.IsKeyword(id);
+
+                    if (type != PreprocessorTokenType.Invalid)
+                    {
+                        return NewPpToken(type, position);
                     }
-                    Name id = _nameTable.Add(_value);
-                    PreprocessorTokenType type = _keywords.IsKeyword(id);
-                    if (type != PreprocessorTokenType.Invalid) {
-                        return NewPPToken(type, position);
-                    }
-                    else {
+                    else
+                    {
                         return new PreprocessorIdentifierToken(id, position);
                     }
             }
 
-            return NewPPToken(PreprocessorTokenType.Unknown, position);
+            return NewPpToken(PreprocessorTokenType.Unknown, position);
         }
 
-        public void SkipWhiteSpace() {
-            while (!EOF && IsWhiteSpace(PeekChar()) && !IsLineSeparator(PeekChar())) {
+        public void SkipWhiteSpace()
+        {
+            while (!Eof && IsWhiteSpace(PeekChar()) && !IsLineSeparator(PeekChar())) NextChar();
+        }
+
+        public string GetRestOfLine()
+        {
+            value.Length = 0;
+
+            while (!Eof && !IsLineSeparator(PeekChar())) value.Append(NextChar());
+
+            if (!Eof)
+            {
                 NextChar();
             }
+
+            return value.ToString();
         }
 
-        public string GetRestOfLine() {
-            _value.Length = 0;
-
-            while (!EOF && !IsLineSeparator(PeekChar())) {
-                _value.Append(NextChar());
-            }
-            if (!EOF) {
-                NextChar();
-            }
-
-            return _value.ToString();
-        }
-
-        public void IgnoreRestOfLine() {
-            while (!EOF && !IsLineSeparator(NextChar())) {
+        public void IgnoreRestOfLine()
+        {
+            while (!Eof && !IsLineSeparator(NextChar()))
+            {
             }
         }
 
-        private PreprocessorToken NewPPToken(PreprocessorTokenType type, BufferPosition position) {
+        private PreprocessorToken NewPpToken(PreprocessorTokenType type, BufferPosition position)
+        {
             return new PreprocessorToken(type, position);
         }
 
-        private void ReportError(Error error, params object[] args) {
-            if (OnError != null) {
-                OnError(this, new ErrorEventArgs(error, _text.Position, args));
+        private void ReportError(Error error, params object[] args)
+        {
+            if (OnError != null)
+            {
+                OnError(this, new ErrorEventArgs(error, text.Position, args));
             }
         }
 
-        public bool EOF {
-            get {
-                return PeekChar() == '\0';
-            }
-        }
-
-        private bool IsLineSeparator(char ch) {
+        private bool IsLineSeparator(char ch)
+        {
             return Lexer.IsLineSeparator(ch);
         }
 
-        private bool IsWhiteSpace(char ch) {
+        private bool IsWhiteSpace(char ch)
+        {
             return Lexer.IsWhiteSpace(ch);
         }
 
-        private bool IsDigit(char ch) {
+        private bool IsDigit(char ch)
+        {
             return Lexer.IsDigit(ch);
         }
 
-        private bool IsIdentifierChar(char ch) {
+        private bool IsIdentifierChar(char ch)
+        {
             return Lexer.IsIdentifierChar(ch);
         }
 
-        private char NextChar() {
-            return _text.NextChar();
+        private char NextChar()
+        {
+            return text.NextChar();
         }
 
-        private char PeekChar() {
-            return _text.PeekChar();
+        private char PeekChar()
+        {
+            return text.PeekChar();
         }
 
-        private char PeekChar(int index) {
-            return _text.PeekChar(index);
+        private char PeekChar(int index)
+        {
+            return text.PeekChar(index);
         }
     }
 }

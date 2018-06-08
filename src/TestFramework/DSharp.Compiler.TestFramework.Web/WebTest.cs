@@ -8,38 +8,38 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
-using ScriptSharp.Testing.WebServer;
+using DSharp.Compiler.TestFramework.Web.WebServer;
 
-namespace ScriptSharp.Testing {
+namespace DSharp.Compiler.TestFramework.Web {
 
     public sealed class WebTest {
 
-        private WebTestHttpServer _server;
-        private Uri _rootUri;
+        private WebTestHttpServer server;
+        private Uri rootUri;
 
         public Uri CreateContent(string virtualPath, string content, string contentType) {
-            if (_server == null) {
+            if (server == null) {
                 throw new InvalidOperationException("The server has not been started.");
             }
-            if (String.IsNullOrEmpty(virtualPath)) {
+            if (string.IsNullOrEmpty(virtualPath)) {
                 throw new ArgumentNullException("virtualPath");
             }
-            if (String.IsNullOrEmpty(content)) {
+            if (string.IsNullOrEmpty(content)) {
                 throw new ArgumentNullException("content");
             }
-            if (String.IsNullOrEmpty(contentType)) {
+            if (string.IsNullOrEmpty(contentType)) {
                 throw new ArgumentNullException("contentType");
             }
 
-            _server.RegisterContent(virtualPath, content, contentType);
+            server.RegisterContent(virtualPath, content, contentType);
             return GetTestUri(virtualPath);
         }
 
         public Uri GetTestUri(string virtualPath, params string[] testModules) {
-            if (_server == null) {
+            if (server == null) {
                 throw new InvalidOperationException("The server has not been started.");
             }
-            if (String.IsNullOrEmpty(virtualPath)) {
+            if (string.IsNullOrEmpty(virtualPath)) {
                 throw new ArgumentNullException("virtualPath");
             }
 
@@ -61,7 +61,7 @@ namespace ScriptSharp.Testing {
                 path = uriBuilder.ToString();
             }
 
-            return new Uri(_rootUri, path);
+            return new Uri(rootUri, path);
         }
 
         public WebTestResult RunTest(Uri testUri) {
@@ -73,7 +73,7 @@ namespace ScriptSharp.Testing {
         }
 
         public WebTestResult RunTest(Uri testUri, WebBrowser browser, TimeSpan timeout) {
-            if (_server == null) {
+            if (server == null) {
                 throw new InvalidOperationException("The server has not been started.");
             }
 
@@ -86,7 +86,7 @@ namespace ScriptSharp.Testing {
             if (browser == null) {
                 throw new ArgumentNullException("browser");
             }
-            if (String.IsNullOrEmpty(browser.ExecutablePath)) {
+            if (string.IsNullOrEmpty(browser.ExecutablePath)) {
                 throw new InvalidOperationException("The specified browser could not be located.");
             }
 
@@ -100,7 +100,7 @@ namespace ScriptSharp.Testing {
 
             EventHandler<WebTestLogEventArgs> logEventHandler = null;
             logEventHandler = delegate(object sender, WebTestLogEventArgs e) {
-                _server.Log -= logEventHandler;
+                server.Log -= logEventHandler;
 
                 result = new WebTestResult(e.Succeeded, e.Log);
                 waitHandle.Set();
@@ -113,12 +113,12 @@ namespace ScriptSharp.Testing {
                 psi.UseShellExecute = true;
                 psi.WindowStyle = ProcessWindowStyle.Minimized;
 
-                _server.Log += logEventHandler;
+                server.Log += logEventHandler;
                 browserProcess = Process.Start(psi);
             }
             catch (Exception) {
-                _server.Log -= logEventHandler;
-                return new WebTestResult(/* succeeded */ false, String.Empty);
+                server.Log -= logEventHandler;
+                return new WebTestResult(/* succeeded */ false, string.Empty);
             }
 
             bool signaled = waitHandle.WaitOne(timeout);
@@ -145,7 +145,7 @@ namespace ScriptSharp.Testing {
         }
 
         public bool StartWebServer(int port, params string[] webRoots) {
-            if (_server != null) {
+            if (server != null) {
                 throw new InvalidOperationException("The server has already been started.");
             }
             if (webRoots == null) {
@@ -163,7 +163,7 @@ namespace ScriptSharp.Testing {
                 WebTestHttpServer server = new WebTestHttpServer(webRoots);
                 server.Start(port);
 
-                _server = server;
+                this.server = server;
                 started = true;
             }
             catch (Exception e) {
@@ -176,7 +176,7 @@ namespace ScriptSharp.Testing {
                 uriBuilder.Host = "localhost";
                 uriBuilder.Port = port;
 
-                _rootUri = uriBuilder.Uri;
+                rootUri = uriBuilder.Uri;
             }
 
             return started;
@@ -185,14 +185,14 @@ namespace ScriptSharp.Testing {
         public bool StopWebServer() {
             bool stopped = false;
 
-            if (_server != null) {
+            if (server != null) {
                 try {
-                    _server.Stop();
+                    server.Stop();
                     stopped = true;
                 }
                 catch {
                 }
-                _server = null;
+                server = null;
             }
             return stopped;
         }

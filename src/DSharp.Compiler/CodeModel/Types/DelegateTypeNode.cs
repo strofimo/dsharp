@@ -3,17 +3,14 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Types
+{
     // NOTE: Ignored in conversion
-    internal sealed class DelegateTypeNode : UserTypeNode {
-
-        private ParseNode _returnType;
-        private ParseNodeList _parameters;
-
+    internal sealed class DelegateTypeNode : UserTypeNode
+    {
         public DelegateTypeNode(Token token,
                                 ParseNodeList attributes,
                                 Modifiers modifiers,
@@ -22,21 +19,15 @@ namespace ScriptSharp.CodeModel {
                                 ParseNodeList typeParameters,
                                 ParseNodeList parameters,
                                 ParseNodeList constraintClauses)
-            : base(ParseNodeType.Delegate, token, TokenType.Delegate, attributes, modifiers, name, typeParameters, constraintClauses) {
-            _returnType = GetParentedNode(returnType);
-            _parameters = GetParentedNodeList(parameters);
+            : base(ParseNodeType.Delegate, token, TokenType.Delegate, attributes, modifiers, name, typeParameters,
+                constraintClauses)
+        {
+            ReturnType = GetParentedNode(returnType);
+            Parameters = GetParentedNodeList(parameters);
         }
 
-        public ParseNodeList Parameters {
-            get {
-                return _parameters;
-            }
-        }
+        public ParseNodeList Parameters { get; }
 
-        public ParseNode ReturnType {
-            get {
-                return _returnType;
-            }
-        }
+        public ParseNode ReturnType { get; }
     }
 }

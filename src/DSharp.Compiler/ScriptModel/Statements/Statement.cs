@@ -3,29 +3,17 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-
-namespace ScriptSharp.ScriptModel {
-
-    internal abstract class Statement {
-
-        private StatementType _type;
-
-        protected Statement(StatementType type) {
-            _type = type;
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal abstract class Statement
+    {
+        protected Statement(StatementType type)
+        {
+            Type = type;
         }
 
-        public virtual bool RequiresThisContext {
-            get {
-                return false;
-            }
-        }
+        public virtual bool RequiresThisContext => false;
 
-        public StatementType Type {
-            get {
-                return _type;
-            }
-        }
+        public StatementType Type { get; }
     }
 }

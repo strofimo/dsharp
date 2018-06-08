@@ -3,40 +3,24 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class BinaryExpressionNode : ExpressionNode {
-
-        private TokenType _operatorType;
-        private ParseNode _leftChild;
-        private ParseNode _rightChild;
-
+namespace DSharp.Compiler.CodeModel.Expressions
+{
+    internal sealed class BinaryExpressionNode : ExpressionNode
+    {
         public BinaryExpressionNode(ParseNode leftChild, TokenType operatorType, ParseNode rightChild)
-            : base(ParseNodeType.BinaryExpression, leftChild.token) {
-            _leftChild = GetParentedNode(leftChild);
-            _operatorType = operatorType;
-            _rightChild = GetParentedNode(rightChild);
+            : base(ParseNodeType.BinaryExpression, leftChild.Token)
+        {
+            LeftChild = GetParentedNode(leftChild);
+            Operator = operatorType;
+            RightChild = GetParentedNode(rightChild);
         }
 
-        public ParseNode LeftChild {
-            get {
-                return _leftChild;
-            }
-        }
+        public ParseNode LeftChild { get; }
 
-        public TokenType Operator {
-            get {
-                return _operatorType;
-            }
-        }
+        public TokenType Operator { get; }
 
-        public ParseNode RightChild {
-            get {
-                return _rightChild;
-            }
-        }
+        public ParseNode RightChild { get; }
     }
 }

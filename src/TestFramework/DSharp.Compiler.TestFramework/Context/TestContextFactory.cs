@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using DSharp.Compiler.TestFramework.Data;
 using Mapster;
 
-namespace DSharp.Compiler.TestFramework
+namespace DSharp.Compiler.TestFramework.Context
 {
     public class TestContextFactory : ITestContextFactory
     {

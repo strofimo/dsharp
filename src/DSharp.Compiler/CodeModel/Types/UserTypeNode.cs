@@ -3,20 +3,19 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Attributes;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
+namespace DSharp.Compiler.CodeModel.Types
+{
+    internal abstract class UserTypeNode : TypeNode
+    {
+        private readonly ParseNodeList constraintClauses;
+        private readonly AtomicNameNode nameNode;
 
-    internal abstract class UserTypeNode : TypeNode {
-
-        private TokenType _type;
-        private ParseNodeList _attributes;
-        private Modifiers _modifiers;
-        private AtomicNameNode _nameNode;
-        private ParseNodeList _typeParameters;
-        private ParseNodeList _constraintClauses;
+        private readonly ParseNodeList typeParameters;
 
         public UserTypeNode(ParseNodeType type, Token token, TokenType tokenType,
                             ParseNodeList attributes,
@@ -24,62 +23,48 @@ namespace ScriptSharp.CodeModel {
                             AtomicNameNode name,
                             ParseNodeList typeParameters,
                             ParseNodeList constraintClauses)
-            : base(type, token) {
-            _type = tokenType;
-            _attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
-            _modifiers = modifiers;
-            _nameNode = name;
-            _typeParameters = GetParentedNodeList(typeParameters);
-            _constraintClauses = GetParentedNodeList(constraintClauses);
+            : base(type, token)
+        {
+            Type = tokenType;
+            Attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
+            Modifiers = modifiers;
+            nameNode = name;
+            this.typeParameters = GetParentedNodeList(typeParameters);
+            this.constraintClauses = GetParentedNodeList(constraintClauses);
         }
 
-        public ParseNodeList Attributes {
-            get {
-                return _attributes;
-            }
-        }
+        public ParseNodeList Attributes { get; }
 
-        public string Name {
-            get {
-                return _nameNode.Name;
-            }
-        }
+        public string Name => nameNode.Name;
 
-        public NameNode NameNode {
-            get {
-                return _nameNode;
-            }
-        }
+        public NameNode NameNode => nameNode;
 
-        public Modifiers Modifiers {
-            get {
-                return _modifiers;
-            }
-        }
+        public Modifiers Modifiers { get; private set; }
 
-        public TokenType Type {
-            get {
-                return _type;
-            }
-        }
+        public TokenType Type { get; }
 
-        internal virtual void MergePartialType(CustomTypeNode partialTypeNode) {
+        internal virtual void MergePartialType(CustomTypeNode partialTypeNode)
+        {
             Debug.Assert(Name == partialTypeNode.Name);
 
-            if (partialTypeNode._attributes.Count > 0) {
-                _attributes.Append(GetParentedNodeList(partialTypeNode._attributes));
+            if (partialTypeNode.Attributes.Count > 0)
+            {
+                Attributes.Append(GetParentedNodeList(partialTypeNode.Attributes));
             }
 
-            if ((partialTypeNode.Modifiers & Modifiers.PartialModifiers) != 0) {
-                _modifiers |= (partialTypeNode.Modifiers & Modifiers.PartialModifiers);
+            if ((partialTypeNode.Modifiers & Modifiers.PartialModifiers) != 0)
+            {
+                Modifiers |= partialTypeNode.Modifiers & Modifiers.PartialModifiers;
             }
 
-            if (partialTypeNode._typeParameters.Count > 0) {
-                _typeParameters.Append(GetParentedNodeList(partialTypeNode._typeParameters));
+            if (partialTypeNode.typeParameters.Count > 0)
+            {
+                typeParameters.Append(GetParentedNodeList(partialTypeNode.typeParameters));
             }
 
-            if (partialTypeNode._constraintClauses.Count > 0) {
-                _constraintClauses.Append(GetParentedNodeList(partialTypeNode._constraintClauses));
+            if (partialTypeNode.constraintClauses.Count > 0)
+            {
+                constraintClauses.Append(GetParentedNodeList(partialTypeNode.constraintClauses));
             }
         }
     }

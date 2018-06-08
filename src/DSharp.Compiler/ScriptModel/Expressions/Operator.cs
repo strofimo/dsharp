@@ -3,12 +3,10 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-
-namespace ScriptSharp.ScriptModel {
-
-    internal enum Operator {
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal enum Operator
+    {
         Plus = 0,
 
         PlusEquals = 1,

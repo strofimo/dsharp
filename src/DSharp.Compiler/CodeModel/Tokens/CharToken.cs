@@ -3,35 +3,25 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-using ScriptSharp.Parser;
+using DSharp.Compiler.Parser;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class CharToken : LiteralToken {
-
-        private char _value;
-
+namespace DSharp.Compiler.CodeModel.Tokens
+{
+    internal sealed class CharToken : LiteralToken
+    {
         internal CharToken(char value, string sourcePath, BufferPosition position)
-            : base(LiteralTokenType.Char, sourcePath, position) {
-            _value = value;
+            : base(LiteralTokenType.Char, sourcePath, position)
+        {
+            Value = value;
         }
 
-        public override object LiteralValue {
-            get {
-                return Value;
-            }
-        }
+        public override object LiteralValue => Value;
 
-        public char Value {
-            get {
-                return _value;
-            }
-        }
+        public char Value { get; }
 
-        public override string ToString() {
-            return "\'" + _value + "\'";
+        public override string ToString()
+        {
+            return "\'" + Value + "\'";
         }
     }
 }

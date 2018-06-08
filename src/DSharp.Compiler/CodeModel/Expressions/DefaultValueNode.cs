@@ -3,19 +3,17 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Expressions
+{
     // NOTE: Not supported in conversion
-    internal sealed class DefaultValueNode : ExpressionNode {
-
-        public ParseNode _expression;
+    internal sealed class DefaultValueNode : ExpressionNode
+    {
+        public ParseNode Expression;
 
         public DefaultValueNode(ParseNode expression)
-            : base(ParseNodeType.DefaultValueExpression, expression.token) {
-            _expression = expression;
+            : base(ParseNodeType.DefaultValueExpression, expression.Token)
+        {
+            Expression = expression;
         }
     }
 }

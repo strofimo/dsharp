@@ -3,15 +3,15 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class BreakNode : StatementNode {
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
+    internal sealed class BreakNode : StatementNode
+    {
         public BreakNode(Token token)
-            : base(ParseNodeType.Break, token) {
+            : base(ParseNodeType.Break, token)
+        {
         }
     }
 }

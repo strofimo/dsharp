@@ -3,60 +3,48 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class CompilationUnitNode : ParseNode {
-
-        private ParseNodeList _externAliases;
-        private ParseNodeList _usingClauses;
-        private ParseNodeList _members;
-        private ParseNodeList _attributes;
+namespace DSharp.Compiler.CodeModel.Types
+{
+    internal sealed class CompilationUnitNode : ParseNode
+    {
+        private ParseNodeList externAliases;
 
         public CompilationUnitNode(Token token,
                                    ParseNodeList externAliases,
                                    ParseNodeList usingClauses,
                                    ParseNodeList attributes,
                                    ParseNodeList members)
-            : base(ParseNodeType.CompilationUnit, token) {
-            _externAliases = GetParentedNodeList(externAliases);
-            _usingClauses = GetParentedNodeList(usingClauses);
-            _attributes = GetParentedNodeList(attributes);
-            _members = GetParentedNodeList(GetNamespaces(members));
+            : base(ParseNodeType.CompilationUnit, token)
+        {
+            this.externAliases = GetParentedNodeList(externAliases);
+            UsingClauses = GetParentedNodeList(usingClauses);
+            Attributes = GetParentedNodeList(attributes);
+            Members = GetParentedNodeList(GetNamespaces(members));
         }
 
-        public ParseNodeList Members {
-            get {
-                return _members;
-            }
-        }
+        public ParseNodeList Members { get; }
 
-        public ParseNodeList UsingClauses {
-            get {
-                return _usingClauses;
-            }
-        }
+        public ParseNodeList UsingClauses { get; }
 
-        public ParseNodeList Attributes {
-            get {
-                return _attributes;
-            }
-        }
+        public ParseNodeList Attributes { get; }
 
-        private ParseNodeList GetNamespaces(ParseNodeList members) {
+        private ParseNodeList GetNamespaces(ParseNodeList members)
+        {
             ParseNodeList namespaceList = new ParseNodeList();
 
-            foreach (ParseNode memberNode in members) {
-                NamespaceNode namespaceNode = memberNode as NamespaceNode;
-
-                if (namespaceNode == null) {
+            foreach (ParseNode memberNode in members)
+            {
+                if (!(memberNode is NamespaceNode namespaceNode))
+                {
                     // Top-level type nodes are turned into children of a namespace with
                     // an empty name.
 
-                    Token nsToken = new Token(TokenType.Namespace, memberNode.Token.SourcePath, memberNode.Token.Position);
-                    namespaceNode = new NamespaceNode(nsToken, String.Empty, _usingClauses, new ParseNodeList(memberNode));
+                    Token nsToken = new Token(TokenType.Namespace, memberNode.Token.SourcePath,
+                        memberNode.Token.Position);
+                    namespaceNode =
+                        new NamespaceNode(nsToken, string.Empty, UsingClauses, new ParseNodeList(memberNode));
                 }
 
                 namespaceList.Append(namespaceNode);

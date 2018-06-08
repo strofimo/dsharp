@@ -10,6 +10,7 @@
       <NuGetProperties Include="libPath=$(SourceDirectory)Output\$(Configuration);
                                 buildPath=$(SourceDirectory)DSharp.Build\bin\$(Configuration)\net461;
                                 consolePath=$(SourceDirectory)DSharp.Shell\bin\$(Configuration)\net461;
+                                scriptPath=$(SourceDirectory)DSharp.Script\dist;
                                 version=$(PackageVersion);
                                 configuration=$(Configuration)" />
     </ItemGroup>

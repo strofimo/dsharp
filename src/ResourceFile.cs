@@ -14,18 +14,18 @@ namespace DSharp
         {
             string extension = Path.GetExtension(fileName);
 
-            if (String.Compare(extension, ".resx", StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Compare(extension, ".resx", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 fileName = Path.GetFileNameWithoutExtension(fileName);
 
                 extension = Path.GetExtension(fileName);
-                if (String.IsNullOrEmpty(extension) == false)
+                if (string.IsNullOrEmpty(extension) == false)
                 {
                     return extension.Substring(1);
                 }
             }
 
-            return String.Empty;
+            return string.Empty;
         }
     }
 }

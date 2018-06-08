@@ -3,42 +3,28 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal class FieldExpression : Expression {
-
-        private FieldSymbol _field;
-        private Expression _objectReference;
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal class FieldExpression : Expression
+    {
         public FieldExpression(Expression objectReference, FieldSymbol field)
-            : this(ExpressionType.Field, objectReference, field) {
+            : this(ExpressionType.Field, objectReference, field)
+        {
         }
 
         protected FieldExpression(ExpressionType type, Expression objectReference, FieldSymbol field)
-            : base(type, field.AssociatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _field = field;
-            _objectReference = objectReference;
+            : base(type, field.AssociatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            Field = field;
+            ObjectReference = objectReference;
         }
 
-        public FieldSymbol Field {
-            get {
-                return _field;
-            }
-        }
+        public FieldSymbol Field { get; }
 
-        public Expression ObjectReference {
-            get {
-                return _objectReference;
-            }
-        }
+        public Expression ObjectReference { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                return _objectReference.RequiresThisContext;
-            }
-        }
+        public override bool RequiresThisContext => ObjectReference.RequiresThisContext;
     }
 }

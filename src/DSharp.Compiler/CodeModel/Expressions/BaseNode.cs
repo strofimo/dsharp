@@ -3,15 +3,15 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class BaseNode : ExpressionNode {
-
+namespace DSharp.Compiler.CodeModel.Expressions
+{
+    internal sealed class BaseNode : ExpressionNode
+    {
         public BaseNode(Token token)
-            : base(ParseNodeType.Base, token) {
+            : base(ParseNodeType.Base, token)
+        {
         }
     }
 }

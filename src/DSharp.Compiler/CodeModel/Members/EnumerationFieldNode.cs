@@ -4,28 +4,31 @@
 //
 
 using System;
-using System.Collections;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Attributes;
+using DSharp.Compiler.CodeModel.Expressions;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal class EnumerationFieldNode : MemberNode {
-
-        private ParseNodeList _attributes;
-        private AtomicNameNode _name;
-        private object _value;
+namespace DSharp.Compiler.CodeModel.Members
+{
+    internal class EnumerationFieldNode : MemberNode
+    {
+        private readonly AtomicNameNode name;
 
         public EnumerationFieldNode(ParseNodeList attributes, AtomicNameNode name,
                                     ParseNode value)
-            : base(ParseNodeType.EnumerationFieldDeclaration, name.token) {
-            _attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
-            _name = (AtomicNameNode)GetParentedNode(name);
+            : base(ParseNodeType.EnumerationFieldDeclaration, name.Token)
+        {
+            Attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
+            this.name = (AtomicNameNode) GetParentedNode(name);
 
-            if (value is LiteralNode) {
-                LiteralNode literalNode = (LiteralNode)value;
-                _value = ((LiteralToken)literalNode.Token).LiteralValue;
+            if (value is LiteralNode)
+            {
+                LiteralNode literalNode = (LiteralNode) value;
+                Value = ((LiteralToken) literalNode.Token).LiteralValue;
             }
-            else {
+            else
+            {
                 // TODO: Clearly we need something more general...
                 //       C# allows expressions. Likely expressions to be used
                 //       include negative values, binary OR'd values,
@@ -33,51 +36,32 @@ namespace ScriptSharp.CodeModel {
                 // For now, just adding support for negative numbers, as
                 // everything else can be worked around in source code.
 
-                UnaryExpressionNode expressionNode = value as UnaryExpressionNode;
-                if ((expressionNode != null) && (expressionNode.Operator == TokenType.Minus) &&
-                    (expressionNode.Child is LiteralNode)) {
-
-                    try {
+                if (value is UnaryExpressionNode expressionNode && expressionNode.Operator == TokenType.Minus &&
+                    expressionNode.Child is LiteralNode node)
+                {
+                    try
+                    {
                         LiteralToken literalToken =
-                            (LiteralToken)((LiteralNode)expressionNode.Child).Token;
-                        int numericValue = (int)Convert.ChangeType(literalToken.LiteralValue, typeof(int));
+                            (LiteralToken) node.Token;
+                        int numericValue = (int) Convert.ChangeType(literalToken.LiteralValue, typeof(int));
 
-                        _value = -numericValue;
+                        Value = -numericValue;
                     }
-                    catch {
+                    catch
+                    {
                     }
                 }
             }
         }
 
-        public override ParseNodeList Attributes {
-            get {
-                return _attributes;
-            }
-        }
+        public override ParseNodeList Attributes { get; }
 
-        public override Modifiers Modifiers {
-            get {
-                return Modifiers.Public;
-            }
-        }
+        public override Modifiers Modifiers => Modifiers.Public;
 
-        public override string Name {
-            get {
-                return _name.Name;
-            }
-        }
+        public override string Name => name.Name;
 
-        public override ParseNode Type {
-            get {
-                return null;
-            }
-        }
+        public override ParseNode Type => null;
 
-        public object Value {
-            get {
-                return _value;
-            }
-        }
+        public object Value { get; }
     }
 }

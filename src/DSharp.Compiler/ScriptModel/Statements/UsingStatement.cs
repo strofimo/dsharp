@@ -3,52 +3,44 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class UsingStatement : Statement {
-
-        private VariableDeclarationStatement _guard;
-        private Statement _body;
-
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal sealed class UsingStatement : Statement
+    {
         public UsingStatement()
-            : base(StatementType.Using) {
+            : base(StatementType.Using)
+        {
         }
 
-        public VariableDeclarationStatement Guard {
-            get {
-                return _guard;
-            }
-        }
+        public VariableDeclarationStatement Guard { get; private set; }
 
-        public Statement Body
+        public Statement Body { get; private set; }
+
+        public override bool RequiresThisContext
         {
             get
             {
-                return _body;
-            }
-        }
-
-        public override bool RequiresThisContext {
-            get {
-                if (_body.RequiresThisContext) {
+                if (Body.RequiresThisContext)
+                {
                     return true;
                 }
+
                 return false;
             }
         }
 
-        public void AddBody(Statement statement) {
-            Debug.Assert(_body == null);
-            _body = statement;
+        public void AddBody(Statement statement)
+        {
+            Debug.Assert(Body == null);
+            Body = statement;
         }
 
         public void AddGuard(VariableDeclarationStatement guardStatement)
         {
-            Debug.Assert(_guard == null);
-            _guard = guardStatement;
+            Debug.Assert(Guard == null);
+            Guard = guardStatement;
         }
     }
 }

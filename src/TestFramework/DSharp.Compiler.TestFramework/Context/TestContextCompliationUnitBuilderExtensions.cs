@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using DSharp.Compiler.TestFramework.Compilation;
 
 namespace DSharp.Compiler.TestFramework.Context
 {

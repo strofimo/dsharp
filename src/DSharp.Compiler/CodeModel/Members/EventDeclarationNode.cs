@@ -3,95 +3,91 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Attributes;
+using DSharp.Compiler.CodeModel.Expressions;
+using DSharp.Compiler.CodeModel.Statements;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class EventDeclarationNode : MemberNode {
-
-        private ParseNodeList _attributes;
-        private ParseNode _implementationMember;
+namespace DSharp.Compiler.CodeModel.Members
+{
+    internal sealed class EventDeclarationNode : MemberNode
+    {
+        private readonly ParseNode implementationMember;
 
         public EventDeclarationNode(Token token, ParseNodeList attributes, ParseNode backingMember)
-            : base(ParseNodeType.EventDeclaration, token) {
-            _attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
-            _implementationMember = GetParentedNode(backingMember);
+            : base(ParseNodeType.EventDeclaration, token)
+        {
+            Attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
+            implementationMember = GetParentedNode(backingMember);
         }
 
-        public override ParseNodeList Attributes {
-            get {
-                return _attributes;
-            }
-        }
+        public override ParseNodeList Attributes { get; }
 
-        public bool IsField {
-            get {
-                return (_implementationMember is VariableDeclarationNode);
-            }
-        }
+        public bool IsField => implementationMember is VariableDeclarationNode;
 
-        public FieldDeclarationNode Field {
-            get {
-                VariableDeclarationNode variableNode = _implementationMember as VariableDeclarationNode;
-                if (variableNode != null) {
-                    return new FieldDeclarationNode(variableNode.Token, new ParseNodeList(), variableNode.Modifiers, variableNode.Type, variableNode.Initializers, false);
+        public FieldDeclarationNode Field
+        {
+            get
+            {
+                if (implementationMember is VariableDeclarationNode variableNode)
+                {
+                    return new FieldDeclarationNode(variableNode.Token, new ParseNodeList(), variableNode.Modifiers,
+                        variableNode.Type, variableNode.Initializers, false);
                 }
+
                 return null;
             }
         }
 
-        public override Modifiers Modifiers {
-            get {
-                if (_implementationMember is VariableDeclarationNode) {
-                    VariableDeclarationNode variableNode = (VariableDeclarationNode)_implementationMember;
+        public override Modifiers Modifiers
+        {
+            get
+            {
+                if (implementationMember is VariableDeclarationNode variableNode)
+                {
                     return variableNode.Modifiers;
                 }
-                else {
-                    Debug.Assert(_implementationMember is PropertyDeclarationNode);
 
-                    return ((PropertyDeclarationNode)_implementationMember).Modifiers;
-                }
+                Debug.Assert(implementationMember is PropertyDeclarationNode);
+
+                return ((PropertyDeclarationNode) implementationMember).Modifiers;
             }
         }
 
-        public override string Name {
-            get {
-                if (_implementationMember is VariableDeclarationNode) {
-                    VariableDeclarationNode variableNode = (VariableDeclarationNode)_implementationMember;
-
+        public override string Name
+        {
+            get
+            {
+                if (implementationMember is VariableDeclarationNode variableNode)
+                {
                     Debug.Assert(variableNode.Initializers.Count == 1);
                     Debug.Assert(variableNode.Initializers[0] is VariableInitializerNode);
-                    VariableInitializerNode initializerNode = (VariableInitializerNode)variableNode.Initializers[0];
+                    VariableInitializerNode initializerNode = (VariableInitializerNode) variableNode.Initializers[0];
 
                     return initializerNode.Name.Name;
                 }
-                else {
-                    Debug.Assert(_implementationMember is PropertyDeclarationNode);
 
-                    return ((PropertyDeclarationNode)_implementationMember).Name;
-                }
+                Debug.Assert(implementationMember is PropertyDeclarationNode);
+
+                return ((PropertyDeclarationNode) implementationMember).Name;
             }
         }
 
-        public PropertyDeclarationNode Property {
-            get {
-                return _implementationMember as PropertyDeclarationNode;
-            }
-        }
+        public PropertyDeclarationNode Property => implementationMember as PropertyDeclarationNode;
 
-        public override ParseNode Type {
-            get {
-                if (_implementationMember is VariableDeclarationNode) {
-                    VariableDeclarationNode variableNode = (VariableDeclarationNode)_implementationMember;
+        public override ParseNode Type
+        {
+            get
+            {
+                if (implementationMember is VariableDeclarationNode variableNode)
+                {
                     return variableNode.Type;
                 }
-                else {
-                    Debug.Assert(_implementationMember is PropertyDeclarationNode);
 
-                    return ((PropertyDeclarationNode)_implementationMember).Type;
-                }
+                Debug.Assert(implementationMember is PropertyDeclarationNode);
+
+                return ((PropertyDeclarationNode) implementationMember).Type;
             }
         }
     }

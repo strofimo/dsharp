@@ -1,4 +1,4 @@
-﻿namespace DSharp.Compiler.TestFramework
+﻿namespace DSharp.Compiler.TestFramework.Compilation
 {
     public class TestCompilationUnitFactory : ICompilationUnitFactory
     {

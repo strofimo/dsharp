@@ -4,110 +4,133 @@
 //
 
 using System;
-using System.Diagnostics;
 using System.Reflection;
 
-namespace ScriptSharp.CodeModel {
+namespace DSharp.Compiler.CodeModel
+{
+    internal sealed class CodeModelProcessor
+    {
+        private readonly object context;
 
-    internal sealed class CodeModelProcessor {
+        private readonly IParseNodeHandler nodeHandler;
+        private readonly bool notifyChildren;
 
-        private IParseNodeHandler _nodeHandler;
-        private object _context;
-        private bool _notifyChildren;
-
-        public CodeModelProcessor(IParseNodeHandler nodeHandler, object context) {
-            _nodeHandler = nodeHandler;
-            _context = context;
-            _notifyChildren = nodeHandler.RequiresChildrenGrouping;
+        public CodeModelProcessor(IParseNodeHandler nodeHandler, object context)
+        {
+            this.nodeHandler = nodeHandler;
+            this.context = context;
+            notifyChildren = nodeHandler.RequiresChildrenGrouping;
         }
 
-        private void EndChildren() {
-            if (_notifyChildren) {
-                _nodeHandler.EndChildren();
+        private void EndChildren()
+        {
+            if (notifyChildren)
+            {
+                nodeHandler.EndChildren();
             }
         }
 
-        public void Process(ParseNode node) {
+        public void Process(ParseNode node)
+        {
             Visit(node);
         }
 
-        private bool ProcessNode(ParseNode node) {
-            return _nodeHandler.HandleNode(node, _context);
+        private bool ProcessNode(ParseNode node)
+        {
+            return nodeHandler.HandleNode(node, context);
         }
 
-        private void StartChildren(string identifier) {
-            if (_notifyChildren) {
-                _nodeHandler.StartChildren(identifier);
+        private void StartChildren(string identifier)
+        {
+            if (notifyChildren)
+            {
+                nodeHandler.StartChildren(identifier);
             }
         }
 
-        private void Visit(ParseNode node) {
-            bool recurse = ProcessNode(node);
+        private void Visit(ParseNode node)
+        {
+            if (!ProcessNode(node))
+            {
+                return;
+            }
 
-            if (recurse) {
-                StartChildren(String.Empty);
+            StartChildren(string.Empty);
 
-                Type nodeType = node.GetType();
-                foreach (PropertyInfo propertyInfo in nodeType.GetProperties()) {
-                    string propertyName = propertyInfo.Name;
-                    if (propertyName.Equals("NodeType")) {
-                        continue;
-                    }
-                    if (propertyName.Equals("Parent")) {
-                        continue;
-                    }
-                    if (propertyName.Equals("Token")) {
-                        continue;
-                    }
+            Type nodeType = node.GetType();
 
-                    Visit(node, propertyInfo);
+            foreach (PropertyInfo propertyInfo in nodeType.GetProperties())
+            {
+                string propertyName = propertyInfo.Name;
+
+                if (propertyName.Equals("NodeType"))
+                {
+                    continue;
                 }
 
-                EndChildren();
+                if (propertyName.Equals("Parent"))
+                {
+                    continue;
+                }
+
+                if (propertyName.Equals("Token"))
+                {
+                    continue;
+                }
+
+                Visit(node, propertyInfo);
             }
+
+            EndChildren();
         }
 
-        private void Visit(ParseNode node, PropertyInfo propertyInfo) {
+        private void Visit(ParseNode node, PropertyInfo propertyInfo)
+        {
             string name = propertyInfo.Name;
             object value = propertyInfo.GetValue(node, null);
 
             string text = name + " (" + propertyInfo.PropertyType.Name + ")";
 
-            if (value != null) {
-                if (value is ParseNodeList) {
-                    ParseNodeList nodeList = (ParseNodeList)value;
-
-                    if (nodeList.Count == 0) {
+            if (value != null)
+            {
+                if (value is ParseNodeList nodeList)
+                {
+                    if (nodeList.Count == 0)
+                    {
                         text += " : Empty";
                     }
-                    else {
-                        text += " : " + nodeList.Count.ToString();
+                    else
+                    {
+                        text += " : " + nodeList.Count;
                     }
 
                     StartChildren(text);
-                    foreach (ParseNode nodeItem in nodeList) {
-                        Visit(nodeItem);
-                    }
+                    foreach (ParseNode nodeItem in nodeList) Visit(nodeItem);
                     EndChildren();
                 }
-                else if (value is ParseNode) {
+                else if (value is ParseNode parseNode)
+                {
                     StartChildren(text);
-                    Visit((ParseNode)value);
+                    Visit(parseNode);
                     EndChildren();
                 }
-                else {
-                    if (value is string) {
-                        text += " : \"" + (string)value + "\"";
+                else
+                {
+                    if (value is string @string)
+                    {
+                        text += " : \"" + @string + "\"";
                     }
-                    else {
-                        text += " : " + value.ToString();
+                    else
+                    {
+                        text += " : " + value;
                     }
 
                     StartChildren(text);
                     EndChildren();
                 }
             }
-            else {
+            else
+            {
                 text += " : null";
                 StartChildren(text);
                 EndChildren();

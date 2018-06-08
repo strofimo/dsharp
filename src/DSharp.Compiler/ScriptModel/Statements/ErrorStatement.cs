@@ -3,32 +3,19 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class ErrorStatement : Statement {
-
-        private string _message;
-        private string _location;
-
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal sealed class ErrorStatement : Statement
+    {
         public ErrorStatement(string message, string location)
-            : base(StatementType.Error) {
-            _message = message;
-            _location = location;
+            : base(StatementType.Error)
+        {
+            Message = message;
+            Location = location;
         }
 
-        public string Location {
-            get {
-                return _location;
-            }
-        }
+        public string Location { get; }
 
-        public string Message {
-            get {
-                return _message;
-            }
-        }
+        public string Message { get; }
     }
 }

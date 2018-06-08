@@ -3,148 +3,178 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 
-namespace ScriptSharp.ScriptModel {
-    
-    internal class ClassSymbol : TypeSymbol {
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
+    internal class ClassSymbol : TypeSymbol
+    {
+        private ClassSymbol baseClass;
 
-        private ClassSymbol _baseClass;
-        private ICollection<InterfaceSymbol> _interfaces;
-        private int _inheritanceDepth;
-        private int _minimizationDepth;
-        private int _transformationCookie;
+        private ConstructorSymbol constructor;
 
-        private ConstructorSymbol _constructor;
-        private ConstructorSymbol _staticConstructor;
-        private IndexerSymbol _indexer;
+        private IndexerSymbol indexer;
+        private int inheritanceDepth;
+        private ICollection<InterfaceSymbol> interfaces;
+        private int minimizationDepth;
 
-        private string _extendee;
-        private bool _testClass;
-        private bool _moduleClass;
-        private bool _staticClass;
-
-        private ClassSymbol _primaryPartialClass;
+        private ClassSymbol primaryPartialClass;
+        private bool staticClass;
+        private ConstructorSymbol staticConstructor;
+        private bool testClass;
+        private int transformationCookie;
 
         public ClassSymbol(string name, NamespaceSymbol parent)
-            : this(SymbolType.Class, name, parent) {
+            : this(SymbolType.Class, name, parent)
+        {
         }
 
         protected ClassSymbol(SymbolType type, string name, NamespaceSymbol parent)
-            : base(type, name, parent) {
-            _inheritanceDepth = -1;
-            _minimizationDepth = -1;
-            _transformationCookie = -1;
+            : base(type, name, parent)
+        {
+            inheritanceDepth = -1;
+            minimizationDepth = -1;
+            transformationCookie = -1;
         }
 
-        public ClassSymbol BaseClass {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.BaseClass;
+        public ClassSymbol BaseClass
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.BaseClass;
                 }
-                return _baseClass;
+
+                return baseClass;
             }
         }
 
-        public ConstructorSymbol Constructor {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.Constructor;
+        public ConstructorSymbol Constructor
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.Constructor;
                 }
-                return _constructor;
+
+                return constructor;
             }
         }
 
-        public string Extendee {
-            get {
-                return _extendee;
-            }
-        }
+        public string Extendee { get; private set; }
 
-        public override string GeneratedName {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.GeneratedName;
+        public override string GeneratedName
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.GeneratedName;
                 }
+
                 return base.GeneratedName;
             }
         }
 
-        public IndexerSymbol Indexer {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.Indexer;
+        public IndexerSymbol Indexer
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.Indexer;
                 }
-                return _indexer;
+
+                return indexer;
             }
         }
 
-        public int InheritanceDepth {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.InheritanceDepth;
+        public int InheritanceDepth
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.InheritanceDepth;
                 }
-                if (_inheritanceDepth == -1) {
-                    if (_baseClass != null) {
-                        _inheritanceDepth = _baseClass.InheritanceDepth + 1;
+
+                if (inheritanceDepth == -1)
+                {
+                    if (baseClass != null)
+                    {
+                        inheritanceDepth = baseClass.InheritanceDepth + 1;
                     }
-                    else {
-                        _inheritanceDepth = 0;
+                    else
+                    {
+                        inheritanceDepth = 0;
                     }
                 }
-                return _inheritanceDepth;
+
+                return inheritanceDepth;
             }
         }
 
-        public ICollection<InterfaceSymbol> Interfaces {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.Interfaces;
-                }
-                return _interfaces;
-            }
-        }
-
-        public bool IsExtenderClass {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.IsExtenderClass;
+        public ICollection<InterfaceSymbol> Interfaces
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.Interfaces;
                 }
 
-                return (String.IsNullOrEmpty(_extendee) == false);
+                return interfaces;
             }
         }
 
-        public bool IsModuleClass {
-            get {
-                return _moduleClass;
-            }
-        }
-
-        public bool IsStaticClass {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.IsStaticClass;
+        public bool IsExtenderClass
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.IsExtenderClass;
                 }
-                return _staticClass;
+
+                return string.IsNullOrEmpty(Extendee) == false;
             }
         }
 
-        public bool IsTestClass {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.IsTestClass;
+        public bool IsModuleClass { get; private set; }
+
+        public bool IsStaticClass
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.IsStaticClass;
                 }
-                return _testClass;
+
+                return staticClass;
             }
         }
 
-        public int MinimizationDepth {
-            get {
+        public bool IsTestClass
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.IsTestClass;
+                }
+
+                return testClass;
+            }
+        }
+
+        public int MinimizationDepth
+        {
+            get
+            {
                 // This is like InheritanceDepth but not the same. It is specific for
                 // use by the minimization process.
                 //
@@ -156,51 +186,72 @@ namespace ScriptSharp.ScriptModel {
                 //   keep inheritance depth to 0 as much as possible, since this
                 //   reduces size of minimized identifiers).
 
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.MinimizationDepth;
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.MinimizationDepth;
                 }
-                if (_minimizationDepth == -1) {
-                    if (_baseClass != null) {
-                        if (IsApplicationType && _baseClass.IsApplicationType) {
-                            _minimizationDepth = _baseClass.MinimizationDepth;
+
+                if (minimizationDepth == -1)
+                {
+                    if (baseClass != null)
+                    {
+                        if (IsApplicationType && baseClass.IsApplicationType)
+                        {
+                            minimizationDepth = baseClass.MinimizationDepth;
                         }
-                        else {
-                            _minimizationDepth = _baseClass.MinimizationDepth + 1;
+                        else
+                        {
+                            minimizationDepth = baseClass.MinimizationDepth + 1;
                         }
                     }
-                    else {
-                        _minimizationDepth = 0;
+                    else
+                    {
+                        minimizationDepth = 0;
                     }
                 }
-                return _minimizationDepth;
+
+                return minimizationDepth;
             }
         }
 
-        public ClassSymbol PrimaryPartialClass {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass;
+        public ClassSymbol PrimaryPartialClass
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass;
                 }
+
                 return this;
             }
         }
 
-        public ConstructorSymbol StaticConstructor {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.StaticConstructor;
+        public ConstructorSymbol StaticConstructor
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.StaticConstructor;
                 }
-                return _staticConstructor;
+
+                return staticConstructor;
             }
         }
 
-        public int TransformationCookie {
-            get {
-                if (_primaryPartialClass != null) {
-                    return _primaryPartialClass.TransformationCookie;
+        public int TransformationCookie
+        {
+            get
+            {
+                if (primaryPartialClass != null)
+                {
+                    return primaryPartialClass.TransformationCookie;
                 }
-                if ((_transformationCookie == -1) &&
-                    (_baseClass != null)) {
+
+                if (transformationCookie == -1 &&
+                    baseClass != null)
+                {
                     // If this classes members did not get transformed,
                     // return the base classes transformation cookie.
                     //
@@ -210,63 +261,83 @@ namespace ScriptSharp.ScriptModel {
                     // to be. The fact that the transformation cookie is unset
                     // implies no members on this class needed to be transformed.
 
-                    return _baseClass.TransformationCookie;
+                    return baseClass.TransformationCookie;
                 }
-                return _transformationCookie;
+
+                return transformationCookie;
             }
-            set {
-                if (_primaryPartialClass != null) {
-                    _primaryPartialClass.TransformationCookie = value;
+            set
+            {
+                if (primaryPartialClass != null)
+                {
+                    primaryPartialClass.TransformationCookie = value;
                 }
-                _transformationCookie = value;
+
+                transformationCookie = value;
             }
         }
 
-        public override void AddMember(MemberSymbol memberSymbol) {
-            if (_primaryPartialClass != null) {
-                _primaryPartialClass.AddMember(memberSymbol);
+        public override void AddMember(MemberSymbol memberSymbol)
+        {
+            if (primaryPartialClass != null)
+            {
+                primaryPartialClass.AddMember(memberSymbol);
+
                 return;
             }
 
             Debug.Assert(memberSymbol != null);
 
-            if (memberSymbol.Type == SymbolType.Constructor) {
-                if ((memberSymbol.Visibility & MemberVisibility.Static) == 0) {
-                    Debug.Assert(_constructor == null);
-                    _constructor = (ConstructorSymbol)memberSymbol;
+            if (memberSymbol.Type == SymbolType.Constructor)
+            {
+                if ((memberSymbol.Visibility & MemberVisibility.Static) == 0)
+                {
+                    Debug.Assert(constructor == null);
+                    constructor = (ConstructorSymbol) memberSymbol;
                 }
-                else {
-                    Debug.Assert(_staticConstructor == null);
-                    _staticConstructor = (ConstructorSymbol)memberSymbol;
+                else
+                {
+                    Debug.Assert(staticConstructor == null);
+                    staticConstructor = (ConstructorSymbol) memberSymbol;
                 }
             }
-            else if (memberSymbol.Type == SymbolType.Indexer) {
-                Debug.Assert((IsApplicationType == false) || (_indexer == null));
-                _indexer = (IndexerSymbol)memberSymbol;
+            else if (memberSymbol.Type == SymbolType.Indexer)
+            {
+                Debug.Assert(IsApplicationType == false || indexer == null);
+                indexer = (IndexerSymbol) memberSymbol;
             }
-            else {
+            else
+            {
                 base.AddMember(memberSymbol);
             }
         }
 
-        public override TypeSymbol GetBaseType() {
-            if (_primaryPartialClass != null) {
-                return _primaryPartialClass.GetBaseType();
+        public override TypeSymbol GetBaseType()
+        {
+            if (primaryPartialClass != null)
+            {
+                return primaryPartialClass.GetBaseType();
             }
-            return _baseClass;
+
+            return baseClass;
         }
 
-        public IndexerSymbol GetIndexer() {
-            if (_primaryPartialClass != null) {
-                return _primaryPartialClass.GetIndexer();
+        public IndexerSymbol GetIndexer()
+        {
+            if (primaryPartialClass != null)
+            {
+                return primaryPartialClass.GetIndexer();
             }
 
             ClassSymbol classSymbol = this;
             IndexerSymbol indexer = classSymbol.Indexer;
 
-            while (indexer == null) {
-                classSymbol = (ClassSymbol)classSymbol.GetBaseType();
-                if (classSymbol == null) {
+            while (indexer == null)
+            {
+                classSymbol = (ClassSymbol) classSymbol.GetBaseType();
+
+                if (classSymbol == null)
+                {
                     break;
                 }
 
@@ -276,60 +347,75 @@ namespace ScriptSharp.ScriptModel {
             return indexer;
         }
 
-        public override MemberSymbol GetMember(string name) {
-            if (_primaryPartialClass != null) {
-                return _primaryPartialClass.GetMember(name);
+        public override MemberSymbol GetMember(string name)
+        {
+            if (primaryPartialClass != null)
+            {
+                return primaryPartialClass.GetMember(name);
             }
+
             return base.GetMember(name);
         }
 
-        public void SetExtenderClass(string extendee) {
-            Debug.Assert(String.IsNullOrEmpty(extendee) == false);
+        public void SetExtenderClass(string extendee)
+        {
+            Debug.Assert(string.IsNullOrEmpty(extendee) == false);
 
-            if (_primaryPartialClass != null) {
-                _primaryPartialClass.SetExtenderClass(extendee);
+            if (primaryPartialClass != null)
+            {
+                primaryPartialClass.SetExtenderClass(extendee);
+
                 return;
             }
 
-            _extendee = extendee;
+            Extendee = extendee;
         }
 
-        public void SetInheritance(ClassSymbol baseClass, ICollection<InterfaceSymbol> interfaces) {
+        public void SetInheritance(ClassSymbol baseClass, ICollection<InterfaceSymbol> interfaces)
+        {
             // Inheritance should only be assigned to a primary partial class.
-            Debug.Assert(_primaryPartialClass == null);
+            Debug.Assert(primaryPartialClass == null);
 
-            _baseClass = baseClass;
-            _interfaces = interfaces;
+            this.baseClass = baseClass;
+            this.interfaces = interfaces;
         }
 
-        public void SetModuleClass() {
-            _moduleClass = true;
+        public void SetModuleClass()
+        {
+            IsModuleClass = true;
         }
 
-        public void SetPrimaryPartialClass(ClassSymbol primaryPartialClass) {
-            Debug.Assert(_primaryPartialClass == null);
+        public void SetPrimaryPartialClass(ClassSymbol primaryPartialClass)
+        {
+            Debug.Assert(this.primaryPartialClass == null);
             Debug.Assert(primaryPartialClass != null);
 
-            _primaryPartialClass = primaryPartialClass;
+            this.primaryPartialClass = primaryPartialClass;
         }
 
-        public void SetStaticClass() {
-            if (_primaryPartialClass != null) {
-                _primaryPartialClass.SetStaticClass();
+        public void SetStaticClass()
+        {
+            if (primaryPartialClass != null)
+            {
+                primaryPartialClass.SetStaticClass();
+
                 return;
             }
 
-            _staticClass = true;
+            staticClass = true;
         }
 
-        public void SetTestClass() {
-            if (_primaryPartialClass != null) {
-                _primaryPartialClass.SetTestClass();
+        public void SetTestClass()
+        {
+            if (primaryPartialClass != null)
+            {
+                primaryPartialClass.SetTestClass();
+
                 return;
             }
 
-            Debug.Assert(_testClass == false);
-            _testClass = true;
+            Debug.Assert(testClass == false);
+            testClass = true;
         }
     }
 }

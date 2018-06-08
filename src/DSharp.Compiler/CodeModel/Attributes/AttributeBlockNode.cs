@@ -3,28 +3,19 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class AttributeBlockNode : ParseNode {
-
-        private AttributeTargets _location;
-        private ParseNodeList _attributes;
-
+namespace DSharp.Compiler.CodeModel.Attributes
+{
+    internal sealed class AttributeBlockNode : ParseNode
+    {
         public AttributeBlockNode(Token token,
-                                  AttributeTargets location,
                                   ParseNodeList attributes)
-            : base(ParseNodeType.AttributeBlock, token) {
-            _location = location;
-            _attributes = GetParentedNodeList(attributes);
+            : base(ParseNodeType.AttributeBlock, token)
+        {
+            Attributes = GetParentedNodeList(attributes);
         }
 
-        public ParseNodeList Attributes {
-            get {
-                return _attributes;
-            }
-        }
+        public ParseNodeList Attributes { get; }
     }
 }

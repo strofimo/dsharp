@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using DSharp.Compiler;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using ScriptSharp;
 using ScriptCruncher = Microsoft.Ajax.Utilities.Minifier;
 using ScriptCruncherSettings = Microsoft.Ajax.Utilities.CodeSettings;
 
-namespace DSharp.Tasks
+namespace DSharp.Build.Tasks
 {
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace DSharp.Tasks
             {
                 if (copyReferencesPath == null)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
                 return copyReferencesPath;
             }
@@ -61,7 +61,7 @@ namespace DSharp.Tasks
             {
                 if (defines == null)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
                 return defines;
             }
@@ -80,7 +80,7 @@ namespace DSharp.Tasks
             {
                 if (outputPath == null)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
                 return outputPath;
             }
@@ -118,12 +118,9 @@ namespace DSharp.Tasks
 
         private bool Compile(IEnumerable<ITaskItem> sourceItems, IEnumerable<ITaskItem> resourceItems, string locale)
         {
-            ITaskItem scriptTaskItem;
+            CompilerOptions options = CreateOptions(sourceItems, resourceItems, locale, false, out ITaskItem scriptTaskItem);
 
-            CompilerOptions options = CreateOptions(sourceItems, resourceItems, locale, false, out scriptTaskItem);
-
-            string errorMessage = String.Empty;
-            if (options.Validate(out errorMessage) == false)
+            if (options.Validate(out string errorMessage) == false)
             {
                 Log.LogError(errorMessage);
                 return false;
@@ -134,7 +131,7 @@ namespace DSharp.Tasks
             if (hasErrors == false)
             {
                 // Only copy references once (when building language neutral scripts)
-                bool copyReferences = String.IsNullOrEmpty(locale) && CopyReferences;
+                bool copyReferences = string.IsNullOrEmpty(locale) && CopyReferences;
 
                 OnScriptFileGenerated(scriptTaskItem, options, copyReferences);
                 if (hasErrors)
@@ -208,7 +205,7 @@ namespace DSharp.Tasks
             // succeeds, compile any localized variants that are supposed
             // to be generated.
 
-            if (Compile(sources, resources, /* locale */ String.Empty))
+            if (Compile(sources, resources, /* locale */ string.Empty))
             {
                 ICollection<string> locales = GetLocales(resources);
 
@@ -337,11 +334,11 @@ namespace DSharp.Tasks
             {
                 string itemLocale = ResourceFile.GetLocale(resource.ItemSpec);
 
-                if (String.IsNullOrEmpty(locale) && String.IsNullOrEmpty(itemLocale))
+                if (string.IsNullOrEmpty(locale) && string.IsNullOrEmpty(itemLocale))
                 {
                     resources.Add(new TaskItemInputStreamSource(resource));
                 }
-                else if ((String.Compare(locale, itemLocale, StringComparison.OrdinalIgnoreCase) == 0) ||
+                else if ((string.Compare(locale, itemLocale, StringComparison.OrdinalIgnoreCase) == 0) ||
                          locale.StartsWith(itemLocale, StringComparison.OrdinalIgnoreCase))
                 {
                     // Either the item locale matches, or the item locale is a prefix
@@ -357,13 +354,13 @@ namespace DSharp.Tasks
         private string GetScriptFilePath(string locale, bool minimize)
         {
             string scriptName = ScriptName;
-            if (String.IsNullOrEmpty(scriptName))
+            if (string.IsNullOrEmpty(scriptName))
             {
                 scriptName = Path.GetFileName(Assembly.ItemSpec);
             }
 
             string extension = minimize ? "min.js" : "js";
-            if (String.IsNullOrEmpty(locale) == false)
+            if (string.IsNullOrEmpty(locale) == false)
             {
                 extension = locale + "." + extension;
             }
@@ -504,7 +501,7 @@ namespace DSharp.Tasks
             int line = 0;
             int column = 0;
 
-            if (String.IsNullOrEmpty(location) == false)
+            if (string.IsNullOrEmpty(location) == false)
             {
                 if (location.EndsWith(")", StringComparison.Ordinal))
                 {
@@ -515,14 +512,14 @@ namespace DSharp.Tasks
                     string[] positionParts = position.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
                     Debug.Assert(positionParts.Length == 2);
 
-                    Int32.TryParse(positionParts[0], out line);
-                    Int32.TryParse(positionParts[1], out column);
+                    int.TryParse(positionParts[0], out line);
+                    int.TryParse(positionParts[1], out column);
 
                     location = location.Substring(0, index);
                 }
             }
 
-            Log.LogError(String.Empty, String.Empty, String.Empty, location, line, column, 0, 0, errorMessage);
+            Log.LogError(string.Empty, string.Empty, string.Empty, location, line, column, 0, 0, errorMessage);
         }
         #endregion
 

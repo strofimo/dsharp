@@ -1,10 +1,14 @@
-using System;
 using System.Collections.Generic;
 
-namespace ScriptSharp
+namespace DSharp.Compiler
 {
     public sealed class CompilerOptions
     {
+        public CompilerOptions()
+        {
+            ScriptInfo = new ScriptInfo();
+        }
+
         public ICollection<string> Defines { get; set; }
 
         public IStreamSource DocCommentFile { get; set; }
@@ -23,35 +27,30 @@ namespace ScriptSharp
 
         public ScriptInfo ScriptInfo { get; }
 
-        public bool EnableDocComments
-        {
-            get { return DocCommentFile != null; }
-        }
-
-        public CompilerOptions()
-        {
-            ScriptInfo = new ScriptInfo();
-        }
+        public bool EnableDocComments => DocCommentFile != null;
 
         public bool Validate(out string errorMessage)
         {
-            errorMessage = String.Empty;
+            errorMessage = string.Empty;
 
             if (References.Count == 0)
             {
                 errorMessage = "You must specify a list of valid assembly references.";
+
                 return false;
             }
 
             if (Sources.Count == 0)
             {
                 errorMessage = "You must specify a list of valid source files.";
+
                 return false;
             }
 
             if (ScriptFile == null)
             {
                 errorMessage = "You must specify a valid output script file.";
+
                 return false;
             }
 

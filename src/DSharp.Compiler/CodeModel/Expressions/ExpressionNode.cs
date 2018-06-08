@@ -3,27 +3,22 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal abstract class ExpressionNode : ParseNode {
-
-        private bool _parenthesized;
-
+namespace DSharp.Compiler.CodeModel.Expressions
+{
+    internal abstract class ExpressionNode : ParseNode
+    {
         protected ExpressionNode(ParseNodeType nodeType, Token token)
-            : base(nodeType, token) {
+            : base(nodeType, token)
+        {
         }
 
-        public bool Parenthesized {
-            get {
-                return _parenthesized;
-            }
-        }
+        public bool Parenthesized { get; private set; }
 
-        public void AddParenthesisHint() {
-            _parenthesized = true;
+        public void AddParenthesisHint()
+        {
+            Parenthesized = true;
         }
     }
 }

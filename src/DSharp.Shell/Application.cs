@@ -8,9 +8,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using DSharp;
+using DSharp.Compiler;
 
-namespace ScriptSharp
+namespace DSharp.Shell
 {
     internal static class Application
     {

@@ -3,20 +3,19 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal class ConstantFieldDeclarationNode : FieldDeclarationNode {
-
+namespace DSharp.Compiler.CodeModel.Members
+{
+    internal class ConstantFieldDeclarationNode : FieldDeclarationNode
+    {
         public ConstantFieldDeclarationNode(Token token,
                                             ParseNodeList attributes,
                                             Modifiers modifiers,
                                             ParseNode type,
                                             ParseNodeList initializers)
-            : base(ParseNodeType.ConstFieldDeclaration, token, attributes, modifiers, type, initializers, false) {
+            : base(ParseNodeType.ConstFieldDeclaration, token, attributes, modifiers, type, initializers, false)
+        {
         }
     }
 }

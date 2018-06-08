@@ -3,25 +3,18 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class GenericNameNode : AtomicNameNode {
-
-        private ParseNodeList _typeArguments;
-
+namespace DSharp.Compiler.CodeModel.Names
+{
+    internal sealed class GenericNameNode : AtomicNameNode
+    {
         public GenericNameNode(IdentifierToken name, ParseNodeList typeArguments)
-            : base(ParseNodeType.GenericName, name) {
-            _typeArguments = typeArguments;
+            : base(ParseNodeType.GenericName, name)
+        {
+            TypeArguments = typeArguments;
         }
 
-        public ParseNodeList TypeArguments {
-            get {
-                return _typeArguments;
-            }
-        }
+        public ParseNodeList TypeArguments { get; }
     }
 }

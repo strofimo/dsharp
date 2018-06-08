@@ -3,25 +3,19 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class ArrayInitializerNode : ExpressionNode {
-
-        private ParseNodeList _values;
-
+namespace DSharp.Compiler.CodeModel.Expressions
+{
+    internal sealed class ArrayInitializerNode : ExpressionNode
+    {
         public ArrayInitializerNode(Token token,
                                     ParseNodeList values)
-            : base(ParseNodeType.ArrayInitializer, token) {
-            _values = GetParentedNodeList(values);
+            : base(ParseNodeType.ArrayInitializer, token)
+        {
+            Values = GetParentedNodeList(values);
         }
 
-        public ParseNodeList Values {
-            get {
-                return _values;
-            }
-        }
+        public ParseNodeList Values { get; }
     }
 }

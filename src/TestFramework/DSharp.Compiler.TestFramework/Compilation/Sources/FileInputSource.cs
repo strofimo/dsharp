@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using ScriptSharp;
 
-namespace DSharp.Compiler.TestFramework
+namespace DSharp.Compiler.TestFramework.Compilation.Sources
 {
     public class FileInputSource : IStreamSource
     {

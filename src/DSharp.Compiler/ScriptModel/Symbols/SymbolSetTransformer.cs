@@ -3,37 +3,42 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 
-namespace ScriptSharp.ScriptModel {
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
+    internal sealed class SymbolSetTransformer
+    {
+        private readonly bool excludeImportedTypes;
 
-    internal sealed class SymbolSetTransformer {
-
-        private ISymbolTransformer _transformer;
-        private bool _excludeImportedTypes;
+        private readonly ISymbolTransformer transformer;
 
         public SymbolSetTransformer(ISymbolTransformer transformer)
-            : this(transformer, /* excludeImportedTypes */ true) {
+            : this(transformer, /* excludeImportedTypes */ true)
+        {
         }
 
-        public SymbolSetTransformer(ISymbolTransformer transformer, bool excludeImportedTypes) {
-            _transformer = transformer;
-            _excludeImportedTypes = excludeImportedTypes;
+        public SymbolSetTransformer(ISymbolTransformer transformer, bool excludeImportedTypes)
+        {
+            this.transformer = transformer;
+            this.excludeImportedTypes = excludeImportedTypes;
         }
 
-        public ICollection<Symbol> TransformSymbolSet(SymbolSet symbols, bool useInheritanceOrder) {
+        public ICollection<Symbol> TransformSymbolSet(SymbolSet symbols, bool useInheritanceOrder)
+        {
             List<TypeSymbol> symbolsToTransform = new List<TypeSymbol>();
 
-            foreach (NamespaceSymbol ns in symbols.Namespaces) {
-                if (_excludeImportedTypes && (ns.HasApplicationTypes == false)) {
+            foreach (NamespaceSymbol ns in symbols.Namespaces)
+            {
+                if (excludeImportedTypes && ns.HasApplicationTypes == false)
+                {
                     continue;
                 }
 
-                foreach (TypeSymbol type in ns.Types) {
-                    if (_excludeImportedTypes && (type.IsApplicationType == false)) {
+                foreach (TypeSymbol type in ns.Types)
+                {
+                    if (excludeImportedTypes && type.IsApplicationType == false)
+                    {
                         continue;
                     }
 
@@ -41,24 +46,33 @@ namespace ScriptSharp.ScriptModel {
                 }
             }
 
-            if (useInheritanceOrder) {
+            if (useInheritanceOrder)
+            {
                 symbolsToTransform.Sort(new TypeInheritanceComparer());
             }
 
             List<Symbol> transformedSymbols = new List<Symbol>();
-            foreach (TypeSymbol type in symbolsToTransform) {
-                bool transformMembers;
-                string transformedName = _transformer.TransformSymbol(type, out transformMembers);
-                if (transformedName != null) {
+
+            foreach (TypeSymbol type in symbolsToTransform)
+            {
+                string transformedName = transformer.TransformSymbol(type, out bool transformMembers);
+
+                if (transformedName != null)
+                {
                     type.SetTransformedName(transformedName);
                     transformedSymbols.Add(type);
                 }
 
-                if (transformMembers) {
+                if (transformMembers)
+                {
                     bool dummy;
-                    foreach (MemberSymbol member in type.Members) {
-                        transformedName = _transformer.TransformSymbol(member, out dummy);
-                        if (transformedName != null) {
+
+                    foreach (MemberSymbol member in type.Members)
+                    {
+                        transformedName = transformer.TransformSymbol(member, out dummy);
+
+                        if (transformedName != null)
+                        {
                             member.SetTransformedName(transformedName);
                             transformedSymbols.Add(member);
                         }
@@ -69,22 +83,25 @@ namespace ScriptSharp.ScriptModel {
             return transformedSymbols;
         }
 
-
-        private sealed class TypeInheritanceComparer : IComparer<TypeSymbol> {
-
-            public int Compare(TypeSymbol x, TypeSymbol y) {
+        private sealed class TypeInheritanceComparer : IComparer<TypeSymbol>
+        {
+            public int Compare(TypeSymbol x, TypeSymbol y)
+            {
                 ClassSymbol class1 = x as ClassSymbol;
                 ClassSymbol class2 = y as ClassSymbol;
 
-                if ((class1 == null) && (class2 == null)) {
+                if (class1 == null && class2 == null)
+                {
                     return 0;
                 }
 
-                if (class1 == null) {
+                if (class1 == null)
+                {
                     return -1;
                 }
 
-                if (class2 == null) {
+                if (class2 == null)
+                {
                     return 1;
                 }
 

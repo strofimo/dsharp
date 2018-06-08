@@ -3,39 +3,48 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
 using System.Text;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal abstract class NameNode : ParseNode {
-
-        private string _name;
+namespace DSharp.Compiler.CodeModel.Names
+{
+    internal abstract class NameNode : ParseNode
+    {
+        private string name;
 
         protected NameNode(ParseNodeType nodeType, Token token)
-            : base(nodeType, token) {
+            : base(nodeType, token)
+        {
         }
 
-        protected abstract ParseNodeList List {
-            get;
-        }
+        protected abstract ParseNodeList List { get; }
 
-        public string Name {
-            get {
-                if (_name == null) {
-                    StringBuilder sb = new StringBuilder();
-                    foreach (AtomicNameNode symbolNode in List) {
-                        if (sb.Length != 0) {
-                            sb.Append('.');
-                        }
-                        sb.Append(symbolNode.Identifier);
+        public string Name
+        {
+            get
+            {
+                if (name != null)
+                {
+                    return name;
+                }
+
+                StringBuilder sb = new StringBuilder();
+
+                foreach (ParseNode parseNode in List)
+                {
+                    AtomicNameNode symbolNode = (AtomicNameNode) parseNode;
+
+                    if (sb.Length != 0)
+                    {
+                        sb.Append('.');
                     }
 
-                    _name = sb.ToString();
+                    sb.Append(symbolNode.Identifier);
                 }
-                return _name;
+
+                name = sb.ToString();
+
+                return name;
             }
         }
     }

@@ -3,11 +3,10 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-
-namespace ScriptSharp.Parser {
-
-    internal enum PreprocessorTokenType {
+namespace DSharp.Compiler.Parser
+{
+    internal enum PreprocessorTokenType
+    {
         Define,
         Undef,
         If,
@@ -40,6 +39,6 @@ namespace ScriptSharp.Parser {
         Unknown,
         Invalid,
 
-        Last,       // Must be last
+        Last // Must be last
     }
 }

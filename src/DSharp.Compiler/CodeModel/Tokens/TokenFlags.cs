@@ -5,17 +5,17 @@
 
 using System;
 
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Tokens
+{
     [Flags]
-    internal enum TokenFlags {
-
+    internal enum TokenFlags
+    {
         None = 0,
 
         PredefinedType = 1,
 
         AssignmentOperator = 2,
 
-        OverloadableOperator = 4,
+        OverloadableOperator = 4
     }
 }

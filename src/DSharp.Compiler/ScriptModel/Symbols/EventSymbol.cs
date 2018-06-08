@@ -3,48 +3,42 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
 using System.Text;
 
-namespace ScriptSharp.ScriptModel {
-    
-    internal sealed class EventSymbol : CodeMemberSymbol {
-
-        private string _addAccessor;
-        private string _removeAccessor;
-
-        private SymbolImplementation _adderImplementation;
-        private SymbolImplementation _removerImplementation;
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
+    internal sealed class EventSymbol : CodeMemberSymbol
+    {
+        private SymbolImplementation adderImplementation;
+        private SymbolImplementation removerImplementation;
 
         public EventSymbol(string name, TypeSymbol parent, TypeSymbol handlerType)
-            : base(SymbolType.Event, name, parent, handlerType) {
+            : base(SymbolType.Event, name, parent, handlerType)
+        {
             ParameterSymbol valueParameter = new ParameterSymbol("value", this, handlerType, ParameterMode.In);
             AddParameter(valueParameter);
         }
 
-        public string AddAccessor {
-            get {
-                return _addAccessor;
+        public string AddAccessor { get; private set; }
+
+        public SymbolImplementation AdderImplementation
+        {
+            get
+            {
+                Debug.Assert(adderImplementation != null);
+
+                return adderImplementation;
             }
         }
 
-        public SymbolImplementation AdderImplementation {
-            get {
-                Debug.Assert(_adderImplementation != null);
-                return _adderImplementation;
-            }
-        }
+        public bool DefaultImplementation => (ImplementationFlags & SymbolImplementationFlags.Generated) != 0;
 
-        public bool DefaultImplementation {
-            get {
-                return ((ImplementationFlags & SymbolImplementationFlags.Generated) != 0);
-            }
-        }
-
-        public override string DocumentationID {
-            get {
-                TypeSymbol parent = (TypeSymbol)Parent;
+        public override string DocumentationId
+        {
+            get
+            {
+                TypeSymbol parent = (TypeSymbol) Parent;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("E:");
@@ -58,45 +52,44 @@ namespace ScriptSharp.ScriptModel {
             }
         }
 
-        public bool HasCustomAccessors {
-            get {
-                return (_addAccessor != null) && (_removeAccessor != null);
+        public bool HasCustomAccessors => AddAccessor != null && RemoveAccessor != null;
+
+        public string RemoveAccessor { get; private set; }
+
+        public SymbolImplementation RemoverImplementation
+        {
+            get
+            {
+                Debug.Assert(removerImplementation != null);
+
+                return removerImplementation;
             }
         }
 
-        public string RemoveAccessor {
-            get {
-                return _removeAccessor;
-            }
-        }
-
-        public SymbolImplementation RemoverImplementation {
-            get {
-                Debug.Assert(_removerImplementation != null);
-                return _removerImplementation;
-            }
-        }
-
-        public void AddImplementation(SymbolImplementation implementation, bool adder) {
+        public void AddImplementation(SymbolImplementation implementation, bool adder)
+        {
             Debug.Assert(implementation != null);
 
-            if (adder) {
-                Debug.Assert(_adderImplementation == null);
-                _adderImplementation = implementation;
+            if (adder)
+            {
+                Debug.Assert(adderImplementation == null);
+                adderImplementation = implementation;
             }
-            else {
-                Debug.Assert(_removerImplementation == null);
-                _removerImplementation = implementation;
+            else
+            {
+                Debug.Assert(removerImplementation == null);
+                removerImplementation = implementation;
             }
         }
 
-        public void SetAccessors(string addAccessor, string removeAccessor) {
-            Debug.Assert((_addAccessor == null) && (_removeAccessor == null));
-            Debug.Assert(String.IsNullOrEmpty(addAccessor) == false);
-            Debug.Assert(String.IsNullOrEmpty(removeAccessor) == false);
+        public void SetAccessors(string addAccessor, string removeAccessor)
+        {
+            Debug.Assert(AddAccessor == null && RemoveAccessor == null);
+            Debug.Assert(string.IsNullOrEmpty(addAccessor) == false);
+            Debug.Assert(string.IsNullOrEmpty(removeAccessor) == false);
 
-            _addAccessor = addAccessor;
-            _removeAccessor = removeAccessor;
+            AddAccessor = addAccessor;
+            RemoveAccessor = removeAccessor;
         }
     }
 }

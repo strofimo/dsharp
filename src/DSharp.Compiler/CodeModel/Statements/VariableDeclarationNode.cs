@@ -3,18 +3,13 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal class VariableDeclarationNode : StatementNode {
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
+    internal class VariableDeclarationNode : StatementNode
+    {
         private ParseNodeList attributes;
-        private Modifiers modifiers;
-        private ParseNode type;
-        private ParseNodeList initializers;
-        private bool isFixed;
 
         public VariableDeclarationNode(Token token,
                                        ParseNodeList attributes,
@@ -22,7 +17,8 @@ namespace ScriptSharp.CodeModel {
                                        ParseNode type,
                                        ParseNodeList initializers,
                                        bool isFixed)
-            : this(ParseNodeType.VariableDeclaration, token, attributes, modifiers, type, initializers, isFixed) {
+            : this(ParseNodeType.VariableDeclaration, token, attributes, modifiers, type, initializers, isFixed)
+        {
         }
 
         protected VariableDeclarationNode(ParseNodeType nodeType, Token token,
@@ -31,36 +27,21 @@ namespace ScriptSharp.CodeModel {
                                           ParseNode type,
                                           ParseNodeList initializers,
                                           bool isFixed)
-            : base(nodeType, token) {
+            : base(nodeType, token)
+        {
             this.attributes = GetParentedNodeList(attributes);
-            this.modifiers = modifiers;
-            this.type = GetParentedNode(type);
-            this.initializers = GetParentedNodeList(initializers);
-            this.isFixed = isFixed;
+            Modifiers = modifiers;
+            Type = GetParentedNode(type);
+            Initializers = GetParentedNodeList(initializers);
+            IsFixed = isFixed;
         }
 
-        public ParseNodeList Initializers {
-            get {
-                return initializers;
-            }
-        }
+        public ParseNodeList Initializers { get; }
 
-        public bool IsFixed {
-            get {
-                return isFixed;
-            }
-        }
+        public bool IsFixed { get; }
 
-        public Modifiers Modifiers {
-            get {
-                return modifiers;
-            }
-        }
+        public Modifiers Modifiers { get; }
 
-        public ParseNode Type {
-            get {
-                return type;
-            }
-        }
+        public ParseNode Type { get; }
     }
 }

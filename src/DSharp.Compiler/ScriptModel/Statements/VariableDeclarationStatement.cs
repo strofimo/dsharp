@@ -3,43 +3,41 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class VariableDeclarationStatement : Statement {
-
-        private List<VariableSymbol> _variables;
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal sealed class VariableDeclarationStatement : Statement
+    {
+        private readonly List<VariableSymbol> variables;
 
         public VariableDeclarationStatement()
-            : base(StatementType.VariableDeclaration) {
-            _variables = new List<VariableSymbol>();
+            : base(StatementType.VariableDeclaration)
+        {
+            variables = new List<VariableSymbol>();
         }
 
-        public override bool RequiresThisContext {
-            get {
-                foreach (VariableSymbol variable in _variables) {
-                    if ((variable.Value != null) &&
-                        variable.Value.RequiresThisContext) {
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                foreach (VariableSymbol variable in variables)
+                    if (variable.Value != null &&
+                        variable.Value.RequiresThisContext)
+                    {
                         return true;
                     }
-                }
+
                 return false;
             }
         }
 
-        public ICollection<VariableSymbol> Variables {
-            get {
-                return _variables;
-            }
-        }
+        public ICollection<VariableSymbol> Variables => variables;
 
-        public void AddVariable(VariableSymbol variable) {
-            _variables.Add(variable);
+        public void AddVariable(VariableSymbol variable)
+        {
+            variables.Add(variable);
         }
     }
 }

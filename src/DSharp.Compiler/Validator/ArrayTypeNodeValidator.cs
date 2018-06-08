@@ -3,20 +3,21 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using ScriptSharp;
-using ScriptSharp.CodeModel;
+using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.CodeModel.Types;
 
-namespace ScriptSharp.Validator {
+namespace DSharp.Compiler.Validator
+{
+    internal sealed class ArrayTypeNodeValidator : IParseNodeValidator
+    {
+        bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
+        {
+            ArrayTypeNode typeNode = (ArrayTypeNode) node;
 
-    internal sealed class ArrayTypeNodeValidator : IParseNodeValidator {
-
-        bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler) {
-            ArrayTypeNode typeNode = (ArrayTypeNode)node;
-
-            if (typeNode.Rank != 1) {
+            if (typeNode.Rank != 1)
+            {
                 errorHandler.ReportError("Only single dimensional arrays are supported.",
-                                         typeNode.Token.Location);
+                    typeNode.Token.Location);
             }
 
             return true;

@@ -3,27 +3,29 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Collections;
 
-namespace ScriptSharp.Parser {
+namespace DSharp.Compiler.Parser
+{
+    internal sealed class PreprocessorKeywords
+    {
+        private readonly Hashtable keywords;
 
-    internal sealed class PreprocessorKeywords {
-
-        private Hashtable keywords;
-
-        public PreprocessorKeywords(NameTable symbolTable) {
+        public PreprocessorKeywords(NameTable symbolTable)
+        {
             keywords = new Hashtable();
 
-            for (PreprocessorTokenType token = 0; token < PreprocessorTokenType.Identifier; token += 1) {
+            for (PreprocessorTokenType token = 0; token < PreprocessorTokenType.Identifier; token += 1)
                 keywords.Add(symbolTable.Add(PreprocessorToken.TypeString(token)), token);
-            }
         }
 
-        public PreprocessorTokenType IsKeyword(Name value) {
+        public PreprocessorTokenType IsKeyword(Name value)
+        {
             object o = keywords[value];
-            if (o != null) {
-                return (PreprocessorTokenType)o;
+
+            if (o != null)
+            {
+                return (PreprocessorTokenType) o;
             }
 
             return PreprocessorTokenType.Invalid;

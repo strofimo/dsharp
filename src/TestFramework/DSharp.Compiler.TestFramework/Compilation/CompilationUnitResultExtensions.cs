@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DSharp.Compiler.TestFramework
+namespace DSharp.Compiler.TestFramework.Compilation
 {
     public static class CompilationUnitResultExtensions
     {

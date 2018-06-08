@@ -5,17 +5,13 @@
 
 using System.Diagnostics;
 using System.IO;
-using ScriptSharp;
+using DSharp.Compiler;
 
 namespace DSharp
 {
     internal class FileInputStreamSource : IStreamSource
     {
         private readonly string path;
-
-        public string FullName => Path.GetFullPath(path);
-
-        public string Name { get; }
 
         public FileInputStreamSource(string path)
             : this(path, path)
@@ -27,6 +23,10 @@ namespace DSharp
             this.path = path;
             Name = name;
         }
+
+        public string FullName => Path.GetFullPath(path);
+
+        public string Name { get; }
 
         public void CloseStream(Stream stream)
         {

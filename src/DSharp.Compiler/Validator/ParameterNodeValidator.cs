@@ -3,20 +3,22 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using ScriptSharp;
-using ScriptSharp.CodeModel;
+using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.CodeModel.Members;
 
-namespace ScriptSharp.Validator {
+namespace DSharp.Compiler.Validator
+{
+    internal sealed class ParameterNodeValidator : IParseNodeValidator
+    {
+        bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
+        {
+            ParameterNode paramNode = (ParameterNode) node;
 
-    internal sealed class ParameterNodeValidator : IParseNodeValidator {
-
-        bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler) {
-            ParameterNode paramNode = (ParameterNode)node;
-
-            if (paramNode.Flags == ParameterFlags.Ref || paramNode.Flags == ParameterFlags.Out) {
+            if (paramNode.Flags == ParameterFlags.Ref || paramNode.Flags == ParameterFlags.Out)
+            {
                 errorHandler.ReportError("Out and Ref style of parameters are not yet implemented.",
-                                         paramNode.Token.Location);
+                    paramNode.Token.Location);
+
                 return false;
             }
 

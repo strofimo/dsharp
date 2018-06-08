@@ -3,50 +3,38 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class NewDelegateExpression : Expression {
-
-        private TypeSymbol _associatedType;
-        private Expression _typeExpression;
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class NewDelegateExpression : Expression
+    {
         public NewDelegateExpression(TypeSymbol associatedType)
-            : base(ExpressionType.NewDelegate, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-
+            : base(ExpressionType.NewDelegate, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
             Debug.Assert(associatedType.Type == SymbolType.Delegate);
-            _associatedType = associatedType;
+            AssociatedType = associatedType;
         }
 
         public NewDelegateExpression(Expression typeExpression, TypeSymbol associatedType)
-            : base(ExpressionType.NewDelegate, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-
+            : base(ExpressionType.NewDelegate, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
             Debug.Assert(associatedType.Type == SymbolType.Delegate);
-            _typeExpression = typeExpression;
-            _associatedType = associatedType;
+            TypeExpression = typeExpression;
+            AssociatedType = associatedType;
         }
 
-        public TypeSymbol AssociatedType {
-            get {
-                return _associatedType;
-            }
-        }
+        public TypeSymbol AssociatedType { get; }
 
-        public bool IsSpecificType {
-            get {
-                return (_typeExpression == null);
-            }
-        }
+        public bool IsSpecificType => TypeExpression == null;
 
-        public override bool RequiresThisContext {
+        public override bool RequiresThisContext
+        {
             get
             {
-                if ((_typeExpression != null) && _typeExpression.RequiresThisContext) {
+                if (TypeExpression != null && TypeExpression.RequiresThisContext)
+                {
                     return true;
                 }
 
@@ -54,16 +42,8 @@ namespace ScriptSharp.ScriptModel {
             }
         }
 
-        protected override bool IsParenthesisRedundant {
-            get {
-                return false;
-            }
-        }
+        protected override bool IsParenthesisRedundant => false;
 
-        public Expression TypeExpression {
-            get {
-                return _typeExpression;
-            }
-        }
+        public Expression TypeExpression { get; }
     }
 }

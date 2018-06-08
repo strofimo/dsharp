@@ -3,40 +3,38 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-
-namespace ScriptSharp.Testing {
+namespace DSharp.Compiler.TestFramework.Web {
 
     public sealed class WebTestResult {
 
-        private bool _succeeded;
-        private bool _timedOut;
-        private string _log;
+        private readonly bool succeeded;
+        private readonly bool timedOut;
+        private readonly string log;
 
         internal WebTestResult() {
-            _timedOut = true;
+            timedOut = true;
         }
 
         internal WebTestResult(bool succeeded, string log) {
-            _succeeded = succeeded;
-            _log = log;
+            this.succeeded = succeeded;
+            this.log = log;
         }
 
         public string Log {
             get {
-                return _log;
+                return log;
             }
         }
 
         public bool Succeeded {
             get {
-                return _succeeded;
+                return succeeded;
             }
         }
 
         public bool TimedOut {
             get {
-                return _timedOut;
+                return timedOut;
             }
         }
     }

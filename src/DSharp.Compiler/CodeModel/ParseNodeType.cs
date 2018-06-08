@@ -3,14 +3,13 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel
+{
     /// <summary>
-    /// List of parse node types.
+    ///     List of parse node types.
     /// </summary>
-    internal enum ParseNodeType {
+    internal enum ParseNodeType
+    {
         CompilationUnit,
         Namespace,
         UsingNamespace,
@@ -87,6 +86,6 @@ namespace ScriptSharp.CodeModel {
         TypeParameter,
         ConstraintClause,
         DefaultValueExpression,
-        GenericName,
+        GenericName
     }
 }

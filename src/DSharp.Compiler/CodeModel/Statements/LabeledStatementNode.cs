@@ -3,21 +3,21 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
 
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
     // NOTE: Not supported in conversion
-    internal class LabeledStatementNode : StatementNode {
-
-        private AtomicNameNode _label;
-        private ParseNode _statement;
+    internal class LabeledStatementNode : StatementNode
+    {
+        private AtomicNameNode label;
+        private ParseNode statement;
 
         public LabeledStatementNode(AtomicNameNode label, ParseNode statement)
-            : base(ParseNodeType.LabeledStatement, label.token) {
-            _label = (AtomicNameNode)GetParentedNode(label);
-            _statement = GetParentedNode(statement);
+            : base(ParseNodeType.LabeledStatement, label.Token)
+        {
+            this.label = (AtomicNameNode) GetParentedNode(label);
+            this.statement = GetParentedNode(statement);
         }
     }
 }

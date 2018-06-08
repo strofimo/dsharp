@@ -8,7 +8,6 @@
     <AssemblyOriginatorKeyFile>$(SolutionDir)DSharp.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
-  
   <ItemGroup>
     <Compile Include="..\FileInputStreamSource.cs">
       <Link>FileInputStreamSource.cs</Link>
@@ -20,6 +19,8 @@
       <Link>ResXParser.cs</Link>
     </Compile>
   </ItemGroup>
-  
+  <ItemGroup>
+    <PackageReference Include="Mono.Cecil" Version="0.10.0" />
+  </ItemGroup>
   <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
 </Project>

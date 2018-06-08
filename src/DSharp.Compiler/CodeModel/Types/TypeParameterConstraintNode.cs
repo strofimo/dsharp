@@ -3,24 +3,24 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
 
-namespace ScriptSharp.CodeModel {
+namespace DSharp.Compiler.CodeModel.Types
+{
+    internal sealed class TypeParameterConstraintNode : ParseNode
+    {
+        private bool hasConstructorConstraint;
+        private ParseNodeList typeConstraints;
 
-    internal sealed class TypeParameterConstraintNode : ParseNode {
-
-        private AtomicNameNode _typeParameter;
-        private ParseNodeList _typeConstraints;
-        private bool _hasConstructorConstraint;
+        private AtomicNameNode typeParameter;
 
         public TypeParameterConstraintNode(AtomicNameNode typeParameter, ParseNodeList typeConstraints,
-                                    bool hasConstructorConstraint)
-            : base(ParseNodeType.ConstraintClause, typeParameter.token) {
-            _typeParameter = typeParameter;
-            _typeConstraints = typeConstraints;
-            _hasConstructorConstraint = hasConstructorConstraint;
+                                           bool hasConstructorConstraint)
+            : base(ParseNodeType.ConstraintClause, typeParameter.Token)
+        {
+            this.typeParameter = typeParameter;
+            this.typeConstraints = typeConstraints;
+            this.hasConstructorConstraint = hasConstructorConstraint;
         }
     }
 }

@@ -3,28 +3,31 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
 using System.Text;
 
-namespace ScriptSharp.ScriptModel {
-    
-    internal class PropertySymbol : CodeMemberSymbol {
-
-        private SymbolImplementation _getterImplementation;
-        private SymbolImplementation _setterImplementation;
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
+    internal class PropertySymbol : CodeMemberSymbol
+    {
+        private SymbolImplementation getterImplementation;
+        private SymbolImplementation setterImplementation;
 
         public PropertySymbol(string name, TypeSymbol parent, TypeSymbol propertyType)
-            : this(SymbolType.Property, name, parent, propertyType) {
+            : this(SymbolType.Property, name, parent, propertyType)
+        {
         }
 
         protected PropertySymbol(SymbolType type, string name, TypeSymbol parent, TypeSymbol propertyType)
-            : base(type, name, parent, propertyType) {
+            : base(type, name, parent, propertyType)
+        {
         }
 
-        public override string DocumentationID {
-            get {
-                TypeSymbol parent = (TypeSymbol)Parent;
+        public override string DocumentationId
+        {
+            get
+            {
+                TypeSymbol parent = (TypeSymbol) Parent;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("P:");
@@ -38,50 +41,45 @@ namespace ScriptSharp.ScriptModel {
             }
         }
 
-        public bool IsReadOnly {
-            get {
-                return ((ImplementationFlags & SymbolImplementationFlags.ReadOnly) != 0);
-            }
-        }
+        public bool IsReadOnly => (ImplementationFlags & SymbolImplementationFlags.ReadOnly) != 0;
 
-        public bool HasGetter
+        public bool HasGetter => getterImplementation != null;
+
+        public bool HasSetter => setterImplementation != null;
+
+        public SymbolImplementation GetterImplementation
         {
-            get {
-                return _getterImplementation != null;
+            get
+            {
+                Debug.Assert(getterImplementation != null);
+
+                return getterImplementation;
             }
         }
 
-        public bool HasSetter
+        public SymbolImplementation SetterImplementation
         {
-            get {
-                return _setterImplementation != null;
+            get
+            {
+                Debug.Assert(setterImplementation != null);
+
+                return setterImplementation;
             }
         }
 
-        public SymbolImplementation GetterImplementation {
-            get {
-                Debug.Assert(_getterImplementation != null);
-                return _getterImplementation;
-            }
-        }
-
-        public SymbolImplementation SetterImplementation {
-            get {
-                Debug.Assert(_setterImplementation != null);
-                return _setterImplementation;
-            }
-        }
-
-        public void AddImplementation(SymbolImplementation implementation, bool getter) {
+        public void AddImplementation(SymbolImplementation implementation, bool getter)
+        {
             Debug.Assert(implementation != null);
 
-            if (getter) {
-                Debug.Assert(_getterImplementation == null);
-                _getterImplementation = implementation;
+            if (getter)
+            {
+                Debug.Assert(getterImplementation == null);
+                getterImplementation = implementation;
             }
-            else {
-                Debug.Assert(_setterImplementation == null);
-                _setterImplementation = implementation;
+            else
+            {
+                Debug.Assert(setterImplementation == null);
+                setterImplementation = implementation;
             }
         }
     }

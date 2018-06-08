@@ -1,4 +1,4 @@
-﻿namespace DSharp.Compiler.TestFramework
+﻿namespace DSharp.Compiler.TestFramework.Context
 {
     public interface ITestContextFactory
     {

@@ -3,88 +3,96 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Collections;
 
-namespace ScriptSharp.Parser {
-
+namespace DSharp.Compiler.Parser
+{
     /// <summary>
-    /// Container of #line directives for a single file.
-    /// Maps from a buffer TextBufferPosition to a FilePosition.
+    ///     Container of #line directives for a single file.
+    ///     Maps from a buffer TextBufferPosition to a FilePosition.
     /// </summary>
-    internal sealed class LineMap {
+    internal sealed class LineMap
+    {
+        private readonly ArrayList entries;
 
-        private ArrayList _entries;
-
-        public LineMap(string filename) {
-            _entries = new ArrayList();
+        public LineMap(string filename)
+        {
+            entries = new ArrayList();
             AddEntry(0, 1, filename);
         }
 
-        public string FileName {
-            get {
-                return ((MapEntry)_entries[0]).fileName;
-            }
+        public string FileName => ((MapEntry) entries[0]).FileName;
+
+        /// <summary>
+        ///     Add a #line entry to the map.
+        /// </summary>
+        public void AddEntry(int from, int to)
+        {
+            AddEntry(from, to, ((MapEntry) entries[entries.Count - 1]).FileName);
         }
 
         /// <summary>
-        /// Add a #line entry to the map.
+        ///     Add a #line entry with a filename to the map.
         /// </summary>
-        public void AddEntry(int from, int to) {
-            AddEntry(from, to, ((MapEntry)_entries[_entries.Count - 1]).fileName);
+        public void AddEntry(int from, int to, string filename)
+        {
+            entries.Add(new MapEntry(from, to, filename));
         }
 
         /// <summary>
-        /// Add a #line entry with a filename to the map.
+        ///     Map a buffer position to a position in a file.
         /// </summary>
-        public void AddEntry(int from, int to, string filename) {
-            _entries.Add(new MapEntry(from, to, filename));
-        }
-
-        /// <summary>
-        /// Map a buffer position to a position in a file.
-        /// </summary>
-        public FilePosition Map(BufferPosition from) {
+        public FilePosition Map(BufferPosition from)
+        {
             MapEntry entry = FindEntry(from.Line);
+
             return new FilePosition(
                 new BufferPosition(
-                    entry.to + (from.Line - entry.from),
+                    entry.To + (from.Line - entry.From),
                     from.Column + 1,
                     from.Offset),
-                entry.fileName);
+                entry.FileName);
         }
 
-        private MapEntry FindEntry(int from) {
+        private MapEntry FindEntry(int from)
+        {
             int lowIndex = 0;
-            int highIndex = _entries.Count;
+            int highIndex = entries.Count;
 
-            while (lowIndex < highIndex) {
+            while (lowIndex < highIndex)
+            {
                 int midIndex = (lowIndex + highIndex) / 2;
-                MapEntry midEntry = (MapEntry)_entries[midIndex];
-                if (midEntry.from < from) {
+                MapEntry midEntry = (MapEntry) entries[midIndex];
+
+                if (midEntry.From < from)
+                {
                     lowIndex = midIndex + 1;
                 }
-                else if (midEntry.from == from) {
+                else if (midEntry.From == from)
+                {
                     return midEntry;
                 }
-                else {
+                else
+                {
                     highIndex = midIndex;
                 }
             }
 
-            return (MapEntry)_entries[lowIndex - 1];
+            return (MapEntry) entries[lowIndex - 1];
         }
 
-        private sealed class MapEntry {
+        private sealed class MapEntry
+        {
+            public readonly string FileName;
 
-            public int from;
-            public int to;
-            public string fileName;
+            public readonly int From;
+            public readonly int To;
 
-            public MapEntry(int from, int to, string filename) {
-                this.from = from;
-                this.to = to;
-                this.fileName = filename;
+            public MapEntry(int from, int to, string filename)
+            {
+                From = from;
+                To = to;
+                FileName = filename;
             }
         }
     }

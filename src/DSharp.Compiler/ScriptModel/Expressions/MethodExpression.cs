@@ -3,72 +3,67 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal class MethodExpression : Expression {
-
-        private MethodSymbol _method;
-        private Expression _objectReference;
-        private Collection<Expression> _parameters;
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal class MethodExpression : Expression
+    {
+        private readonly Collection<Expression> parameters;
 
         public MethodExpression(Expression objectReference, MethodSymbol method)
-            : this(ExpressionType.MethodInvoke, objectReference, method, null) {
+            : this(ExpressionType.MethodInvoke, objectReference, method, null)
+        {
         }
 
-        protected MethodExpression(ExpressionType type, Expression objectReference, MethodSymbol method, Collection<Expression> parameters) :
-            base(type, (method.AssociatedType.Type == SymbolType.GenericParameter ? objectReference.EvaluatedType : method.AssociatedType),
-                 SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _method = method;
-            _objectReference = objectReference;
-            _parameters = (parameters == null) ? new Collection<Expression>() : parameters;
+        protected MethodExpression(ExpressionType type, Expression objectReference, MethodSymbol method,
+                                   Collection<Expression> parameters) :
+            base(type,
+                method.AssociatedType.Type == SymbolType.GenericParameter
+                    ? objectReference.EvaluatedType
+                    : method.AssociatedType,
+                SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            Method = method;
+            ObjectReference = objectReference;
+            this.parameters = parameters == null ? new Collection<Expression>() : parameters;
         }
 
-        public MethodSymbol Method {
-            get {
-                return _method;
-            }
-        }
+        public MethodSymbol Method { get; }
 
-        public IList<Expression> Parameters {
-            get {
-                return _parameters;
-            }
-        }
+        public IList<Expression> Parameters => parameters;
 
-        public Expression ObjectReference {
-            get {
-                return _objectReference;
-            }
-        }
+        public Expression ObjectReference { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                if (_objectReference.RequiresThisContext) {
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                if (ObjectReference.RequiresThisContext)
+                {
                     return true;
                 }
 
-                foreach (Expression expression in _parameters) {
-                    if (expression.RequiresThisContext) {
+                foreach (Expression expression in parameters)
+                    if (expression.RequiresThisContext)
+                    {
                         return true;
                     }
-                }
 
                 return false;
             }
         }
 
-        public void AddParameterValue(Expression expression) {
-            _parameters.Add(expression);
+        public void AddParameterValue(Expression expression)
+        {
+            parameters.Add(expression);
         }
 
-        public Collection<Expression> GetParameters() {
-            return _parameters;
+        public Collection<Expression> GetParameters()
+        {
+            return parameters;
         }
     }
 }

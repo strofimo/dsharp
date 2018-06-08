@@ -10,53 +10,53 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace ScriptSharp.Testing.WebServer {
+namespace DSharp.Compiler.TestFramework.Web.WebServer {
 
     internal sealed class HttpMessage {
 
-        private const int MaximumPostSize = 10 * 1024 * 1024; // 10MB
-        private const int BufferSize = 4096;
+        private const int MAXIMUM_POST_SIZE = 10 * 1024 * 1024; // 10MB
+        private const int BUFFER_SIZE = 4096;
 
-        private HttpServer _server;
-        private TcpClient _client;
+        private HttpServer server;
+        private TcpClient client;
 
-        private Action<HttpMessage> _getHandler;
-        private Action<HttpMessage> _postHandler;
+        private readonly Action<HttpMessage> getHandler;
+        private readonly Action<HttpMessage> postHandler;
 
-        private string _method;
-        private string _path;
-        private Dictionary<string, string> _headers;
+        private string method;
+        private string path;
+        private Dictionary<string, string> headers;
 
-        private Stream _requestStream;
-        private Stream _responseStream;
+        private Stream requestStream;
+        private Stream responseStream;
 
         internal HttpMessage(HttpServer server, Action<HttpMessage> getHandler, Action<HttpMessage> postHandler) {
-            _server = server;
-            _getHandler = getHandler;
-            _postHandler = postHandler;
+            this.server = server;
+            this.getHandler = getHandler;
+            this.postHandler = postHandler;
         }
 
         public string Method {
             get {
-                return _method;
+                return method;
             }
         }
 
         public string Path {
             get {
-                return _path;
+                return path;
             }
         }
 
         public Stream RequestStream {
             get {
-                return _requestStream;
+                return requestStream;
             }
         }
 
         public Stream ResponseStream {
             get {
-                return _responseStream;
+                return responseStream;
             }
         }
 
@@ -68,12 +68,12 @@ namespace ScriptSharp.Testing.WebServer {
                 throw new Exception("Invalid HTTP request");
             }
 
-            _method = tokens[0].ToUpper();
-            _path = tokens[1];
+            method = tokens[0].ToUpper();
+            path = tokens[1];
         }
 
         private void ParseRequestHeaders(Stream inputStream) {
-            _headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             string line;
             while ((line = ReadLine(inputStream)) != null) {
@@ -95,30 +95,28 @@ namespace ScriptSharp.Testing.WebServer {
                 }
 
                 string value = line.Substring(pos, line.Length - pos);
-                if (String.IsNullOrEmpty(value)) {
+                if (string.IsNullOrEmpty(value)) {
                     throw new Exception("Invalid HTTP header: " + line);
                 }
 
-                _headers[name] = value;
+                headers[name] = value;
             }
         }
 
         private void ParseRequestBody(Stream inputStream) {
             MemoryStream ms = new MemoryStream();
 
-            int contentLength;
-            string contentLengthValue;
-            if (_headers.TryGetValue("Content-Length", out contentLengthValue) &&
-                Int32.TryParse(contentLengthValue, out contentLength)) {
-                if (contentLength > MaximumPostSize) {
+            if (headers.TryGetValue("Content-Length", out string contentLengthValue) &&
+                int.TryParse(contentLengthValue, out int contentLength)) {
+                if (contentLength > MAXIMUM_POST_SIZE) {
                     throw new Exception("Request is too large");
                 }
 
                 int bytesToRead = contentLength;
 
-                byte[] buffer = new byte[BufferSize];
+                byte[] buffer = new byte[BUFFER_SIZE];
                 while (bytesToRead > 0) {
-                    int bytesRead = inputStream.Read(buffer, 0, Math.Min(BufferSize, bytesToRead));
+                    int bytesRead = inputStream.Read(buffer, 0, Math.Min(BUFFER_SIZE, bytesToRead));
                     if (bytesRead == 0) {
                         if (bytesToRead == 0) {
                             break;
@@ -134,11 +132,11 @@ namespace ScriptSharp.Testing.WebServer {
                 ms.Seek(0, SeekOrigin.Begin);
             }
 
-            _requestStream = ms;
+            requestStream = ms;
         }
 
         public void ProcessClient(TcpClient client) {
-            _client = client;
+            this.client = client;
 
             Thread messageThread = new Thread(Run);
             messageThread.Start();
@@ -169,29 +167,29 @@ namespace ScriptSharp.Testing.WebServer {
         }
 
         private void Run() {
-            NetworkStream tcpStream = _client.GetStream();
+            NetworkStream tcpStream = client.GetStream();
 
             BufferedStream tcpReadStream = new BufferedStream(tcpStream);
             BufferedStream tcpSendStream = new BufferedStream(tcpStream);
 
-            _responseStream = tcpSendStream;
+            responseStream = tcpSendStream;
 
             try {
                 ParseRequest(tcpReadStream);
                 ParseRequestHeaders(tcpReadStream);
 
                 bool processed = false;
-                if (_method.Equals("GET")) {
-                    if (_getHandler != null) {
-                        _getHandler(this);
+                if (method.Equals("GET")) {
+                    if (getHandler != null) {
+                        getHandler(this);
 
                         processed = true;
                     }
                 }
-                else if (_method.Equals("POST")) {
-                    if (_postHandler != null) {
+                else if (method.Equals("POST")) {
+                    if (postHandler != null) {
                         ParseRequestBody(tcpReadStream);
-                        _postHandler(this);
+                        postHandler(this);
 
                         processed = true;
                     }
@@ -205,13 +203,13 @@ namespace ScriptSharp.Testing.WebServer {
                 WriteStatus(HttpStatusCode.InternalServerError);
             }
 
-            _responseStream.Flush();
+            responseStream.Flush();
 
-            _client.Close();
+            client.Close();
         }
 
         public void WriteContent(string content, string contentType) {
-            StreamWriter writer = new StreamWriter(_responseStream);
+            StreamWriter writer = new StreamWriter(responseStream);
 
             writer.WriteLine("HTTP/1.0 200 OK");
             writer.WriteLine("Content-Type: " + contentType);
@@ -223,7 +221,7 @@ namespace ScriptSharp.Testing.WebServer {
         }
 
         public void WriteFile(string path, string contentType) {
-            StreamWriter writer = new StreamWriter(_responseStream);
+            StreamWriter writer = new StreamWriter(responseStream);
 
             writer.WriteLine("HTTP/1.0 200");
             writer.WriteLine("Content-Type: " + contentType);
@@ -232,13 +230,13 @@ namespace ScriptSharp.Testing.WebServer {
             writer.Flush();
 
             using (Stream fileStream = File.OpenRead(path)) {
-                byte[] buffer = new byte[BufferSize];
+                byte[] buffer = new byte[BUFFER_SIZE];
 
                 int bytesRead = 0;
                 do {
-                    bytesRead = fileStream.Read(buffer, 0, BufferSize);
+                    bytesRead = fileStream.Read(buffer, 0, BUFFER_SIZE);
                     if (bytesRead != 0) {
-                        _responseStream.Write(buffer, 0, bytesRead);
+                        responseStream.Write(buffer, 0, bytesRead);
                     }
                 }
                 while (bytesRead != 0);
@@ -246,7 +244,7 @@ namespace ScriptSharp.Testing.WebServer {
         }
 
         public void WriteStatus(HttpStatusCode statusCode) {
-            StreamWriter writer = new StreamWriter(_responseStream);
+            StreamWriter writer = new StreamWriter(responseStream);
 
             writer.WriteLine("HTTP/1.0 " + (int)statusCode);
             writer.WriteLine("Connection: close");

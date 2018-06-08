@@ -3,33 +3,31 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Expressions;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class ReturnStatement : Statement {
-
-        private Expression _value;
-
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal sealed class ReturnStatement : Statement
+    {
         public ReturnStatement(Expression value)
-            : base(StatementType.Return) {
-            _value = value;
+            : base(StatementType.Return)
+        {
+            Value = value;
         }
 
-        public override bool RequiresThisContext {
-            get {
-                if (_value != null) {
-                    return _value.RequiresThisContext;
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                if (Value != null)
+                {
+                    return Value.RequiresThisContext;
                 }
+
                 return false;
             }
         }
 
-        public Expression Value {
-            get {
-                return _value;
-            }
-        }
+        public Expression Value { get; }
     }
 }

@@ -3,46 +3,29 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-
-namespace ScriptSharp.Parser {
-
+namespace DSharp.Compiler.Parser
+{
     /// <summary>
-    /// A position in a source file.
+    ///     A position in a source file.
     /// </summary>
-    internal struct FilePosition {
-
-        private BufferPosition _position;
-        private string _fileName;
-
-        public FilePosition(BufferPosition position, string fileName) {
-            _position = position;
-            _fileName = fileName;
+    internal struct FilePosition
+    {
+        public FilePosition(BufferPosition position, string fileName)
+        {
+            Position = position;
+            FileName = fileName;
         }
 
-        public BufferPosition Position {
-            get {
-                return _position;
-            }
-            set {
-                _position = value;
-            }
-        }
+        public BufferPosition Position { get; set; }
 
-        public string FileName {
-            get {
-                return _fileName;
-            }
-            set {
-                _fileName = value;
-            }
-        }
+        public string FileName { get; set; }
 
         /// <summary>
-        /// Returns a string suitable for display in an error _message.
+        ///     Returns a string suitable for display in an error _message.
         /// </summary>
-        public override string ToString() {
-            return _fileName + _position.ToString();
+        public override string ToString()
+        {
+            return FileName + Position;
         }
     }
 }

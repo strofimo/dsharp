@@ -3,42 +3,28 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Expressions;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class ExpressionStatement : Statement {
-
-        private Expression _expression;
-        private bool _fragment;
-
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal sealed class ExpressionStatement : Statement
+    {
         public ExpressionStatement(Expression expression)
-            : this(expression, false) {
+            : this(expression, false)
+        {
         }
 
         public ExpressionStatement(Expression expression, bool isFragment)
-            : base(StatementType.Expression) {
-            _expression = expression;
-            _fragment = isFragment;
+            : base(StatementType.Expression)
+        {
+            Expression = expression;
+            IsFragment = isFragment;
         }
 
-        public Expression Expression {
-            get {
-                return _expression;
-            }
-        }
+        public Expression Expression { get; }
 
-        public bool IsFragment {
-            get {
-                return _fragment;
-            }
-        }
+        public bool IsFragment { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                return _expression.RequiresThisContext;
-            }
-        }
+        public override bool RequiresThisContext => Expression.RequiresThisContext;
     }
 }

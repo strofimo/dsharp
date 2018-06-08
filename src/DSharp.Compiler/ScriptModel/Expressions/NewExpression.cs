@@ -3,78 +3,67 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class NewExpression : Expression {
-
-        private TypeSymbol _associatedType;
-        private Expression _typeExpression;
-        private Collection<Expression> _parameters;
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class NewExpression : Expression
+    {
+        private Collection<Expression> parameters;
 
         public NewExpression(TypeSymbol associatedType)
-            : base(ExpressionType.New, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _associatedType = associatedType;
+            : base(ExpressionType.New, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            AssociatedType = associatedType;
         }
 
         public NewExpression(Expression typeExpression, TypeSymbol associatedType)
-            : base(ExpressionType.New, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _typeExpression = typeExpression;
-            _associatedType = associatedType;
+            : base(ExpressionType.New, associatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            TypeExpression = typeExpression;
+            AssociatedType = associatedType;
         }
 
-        public TypeSymbol AssociatedType {
-            get {
-                return _associatedType;
-            }
-        }
+        public TypeSymbol AssociatedType { get; }
 
-        public bool IsSpecificType {
-            get {
-                return (_typeExpression == null);
-            }
-        }
+        public bool IsSpecificType => TypeExpression == null;
 
-        public IList<Expression> Parameters {
-            get {
-                return _parameters;
-            }
-        }
+        public IList<Expression> Parameters => parameters;
 
-        public override bool RequiresThisContext {
-            get {
-                if ((_typeExpression != null) && _typeExpression.RequiresThisContext) {
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                if (TypeExpression != null && TypeExpression.RequiresThisContext)
+                {
                     return true;
                 }
 
-                if (_parameters != null) {
-                    foreach (Expression expression in _parameters) {
-                        if (expression.RequiresThisContext) {
+                if (parameters != null)
+                {
+                    foreach (Expression expression in parameters)
+                        if (expression.RequiresThisContext)
+                        {
                             return true;
                         }
-                    }
                 }
 
                 return false;
             }
         }
 
-        public Expression TypeExpression {
-            get {
-                return _typeExpression;
-            }
-        }
+        public Expression TypeExpression { get; }
 
-        public void AddParameterValue(Expression expression) {
-            if (_parameters == null) {
-                _parameters = new Collection<Expression>();
+        public void AddParameterValue(Expression expression)
+        {
+            if (parameters == null)
+            {
+                parameters = new Collection<Expression>();
             }
-            _parameters.Add(expression);
+
+            parameters.Add(expression);
         }
     }
 }

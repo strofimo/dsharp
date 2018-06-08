@@ -3,35 +3,25 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-using ScriptSharp.Parser;
+using DSharp.Compiler.Parser;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class BooleanToken : LiteralToken {
-
-        private bool _value;
-
+namespace DSharp.Compiler.CodeModel.Tokens
+{
+    internal sealed class BooleanToken : LiteralToken
+    {
         internal BooleanToken(bool value, string sourcePath, BufferPosition position)
-            : base(LiteralTokenType.Boolean, sourcePath, position) {
-            _value = value;
+            : base(LiteralTokenType.Boolean, sourcePath, position)
+        {
+            Value = value;
         }
 
-        public override object LiteralValue {
-            get {
-                return Value;
-            }
-        }
+        public override object LiteralValue => Value;
 
-        public bool Value {
-            get {
-                return _value;
-            }
-        }
+        public bool Value { get; }
 
-        public override string ToString() {
-            return _value.ToString();
+        public override string ToString()
+        {
+            return Value.ToString();
         }
     }
 }

@@ -3,24 +3,18 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class BlockStatementNode : StatementNode {
-
-        private ParseNodeList _statements;
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
+    internal sealed class BlockStatementNode : StatementNode
+    {
         public BlockStatementNode(Token token, ParseNodeList statements)
-            : base(ParseNodeType.Block, token) {
-            _statements = GetParentedNodeList(statements);
+            : base(ParseNodeType.Block, token)
+        {
+            Statements = GetParentedNodeList(statements);
         }
 
-        public ParseNodeList Statements {
-            get {
-                return _statements;
-            }
-        }
+        public ParseNodeList Statements { get; }
     }
 }

@@ -3,16 +3,13 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class CustomTypeNode : UserTypeNode {
-
-        private ParseNodeList _baseTypes;
-        private ParseNodeList _members;
-
+namespace DSharp.Compiler.CodeModel.Types
+{
+    internal sealed class CustomTypeNode : UserTypeNode
+    {
         public CustomTypeNode(Token token, TokenType type,
                               ParseNodeList attributes,
                               Modifiers modifiers,
@@ -21,28 +18,23 @@ namespace ScriptSharp.CodeModel {
                               ParseNodeList baseTypes,
                               ParseNodeList constraintClauses,
                               ParseNodeList members)
-            : base(ParseNodeType.Type, token, type, attributes, modifiers, name, typeParameters, constraintClauses) {
-            _baseTypes = GetParentedNodeList(baseTypes);
-            _members = GetParentedNodeList(members);
+            : base(ParseNodeType.Type, token, type, attributes, modifiers, name, typeParameters, constraintClauses)
+        {
+            BaseTypes = GetParentedNodeList(baseTypes);
+            Members = GetParentedNodeList(members);
         }
 
-        public ParseNodeList BaseTypes {
-            get {
-                return _baseTypes;
-            }
-        }
+        public ParseNodeList BaseTypes { get; }
 
-        public ParseNodeList Members {
-            get {
-                return _members;
-            }
-        }
+        public ParseNodeList Members { get; }
 
-        internal override void MergePartialType(CustomTypeNode partialTypeNode) {
+        internal override void MergePartialType(CustomTypeNode partialTypeNode)
+        {
             base.MergePartialType(partialTypeNode);
 
-            if (partialTypeNode._baseTypes.Count > 0) {
-                _baseTypes.Append(GetParentedNodeList(partialTypeNode._baseTypes));
+            if (partialTypeNode.BaseTypes.Count > 0)
+            {
+                BaseTypes.Append(GetParentedNodeList(partialTypeNode.BaseTypes));
             }
         }
     }

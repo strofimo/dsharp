@@ -4,109 +4,120 @@
 //
 
 using System;
-using System.Text;
-using System.Globalization;
 using System.Collections;
 using System.Diagnostics;
-using ScriptSharp.CodeModel;
+using System.Globalization;
+using System.Text;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.Parser {
-
+namespace DSharp.Compiler.Parser
+{
     /// <summary>
-    /// Lexes C# source code. Does not handle # preprocessor directives.
+    ///     Lexes C# source code. Does not handle # preprocessor directives.
     /// </summary>
-    internal sealed class Lexer {
+    internal sealed class Lexer
+    {
+        private readonly Keywords keywords;
+        private readonly NameTable nameTable;
+        private readonly string path;
+        private readonly StringBuilder value;
+        private bool includeComments;
+        private int lastLine;
+        private BufferPosition position;
 
-        private TextBuffer _text;
-        private string _path;
-        private BufferPosition _position;
-        private StringBuilder _value;
-        private IList _tokenList;
-        private int _lastLine;
-        private NameTable _nameTable;
-        private Keywords _keywords;
-        private bool _includeComments;
+        private TextBuffer text;
+        private IList tokenList;
 
-        public Lexer(NameTable nameTable, string path) {
-            _nameTable = nameTable;
-            _path = path;
-            _keywords = new Keywords(nameTable);
-            _value = new StringBuilder(IdentifierToken.MaxIdentifierLength + 1);
+        public Lexer(NameTable nameTable, string path)
+        {
+            this.nameTable = nameTable;
+            this.path = path;
+            keywords = new Keywords(nameTable);
+            value = new StringBuilder(IdentifierToken.MAX_IDENTIFIER_LENGTH + 1);
 
-            _lastLine = -1;
+            lastLine = -1;
         }
 
+        private bool Eof => PeekChar() == '\0';
+
         /// <summary>
-        /// Lexes a block of C# text.
-        /// Does not handle preprocessor directives.
-        /// Will stop at EOF or before a # found as the first non-whitespace character
-        /// on a line. Does not include comment tokens.
+        ///     Lexes a block of C# text.
+        ///     Does not handle preprocessor directives.
+        ///     Will stop at EOF or before a # found as the first non-whitespace character
+        ///     on a line. Does not include comment tokens.
         /// </summary>
         /// <param name="text"> Buffer containing the text to lex. </param>
         /// <param name="tokenList"> List of tokens to add to. </param>
         /// <returns> true if a preprocessor directive was found, or false on end of buffer. </returns>
-        public bool LexBlock(TextBuffer text, IList tokenList) {
+        public bool LexBlock(TextBuffer text, IList tokenList)
+        {
             return LexBlock(text, tokenList, false);
         }
 
         /// <summary>
-        /// Lexes a block of C# text.
-        /// Does not handle preprocessor directives.
-        /// Will stop at EOF or before a # found as the first non-whitespace character
-        /// on a line. 
+        ///     Lexes a block of C# text.
+        ///     Does not handle preprocessor directives.
+        ///     Will stop at EOF or before a # found as the first non-whitespace character
+        ///     on a line.
         /// </summary>
         /// <param name="text"> Buffer containing the text to lex. </param>
         /// <param name="tokenList"> List of tokens to add to. </param>
         /// <param name="includeComments"> Should comment tokens be generated. </param>
         /// <returns> true if a preprocessor directive was found, or false on end of buffer. </returns>
-        public bool LexBlock(TextBuffer text, IList tokenList, bool includeComments) {
-            Debug.Assert(_keywords != null);
-            Debug.Assert(_nameTable != null);
+        public bool LexBlock(TextBuffer text, IList tokenList, bool includeComments)
+        {
+            Debug.Assert(keywords != null);
+            Debug.Assert(nameTable != null);
 
-            Debug.Assert(_text == null);
-            Debug.Assert(_tokenList == null);
-            Debug.Assert(_lastLine == -1);
+            Debug.Assert(this.text == null);
+            Debug.Assert(this.tokenList == null);
+            Debug.Assert(lastLine == -1);
 
-            _text = text;
-            _tokenList = tokenList;
-            _lastLine = text.Line - 1;
-            _includeComments = includeComments;
+            this.text = text;
+            this.tokenList = tokenList;
+            lastLine = text.Line - 1;
+            this.includeComments = includeComments;
 
             // get the tokens
             Token next = null;
-            do {
+
+            do
+            {
                 next = NextToken();
 
-                if (next == null) {
+                if (next == null)
+                {
                     // pre-processor directive
                     break;
                 }
 
-                if (next.Type != TokenType.Error && next.Type != TokenType.EOF) {
+                if (next.Type != TokenType.Error && next.Type != TokenType.Eof)
+                {
                     tokenList.Add(next);
                 }
-            } while (next.Type != TokenType.EOF);
+            } while (next.Type != TokenType.Eof);
 
-            _tokenList = null;
-            _text = null;
-            _lastLine = -1;
-            _includeComments = false;
+            this.tokenList = null;
+            this.text = null;
+            lastLine = -1;
+            this.includeComments = false;
             ClearPosition();
 
             return next == null;
         }
 
-
         /// <summary>
-        /// Event to subscribe to for Lex errors.
+        ///     Event to subscribe to for Lex errors.
         /// </summary>
         public event ErrorEventHandler OnError;
 
-        private static int IndexOfToken(Token[] tokens, Token token) {
+        private static int IndexOfToken(Token[] tokens, Token token)
+        {
             return Array.BinarySearch(tokens, token);
         }
 
-        private Token NextToken() {
+        private Token NextToken()
+        {
             SkipWhiteSpace();
 
             StartToken();
@@ -114,23 +125,34 @@ namespace ScriptSharp.Parser {
             bool atIdentifier = false;
 
             char ch = PeekChar();
+
             if (ch == '\0')
-                return NewToken(TokenType.EOF);
+            {
+                return NewToken(TokenType.Eof);
+            }
 
             ch = NextChar();
-            switch (ch) {
+
+            switch (ch)
+            {
                 case '\0':
                     Debug.Fail("Checked for EOF above");
+
                     return null;
 
                 case '#':
-                    if (_text.Line == _lastLine) {
+
+                    if (text.Line == lastLine)
+                    {
                         ReportError(LexError.UnexpectedCharacter, ch.ToString());
+
                         return ErrorToken();
                     }
-                    else {
+                    else
+                    {
                         ClearPosition();
-                        _text.Reverse();
+                        text.Reverse();
+
                         return null;
                     }
 
@@ -144,10 +166,14 @@ namespace ScriptSharp.Parser {
                 case ',': return NewToken(TokenType.Comma);
                 case ':':
                     ch = PeekChar();
-                    if (ch == ':') {
+
+                    if (ch == ':')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.ColonColon);
                     }
+
                     return NewToken(TokenType.Colon);
 
                 case ';': return NewToken(TokenType.Semicolon);
@@ -155,262 +181,366 @@ namespace ScriptSharp.Parser {
 
                 case '?':
                     ch = PeekChar();
-                    if (ch == '?') {
+
+                    if (ch == '?')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.Coalesce);
                     }
+
                     return NewToken(TokenType.Question);
 
                 case '+':
                     ch = PeekChar();
-                    if (ch == '+') {
+
+                    if (ch == '+')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.PlusPlus);
                     }
-                    else if (ch == '=') {
+                    else if (ch == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.PlusEqual);
                     }
+
                     return NewToken(TokenType.Plus);
 
                 case '-':
                     ch = PeekChar();
-                    if (ch == '-') {
+
+                    if (ch == '-')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.MinusMinus);
                     }
-                    else if (ch == '=') {
+                    else if (ch == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.MinusEqual);
                     }
-                    else if (ch == '>') {
+                    else if (ch == '>')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.Arrow);
                     }
+
                     return NewToken(TokenType.Minus);
 
                 case '*':
-                    if (PeekChar() == '=') {
+
+                    if (PeekChar() == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.StarEqual);
                     }
+
                     return NewToken(TokenType.Star);
 
                 case '/':
                     ch = PeekChar();
-                    if (ch == '=') {
+
+                    if (ch == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.SlashEqual);
                     }
-                    else if (ch == '/') {
+                    else if (ch == '/')
+                    {
                         NextChar();
 
                         CommentTokenType commentType;
-                        if (!EOF && PeekChar() == '/') {
+
+                        if (!Eof && PeekChar() == '/')
+                        {
                             commentType = CommentTokenType.TripleSlash;
                             NextChar();
                         }
-                        else {
+                        else
+                        {
                             commentType = CommentTokenType.DoubleSlash;
                         }
 
-                        _value.Length = 0;
-                        while (!EOF && !IsLineSeparator(PeekChar())) {
-                            _value.Append(NextChar());
+                        value.Length = 0;
+                        while (!Eof && !IsLineSeparator(PeekChar())) value.Append(NextChar());
+
+                        if (includeComments)
+                        {
+                            return new CommentToken(commentType, value.ToString(), path, TakePosition());
                         }
 
-                        if (_includeComments) {
-                            return new CommentToken(commentType, _value.ToString(), _path, TakePosition());
-                        }
-                        else {
-                            TakePosition();
-                            return NextToken();
-                        }
+                        TakePosition();
+
+                        return NextToken();
                     }
-                    else if (ch == '*') {
+                    else if (ch == '*')
+                    {
                         NextChar();
 
-                        _value.Length = 0;
-                        while (!EOF && (PeekChar() != '*' || PeekChar(1) != '/')) {
-                            _value.Append(NextChar());
-                        }
-                        if (EOF) {
+                        value.Length = 0;
+                        while (!Eof && (PeekChar() != '*' || PeekChar(1) != '/')) value.Append(NextChar());
+
+                        if (Eof)
+                        {
                             ReportError(LexError.UnexpectedEndOfFileStarSlash);
+
                             return ErrorToken();
                         }
 
                         NextChar();
                         NextChar();
 
-                        _lastLine = _text.Line;
+                        lastLine = text.Line;
 
-                        if (_includeComments) {
-                            return new CommentToken(CommentTokenType.SlashStar, _value.ToString(), _path, TakePosition());
+                        if (includeComments)
+                        {
+                            return new CommentToken(CommentTokenType.SlashStar, value.ToString(), path, TakePosition());
                         }
-                        else {
-                            TakePosition();
-                            return NextToken();
-                        }
+
+                        TakePosition();
+
+                        return NextToken();
                     }
 
                     return NewToken(TokenType.Slash);
 
                 case '%':
-                    if (PeekChar() == '=') {
+
+                    if (PeekChar() == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.PercentEqual);
                     }
+
                     return NewToken(TokenType.Percent);
 
                 case '&':
                     ch = PeekChar();
-                    if (ch == '&') {
+
+                    if (ch == '&')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.LogAnd);
                     }
-                    else if (ch == '=') {
+                    else if (ch == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.AndEqual);
                     }
+
                     return NewToken(TokenType.Ampersand);
 
                 case '|':
                     ch = PeekChar();
-                    if (ch == '|') {
+
+                    if (ch == '|')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.LogOr);
                     }
-                    else if (ch == '=') {
+                    else if (ch == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.BarEqual);
                     }
+
                     return NewToken(TokenType.Bar);
 
                 case '^':
-                    if (PeekChar() == '=') {
+
+                    if (PeekChar() == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.HatEqual);
                     }
+
                     return NewToken(TokenType.Hat);
 
                 case '!':
-                    if (PeekChar() == '=') {
+
+                    if (PeekChar() == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.NotEqual);
                     }
+
                     return NewToken(TokenType.Bang);
 
                 case '=':
-                    if (PeekChar() == '=') {
+
+                    if (PeekChar() == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.EqualEqual);
                     }
+
                     return NewToken(TokenType.Equal);
 
                 case '<':
                     ch = PeekChar();
-                    if (ch == '=') {
+
+                    if (ch == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.LessEqual);
                     }
-                    else if (ch == '<') {
+                    else if (ch == '<')
+                    {
                         NextChar();
-                        if (PeekChar() == '=') {
+
+                        if (PeekChar() == '=')
+                        {
                             NextChar();
+
                             return NewToken(TokenType.ShiftLeftEqual);
                         }
+
                         return NewToken(TokenType.ShiftLeft);
                     }
+
                     return NewToken(TokenType.Less);
 
                 case '>':
                     ch = PeekChar();
-                    if (ch == '=') {
+
+                    if (ch == '=')
+                    {
                         NextChar();
+
                         return NewToken(TokenType.GreaterEqual);
                     }
+
                     return NewToken(TokenType.Greater);
 
                 // literals
                 case '\'':
                     // char literal
+                {
+                    char ch2;
+
+                    if (ScanCharValue('\'', false, out ch, out ch2))
                     {
-                        char ch2;
-                        if (ScanCharValue('\'', false, out ch, out ch2)) {
-                            if (PeekChar() != '\'') {
-                                ReportError(LexError.BadCharConstant);
-                            }
-                            else {
-                                NextChar();
-                            }
-                            return new CharToken(ch, _path, TakePosition());
+                        if (PeekChar() != '\'')
+                        {
+                            ReportError(LexError.BadCharConstant);
                         }
-                        else {
-                            return ErrorToken();
+                        else
+                        {
+                            NextChar();
                         }
+
+                        return new CharToken(ch, path, TakePosition());
                     }
+
+                    return ErrorToken();
+                }
 
                 case '"':
                     // string literal
+                {
+                    value.Length = 0;
+
+                    while (!Eof && ScanCharValue('"', true, out ch, out char ch2))
                     {
-                        char ch2;
-                        _value.Length = 0;
-                        while (!EOF && ScanCharValue('"', true, out ch, out ch2)) {
-                            _value.Append(ch);
-                            if (ch2 != 0)
-                                _value.Append(ch2);
+                        value.Append(ch);
+
+                        if (ch2 != 0)
+                        {
+                            value.Append(ch2);
                         }
-                        if (EOF) {
-                            ReportError(LexError.UnexpectedEndOfFileString);
-                            return ErrorToken();
-                        }
-                        return new StringToken(_value.ToString(), _path, TakePosition());
                     }
+
+                    if (Eof)
+                    {
+                        ReportError(LexError.UnexpectedEndOfFileString);
+
+                        return ErrorToken();
+                    }
+
+                    return new StringToken(value.ToString(), path, TakePosition());
+                }
 
                 case '@':
                     ch = PeekChar();
-                    if (ch == '"') {
+
+                    if (ch == '"')
+                    {
                         // verbatim string literal
                         NextChar();
-                        _value.Length = 0;
-                        while (!EOF && (PeekChar() != '"' || PeekChar(1) == '"')) {
+                        value.Length = 0;
+
+                        while (!Eof && (PeekChar() != '"' || PeekChar(1) == '"'))
+                        {
                             // this is the one place where a CR/LF pair is significant
-                            bool wasCRLF;
-                            ch = NextChar(out wasCRLF);
-                            _value.Append(ch);
-                            if (wasCRLF) {
-                                _value.Append('\xA');
+                            ch = NextChar(out bool wasCrlf);
+                            value.Append(ch);
+
+                            if (wasCrlf)
+                            {
+                                value.Append('\xA');
                             }
-                            else if (ch == '"') {
+                            else if (ch == '"')
+                            {
                                 NextChar();
                             }
                         }
-                        if (EOF) {
+
+                        if (Eof)
+                        {
                             ReportError(LexError.UnexpectedEndOfFileString);
+
                             return ErrorToken();
                         }
+
                         NextChar();
-                        return new StringToken(_value.ToString(), _path, TakePosition());
+
+                        return new StringToken(value.ToString(), path, TakePosition());
                     }
+
                     atIdentifier = true;
                     goto default;
 
                 case '0':
-                    if (PeekChar() == 'x' || PeekChar() == 'X') {
+
+                    if (PeekChar() == 'x' || PeekChar() == 'X')
+                    {
                         NextChar();
 
                         // hexadecimal constant
                         ulong value = 0;
-                        while (IsHexDigit(PeekChar())) {
-                            if ((value & 0xF000000000000000) != 0) {
+
+                        while (IsHexDigit(PeekChar()))
+                        {
+                            if ((value & 0xF000000000000000) != 0)
+                            {
                                 ReportError(LexError.NumericConstantOverflow);
+
                                 return ErrorToken();
                             }
-                            value = (value << 4) | (uint)HexValue(NextChar());
+
+                            value = (value << 4) | (uint) HexValue(NextChar());
                         }
 
                         return CreateIntegerConstant(value, ScanIntegerSuffixOpt());
                     }
+
                     goto case '1';
 
                 case '1':
@@ -422,225 +552,289 @@ namespace ScriptSharp.Parser {
                 case '7':
                 case '8':
                 case '9':
-                DoNumber: {
-                        bool foundDecimalPoint = (ch == '.');
-                        bool foundExponent = false;
-                        NumericSuffix suffix = NumericSuffix.None;
+                    DoNumber:
+                {
+                    bool foundDecimalPoint = ch == '.';
+                    bool foundExponent = false;
+                    NumericSuffix suffix = NumericSuffix.None;
 
-                        _value.Length = 0;
-                        _value.Append(ch);
-                        while (true) {
-                            ch = PeekChar();
-                            if (ch == '.') {
-                                if (foundDecimalPoint || !IsDigit(PeekChar(1))) {
-                                    break;
-                                }
-                                foundDecimalPoint = true;
-                            }
-                            else if (ch == 'e' || ch == 'E') {
-                                char nextChar = PeekChar(1);
-                                if (IsDigit(nextChar) || ((nextChar == '+' || nextChar == '-') && IsDigit(PeekChar(2)))) {
-                                    foundExponent = true;
+                    value.Length = 0;
+                    value.Append(ch);
 
-                                    _value.Append(NextChar());
-                                    _value.Append(NextChar());
-                                    while (IsDigit(PeekChar())) {
-                                        _value.Append(NextChar());
-                                    }
-                                }
+                    while (true)
+                    {
+                        ch = PeekChar();
+
+                        if (ch == '.')
+                        {
+                            if (foundDecimalPoint || !IsDigit(PeekChar(1)))
+                            {
                                 break;
                             }
-                            else if (!IsDigit(ch)) {
-                                break;
-                            }
-                            _value.Append(NextChar());
-                        }
 
-                        if (!foundDecimalPoint && !foundExponent) {
-                            suffix = ScanIntegerSuffixOpt();
+                            foundDecimalPoint = true;
                         }
+                        else if (ch == 'e' || ch == 'E')
+                        {
+                            char nextChar = PeekChar(1);
 
-                        if (suffix == NumericSuffix.None) {
-                            suffix = ScanRealSuffixOpt();
-                        }
+                            if (IsDigit(nextChar) || (nextChar == '+' || nextChar == '-') && IsDigit(PeekChar(2)))
+                            {
+                                foundExponent = true;
 
-                        if (suffix < NumericSuffix.F && !foundDecimalPoint && !foundExponent) {
-                            // decimal integer constant
-                            ulong numericValue = 0;
-                            foreach (char digit in _value.ToString().ToCharArray()) {
-                                ulong value10 = numericValue * 10;
-                                if (value10 < numericValue) {
-                                    ReportError(LexError.NumericConstantOverflow);
-                                    return ErrorToken();
-                                }
-                                numericValue = value10 + (uint)(digit - '0');
+                                value.Append(NextChar());
+                                value.Append(NextChar());
+                                while (IsDigit(PeekChar())) value.Append(NextChar());
                             }
 
-                            return CreateIntegerConstant(numericValue, suffix);
+                            break;
                         }
-                        else {
-                            try {
-                                // real constant
-                                switch (suffix) {
-                                    case NumericSuffix.F: {
-                                            float f = float.Parse(_value.ToString(), NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
-                                            return new FloatToken(f, _path, TakePosition());
-                                        }
+                        else if (!IsDigit(ch))
+                        {
+                            break;
+                        }
 
-                                    case NumericSuffix.D:
-                                    case NumericSuffix.None: {
-                                            double d = double.Parse(_value.ToString(), NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
-                                            return new DoubleToken(d, _path, TakePosition());
-                                        }
+                        value.Append(NextChar());
+                    }
 
-                                    case NumericSuffix.M: {
-                                            decimal dec = decimal.Parse(_value.ToString(), NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
-                                            return new DecimalToken(dec, _path, TakePosition());
-                                        }
-                                }
+                    if (!foundDecimalPoint && !foundExponent)
+                    {
+                        suffix = ScanIntegerSuffixOpt();
+                    }
+
+                    if (suffix == NumericSuffix.None)
+                    {
+                        suffix = ScanRealSuffixOpt();
+                    }
+
+                    if (suffix < NumericSuffix.F && !foundDecimalPoint && !foundExponent)
+                    {
+                        // decimal integer constant
+                        ulong numericValue = 0;
+
+                        foreach (char digit in value.ToString())
+                        {
+                            ulong value10 = numericValue * 10;
+
+                            if (value10 < numericValue)
+                            {
+                                ReportError(LexError.NumericConstantOverflow);
+
+                                return ErrorToken();
                             }
-                            catch (Exception) {
-                                // catch overflow exceptions from the numeric parse
+
+                            numericValue = value10 + (uint) (digit - '0');
+                        }
+
+                        return CreateIntegerConstant(numericValue, suffix);
+                    }
+
+                    try
+                    {
+                        // real constant
+                        switch (suffix)
+                        {
+                            case NumericSuffix.F:
+                            {
+                                float f = float.Parse(value.ToString(),
+                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
+                                    CultureInfo.InvariantCulture);
+
+                                return new FloatToken(f, path, TakePosition());
                             }
-                            ReportError(LexError.NumericConstantOverflow);
-                            return ErrorToken();
+
+                            case NumericSuffix.D:
+                            case NumericSuffix.None:
+                            {
+                                double d = double.Parse(value.ToString(),
+                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
+                                    CultureInfo.InvariantCulture);
+
+                                return new DoubleToken(d, path, TakePosition());
+                            }
+
+                            case NumericSuffix.M:
+                            {
+                                decimal dec = decimal.Parse(value.ToString(),
+                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
+                                    CultureInfo.InvariantCulture);
+
+                                return new DecimalToken(dec, path, TakePosition());
+                            }
                         }
                     }
+                    catch (Exception)
+                    {
+                        // catch overflow exceptions from the numeric parse
+                    }
+
+                    ReportError(LexError.NumericConstantOverflow);
+
+                    return ErrorToken();
+                }
 
                 case '.':
-                    if (IsDigit(PeekChar())) {
+
+                    if (IsDigit(PeekChar()))
+                    {
                         goto DoNumber;
                     }
+
                     return NewToken(TokenType.Dot);
 
-                default: {
-                        _value.Length = 0;
-                        if (!IsIdentifierChar(ch)) {
-                            ReportError(LexError.UnexpectedCharacter, ch.ToString());
-                            return ErrorToken();
-                        }
-                        _value.Append(ch);
-
-                        while (ScanIdentifierChar(out ch)) {
-                            _value.Append(ch);
-                        }
-
-                        Debug.Assert(_value.Length > 0);
-
-                        if (_value.Length > IdentifierToken.MaxIdentifierLength) {
-                            ReportError(LexError.IdentifierTooLong);
-                            return ErrorToken();
-                        }
-
-                        Name name = _nameTable.Add(_value);
-                        if (!atIdentifier) {
-                            // check for keywords
-                            TokenType keyword = _keywords.IsKeyword(name);
-                            if (Token.IsKeyword(keyword)) {
-                                return new Token(keyword, _path, TakePosition());
-                            }
-                        }
-
-                        return new IdentifierToken(name, atIdentifier, _path, TakePosition());
-                    }
-            }
-        }
-
-        private void SkipWhiteSpace() {
-            while (IsWhiteSpace(PeekChar())) {
-                NextChar();
-            }
-        }
-
-        private enum NumericSuffix {
-            None,
-
-            // integer suffixes
-            U = 0x01,
-            L = 0x10,
-            UL = 0x11,
-
-            // floating point suffixes
-            F,
-            D,
-            M
-        }
-
-        private Token CreateIntegerConstant(ulong value, NumericSuffix suffix) {
-            switch (suffix) {
-                case NumericSuffix.None:
-                    if (value <= int.MaxValue) {
-                        return new IntToken((int)value, _path, TakePosition());
-                    }
-                    else if (value <= uint.MaxValue) {
-                        return new UIntToken((uint)value, _path, TakePosition());
-                    }
-                    else if (value <= long.MaxValue) {
-                        return new LongToken((long)value, _path, TakePosition());
-                    }
-                    goto case NumericSuffix.UL;
-                case NumericSuffix.U:
-                    if (value <= uint.MaxValue) {
-                        return new UIntToken((uint)value, _path, TakePosition());
-                    }
-                    goto case NumericSuffix.UL;
-                case NumericSuffix.L:
-                    if (value <= long.MaxValue) {
-                        return new LongToken((long)value, _path, TakePosition());
-                    }
-                    goto case NumericSuffix.UL;
-                case NumericSuffix.UL:
                 default:
-                    return new ULongToken(value, _path, TakePosition());
+                {
+                    value.Length = 0;
+
+                    if (!IsIdentifierChar(ch))
+                    {
+                        ReportError(LexError.UnexpectedCharacter, ch.ToString());
+
+                        return ErrorToken();
+                    }
+
+                    value.Append(ch);
+
+                    while (ScanIdentifierChar(out ch)) value.Append(ch);
+
+                    Debug.Assert(value.Length > 0);
+
+                    if (value.Length > IdentifierToken.MAX_IDENTIFIER_LENGTH)
+                    {
+                        ReportError(LexError.IdentifierTooLong);
+
+                        return ErrorToken();
+                    }
+
+                    Name name = nameTable.Add(value);
+
+                    if (!atIdentifier)
+                    {
+                        // check for keywords
+                        TokenType keyword = keywords.IsKeyword(name);
+
+                        if (Token.IsKeyword(keyword))
+                        {
+                            return new Token(keyword, path, TakePosition());
+                        }
+                    }
+
+                    return new IdentifierToken(name, atIdentifier, path, TakePosition());
+                }
             }
         }
 
-        private NumericSuffix ScanIntegerSuffixOpt() {
+        private void SkipWhiteSpace()
+        {
+            while (IsWhiteSpace(PeekChar())) NextChar();
+        }
+
+        private Token CreateIntegerConstant(ulong value, NumericSuffix suffix)
+        {
+            switch (suffix)
+            {
+                case NumericSuffix.None:
+
+                    if (value <= int.MaxValue)
+                    {
+                        return new IntToken((int) value, path, TakePosition());
+                    }
+                    else if (value <= uint.MaxValue)
+                    {
+                        return new UIntToken((uint) value, path, TakePosition());
+                    }
+                    else if (value <= long.MaxValue)
+                    {
+                        return new LongToken((long) value, path, TakePosition());
+                    }
+
+                    goto case NumericSuffix.Ul;
+                case NumericSuffix.U:
+
+                    if (value <= uint.MaxValue)
+                    {
+                        return new UIntToken((uint) value, path, TakePosition());
+                    }
+
+                    goto case NumericSuffix.Ul;
+                case NumericSuffix.L:
+
+                    if (value <= long.MaxValue)
+                    {
+                        return new LongToken((long) value, path, TakePosition());
+                    }
+
+                    goto case NumericSuffix.Ul;
+                case NumericSuffix.Ul:
+                default:
+
+                    return new ULongToken(value, path, TakePosition());
+            }
+        }
+
+        private NumericSuffix ScanIntegerSuffixOpt()
+        {
             NumericSuffix suffix = NumericSuffix.None;
 
-            while (true) {
+            while (true)
+            {
                 char ch = PeekChar();
-                if (ch == 'U' || ch == 'u') {
-                    if ((suffix & NumericSuffix.U) != 0) {
+
+                if (ch == 'U' || ch == 'u')
+                {
+                    if ((suffix & NumericSuffix.U) != 0)
+                    {
                         break;
                     }
+
                     suffix |= NumericSuffix.U;
                 }
-                else if (ch == 'l' || ch == 'L') {
-                    if ((suffix & NumericSuffix.L) != 0) {
+                else if (ch == 'l' || ch == 'L')
+                {
+                    if ((suffix & NumericSuffix.L) != 0)
+                    {
                         break;
                     }
+
                     suffix |= NumericSuffix.L;
                 }
-                else {
+                else
+                {
                     break;
                 }
+
                 NextChar();
             }
 
             return suffix;
         }
 
-        private NumericSuffix ScanRealSuffixOpt() {
+        private NumericSuffix ScanRealSuffixOpt()
+        {
             NumericSuffix suffix = NumericSuffix.None;
 
-            switch (PeekChar()) {
+            switch (PeekChar())
+            {
                 case 'F':
                 case 'f':
                     suffix = NumericSuffix.F;
+
                     break;
 
                 case 'D':
                 case 'd':
                     suffix = NumericSuffix.D;
+
                     break;
 
                 case 'M':
                 case 'm':
                     suffix = NumericSuffix.M;
+
                     break;
 
                 default:
+
                     return NumericSuffix.None;
             }
 
@@ -649,140 +843,220 @@ namespace ScriptSharp.Parser {
             return suffix;
         }
 
-        private bool ScanIdentifierChar(out char ch) {
+        private bool ScanIdentifierChar(out char ch)
+        {
             ch = '\0';
 
             char value = PeekChar();
-            if (IsIdentifierChar(value)) {
+
+            if (IsIdentifierChar(value))
+            {
                 ch = NextChar();
+
                 return true;
             }
-            else if (value == '\\' && PeekChar(1) == 'u') {
+
+            if (value == '\\' && PeekChar(1) == 'u')
+            {
                 // unicode esape
                 NextChar();
                 NextChar();
                 value = '\0';
                 int i = 0;
-                while (i < 4 && IsHexDigit(PeekChar())) {
-                    value = (char)(value << 4 + HexValue(NextChar()));
+
+                while (i < 4 && IsHexDigit(PeekChar()))
+                {
+                    value = (char) (value << (4 + HexValue(NextChar())));
                     i += 1;
                 }
-                if (i != 4) {
+
+                if (i != 4)
+                {
                     ReportError(LexError.BadEscapeSequence);
+
                     return false;
                 }
+
                 ch = value;
+
                 return true;
             }
-            else {
-                return false;
-            }
+
+            return false;
         }
 
-        private bool ScanCharValue(char terminator, bool allowSurrogates, out char ch, out char ch2) {
+        private bool ScanCharValue(char terminator, bool allowSurrogates, out char ch, out char ch2)
+        {
             ch = '\0';
             ch2 = '\0';
             char value = PeekChar();
-            if ('\\' == value) {
+
+            if ('\\' == value)
+            {
                 NextChar();
-                switch (PeekChar()) {
-                    case '\'': value = '\''; break;
-                    case '\"': value = '\"'; break;
-                    case '\\': value = '\\'; break;
-                    case '0': value = '\0'; break;
-                    case 'a': value = '\a'; break;
-                    case 'b': value = '\b'; break;
-                    case 'f': value = '\f'; break;
-                    case 'n': value = '\n'; break;
-                    case 'r': value = '\r'; break;
-                    case 't': value = '\t'; break;
-                    case 'v': value = '\v'; break;
+
+                switch (PeekChar())
+                {
+                    case '\'':
+                        value = '\'';
+
+                        break;
+                    case '\"':
+                        value = '\"';
+
+                        break;
+                    case '\\':
+                        value = '\\';
+
+                        break;
+                    case '0':
+                        value = '\0';
+
+                        break;
+                    case 'a':
+                        value = '\a';
+
+                        break;
+                    case 'b':
+                        value = '\b';
+
+                        break;
+                    case 'f':
+                        value = '\f';
+
+                        break;
+                    case 'n':
+                        value = '\n';
+
+                        break;
+                    case 'r':
+                        value = '\r';
+
+                        break;
+                    case 't':
+                        value = '\t';
+
+                        break;
+                    case 'v':
+                        value = '\v';
+
+                        break;
                     case 'x':
-                    case 'u': {
-                            // hex digits
-                            NextChar();
-                            value = '\0';
-                            int i = 0;
-                            while (i < 4 && IsHexDigit(PeekChar())) {
+                    case 'u':
+                    {
+                        // hex digits
+                        NextChar();
+                        value = '\0';
+                        int i = 0;
 
-                                value = (char)((value << 4) + HexValue(NextChar()));
-                                i += 1;
-                            }
-                            if (i == 0 || (ch == 'u' && i != 4)) {
-                                ReportError(LexError.BadEscapeSequence);
-                                return false;
-                            }
-                            ch = value;
+                        while (i < 4 && IsHexDigit(PeekChar()))
+                        {
+                            value = (char) ((value << 4) + HexValue(NextChar()));
+                            i += 1;
+                        }
+
+                        if (i == 0 || ch == 'u' && i != 4)
+                        {
+                            ReportError(LexError.BadEscapeSequence);
+
+                            return false;
+                        }
+
+                        ch = value;
+
+                        return true;
+                    }
+
+                    case 'U':
+                    {
+                        // unicode surrogates
+                        NextChar();
+                        uint surrogateValue = 0;
+                        int i = 0;
+
+                        while (i < 8 && IsHexDigit(PeekChar()))
+                        {
+                            surrogateValue = (char) ((surrogateValue << 4) + HexValue(NextChar()));
+                            i += 1;
+                        }
+
+                        if (i != 8 || !allowSurrogates && surrogateValue > 0xFFFF || surrogateValue > 0x10FFFF)
+                        {
+                            ReportError(LexError.BadEscapeSequence);
+
+                            return false;
+                        }
+
+                        if (surrogateValue < 0x10000)
+                        {
+                            ch = (char) surrogateValue;
+
                             return true;
                         }
 
-                    case 'U': {
-                            // unicode surrogates
-                            NextChar();
-                            uint surrogateValue = 0;
-                            int i = 0;
-                            while (i < 8 && IsHexDigit(PeekChar())) {
+                        ch = (char) ((surrogateValue - 0x10000) / 0x400 + 0xD800);
+                        ch2 = (char) ((surrogateValue - 0x10000) % 0x400 + 0xDC00);
 
-                                surrogateValue = (char)((surrogateValue << 4) + HexValue(NextChar()));
-                                i += 1;
-                            }
-                            if (i != 8 || (!allowSurrogates && surrogateValue > 0xFFFF) || surrogateValue > 0x10FFFF) {
-                                ReportError(LexError.BadEscapeSequence);
-                                return false;
-                            }
-                            if (surrogateValue < 0x10000) {
-                                ch = (char)surrogateValue;
-                                return true;
-                            }
-
-                            ch = (char)((surrogateValue - 0x10000) / 0x400 + 0xD800);
-                            ch2 = (char)((surrogateValue - 0x10000) % 0x400 + 0xDC00);
-
-                            return true;
-                        }
+                        return true;
+                    }
 
                     default:
                         ReportError(LexError.BadEscapeSequence);
+
                         return false;
                 }
+
                 NextChar();
                 ch = value;
+
                 return true;
             }
-            else if (value == terminator) {
+
+            if (value == terminator)
+            {
                 NextChar();
-                if (terminator == '\'') {
+
+                if (terminator == '\'')
+                {
                     ReportError(LexError.EmptyCharConstant);
                 }
 
                 return false;
             }
-            else if (IsLineSeparator(value)) {
+
+            if (IsLineSeparator(value))
+            {
                 ReportError(LexError.WhiteSpaceInConstant);
+
                 return false;
             }
-            else {
-                NextChar();
-                ch = value;
-                return true;
-            }
+
+            NextChar();
+            ch = value;
+
+            return true;
         }
 
-        private void ReportSyntaxError() {
+        private void ReportSyntaxError()
+        {
             ReportError(LexError.SyntaxError);
         }
 
-        private void ReportError(Error error, params object[] args) {
-            if (OnError != null) {
-                OnError(this, new ErrorEventArgs(error, _text.Position, args));
+        private void ReportError(Error error, params object[] args)
+        {
+            if (OnError != null)
+            {
+                OnError(this, new ErrorEventArgs(error, text.Position, args));
             }
         }
 
         /// <summary>
-        /// Tests if ch is a whitespace character
+        ///     Tests if ch is a whitespace character
         /// </summary>
-        public static bool IsWhiteSpace(char ch) {
-            switch (ch) {
+        public static bool IsWhiteSpace(char ch)
+        {
+            switch (ch)
+            {
                 // line separators are whitespace
                 case '\xD':
                 case '\xA':
@@ -794,97 +1068,126 @@ namespace ScriptSharp.Parser {
                 case '\v':
                 case ' ':
                 case '\t':
+
                     return true;
 
                 // handle odd unicode whitespace
                 default:
-                    return (ch > 127 && char.IsWhiteSpace(ch));
+
+                    return ch > 127 && char.IsWhiteSpace(ch);
             }
         }
 
         /// <summary>
-        /// Tests if ch is a line separator character.
+        ///     Tests if ch is a line separator character.
         /// </summary>
-        public static bool IsLineSeparator(char ch) {
-            switch (ch) {
+        public static bool IsLineSeparator(char ch)
+        {
+            switch (ch)
+            {
                 case '\xD':
                 case '\xA':
                 case '\x2028':
                 case '\x2029':
+
                     return true;
                 default:
+
                     return false;
             }
         }
 
         /// <summary>
-        /// Tests if ch is a decimal digit.
+        ///     Tests if ch is a decimal digit.
         /// </summary>
-        public static bool IsDigit(char ch) {
-            return (ch >= '0') && (ch <= '9');
+        public static bool IsDigit(char ch)
+        {
+            return ch >= '0' && ch <= '9';
         }
 
         /// <summary>
-        /// Tests if ch is any valid identifier character.
+        ///     Tests if ch is any valid identifier character.
         /// </summary>
-        public static bool IsIdentifierChar(char ch) {
-            return char.IsLetterOrDigit(ch) || (ch == '_');
+        public static bool IsIdentifierChar(char ch)
+        {
+            return char.IsLetterOrDigit(ch) || ch == '_';
         }
 
         /// <summary>
-        /// Tests if ch is a valid hexadecimal digit.
+        ///     Tests if ch is a valid hexadecimal digit.
         /// </summary>
-        public static bool IsHexDigit(char ch) {
-            return IsDigit(ch) || ((ch & 0xdf) >= 'A' && (ch & 0xdf) <= 'F');
+        public static bool IsHexDigit(char ch)
+        {
+            return IsDigit(ch) || (ch & 0xdf) >= 'A' && (ch & 0xdf) <= 'F';
         }
 
-        private static int HexValue(char ch) {
+        private static int HexValue(char ch)
+        {
             return IsDigit(ch) ? ch - '0' : (ch & 0xdf) - 'A' + 10;
         }
 
-        private Token ErrorToken() {
+        private Token ErrorToken()
+        {
             return NewToken(TokenType.Error);
         }
 
-        private Token NewToken(TokenType type) {
-            return new Token(type, _path, TakePosition());
+        private Token NewToken(TokenType type)
+        {
+            return new Token(type, path, TakePosition());
         }
 
-        private BufferPosition TakePosition() {
-            _lastLine = _text.Line;
-            BufferPosition position = _position;
+        private BufferPosition TakePosition()
+        {
+            lastLine = text.Line;
+            BufferPosition position = this.position;
             ClearPosition();
+
             return position;
         }
 
-        private void ClearPosition() {
-            _position = new BufferPosition();
+        private void ClearPosition()
+        {
+            position = new BufferPosition();
         }
 
-        private void StartToken() {
-            _position = _text.Position;
+        private void StartToken()
+        {
+            position = text.Position;
         }
 
-        private char NextChar() {
-            return _text.NextChar();
+        private char NextChar()
+        {
+            return text.NextChar();
         }
 
-        private char NextChar(out bool wasCRLF) {
-            return _text.NextChar(out wasCRLF);
+        private char NextChar(out bool wasCrlf)
+        {
+            return text.NextChar(out wasCrlf);
         }
 
-        private char PeekChar() {
+        private char PeekChar()
+        {
             return PeekChar(0);
         }
 
-        private char PeekChar(int index) {
-            return _text.PeekChar(index);
+        private char PeekChar(int index)
+        {
+            return text.PeekChar(index);
         }
 
-        private bool EOF {
-            get {
-                return PeekChar() == '\0';
-            }
+        private enum NumericSuffix
+        {
+            None,
+
+            // integer suffixes
+            U = 0x01,
+            L = 0x10,
+            Ul = 0x11,
+
+            // floating point suffixes
+            F,
+            D,
+            M
         }
     }
 }

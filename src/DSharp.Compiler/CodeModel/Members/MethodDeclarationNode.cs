@@ -3,23 +3,19 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Attributes;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Statements;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal class MethodDeclarationNode : MemberNode {
-
-        private ParseNodeList _attributes;
-        private Modifiers _modifiers;
-        private ParseNode _returnType;
-        private NameNode _interfaceType;
-        private AtomicNameNode _name;
-        private ParseNodeList _typeParameters;
-        private ParseNodeList _parameters;
-        private ParseNodeList _constraints;
-        private BlockStatementNode _implementation;
+namespace DSharp.Compiler.CodeModel.Members
+{
+    internal class MethodDeclarationNode : MemberNode
+    {
+        private readonly NameNode interfaceType;
+        private readonly AtomicNameNode name;
+        private ParseNodeList constraints;
+        private ParseNodeList typeParameters;
 
         public MethodDeclarationNode(Token token,
                                      ParseNodeList attributes,
@@ -31,10 +27,11 @@ namespace ScriptSharp.CodeModel {
                                      ParseNodeList formals,
                                      ParseNodeList constraints,
                                      BlockStatementNode body)
-            : this(ParseNodeType.MethodDeclaration, token, attributes, modifiers, returnType, name, formals, body) {
-            _interfaceType = (NameNode)GetParentedNode(interfaceType);
-            _typeParameters = GetParentedNodeList(typeParameters);
-            _constraints = GetParentedNodeList(constraints);
+            : this(ParseNodeType.MethodDeclaration, token, attributes, modifiers, returnType, name, formals, body)
+        {
+            this.interfaceType = (NameNode) GetParentedNode(interfaceType);
+            this.typeParameters = GetParentedNodeList(typeParameters);
+            this.constraints = GetParentedNodeList(constraints);
         }
 
         protected MethodDeclarationNode(ParseNodeType nodeType, Token token,
@@ -44,55 +41,28 @@ namespace ScriptSharp.CodeModel {
                                         AtomicNameNode name,
                                         ParseNodeList formals,
                                         BlockStatementNode body)
-            : base(nodeType, token) {
-            _attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
-            _modifiers = modifiers;
-            _returnType = GetParentedNode(returnType);
-            _name = (AtomicNameNode)GetParentedNode(name);
-            _parameters = GetParentedNodeList(formals);
-            _implementation = (BlockStatementNode)GetParentedNode(body);
+            : base(nodeType, token)
+        {
+            Attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
+            Modifiers = modifiers;
+            Type = GetParentedNode(returnType);
+            this.name = (AtomicNameNode) GetParentedNode(name);
+            Parameters = GetParentedNodeList(formals);
+            Implementation = (BlockStatementNode) GetParentedNode(body);
         }
 
-        public override ParseNodeList Attributes {
-            get {
-                return _attributes;
-            }
-        }
+        public override ParseNodeList Attributes { get; }
 
-        public BlockStatementNode Implementation {
-            get {
-                return _implementation;
-            }
-        }
+        public BlockStatementNode Implementation { get; }
 
-        public ParseNode InterfaceType {
-            get {
-                return _interfaceType;
-            }
-        }
+        public ParseNode InterfaceType => interfaceType;
 
-        public override Modifiers Modifiers {
-            get {
-                return _modifiers;
-            }
-        }
+        public override Modifiers Modifiers { get; }
 
-        public override string Name {
-            get {
-                return _name.Name;
-            }
-        }
+        public override string Name => name.Name;
 
-        public ParseNodeList Parameters {
-            get {
-                return _parameters;
-            }
-        }
+        public ParseNodeList Parameters { get; }
 
-        public override ParseNode Type {
-            get {
-                return _returnType;
-            }
-        }
+        public override ParseNode Type { get; }
     }
 }

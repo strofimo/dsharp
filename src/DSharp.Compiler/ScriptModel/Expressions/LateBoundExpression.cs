@@ -3,75 +3,62 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class LateBoundExpression : Expression
+    {
+        private readonly Collection<Expression> parameters;
 
-    internal sealed class LateBoundExpression : Expression {
+        public LateBoundExpression(Expression objectReference, Expression nameExpression, LateBoundOperation operation,
+                                   TypeSymbol evaluatedType)
+            : base(ExpressionType.LateBound, evaluatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            ObjectReference = objectReference;
+            NameExpression = nameExpression;
+            Operation = operation;
 
-        private LateBoundOperation _operation;
-        private Expression _objectReference;
-        private Expression _nameExpression;
-        private Collection<Expression> _parameters;
-
-        public LateBoundExpression(Expression objectReference, Expression nameExpression, LateBoundOperation operation, TypeSymbol evaluatedType)
-            : base(ExpressionType.LateBound, evaluatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _objectReference = objectReference;
-            _nameExpression = nameExpression;
-            _operation = operation;
-
-            _parameters = new Collection<Expression>();
+            parameters = new Collection<Expression>();
         }
 
-        public Expression NameExpression {
-            get {
-                return _nameExpression;
-            }
-        }
+        public Expression NameExpression { get; }
 
-        public LateBoundOperation Operation {
-            get {
-                return _operation;
-            }
-        }
+        public LateBoundOperation Operation { get; }
 
-        public Expression ObjectReference {
-            get {
-                return _objectReference;
-            }
-        }
+        public Expression ObjectReference { get; }
 
-        public ICollection<Expression> Parameters {
-            get {
-                return _parameters;
-            }
-        }
+        public ICollection<Expression> Parameters => parameters;
 
-        public override bool RequiresThisContext {
-            get {
-                if ((_objectReference != null) && _objectReference.RequiresThisContext) {
-                    return true;
-                }
-                if (_nameExpression.RequiresThisContext) {
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                if (ObjectReference != null && ObjectReference.RequiresThisContext)
+                {
                     return true;
                 }
 
-                foreach (Expression expression in _parameters) {
-                    if (expression.RequiresThisContext) {
+                if (NameExpression.RequiresThisContext)
+                {
+                    return true;
+                }
+
+                foreach (Expression expression in parameters)
+                    if (expression.RequiresThisContext)
+                    {
                         return true;
                     }
-                }
 
                 return false;
             }
         }
 
-        public void AddParameterValue(Expression expression) {
-            _parameters.Add(expression);
+        public void AddParameterValue(Expression expression)
+        {
+            parameters.Add(expression);
         }
     }
 }

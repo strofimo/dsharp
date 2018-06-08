@@ -3,60 +3,41 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 
-namespace ScriptSharp.ScriptModel {
-    
-    internal abstract class TypeSymbol : Symbol, ISymbolTable {
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
+    internal abstract class TypeSymbol : Symbol, ISymbolTable
+    {
+        private readonly List<MemberSymbol> members;
+        private readonly Dictionary<string, MemberSymbol> memberTable;
 
-        private ICollection<string> _imports;
-        private IDictionary<string, string> _aliases;
-        private ScriptReference _dependency;
-        private bool _applicationType;
-        private bool _isPublic;
-        private bool _isArray;
-        private ICollection<GenericParameterSymbol> _genericParameters;
-        private ICollection<TypeSymbol> _genericArguments;
-        private TypeSymbol _genericType;
+        private object metadataReference;
 
-        private ISymbolTable _parentSymbolTable;
-        private Dictionary<string, MemberSymbol> _memberTable;
-        private List<MemberSymbol> _members;
-
-        private object _metadataReference;
-        private bool _coreType;
-        private bool _ignoreNamespace;
-        private string _scriptNamespace;
-        private bool _testType;
+        private ISymbolTable parentSymbolTable;
+        private bool testType;
 
         protected TypeSymbol(SymbolType type, string name, NamespaceSymbol parent)
-            : base(type, name, parent) {
+            : base(type, name, parent)
+        {
             Debug.Assert(parent != null);
 
-            _memberTable = new Dictionary<string, MemberSymbol>();
-            _members = new List<MemberSymbol>();
-            _applicationType = true;
+            memberTable = new Dictionary<string, MemberSymbol>();
+            members = new List<MemberSymbol>();
+            IsApplicationType = true;
         }
 
-        public IDictionary<string, string> Aliases {
-            get {
-                return _aliases;
-            }
-        }
+        public IDictionary<string, string> Aliases { get; private set; }
 
-        public ScriptReference Dependency {
-            get {
-                return _dependency;
-            }
-        }
+        public ScriptReference Dependency { get; private set; }
 
-        public override string DocumentationID {
-            get {
+        public override string DocumentationId
+        {
+            get
+            {
                 StringBuilder sb = new StringBuilder();
                 sb.Append("T:");
                 sb.Append(Namespace);
@@ -67,11 +48,16 @@ namespace ScriptSharp.ScriptModel {
             }
         }
 
-        public string FullGeneratedName {
-            get {
-                if ((IsApplicationType == false) && (_ignoreNamespace == false)) {
+        public string FullGeneratedName
+        {
+            get
+            {
+                if (IsApplicationType == false && IgnoreNamespace == false)
+                {
                     string namespaceName = GeneratedNamespace;
-                    if (namespaceName.Length != 0) {
+
+                    if (namespaceName.Length != 0)
+                    {
                         return namespaceName + "." + GeneratedName;
                     }
                 }
@@ -80,264 +66,249 @@ namespace ScriptSharp.ScriptModel {
             }
         }
 
-        public string FullName {
-            get {
+        public string FullName
+        {
+            get
+            {
                 string namespaceName = Namespace;
-                if (namespaceName.Length != 0) {
+
+                if (namespaceName.Length != 0)
+                {
                     return namespaceName + "." + Name;
                 }
+
                 return Name;
             }
         }
 
-        public string GeneratedNamespace {
-            get {
-                if (IsApplicationType) {
-                    return Namespace.Replace(".", "$");
-                }
-                return _scriptNamespace != null ? _scriptNamespace : String.Empty;
-            }
-        }
-
-        public override string GeneratedName
+        public string GeneratedNamespace
         {
             get
             {
-                return base.GeneratedName.Replace("`", "_$");
+                if (IsApplicationType)
+                {
+                    return Namespace.Replace(".", "$");
+                }
+
+                return ScriptNamespace != null ? ScriptNamespace : string.Empty;
             }
         }
 
-        public ICollection<TypeSymbol> GenericArguments {
-            get {
-                return _genericArguments;
+        public override string GeneratedName => base.GeneratedName.Replace("`", "_$");
+
+        public ICollection<TypeSymbol> GenericArguments { get; private set; }
+
+        public ICollection<GenericParameterSymbol> GenericParameters { get; private set; }
+
+        public TypeSymbol GenericType { get; private set; }
+
+        public bool IgnoreNamespace { get; private set; }
+
+        public ICollection<string> Imports { get; private set; }
+
+        public bool IsArray { get; private set; }
+
+        public bool IsApplicationType { get; private set; }
+
+        public bool IsCoreType { get; private set; }
+
+        public bool IsGeneric => GenericParameters != null &&
+                                 GenericParameters.Count != 0;
+
+        public bool IsPublic { get; private set; }
+
+        public ICollection<MemberSymbol> Members => members;
+
+        public object MetadataReference
+        {
+            get
+            {
+                Debug.Assert(metadataReference != null);
+
+                return metadataReference;
             }
         }
 
-        public ICollection<GenericParameterSymbol> GenericParameters {
-            get {
-                return _genericParameters;
-            }
-        }
-
-        public TypeSymbol GenericType {
-            get {
-                return _genericType;
-            }
-        }
-
-        public bool IgnoreNamespace {
-            get {
-                return _ignoreNamespace;
-            }
-        }
-
-        public ICollection<string> Imports {
-            get {
-                return _imports;
-            }
-        }
-
-        public bool IsArray {
-            get {
-                return _isArray;
-            }
-        }
-
-        public bool IsApplicationType {
-            get {
-                return _applicationType;
-            }
-        }
-
-        public bool IsCoreType {
-            get {
-                return _coreType;
-            }
-        }
-
-        public bool IsGeneric {
-            get {
-                return (_genericParameters != null) &&
-                       (_genericParameters.Count != 0);
-            }
-        }
-
-        public bool IsPublic {
-            get {
-                return _isPublic;
-            }
-        }
-
-        public ICollection<MemberSymbol> Members {
-            get {
-                return _members;
-            }
-        }
-
-        public object MetadataReference {
-            get {
-                Debug.Assert(_metadataReference != null);
-                return _metadataReference;
-            }
-        }
-
-        public string Namespace {
-            get {
+        public string Namespace
+        {
+            get
+            {
                 Debug.Assert(Parent is NamespaceSymbol);
-                return ((NamespaceSymbol)Parent).Name;
+
+                return ((NamespaceSymbol) Parent).Name;
             }
         }
 
-        public string ScriptNamespace {
-            get {
-                return _scriptNamespace;
-            }
-            set {
-                _scriptNamespace = value;
-            }
-        }
+        public string ScriptNamespace { get; set; }
 
-        public virtual void AddMember(MemberSymbol memberSymbol) {
+        public virtual void AddMember(MemberSymbol memberSymbol)
+        {
             Debug.Assert(memberSymbol != null);
-            Debug.Assert(String.IsNullOrEmpty(memberSymbol.Name) == false);
-            Debug.Assert(_memberTable.ContainsKey(memberSymbol.Name) == false);
+            Debug.Assert(string.IsNullOrEmpty(memberSymbol.Name) == false);
+            Debug.Assert(memberTable.ContainsKey(memberSymbol.Name) == false);
 
-            _members.Add(memberSymbol);
-            _memberTable[memberSymbol.Name] = memberSymbol;
+            members.Add(memberSymbol);
+            memberTable[memberSymbol.Name] = memberSymbol;
         }
 
-        public void AddGenericArguments(TypeSymbol genericType, ICollection<TypeSymbol> genericArguments) {
+        public void AddGenericArguments(TypeSymbol genericType, ICollection<TypeSymbol> genericArguments)
+        {
             Debug.Assert(genericType != null);
-            Debug.Assert(_genericType == null);
+            Debug.Assert(GenericType == null);
 
-            Debug.Assert(_genericParameters != null);
+            Debug.Assert(GenericParameters != null);
 
-            Debug.Assert(_genericArguments == null);
+            Debug.Assert(GenericArguments == null);
             Debug.Assert(genericArguments != null);
-            Debug.Assert(genericArguments.Count == _genericParameters.Count);
+            Debug.Assert(genericArguments.Count == GenericParameters.Count);
 
-            _genericType = genericType;
-            _genericArguments = genericArguments;
+            GenericType = genericType;
+            GenericArguments = genericArguments;
         }
 
-        public void AddGenericParameters(ICollection<GenericParameterSymbol> genericParameters) {
-            Debug.Assert(_genericParameters == null);
+        public void AddGenericParameters(ICollection<GenericParameterSymbol> genericParameters)
+        {
+            Debug.Assert(GenericParameters == null);
             Debug.Assert(genericParameters != null);
             Debug.Assert(genericParameters.Count != 0);
 
-            _genericParameters = genericParameters;
+            GenericParameters = genericParameters;
         }
 
-        public virtual TypeSymbol GetBaseType() {
+        public virtual TypeSymbol GetBaseType()
+        {
             return null;
         }
 
-        public virtual MemberSymbol GetMember(string name) {
-            if (_memberTable.ContainsKey(name)) {
-                return _memberTable[name];
+        public virtual MemberSymbol GetMember(string name)
+        {
+            if (memberTable.ContainsKey(name))
+            {
+                return memberTable[name];
             }
+
             return null;
         }
 
-        public void SetMetadataToken(object metadataReference, bool coreType) {
+        public void SetMetadataToken(object metadataReference, bool coreType)
+        {
             Debug.Assert(metadataReference != null);
-            Debug.Assert(_metadataReference == null);
+            Debug.Assert(this.metadataReference == null);
 
-            _metadataReference = metadataReference;
-            _coreType = coreType;
+            this.metadataReference = metadataReference;
+            IsCoreType = coreType;
         }
 
-        public void SetAliases(IDictionary<string, string> aliases) {
-            Debug.Assert(_aliases == null);
+        public void SetAliases(IDictionary<string, string> aliases)
+        {
+            Debug.Assert(Aliases == null);
             Debug.Assert(aliases != null);
-            _aliases = aliases;
+            Aliases = aliases;
         }
 
-        public void SetIgnoreNamespace() {
-            _ignoreNamespace = true;
+        public void SetIgnoreNamespace()
+        {
+            IgnoreNamespace = true;
         }
 
-        public void SetImported(ScriptReference dependency) {
-            Debug.Assert(_applicationType == true);
+        public void SetImported(ScriptReference dependency)
+        {
+            Debug.Assert(IsApplicationType);
 
-            _applicationType = false;
-            _dependency = dependency;
+            IsApplicationType = false;
+            Dependency = dependency;
         }
 
-        public void SetArray() {
-            _isArray = true;
+        public void SetArray()
+        {
+            IsArray = true;
         }
 
-        public void SetImports(ICollection<string> imports) {
-            Debug.Assert(_imports == null);
+        public void SetImports(ICollection<string> imports)
+        {
+            Debug.Assert(Imports == null);
             Debug.Assert(imports != null);
-            _imports = imports;
+            Imports = imports;
         }
 
-        public void SetPublic() {
-            _isPublic = true;
+        public void SetPublic()
+        {
+            IsPublic = true;
         }
 
-        public override bool MatchFilter(SymbolFilter filter) {
-            if ((filter & SymbolFilter.Types) == 0) {
+        public override bool MatchFilter(SymbolFilter filter)
+        {
+            if ((filter & SymbolFilter.Types) == 0)
+            {
                 return false;
             }
+
             return true;
         }
 
-        public void SetParentSymbolTable(ISymbolTable symbolTable) {
-            Debug.Assert(_parentSymbolTable == null);
+        public void SetParentSymbolTable(ISymbolTable symbolTable)
+        {
+            Debug.Assert(parentSymbolTable == null);
             Debug.Assert(symbolTable != null);
 
-            _parentSymbolTable = symbolTable;
+            parentSymbolTable = symbolTable;
         }
 
-        public void SetTestType() {
-            _testType = true;
+        public void SetTestType()
+        {
+            testType = true;
         }
 
         #region ISymbolTable Members
-        ICollection ISymbolTable.Symbols {
-            get {
-                return _members;
-            }
-        }
 
-        Symbol ISymbolTable.FindSymbol(string name, Symbol context, SymbolFilter filter) {
-            Debug.Assert(String.IsNullOrEmpty(name) == false);
+        ICollection ISymbolTable.Symbols => members;
+
+        Symbol ISymbolTable.FindSymbol(string name, Symbol context, SymbolFilter filter)
+        {
+            Debug.Assert(string.IsNullOrEmpty(name) == false);
             Debug.Assert(context != null);
 
             Symbol symbol = null;
 
-            if ((filter & SymbolFilter.Members) != 0) {
+            if ((filter & SymbolFilter.Members) != 0)
+            {
                 SymbolFilter baseFilter = filter | SymbolFilter.ExcludeParent;
 
                 symbol = GetMember(name);
 
-                if (symbol == null) {
+                if (symbol == null)
+                {
                     TypeSymbol baseType = GetBaseType();
-                    TypeSymbol objectType = (TypeSymbol)((ISymbolTable)this.SymbolSet.SystemNamespace).FindSymbol("Object", null, SymbolFilter.Types);
-                    if ((baseType == null) && (this != objectType)) {
+                    TypeSymbol objectType =
+                        (TypeSymbol) ((ISymbolTable) SymbolSet.SystemNamespace).FindSymbol("Object", null,
+                            SymbolFilter.Types);
+
+                    if (baseType == null && this != objectType)
+                    {
                         baseType = objectType;
                     }
 
-                    if (baseType != null) {
-                        symbol = ((ISymbolTable)baseType).FindSymbol(name, context, baseFilter);
+                    if (baseType != null)
+                    {
+                        symbol = ((ISymbolTable) baseType).FindSymbol(name, context, baseFilter);
                     }
                 }
 
-                if ((symbol != null) && (symbol.MatchFilter(filter) == false)) {
+                if (symbol != null && symbol.MatchFilter(filter) == false)
+                {
                     symbol = null;
                 }
             }
 
-            if ((symbol == null) && (_parentSymbolTable != null) &&
-                ((filter & SymbolFilter.ExcludeParent) == 0)) {
-                symbol = _parentSymbolTable.FindSymbol(name, context, filter);
+            if (symbol == null && parentSymbolTable != null &&
+                (filter & SymbolFilter.ExcludeParent) == 0)
+            {
+                symbol = parentSymbolTable.FindSymbol(name, context, filter);
             }
 
             return symbol;
         }
+
         #endregion
     }
 }

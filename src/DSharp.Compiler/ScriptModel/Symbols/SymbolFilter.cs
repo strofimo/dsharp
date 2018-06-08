@@ -4,13 +4,12 @@
 //
 
 using System;
-using System.Collections;
 
-namespace ScriptSharp.ScriptModel {
-
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
     [Flags]
-    internal enum SymbolFilter {
-
+    internal enum SymbolFilter
+    {
         Locals = 1,
 
         Members = 2,
@@ -37,6 +36,6 @@ namespace ScriptSharp.ScriptModel {
 
         AnyVisibility = Public | Protected | Private,
 
-        All = AllTypes | AnyMember | AnyVisibility,
+        All = AllTypes | AnyMember | AnyVisibility
     }
 }

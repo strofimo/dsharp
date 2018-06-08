@@ -3,62 +3,41 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+namespace DSharp.Compiler.CodeModel.Tokens
+{
+    internal sealed class TokenInfo
+    {
+        public const int INVALID_PRECEDENCE = int.MaxValue;
+        private readonly TokenFlags flags;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class TokenInfo {
-
-        public const int InvalidPrecedence = Int32.MaxValue;
-
-        private string _tokenString;
-        private TokenFlags _flags;
-        private int _precedence;
+        private readonly string tokenString;
 
         internal TokenInfo(string tokenString, TokenFlags flags, int precedence)
-            : this(tokenString, flags) {
-            _precedence = precedence;
+            : this(tokenString, flags)
+        {
+            Precedence = precedence;
         }
 
-        internal TokenInfo(string tokenString, TokenFlags flags) {
-            _tokenString = tokenString;
-            _flags = flags;
-            _precedence = TokenInfo.InvalidPrecedence;
+        internal TokenInfo(string tokenString, TokenFlags flags)
+        {
+            this.tokenString = tokenString;
+            this.flags = flags;
+            Precedence = INVALID_PRECEDENCE;
         }
 
-        public bool IsAssignmentOperator {
-            get {
-                return (_flags & TokenFlags.AssignmentOperator) != 0;
-            }
-        }
+        public bool IsAssignmentOperator => (flags & TokenFlags.AssignmentOperator) != 0;
 
-        public bool IsBinaryOperator {
-            get {
-                return _precedence != InvalidPrecedence;
-            }
-        }
+        public bool IsBinaryOperator => Precedence != INVALID_PRECEDENCE;
 
-        public bool IsOverloadableOperator {
-            get {
-                return (_flags & TokenFlags.OverloadableOperator) != 0;
-            }
-        }
+        public bool IsOverloadableOperator => (flags & TokenFlags.OverloadableOperator) != 0;
 
-        public bool IsPredefinedType {
-            get {
-                return (_flags & TokenFlags.PredefinedType) != 0;
-            }
-        }
+        public bool IsPredefinedType => (flags & TokenFlags.PredefinedType) != 0;
 
-        public int Precedence {
-            get {
-                return _precedence;
-            }
-        }
+        public int Precedence { get; }
 
-        public override string ToString() {
-            return _tokenString;
+        public override string ToString()
+        {
+            return tokenString;
         }
     }
 }

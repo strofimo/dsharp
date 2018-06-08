@@ -5,7 +5,8 @@
 
 using System.Diagnostics;
 using System.IO;
-using ScriptSharp;
+using DSharp;
+using DSharp.Compiler;
 
 namespace DSharp
 {

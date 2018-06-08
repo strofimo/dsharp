@@ -8,31 +8,31 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace ScriptSharp.Testing.WebServer {
+namespace DSharp.Compiler.TestFramework.Web.WebServer {
 
     internal abstract class HttpServer {
 
-        private int _port;
-        private Action<HttpMessage> _getHandler;
-        private Action<HttpMessage> _postHandler;
+        private int port;
+        private Action<HttpMessage> getHandler;
+        private Action<HttpMessage> postHandler;
 
-        private bool _alive;
+        private bool alive;
 
         protected void Initialize(Action<HttpMessage> getHandler, Action<HttpMessage> postHandler) {
-            _getHandler = getHandler;
-            _postHandler = postHandler;
+            this.getHandler = getHandler;
+            this.postHandler = postHandler;
         }
 
         private void Run() {
-            TcpListener listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, _port));
+            TcpListener listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, port));
             listener.Start();
 
-            while (_alive) {
+            while (alive) {
                 try {
                     if (listener.Pending()) {
                         TcpClient client = listener.AcceptTcpClient();
 
-                        HttpMessage message = new HttpMessage(this, _getHandler, _postHandler);
+                        HttpMessage message = new HttpMessage(this, getHandler, postHandler);
                         message.ProcessClient(client);
                     }
                 }
@@ -46,19 +46,19 @@ namespace ScriptSharp.Testing.WebServer {
         }
 
         public void Start(int port) {
-            if (_alive) {
+            if (alive) {
                 throw new InvalidOperationException();
             }
 
-            _alive = true;
-            _port = port;
+            alive = true;
+            this.port = port;
 
             Thread mainThread = new Thread(Run);
             mainThread.Start();
         }
 
         public void Stop() {
-            _alive = false;
+            alive = false;
         }
     }
 }

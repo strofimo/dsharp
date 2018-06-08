@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace DSharp.Generators
+namespace DSharp.Build.Generators
 {
 
     public sealed class ResXCodeBuilder
@@ -60,7 +60,7 @@ namespace {0} {{
 
             string className = Path.GetFileNameWithoutExtension(resourceFileName);
             string accessModifier = "internal";
-            if (String.Compare(resourceGenerator, "PublicResxScriptGenerator", StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Compare(resourceGenerator, "PublicResxScriptGenerator", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 accessModifier = "public";
             }
@@ -94,7 +94,7 @@ namespace {0} {{
         private static bool IsLocalizedResourceFile(string resourceFileName)
         {
             string locale = ResourceFile.GetLocale(resourceFileName);
-            return (String.IsNullOrEmpty(locale) == false);
+            return (string.IsNullOrEmpty(locale) == false);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using ScriptSharp;
 
-namespace DSharp.Compiler.TestFramework
+namespace DSharp.Compiler.TestFramework.Compilation
 {
     internal class TestCompilationUnitBuilder : ICompilationUnitBuilder
     {

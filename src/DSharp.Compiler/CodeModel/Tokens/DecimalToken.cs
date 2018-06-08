@@ -3,35 +3,25 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-using ScriptSharp.Parser;
+using DSharp.Compiler.Parser;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class DecimalToken : LiteralToken {
-
-        private decimal _value;
-
+namespace DSharp.Compiler.CodeModel.Tokens
+{
+    internal sealed class DecimalToken : LiteralToken
+    {
         internal DecimalToken(decimal value, string sourcePath, BufferPosition position)
-            : base(LiteralTokenType.Decimal, sourcePath, position) {
-            _value = value;
+            : base(LiteralTokenType.Decimal, sourcePath, position)
+        {
+            Value = value;
         }
 
-        public override object LiteralValue {
-            get {
-                return Value;
-            }
-        }
+        public override object LiteralValue => Value;
 
-        public decimal Value {
-            get {
-                return _value;
-            }
-        }
+        public decimal Value { get; }
 
-        public override string ToString() {
-            return _value.ToString();
+        public override string ToString()
+        {
+            return Value.ToString();
         }
     }
 }

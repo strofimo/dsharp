@@ -3,29 +3,20 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-using ScriptSharp.Parser;
+using DSharp.Compiler.Parser;
 
-namespace ScriptSharp.CodeModel {
-
-    internal abstract class LiteralToken : Token {
-
-        private LiteralTokenType _literalType;
-
+namespace DSharp.Compiler.CodeModel.Tokens
+{
+    internal abstract class LiteralToken : Token
+    {
         internal LiteralToken(LiteralTokenType literalType, string sourcePath, BufferPosition position)
-            : base(TokenType.Literal, sourcePath, position) {
-            _literalType = literalType;
+            : base(TokenType.Literal, sourcePath, position)
+        {
+            LiteralType = literalType;
         }
 
-        public LiteralTokenType LiteralType {
-            get {
-                return _literalType;
-            }
-        }
+        public LiteralTokenType LiteralType { get; }
 
-        public abstract object LiteralValue {
-            get;
-        }
+        public abstract object LiteralValue { get; }
     }
 }

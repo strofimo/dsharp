@@ -3,42 +3,27 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class CatchNode : StatementNode {
-
-        private ParseNode _type;
-        private ParseNode _body;
-        private AtomicNameNode _name;
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
+    internal sealed class CatchNode : StatementNode
+    {
         public CatchNode(Token token, ParseNode type,
                          AtomicNameNode name,
                          ParseNode body)
-            : base(ParseNodeType.Catch, token) {
-            _type = GetParentedNode(type);
-            _name = (AtomicNameNode)GetParentedNode(name);
-            _body = GetParentedNode(body);
+            : base(ParseNodeType.Catch, token)
+        {
+            Type = GetParentedNode(type);
+            Name = (AtomicNameNode) GetParentedNode(name);
+            Body = GetParentedNode(body);
         }
 
-        public ParseNode Body {
-            get {
-                return _body;
-            }
-        }
+        public ParseNode Body { get; }
 
-        public AtomicNameNode Name {
-            get {
-                return _name;
-            }
-        }
+        public AtomicNameNode Name { get; }
 
-        public ParseNode Type {
-            get {
-                return _type;
-            }
-        }
+        public ParseNode Type { get; }
     }
 }

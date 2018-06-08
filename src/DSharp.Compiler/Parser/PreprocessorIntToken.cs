@@ -3,24 +3,16 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-
-namespace ScriptSharp.Parser {
-
-    internal sealed class PreprocessorIntToken : PreprocessorToken {
-
-        private int _value;
-
+namespace DSharp.Compiler.Parser
+{
+    internal sealed class PreprocessorIntToken : PreprocessorToken
+    {
         public PreprocessorIntToken(int value, BufferPosition position)
-            : base(PreprocessorTokenType.Int, position) {
-            _value = value;
+            : base(PreprocessorTokenType.Int, position)
+        {
+            Value = value;
         }
 
-        public int Value {
-            get {
-                return _value;
-            }
-        }
+        public int Value { get; }
     }
 }

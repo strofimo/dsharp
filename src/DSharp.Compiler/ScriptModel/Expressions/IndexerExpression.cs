@@ -3,64 +3,53 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class IndexerExpression : Expression {
-
-        private IndexerSymbol _indexer;
-        private Expression _objectReference;
-        private Collection<Expression> _indices;
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class IndexerExpression : Expression
+    {
+        private readonly Collection<Expression> indices;
 
         public IndexerExpression(Expression objectReference, IndexerSymbol indexer)
-            : base(ExpressionType.Indexer, indexer.AssociatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _indexer = indexer;
-            _objectReference = objectReference;
+            : base(ExpressionType.Indexer, indexer.AssociatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            Indexer = indexer;
+            ObjectReference = objectReference;
 
-            _indices = new Collection<Expression>();
+            indices = new Collection<Expression>();
         }
 
-        public IndexerSymbol Indexer {
-            get {
-                return _indexer;
-            }
-        }
+        public IndexerSymbol Indexer { get; }
 
-        public ICollection<Expression> Indices {
-            get {
-                return _indices;
-            }
-        }
+        public ICollection<Expression> Indices => indices;
 
-        public Expression ObjectReference {
-            get {
-                return _objectReference;
-            }
-        }
+        public Expression ObjectReference { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                if (_objectReference.RequiresThisContext) {
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                if (ObjectReference.RequiresThisContext)
+                {
                     return true;
                 }
 
-                foreach (Expression expression in _indices) {
-                    if (expression.RequiresThisContext) {
+                foreach (Expression expression in indices)
+                    if (expression.RequiresThisContext)
+                    {
                         return true;
                     }
-                }
 
                 return false;
             }
         }
 
-        public void AddIndexParameterValue(Expression expression) {
-            _indices.Add(expression);
+        public void AddIndexParameterValue(Expression expression)
+        {
+            indices.Add(expression);
         }
     }
 }

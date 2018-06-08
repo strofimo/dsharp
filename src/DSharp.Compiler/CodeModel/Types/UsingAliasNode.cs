@@ -3,33 +3,25 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal class UsingAliasNode : ParseNode {
-
-        private AtomicNameNode _aliasName;
-        private NameNode _typeName;
+namespace DSharp.Compiler.CodeModel.Types
+{
+    internal class UsingAliasNode : ParseNode
+    {
+        private readonly AtomicNameNode aliasName;
+        private readonly NameNode typeName;
 
         public UsingAliasNode(Token token, AtomicNameNode name, NameNode type)
-            : base(ParseNodeType.UsingAlias, token) {
-            _aliasName = (AtomicNameNode)GetParentedNode(name);
-            _typeName = (NameNode)GetParentedNode(type);
+            : base(ParseNodeType.UsingAlias, token)
+        {
+            aliasName = (AtomicNameNode) GetParentedNode(name);
+            typeName = (NameNode) GetParentedNode(type);
         }
 
-        public string Alias {
-            get {
-                return _aliasName.Name;
-            }
-        }
+        public string Alias => aliasName.Name;
 
-        public string TypeName {
-            get {
-                return _typeName.Name;
-            }
-        }
+        public string TypeName => typeName.Name;
     }
 }

@@ -3,66 +3,60 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Expressions;
 
-namespace ScriptSharp.ScriptModel {
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal sealed class SwitchGroup
+    {
+        private readonly List<Statement> statements;
 
-    internal sealed class SwitchGroup {
+        private List<Expression> cases;
 
-        private List<Expression> _cases;
-        private bool _includeDefault;
-        private List<Statement> _statements;
-
-        public SwitchGroup() {
-            _statements = new List<Statement>();
+        public SwitchGroup()
+        {
+            statements = new List<Statement>();
         }
 
-        public ICollection<Expression> Cases {
-            get {
-                return _cases;
-            }
-        }
+        public ICollection<Expression> Cases => cases;
 
-        public bool IncludeDefault {
-            get {
-                return _includeDefault;
-            }
-        }
+        public bool IncludeDefault { get; private set; }
 
-        public bool RequiresThisContext {
-            get {
-                foreach (Statement statement in _statements) {
-                    if (statement.RequiresThisContext) {
+        public bool RequiresThisContext
+        {
+            get
+            {
+                foreach (Statement statement in statements)
+                    if (statement.RequiresThisContext)
+                    {
                         return true;
                     }
-                }
+
                 return false;
             }
         }
 
-        public ICollection<Statement> Statements {
-            get {
-                return _statements;
+        public ICollection<Statement> Statements => statements;
+
+        public void AddCase(Expression caseValue)
+        {
+            if (cases == null)
+            {
+                cases = new List<Expression>();
             }
+
+            cases.Add(caseValue);
         }
 
-        public void AddCase(Expression caseValue) {
-            if (_cases == null) {
-                _cases = new List<Expression>();
-            }
-            _cases.Add(caseValue);
+        public void AddDefaultCase()
+        {
+            IncludeDefault = true;
         }
 
-        public void AddDefaultCase() {
-            _includeDefault = true;
-        }
-
-        public void AddStatement(Statement statement) {
-            _statements.Add(statement);
+        public void AddStatement(Statement statement)
+        {
+            statements.Add(statement);
         }
     }
 }

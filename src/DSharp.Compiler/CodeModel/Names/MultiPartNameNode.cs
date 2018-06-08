@@ -3,25 +3,18 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class MultiPartNameNode : NameNode {
-
-        private ParseNodeList _names;
-
+namespace DSharp.Compiler.CodeModel.Names
+{
+    internal sealed class MultiPartNameNode : NameNode
+    {
         public MultiPartNameNode(Token token, ParseNodeList names)
-            : base(ParseNodeType.MultiPartName, token) {
-            _names = GetParentedNodeList(names);
+            : base(ParseNodeType.MultiPartName, token)
+        {
+            List = GetParentedNodeList(names);
         }
 
-        protected sealed override ParseNodeList List {
-            get {
-                return _names;
-            }
-        }
+        protected override ParseNodeList List { get; }
     }
 }

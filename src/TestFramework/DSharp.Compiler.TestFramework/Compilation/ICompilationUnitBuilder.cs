@@ -1,6 +1,4 @@
-﻿using ScriptSharp;
-
-namespace DSharp.Compiler.TestFramework
+﻿namespace DSharp.Compiler.TestFramework.Compilation
 {
     public interface ICompilationUnitBuilder
     {

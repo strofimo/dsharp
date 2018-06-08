@@ -7,11 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using DSharp.Compiler;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using ScriptSharp;
 
-namespace DSharp.Tasks
+namespace DSharp.Build.Tasks
 {
     /// <summary>
     /// The Script# MSBuild task corresponding exactly to functionality exposed
@@ -32,7 +32,7 @@ namespace DSharp.Tasks
             {
                 if (defines == null)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
                 return defines;
             }
@@ -48,7 +48,7 @@ namespace DSharp.Tasks
             {
                 if (locale == null)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
                 return locale;
             }
@@ -67,7 +67,7 @@ namespace DSharp.Tasks
             {
                 if (outputPath == null)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
                 return outputPath;
             }
@@ -103,7 +103,7 @@ namespace DSharp.Tasks
             ITaskItem scriptTaskItem = new TaskItem(OutputPath);
             options.ScriptFile = new TaskItemOutputStreamSource(scriptTaskItem);
 
-            string errorMessage = String.Empty;
+            string errorMessage = string.Empty;
             if (options.Validate(out errorMessage) == false)
             {
                 Log.LogError(errorMessage);
@@ -116,7 +116,7 @@ namespace DSharp.Tasks
             {
                 Script = scriptTaskItem;
 
-                string projectName = (ProjectPath != null) ? Path.GetFileNameWithoutExtension(ProjectPath) : String.Empty;
+                string projectName = (ProjectPath != null) ? Path.GetFileNameWithoutExtension(ProjectPath) : string.Empty;
                 string scriptFileName = Path.GetFileName(scriptTaskItem.ItemSpec);
                 string scriptPath = Path.GetFullPath(scriptTaskItem.ItemSpec);
 
@@ -191,11 +191,11 @@ namespace DSharp.Tasks
             {
                 string itemLocale = ResourceFile.GetLocale(resource.ItemSpec);
 
-                if (String.IsNullOrEmpty(locale) && String.IsNullOrEmpty(itemLocale))
+                if (string.IsNullOrEmpty(locale) && string.IsNullOrEmpty(itemLocale))
                 {
                     resources.Add(new TaskItemInputStreamSource(resource));
                 }
-                else if ((String.Compare(locale, itemLocale, StringComparison.OrdinalIgnoreCase) == 0) ||
+                else if ((string.Compare(locale, itemLocale, StringComparison.OrdinalIgnoreCase) == 0) ||
                          locale.StartsWith(itemLocale, StringComparison.OrdinalIgnoreCase))
                 {
                     // Either the item locale matches, or the item locale is a prefix
@@ -242,7 +242,7 @@ namespace DSharp.Tasks
             int line = 0;
             int column = 0;
 
-            if (String.IsNullOrEmpty(location) == false)
+            if (string.IsNullOrEmpty(location) == false)
             {
                 if (location.EndsWith(")", StringComparison.Ordinal))
                 {
@@ -253,14 +253,14 @@ namespace DSharp.Tasks
                     string[] positionParts = position.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
                     Debug.Assert(positionParts.Length == 2);
 
-                    Int32.TryParse(positionParts[0], out line);
-                    Int32.TryParse(positionParts[1], out column);
+                    int.TryParse(positionParts[0], out line);
+                    int.TryParse(positionParts[1], out column);
 
                     location = location.Substring(0, index);
                 }
             }
 
-            Log.LogError(String.Empty, String.Empty, String.Empty, location, line, column, 0, 0, errorMessage);
+            Log.LogError(string.Empty, string.Empty, string.Empty, location, line, column, 0, 0, errorMessage);
         }
 
         #endregion Implementation of IErrorHandler

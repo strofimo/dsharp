@@ -3,43 +3,27 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class IfElseNode : StatementNode {
-
-        private ParseNode _condition;
-        private ParseNode _ifBlock;
-        private ParseNode _elseBlock;
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
+    internal sealed class IfElseNode : StatementNode
+    {
         public IfElseNode(Token token,
-                      ParseNode condition,
-                      ParseNode ifBlock,
-                      ParseNode elseBlock)
-            : base(ParseNodeType.IfElse, token) {
-            _condition = GetParentedNode(condition);
-            _ifBlock = GetParentedNode(ifBlock);
-            _elseBlock = GetParentedNode(elseBlock);
+                          ParseNode condition,
+                          ParseNode ifBlock,
+                          ParseNode elseBlock)
+            : base(ParseNodeType.IfElse, token)
+        {
+            Condition = GetParentedNode(condition);
+            IfBlock = GetParentedNode(ifBlock);
+            ElseBlock = GetParentedNode(elseBlock);
         }
 
-        public ParseNode Condition {
-            get {
-                return _condition;
-            }
-        }
+        public ParseNode Condition { get; }
 
-        public ParseNode ElseBlock {
-            get {
-                return _elseBlock;
-            }
-        }
+        public ParseNode ElseBlock { get; }
 
-        public ParseNode IfBlock {
-            get {
-                return _ifBlock;
-            }
-        }
+        public ParseNode IfBlock { get; }
     }
 }

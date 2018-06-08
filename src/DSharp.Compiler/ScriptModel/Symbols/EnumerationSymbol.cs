@@ -3,84 +3,61 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class EnumerationSymbol : TypeSymbol {
-
-        private bool _flags;
-
-        private bool _numericValues;
-        private bool _namedValues;
-
-        private int _transformationCookie;
-
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
+    internal sealed class EnumerationSymbol : TypeSymbol
+    {
         public EnumerationSymbol(string name, NamespaceSymbol parent, bool flags)
-            : base(SymbolType.Enumeration, name, parent) {
-            _flags = flags;
-            _transformationCookie = -1;
+            : base(SymbolType.Enumeration, name, parent)
+        {
+            Flags = flags;
+            TransformationCookie = -1;
         }
 
-        public bool Constants {
-            get {
-                return _namedValues || _numericValues;
-            }
-        }
+        public bool Constants => UseNamedValues || UseNumericValues;
 
-        public bool Flags {
-            get {
-                return _flags;
-            }
-        }
+        public bool Flags { get; }
 
-        public int TransformationCookie {
-            get {
-                return _transformationCookie;
-            }
-            set {
-                _transformationCookie = value;
-            }
-        }
+        public int TransformationCookie { get; set; }
 
-        public bool UseNamedValues {
-            get {
-                return _namedValues;
-            }
-        }
+        public bool UseNamedValues { get; private set; }
 
-        public bool UseNumericValues {
-            get {
-                return _numericValues;
-            }
-        }
+        public bool UseNumericValues { get; private set; }
 
-        public string CreateNamedValue(EnumerationFieldSymbol field) {
-            Debug.Assert(_namedValues);
+        public string CreateNamedValue(EnumerationFieldSymbol field)
+        {
+            Debug.Assert(UseNamedValues);
             Debug.Assert(field.Parent == this);
 
-            if (field.IsTransformed) {
+            if (field.IsTransformed)
+            {
                 return field.GeneratedName;
             }
 
             string name = field.Name;
-            if (field.IsCasePreserved == false) {
+
+            if (field.IsCasePreserved == false)
+            {
                 name = Utility.CreateCamelCaseName(name);
             }
+
             return name;
         }
 
-        public void SetNamedValues() {
-            Debug.Assert(_numericValues == false);
+        public void SetNamedValues()
+        {
+            Debug.Assert(UseNumericValues == false);
 
-            _namedValues = true;
+            UseNamedValues = true;
         }
 
-        public void SetNumericValues() {
-            Debug.Assert(_namedValues == false);
+        public void SetNumericValues()
+        {
+            Debug.Assert(UseNamedValues == false);
 
-            _numericValues = true;
+            UseNumericValues = true;
         }
     }
 }

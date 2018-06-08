@@ -3,23 +3,24 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
     // NOTE: Not supported in conversion
-    internal sealed class LockNode : StatementNode {
+    internal sealed class LockNode : StatementNode
+    {
+        public ParseNode Body;
 
-        public ParseNode monitor;
-        public ParseNode body;
+        public ParseNode Monitor;
 
         public LockNode(Token token,
                         ParseNode monitor,
                         ParseNode body)
-            : base(ParseNodeType.Lock, token) {
-            this.monitor = GetParentedNode(monitor);
-            this.body = GetParentedNode(body);
+            : base(ParseNodeType.Lock, token)
+        {
+            Monitor = GetParentedNode(monitor);
+            Body = GetParentedNode(body);
         }
     }
 }

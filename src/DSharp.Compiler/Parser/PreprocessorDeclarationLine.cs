@@ -3,24 +3,17 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-
-namespace ScriptSharp.Parser {
-
+namespace DSharp.Compiler.Parser
+{
     // #define/#undef
-    internal sealed class PreprocessorDeclarationLine : PreprocessorLine {
-
-        private Name _identifier;
-
+    internal sealed class PreprocessorDeclarationLine : PreprocessorLine
+    {
         public PreprocessorDeclarationLine(PreprocessorTokenType type, Name identifier)
-            : base(type) {
-            _identifier = identifier;
+            : base(type)
+        {
+            Identifier = identifier;
         }
 
-        public Name Identifier {
-            get {
-                return _identifier;
-            }
-        }
+        public Name Identifier { get; }
     }
 }

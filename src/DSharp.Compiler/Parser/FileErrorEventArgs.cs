@@ -3,44 +3,26 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-
-namespace ScriptSharp.Parser {
-
-    internal sealed class FileErrorEventArgs {
-
-        private Error _error;
-        private FilePosition _position;
-        private object[] _args;
-
-        internal FileErrorEventArgs(Error error, FilePosition position, params object[] args) {
-            _error = error;
-            _position = position;
-            _args = args;
+namespace DSharp.Compiler.Parser
+{
+    internal sealed class FileErrorEventArgs
+    {
+        internal FileErrorEventArgs(Error error, FilePosition position, params object[] args)
+        {
+            Error = error;
+            Position = position;
+            Args = args;
         }
 
         internal FileErrorEventArgs(ErrorEventArgs e, LineMap lineMap)
-            : this(e.Error, lineMap.Map(e.Position), e.Args) {
+            : this(e.Error, lineMap.Map(e.Position), e.Args)
+        {
         }
 
-        public object[] Args {
-            get {
-                return _args;
-            }
-        }
+        public object[] Args { get; }
 
-        public Error Error {
-            get {
-                return _error;
-            }
-        }
+        public Error Error { get; }
 
-        public FilePosition Position {
-            get {
-                return _position;
-            }
-        }
+        public FilePosition Position { get; }
     }
 }

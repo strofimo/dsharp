@@ -3,23 +3,23 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Collections.Generic;
 using System.IO;
-using DSharp;
-using ScriptSharp.ScriptModel;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ResourceModel {
+namespace DSharp.Compiler.Compiler
+{
+    internal sealed class ResourcesBuilder
+    {
+        private readonly SymbolSet symbols;
 
-    internal sealed class ResourcesBuilder {
-
-        private SymbolSet _symbols;
-
-        public ResourcesBuilder(SymbolSet symbols) {
-            _symbols = symbols;
+        public ResourcesBuilder(SymbolSet symbols)
+        {
+            this.symbols = symbols;
         }
 
-        public void BuildResources(ICollection<IStreamSource> sources) {
+        public void BuildResources(ICollection<IStreamSource> sources)
+        {
             // Process resources in the order of neutral to most specific locale
             // so that as string values are looked up and stored, the final value
             // contains the most specific locale value.
@@ -28,59 +28,70 @@ namespace ScriptSharp.ResourceModel {
             // a hierarchy in the right order.
 
             // First handle all the locale-neutral resources
-            foreach (IStreamSource source in sources) {
+            foreach (IStreamSource source in sources)
+            {
                 string locale = Utility.GetResourceFileLocale(source.Name);
 
-                if (locale.Length == 0) {
+                if (locale.Length == 0)
+                {
                     BuildResources(source);
                 }
             }
 
             // Next handle all the language-only resource files
-            foreach (IStreamSource source in sources) {
+            foreach (IStreamSource source in sources)
+            {
                 string locale = Utility.GetResourceFileLocale(source.Name);
 
-                if (locale.Length == 2) {
+                if (locale.Length == 2)
+                {
                     BuildResources(source);
                 }
             }
 
             // Finally handle all the language+country resource files
-            foreach (IStreamSource source in sources) {
+            foreach (IStreamSource source in sources)
+            {
                 string locale = Utility.GetResourceFileLocale(source.Name);
 
-                if (locale.Length > 2) {
+                if (locale.Length > 2)
+                {
                     BuildResources(source);
                 }
             }
         }
 
-        private void BuildResources(IStreamSource source) {
+        private void BuildResources(IStreamSource source)
+        {
             string resxMarkup = GetMarkup(source);
             List<ResXItem> resourceItems = ResXParser.ParseResxMarkup(resxMarkup);
 
             string resourceName = Utility.GetResourceFileName(source.Name);
-            Dictionary<string, ResXItem> existingResourceItems = _symbols.GetResources(resourceName);
+            Dictionary<string, ResXItem> existingResourceItems = symbols.GetResources(resourceName);
 
-            foreach (ResXItem item in resourceItems) {
-                existingResourceItems[item.Name] = item;
-            }
+            foreach (ResXItem item in resourceItems) existingResourceItems[item.Name] = item;
         }
 
-        private string GetMarkup(IStreamSource source) {
+        private string GetMarkup(IStreamSource source)
+        {
             string markup = null;
 
             Stream stream = source.GetStream();
-            try {
+
+            try
+            {
                 StreamReader reader = new StreamReader(stream);
                 markup = reader.ReadToEnd();
             }
-            finally {
-                if (stream != null) {
+            finally
+            {
+                if (stream != null)
+                {
                     source.CloseStream(stream);
                     stream = null;
                 }
             }
+
             return markup;
         }
     }

@@ -3,34 +3,23 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class SwitchSectionNode : StatementNode {
-
-        private ParseNodeList _labels;
-        private ParseNodeList _statements;
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
+    internal sealed class SwitchSectionNode : StatementNode
+    {
         public SwitchSectionNode(Token token,
                                  ParseNodeList labels,
                                  ParseNodeList statements)
-            : base(ParseNodeType.SwitchSection, token) {
-            _labels = GetParentedNodeList(labels);
-            _statements = GetParentedNodeList(statements);
+            : base(ParseNodeType.SwitchSection, token)
+        {
+            Labels = GetParentedNodeList(labels);
+            Statements = GetParentedNodeList(statements);
         }
 
-        public ParseNodeList Labels {
-            get {
-                return _labels;
-            }
-        }
+        public ParseNodeList Labels { get; }
 
-        public ParseNodeList Statements {
-            get {
-                return _statements;
-            }
-        }
+        public ParseNodeList Statements { get; }
     }
 }

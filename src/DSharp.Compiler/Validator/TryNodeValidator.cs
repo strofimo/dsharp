@@ -3,20 +3,22 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using ScriptSharp;
-using ScriptSharp.CodeModel;
+using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.CodeModel.Statements;
 
-namespace ScriptSharp.Validator {
+namespace DSharp.Compiler.Validator
+{
+    internal sealed class TryNodeValidator : IParseNodeValidator
+    {
+        bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
+        {
+            TryNode tryNode = (TryNode) node;
 
-    internal sealed class TryNodeValidator : IParseNodeValidator {
-
-        bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler) {
-            TryNode tryNode = (TryNode)node;
-
-            if ((tryNode.CatchClauses != null) && (tryNode.CatchClauses.Count > 1)) {
+            if (tryNode.CatchClauses != null && tryNode.CatchClauses.Count > 1)
+            {
                 errorHandler.ReportError("Try/Catch statements are limited to a single catch clause.",
-                                         tryNode.Token.Location);
+                    tryNode.Token.Location);
+
                 return false;
             }
 

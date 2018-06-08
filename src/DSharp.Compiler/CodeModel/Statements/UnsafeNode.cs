@@ -3,19 +3,19 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
     // NOTE: Not supported in conversion
-    internal class UnsafeNode : StatementNode {
-
-        private ParseNode _body;
+    internal class UnsafeNode : StatementNode
+    {
+        private ParseNode body;
 
         public UnsafeNode(Token token, ParseNode body)
-            : base(ParseNodeType.UnsafeStatement, token) {
-            _body = body;
+            : base(ParseNodeType.UnsafeStatement, token)
+        {
+            this.body = body;
         }
     }
 }

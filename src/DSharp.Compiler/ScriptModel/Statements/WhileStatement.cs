@@ -3,50 +3,40 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Expressions;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class WhileStatement : Statement {
-
-        private Expression _condition;
-        private Statement _body;
-        private bool _preCondition;
-
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal sealed class WhileStatement : Statement
+    {
         public WhileStatement(Expression condition, Statement body, bool preCondition)
-            : base(StatementType.While) {
-            _condition = condition;
-            _body = body;
-            _preCondition = preCondition;
+            : base(StatementType.While)
+        {
+            Condition = condition;
+            Body = body;
+            PreCondition = preCondition;
         }
 
-        public Statement Body {
-            get {
-                return _body;
-            }
-        }
+        public Statement Body { get; }
 
-        public Expression Condition {
-            get {
-                return _condition;
-            }
-        }
+        public Expression Condition { get; }
 
-        public bool PreCondition {
-            get {
-                return _preCondition;
-            }
-        }
+        public bool PreCondition { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                if ((_body != null) && _body.RequiresThisContext) {
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                if (Body != null && Body.RequiresThisContext)
+                {
                     return true;
                 }
-                if ((_condition != null) && _condition.RequiresThisContext) {
+
+                if (Condition != null && Condition.RequiresThisContext)
+                {
                     return true;
                 }
+
                 return false;
             }
         }

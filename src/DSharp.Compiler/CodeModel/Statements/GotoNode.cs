@@ -3,19 +3,19 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
     // NOTE: Not supported in conversion
-    internal sealed class GotoNode : StatementNode {
-
-        private ParseNode _value;
+    internal sealed class GotoNode : StatementNode
+    {
+        private ParseNode value;
 
         public GotoNode(Token token, ParseNode value)
-            : base(ParseNodeType.Goto, token) {
-            _value = GetParentedNode(value);
+            : base(ParseNodeType.Goto, token)
+        {
+            this.value = GetParentedNode(value);
         }
     }
 }

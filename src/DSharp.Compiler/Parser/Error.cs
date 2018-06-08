@@ -3,86 +3,58 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace ScriptSharp.Parser {
-
-    internal sealed class Error {
-
+namespace DSharp.Compiler.Parser
+{
+    internal sealed class Error
+    {
 #if DEBUG
-        private static readonly Hashtable _errorTable = new Hashtable();
+        private static readonly Hashtable ErrorTable = new Hashtable();
 #endif
 
-        private int _id;
-        private int _level;
-        private string _message;
-
-        public Error(int id, int level, string message) {
-            _id = id;
-            _level = level;
-            _message = message;
+        public Error(int id, int level, string message)
+        {
+            Id = id;
+            Level = level;
+            Message = message;
 
 #if DEBUG
             // ensure that _errorTable are unique
-            Debug.Assert(_errorTable[id] == null);
-            _errorTable[id] = this;
+            Debug.Assert(ErrorTable[id] == null);
+            ErrorTable[id] = this;
 #endif
         }
 
         /// <summary>
-        /// Error number. Should be unique for a given component.
+        ///     Error number. Should be unique for a given component.
         /// </summary>
-        public int ID {
-            get {
-                return _id;
-            }
-        }
+        public int Id { get; }
 
         /// <summary>
-        /// Warning Level of the _message. 0 means its an Error.
+        ///     Warning Level of the _message. 0 means its an Error.
         /// </summary>
-        public int Level {
-            get {
-                return _level;
-            }
-        }
+        public int Level { get; }
 
         /// <summary>
-        /// Message template.
+        ///     Message template.
         /// </summary>
-        public string Message {
-            get {
-                return _message;
-            }
-        }
+        public string Message { get; }
 
         /// <summary>
-        /// Is this error fatal.
+        ///     Is this error fatal.
         /// </summary>
-        public bool IsFatal {
-            get {
-                return _level < 0;
-            }
-        }
+        public bool IsFatal => Level < 0;
 
         /// <summary>
-        /// Is this an error as opposed to a warning.
+        ///     Is this an error as opposed to a warning.
         /// </summary>
-        public bool IsError {
-            get {
-                return _level <= 0;
-            }
-        }
+        public bool IsError => Level <= 0;
 
         /// <summary>
-        /// Is this a warning as opposed to an error.
+        ///     Is this a warning as opposed to an error.
         /// </summary>
-        public bool IsWarning {
-            get {
-                return !IsError;
-            }
-        }
+        public bool IsWarning => !IsError;
     }
 }

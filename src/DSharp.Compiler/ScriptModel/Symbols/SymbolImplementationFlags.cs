@@ -5,11 +5,11 @@
 
 using System;
 
-namespace ScriptSharp.ScriptModel {
-
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
     [Flags]
-    internal enum SymbolImplementationFlags {
-
+    internal enum SymbolImplementationFlags
+    {
         Regular = 0,
 
         Abstract = 1,

@@ -3,52 +3,35 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class EventExpression : Expression {
-
-        private EventSymbol _event;
-        private Expression _objectReference;
-        private Expression _handler;
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class EventExpression : Expression
+    {
         public EventExpression(Expression objectReference, EventSymbol eventSymbol, bool add)
-            : base((add ? ExpressionType.EventAdd : ExpressionType.EventRemove), eventSymbol.AssociatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _event = eventSymbol;
-            _objectReference = objectReference;
+            : base(add ? ExpressionType.EventAdd : ExpressionType.EventRemove, eventSymbol.AssociatedType,
+                SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            Event = eventSymbol;
+            ObjectReference = objectReference;
         }
 
-        public EventSymbol Event {
-            get {
-                return _event;
-            }
-        }
+        public EventSymbol Event { get; }
 
-        public Expression Handler {
-            get {
-                return _handler;
-            }
-        }
+        public Expression Handler { get; private set; }
 
-        public Expression ObjectReference {
-            get {
-                return _objectReference;
-            }
-        }
+        public Expression ObjectReference { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                return _objectReference.RequiresThisContext || _handler.RequiresThisContext;
-            }
-        }
+        public override bool RequiresThisContext => ObjectReference.RequiresThisContext || Handler.RequiresThisContext;
 
-        public void SetHandler(Expression handler) {
+        public void SetHandler(Expression handler)
+        {
             Debug.Assert(handler != null);
-            Debug.Assert(_handler == null);
+            Debug.Assert(Handler == null);
 
-            _handler = handler;
+            Handler = handler;
         }
     }
 }

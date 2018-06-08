@@ -3,23 +3,24 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
     // NOTE: Not supported in conversion
-    internal sealed class FixedNode : StatementNode {
+    internal sealed class FixedNode : StatementNode
+    {
+        private ParseNode body;
 
-        private VariableDeclarationNode _declaration;
-        private ParseNode _body;
+        private VariableDeclarationNode declaration;
 
         public FixedNode(Token token,
                          VariableDeclarationNode declaration,
                          ParseNode body)
-            : base(ParseNodeType.Fixed, token) {
-            _declaration = (VariableDeclarationNode)GetParentedNode(declaration);
-            _body = GetParentedNode(body);
+            : base(ParseNodeType.Fixed, token)
+        {
+            this.declaration = (VariableDeclarationNode) GetParentedNode(declaration);
+            this.body = GetParentedNode(body);
         }
     }
 }

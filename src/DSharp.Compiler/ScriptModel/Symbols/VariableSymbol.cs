@@ -3,27 +3,22 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Expressions;
 
-namespace ScriptSharp.ScriptModel {
-    
-    internal sealed class VariableSymbol : LocalSymbol {
-
-        private Expression _value;
-
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
+    internal sealed class VariableSymbol : LocalSymbol
+    {
         public VariableSymbol(string name, MemberSymbol parent, TypeSymbol valueType)
-            : base(SymbolType.Variable, name, parent, valueType) {
+            : base(SymbolType.Variable, name, parent, valueType)
+        {
         }
 
-        public Expression Value {
-            get {
-                return _value;
-            }
-        }
+        public Expression Value { get; private set; }
 
-        public void SetValue(Expression value) {
-            _value = value;
+        public void SetValue(Expression value)
+        {
+            Value = value;
         }
     }
 }

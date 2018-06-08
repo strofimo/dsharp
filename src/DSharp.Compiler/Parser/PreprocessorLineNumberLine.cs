@@ -3,36 +3,25 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-
-namespace ScriptSharp.Parser {
-
+namespace DSharp.Compiler.Parser
+{
     // #line
-    internal sealed class PreprocessorLineNumberLine : PreprocessorLine {
-
-        private int _line;
-        private string _file;
-
+    internal sealed class PreprocessorLineNumberLine : PreprocessorLine
+    {
         public PreprocessorLineNumberLine(int line)
-            : base(PreprocessorTokenType.Line) {
-            _line = line;
+            : base(PreprocessorTokenType.Line)
+        {
+            Line = line;
         }
 
         public PreprocessorLineNumberLine(int line, string file)
-            : this(line) {
-            _file = file;
+            : this(line)
+        {
+            File = file;
         }
 
-        public string File {
-            get {
-                return _file;
-            }
-        }
+        public string File { get; }
 
-        public int Line {
-            get {
-                return _line;
-            }
-        }
+        public int Line { get; }
     }
 }

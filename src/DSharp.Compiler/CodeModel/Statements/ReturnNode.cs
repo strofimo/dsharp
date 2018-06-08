@@ -3,24 +3,18 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal class ReturnNode : StatementNode {
-
-        private ParseNode _value;
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
+    internal class ReturnNode : StatementNode
+    {
         public ReturnNode(Token token, ParseNode value)
-            : base(ParseNodeType.Return, token) {
-            _value = GetParentedNode(value);
+            : base(ParseNodeType.Return, token)
+        {
+            Value = GetParentedNode(value);
         }
 
-        public ParseNode Value {
-            get {
-                return _value;
-            }
-        }
+        public ParseNode Value { get; }
     }
 }

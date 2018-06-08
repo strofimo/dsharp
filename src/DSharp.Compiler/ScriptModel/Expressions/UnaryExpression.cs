@@ -3,48 +3,31 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class UnaryExpression : Expression {
-
-        private Expression _operand;
-        private Operator _operator;
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class UnaryExpression : Expression
+    {
         public UnaryExpression(Operator operatorType, Expression operand)
-            : this(operatorType, operand, operand.EvaluatedType, operand.MemberMask) {
+            : this(operatorType, operand, operand.EvaluatedType, operand.MemberMask)
+        {
         }
 
-        public UnaryExpression(Operator operatorType, Expression operand, TypeSymbol evaluatedType, SymbolFilter memberMask)
-            : base(ExpressionType.Unary, evaluatedType, memberMask) {
-            _operator = operatorType;
-            _operand = operand;
+        public UnaryExpression(Operator operatorType, Expression operand, TypeSymbol evaluatedType,
+                               SymbolFilter memberMask)
+            : base(ExpressionType.Unary, evaluatedType, memberMask)
+        {
+            Operator = operatorType;
+            Operand = operand;
         }
 
-        protected override bool IsParenthesisRedundant {
-            get {
-                return false;
-            }
-        }
+        protected override bool IsParenthesisRedundant => false;
 
-        public Expression Operand {
-            get {
-                return _operand;
-            }
-        }
+        public Expression Operand { get; }
 
-        public Operator Operator {
-            get {
-                return _operator;
-            }
-        }
+        public Operator Operator { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                return _operand.RequiresThisContext;
-            }
-        }
+        public override bool RequiresThisContext => Operand.RequiresThisContext;
     }
 }

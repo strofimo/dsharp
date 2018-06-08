@@ -3,15 +3,14 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Tokens
+{
     /// <summary>
-    /// The list of valid token types.
-    /// NOTE: Must keep this list in sync with the Token static constuctor.
+    ///     The list of valid token types.
+    ///     NOTE: Must keep this list in sync with the Token static constuctor.
     /// </summary>
-    internal enum TokenType {
+    internal enum TokenType
+    {
         Abstract,
         As,
         Base,
@@ -142,12 +141,12 @@ namespace ScriptSharp.CodeModel {
         Dot,
         Arrow,
 
-        BOF,
-        EOF,
+        Bof,
+        Eof,
 
         Comment,
 
         Error,
-        Invalid     // must be last
+        Invalid // must be last
     }
 }

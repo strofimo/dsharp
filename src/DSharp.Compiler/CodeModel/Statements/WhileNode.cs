@@ -3,34 +3,23 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class WhileNode : StatementNode {
-
-        private ParseNode _condition;
-        private ParseNode _body;
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
+    internal sealed class WhileNode : StatementNode
+    {
         public WhileNode(Token token,
                          ParseNode condition,
                          ParseNode body)
-            : base(ParseNodeType.While, token) {
-            _condition = GetParentedNode(condition);
-            _body = GetParentedNode(body);
+            : base(ParseNodeType.While, token)
+        {
+            Condition = GetParentedNode(condition);
+            Body = GetParentedNode(body);
         }
 
-        public ParseNode Body {
-            get {
-                return _body;
-            }
-        }
+        public ParseNode Body { get; }
 
-        public ParseNode Condition {
-            get {
-                return _condition;
-            }
-        }
+        public ParseNode Condition { get; }
     }
 }

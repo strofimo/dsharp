@@ -3,23 +3,16 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-
-namespace ScriptSharp.Parser {
-
+namespace DSharp.Compiler.Parser
+{
     // #else/#endif/EOL
-    internal class PreprocessorLine {
-
-        private PreprocessorTokenType _type;
-
-        public PreprocessorLine(PreprocessorTokenType type) {
-            _type = type;
+    internal class PreprocessorLine
+    {
+        public PreprocessorLine(PreprocessorTokenType type)
+        {
+            Type = type;
         }
 
-        public PreprocessorTokenType Type {
-            get {
-                return _type;
-            }
-        }
+        public PreprocessorTokenType Type { get; }
     }
 }

@@ -3,53 +3,33 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel.Statements
+{
     // NOTE: Not supported in conversion
-    internal class ForeachNode : StatementNode {
-
-        private ParseNode _type;
-        private AtomicNameNode _name;
-        private ParseNode _container;
-        private ParseNode _body;
-
+    internal class ForeachNode : StatementNode
+    {
         public ForeachNode(Token token,
                            ParseNode type,
                            AtomicNameNode name,
                            ParseNode container,
                            ParseNode body)
-            : base(ParseNodeType.Foreach, token) {
-            _type = GetParentedNode(type);
-            _name = (AtomicNameNode)GetParentedNode(name);
-            _container = GetParentedNode(container);
-            _body = GetParentedNode(body);
+            : base(ParseNodeType.Foreach, token)
+        {
+            Type = GetParentedNode(type);
+            Name = (AtomicNameNode) GetParentedNode(name);
+            Container = GetParentedNode(container);
+            Body = GetParentedNode(body);
         }
 
-        public ParseNode Body {
-            get {
-                return _body;
-            }
-        }
+        public ParseNode Body { get; }
 
-        public ParseNode Container {
-            get {
-                return _container;
-            }
-        }
+        public ParseNode Container { get; }
 
-        public ParseNode Type {
-            get {
-                return _type;
-            }
-        }
+        public ParseNode Type { get; }
 
-        public AtomicNameNode Name {
-            get {
-                return _name;
-            }
-        }
+        public AtomicNameNode Name { get; }
     }
 }

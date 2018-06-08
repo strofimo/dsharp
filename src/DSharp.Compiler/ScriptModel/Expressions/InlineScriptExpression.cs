@@ -3,66 +3,61 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal class InlineScriptExpression : Expression
+    {
+        private readonly bool parenthesize;
 
-    internal class InlineScriptExpression : Expression {
-
-        private string _script;
-        private Collection<Expression> _parameters;
-        private bool _parenthesize;
+        private Collection<Expression> parameters;
 
         public InlineScriptExpression(string script, TypeSymbol evaluatedType)
-            : this(script, evaluatedType, /* parenthesize */ true) {
+            : this(script, evaluatedType, /* parenthesize */ true)
+        {
         }
 
         public InlineScriptExpression(string script, TypeSymbol evaluatedType, bool parenthesize)
-            : base(ExpressionType.InlineScript, evaluatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _script = script;
-            _parenthesize = parenthesize;
+            : base(ExpressionType.InlineScript, evaluatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            Script = script;
+            this.parenthesize = parenthesize;
         }
 
-        protected override bool IsParenthesisRedundant {
-            get {
-                return !_parenthesize;
-            }
-        }
+        protected override bool IsParenthesisRedundant => !parenthesize;
 
-        public ICollection<Expression> Parameters {
-            get {
-                return _parameters;
-            }
-        }
+        public ICollection<Expression> Parameters => parameters;
 
-        public override bool RequiresThisContext {
-            get {
-                if (_parameters != null) {
-                    foreach (Expression expression in _parameters) {
-                        if (expression.RequiresThisContext) {
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                if (parameters != null)
+                {
+                    foreach (Expression expression in parameters)
+                        if (expression.RequiresThisContext)
+                        {
                             return true;
                         }
-                    }
                 }
+
                 return false;
             }
         }
 
-        public string Script {
-            get {
-                return _script;
-            }
-        }
+        public string Script { get; }
 
-        public void AddParameterValue(Expression expression) {
-            if (_parameters == null) {
-                _parameters = new Collection<Expression>();
+        public void AddParameterValue(Expression expression)
+        {
+            if (parameters == null)
+            {
+                parameters = new Collection<Expression>();
             }
-            _parameters.Add(expression);
+
+            parameters.Add(expression);
         }
     }
 }

@@ -3,40 +3,22 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class ConditionalNode : ExpressionNode {
-
-        private ParseNode _condition;
-        private ParseNode _trueValue;
-        private ParseNode _falseValue;
-
+namespace DSharp.Compiler.CodeModel.Expressions
+{
+    internal sealed class ConditionalNode : ExpressionNode
+    {
         public ConditionalNode(ParseNode condition, ParseNode trueValue, ParseNode falseValue)
-            : base(ParseNodeType.Conditional, condition.token) {
-            _condition = GetParentedNode(condition);
-            _trueValue = GetParentedNode(trueValue);
-            _falseValue = GetParentedNode(falseValue);
+            : base(ParseNodeType.Conditional, condition.Token)
+        {
+            Condition = GetParentedNode(condition);
+            TrueValue = GetParentedNode(trueValue);
+            FalseValue = GetParentedNode(falseValue);
         }
 
-        public ParseNode Condition {
-            get {
-                return _condition;
-            }
-        }
+        public ParseNode Condition { get; }
 
-        public ParseNode FalseValue {
-            get {
-                return _falseValue;
-            }
-        }
+        public ParseNode FalseValue { get; }
 
-        public ParseNode TrueValue {
-            get {
-                return _trueValue;
-            }
-        }
+        public ParseNode TrueValue { get; }
     }
 }

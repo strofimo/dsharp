@@ -25,8 +25,8 @@
     <file src="$buildPath$\DSharp.targets" target="tools" />
     <file src="$libPath$\mscorlib.dll" target="tools" />
     <file src="$libPath$\mscorlib.xml" target="tools" />
-    <file src="$libPath$\ss.js" target="tools" />
-    <file src="$libPath$\ss.min.js" target="tools" />
+    <file src="$scriptPath$\ds.js" target="tools" />
+    <file src="$scriptPath$\ds.min.js" target="tools" />
     <file src="$consolePath$\DSharp.Shell.exe" target="tools" />
     <file src="Core\Install.ps1" target="tools" />
     <file src="Core\Uninstall.ps1" target="tools" />

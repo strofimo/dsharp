@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using ScriptSharp;
 
-namespace DSharp.Compiler.TestFramework
+namespace DSharp.Compiler.TestFramework.Compilation
 {
     public sealed class InMemoryStream : IStreamSource
     {

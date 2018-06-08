@@ -5,13 +5,14 @@
 
 using System;
 
-namespace ScriptSharp.CodeModel {
-
+namespace DSharp.Compiler.CodeModel
+{
     /// <summary>
-    /// Modifiers for types and their _members.
+    ///     Modifiers for types and their _members.
     /// </summary>
     [Flags]
-    internal enum Modifiers {
+    internal enum Modifiers
+    {
         None = 0x0000,
 
         Abstract = 0x0001,

@@ -3,52 +3,35 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Attributes;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class ParameterNode : ParseNode {
-
-        private ParseNodeList _attributes;
-        private ParameterFlags _flags;
-        private ParseNode _type;
-        private AtomicNameNode _name;
+namespace DSharp.Compiler.CodeModel.Members
+{
+    internal sealed class ParameterNode : ParseNode
+    {
+        private readonly AtomicNameNode name;
 
         public ParameterNode(Token token,
-                                   ParseNodeList attributes,
-                                   ParameterFlags flags,
-                                   ParseNode type,
-                                   AtomicNameNode name)
-            : base(ParseNodeType.FormalParameter, token) {
-            _attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
-            _flags = flags;
-            _type = GetParentedNode(type);
-            _name = (AtomicNameNode)GetParentedNode(name);
+                             ParseNodeList attributes,
+                             ParameterFlags flags,
+                             ParseNode type,
+                             AtomicNameNode name)
+            : base(ParseNodeType.FormalParameter, token)
+        {
+            Attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
+            Flags = flags;
+            Type = GetParentedNode(type);
+            this.name = (AtomicNameNode) GetParentedNode(name);
         }
 
-        public ParseNodeList Attributes {
-            get {
-                return _attributes;
-            }
-        }
+        public ParseNodeList Attributes { get; }
 
-        public ParameterFlags Flags {
-            get {
-                return _flags;
-            }
-        }
+        public ParameterFlags Flags { get; }
 
-        public string Name {
-            get {
-                return _name.Name;
-            }
-        }
+        public string Name => name.Name;
 
-        public ParseNode Type {
-            get {
-                return _type;
-            }
-        }
+        public ParseNode Type { get; }
     }
 }

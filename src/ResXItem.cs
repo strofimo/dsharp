@@ -3,19 +3,18 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
 
 namespace DSharp
 {
     internal sealed class ResXItem
     {
-        private string value;
-        private string comment;
+        private readonly string comment;
+        private readonly string value;
 
         public ResXItem(string name, string value, string comment)
         {
-            Debug.Assert(String.IsNullOrEmpty(name) == false);
+            Debug.Assert(string.IsNullOrEmpty(name) == false);
 
             Name = name;
             this.value = value;
@@ -28,13 +27,14 @@ namespace DSharp
             {
                 if (comment == null)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
+
                 return comment;
             }
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public string Value
         {
@@ -42,8 +42,9 @@ namespace DSharp
             {
                 if (value == null)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
+
                 return value;
             }
         }

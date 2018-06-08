@@ -3,38 +3,23 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class DelegateExpression : Expression {
-
-        private MethodSymbol _method;
-        private Expression _objectReference;
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class DelegateExpression : Expression
+    {
         public DelegateExpression(Expression objectReference, MethodSymbol method)
-            : base(ExpressionType.Delegate, method.AssociatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _method = method;
-            _objectReference = objectReference;
+            : base(ExpressionType.Delegate, method.AssociatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            Method = method;
+            ObjectReference = objectReference;
         }
 
-        public MethodSymbol Method {
-            get {
-                return _method;
-            }
-        }
+        public MethodSymbol Method { get; }
 
-        public Expression ObjectReference {
-            get {
-                return _objectReference;
-            }
-        }
+        public Expression ObjectReference { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                return _objectReference.RequiresThisContext;
-            }
-        }
+        public override bool RequiresThisContext => ObjectReference.RequiresThisContext;
     }
 }

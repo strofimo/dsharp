@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
-using ScriptSharp;
+using DSharp;
+using DSharp.Compiler.TestFramework.Compilation.Sources;
 
 namespace DSharp.Compiler.TestFramework
 {

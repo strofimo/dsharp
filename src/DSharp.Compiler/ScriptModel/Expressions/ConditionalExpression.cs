@@ -3,53 +3,27 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class ConditionalExpression : Expression {
-
-        private Expression _trueValue;
-        private Expression _falseValue;
-        private Expression _condition;
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class ConditionalExpression : Expression
+    {
         public ConditionalExpression(Expression condition, Expression trueValue, Expression falseValue)
-            : base(ExpressionType.Conditional, trueValue.EvaluatedType, trueValue.MemberMask) {
-            _condition = condition;
-            _trueValue = trueValue;
-            _falseValue = falseValue;
+            : base(ExpressionType.Conditional, trueValue.EvaluatedType, trueValue.MemberMask)
+        {
+            Condition = condition;
+            TrueValue = trueValue;
+            FalseValue = falseValue;
         }
 
-        protected override bool IsParenthesisRedundant {
-            get {
-                return false;
-            }
-        }
+        protected override bool IsParenthesisRedundant => false;
 
-        public Expression Condition {
-            get {
-                return _condition;
-            }
-        }
+        public Expression Condition { get; }
 
-        public Expression FalseValue {
-            get {
-                return _falseValue;
-            }
-        }
+        public Expression FalseValue { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                return _trueValue.RequiresThisContext || _falseValue.RequiresThisContext ||
-                       _condition.RequiresThisContext;
-            }
-        }
+        public override bool RequiresThisContext => TrueValue.RequiresThisContext || FalseValue.RequiresThisContext ||
+                                                    Condition.RequiresThisContext;
 
-        public Expression TrueValue {
-            get {
-                return _trueValue;
-            }
-        }
+        public Expression TrueValue { get; }
     }
 }

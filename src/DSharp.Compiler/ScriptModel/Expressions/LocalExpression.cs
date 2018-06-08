@@ -3,29 +3,24 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class LocalExpression : Expression {
-
-        private LocalSymbol _symbol;
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class LocalExpression : Expression
+    {
         public LocalExpression(LocalSymbol symbol)
-            : this(symbol, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _symbol = symbol;
+            : this(symbol, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            Symbol = symbol;
         }
 
         public LocalExpression(LocalSymbol symbol, SymbolFilter memberMask)
-            : base(ExpressionType.Local, symbol.ValueType, memberMask) {
-            _symbol = symbol;
+            : base(ExpressionType.Local, symbol.ValueType, memberMask)
+        {
+            Symbol = symbol;
         }
 
-        public LocalSymbol Symbol {
-            get {
-                return _symbol;
-            }
-        }
+        public LocalSymbol Symbol { get; }
     }
 }

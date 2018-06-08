@@ -5,11 +5,11 @@
 
 using System;
 
-namespace ScriptSharp.ScriptModel {
-
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
     [Flags]
-    internal enum MemberVisibility {
-
+    internal enum MemberVisibility
+    {
         PrivateInstance = 0,
 
         Protected = 1,

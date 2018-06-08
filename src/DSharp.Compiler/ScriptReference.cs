@@ -3,64 +3,41 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
 
-namespace ScriptSharp {
+namespace DSharp.Compiler
+{
+    public sealed class ScriptReference
+    {
+        private string identifier;
 
-    public sealed class ScriptReference {
+        private string path;
 
-        private string _name;
-        private string _identifier;
+        public ScriptReference(string name, string identifier)
+        {
+            Debug.Assert(string.IsNullOrEmpty(name) == false);
+            Debug.Assert(identifier == null || identifier.Length != 0);
 
-        private string _path;
-        private bool _delayLoaded;
-
-        public ScriptReference(string name, string identifier) {
-            Debug.Assert(String.IsNullOrEmpty(name) == false);
-            Debug.Assert((identifier == null) || (identifier.Length != 0));
-
-            _name = name;
-            _identifier = identifier;
+            Name = name;
+            this.identifier = identifier;
         }
 
-        public bool DelayLoaded {
-            get {
-                return _delayLoaded;
-            }
-            set {
-                _delayLoaded = value;
-            }
+        public bool DelayLoaded { get; set; }
+
+        public bool HasIdentifier => identifier != null;
+
+        public string Identifier
+        {
+            get => identifier ?? Name;
+            set => identifier = value;
         }
 
-        public bool HasIdentifier {
-            get {
-                return _identifier != null;
-            }
-        }
+        public string Name { get; }
 
-        public string Identifier {
-            get {
-                return _identifier ?? _name;
-            }
-            set {
-                _identifier = value;
-            }
-        }
-
-        public string Name {
-            get {
-                return _name;
-            }
-        }
-
-        public string Path {
-            get {
-                return _path ?? _name;
-            }
-            set {
-                _path = value;
-            }
+        public string Path
+        {
+            get => path ?? Name;
+            set => path = value;
         }
     }
 }

@@ -6,27 +6,16 @@
 // Public License. A copy of the license can be found in License.txt.
 //
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class GenericTypeSymbol : TypeSymbol {
-
-        private int _genericArgumentIndex;
-
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
+    internal sealed class GenericTypeSymbol : TypeSymbol
+    {
         public GenericTypeSymbol(int genericArgumentIndex, NamespaceSymbol parent)
-            : base(SymbolType.GenericParameter, "<T>", parent) {
-            _genericArgumentIndex = genericArgumentIndex;
+            : base(SymbolType.GenericParameter, "<T>", parent)
+        {
+            GenericArgumentIndex = genericArgumentIndex;
         }
 
-        public int GenericArgumentIndex {
-            get {
-                return _genericArgumentIndex;
-            }
-        }
+        public int GenericArgumentIndex { get; }
     }
 }

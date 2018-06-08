@@ -3,38 +3,24 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class PropertyExpression : Expression {
-
-        private PropertySymbol _property;
-        private Expression _objectReference;
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class PropertyExpression : Expression
+    {
         public PropertyExpression(Expression objectReference, PropertySymbol property, bool getter)
-            : base((getter ? ExpressionType.PropertyGet : ExpressionType.PropertySet), property.AssociatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _property = property;
-            _objectReference = objectReference;
+            : base(getter ? ExpressionType.PropertyGet : ExpressionType.PropertySet, property.AssociatedType,
+                SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            Property = property;
+            ObjectReference = objectReference;
         }
 
-        public Expression ObjectReference {
-            get {
-                return _objectReference;
-            }
-        }
+        public Expression ObjectReference { get; }
 
-        public PropertySymbol Property {
-            get {
-                return _property;
-            }
-        }
+        public PropertySymbol Property { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                return _objectReference.RequiresThisContext;
-            }
-        }
+        public override bool RequiresThisContext => ObjectReference.RequiresThisContext;
     }
 }

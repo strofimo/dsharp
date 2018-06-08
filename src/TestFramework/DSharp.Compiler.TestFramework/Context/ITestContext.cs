@@ -1,7 +1,6 @@
 ﻿using System.IO;
-using ScriptSharp;
 
-namespace DSharp.Compiler.TestFramework
+namespace DSharp.Compiler.TestFramework.Context
 {
     public interface ITestContext
     {

@@ -3,66 +3,74 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using ScriptSharp;
-using ScriptSharp.Parser;
+using DSharp.Compiler.CodeModel.Tokens;
+using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.Parser;
 
-namespace ScriptSharp.CodeModel {
+namespace DSharp.Compiler.CodeModel
+{
+    internal sealed class CodeModelBuilder
+    {
+        private readonly IErrorHandler errorHandler;
 
-    internal sealed class CodeModelBuilder {
+        private readonly CompilerOptions options;
 
-        private CompilerOptions _options;
-        private IErrorHandler _errorHandler;
+        private bool hasErrors;
 
-        private bool _hasErrors;
-
-        public CodeModelBuilder(CompilerOptions options, IErrorHandler errorHandler) {
-            _options = options;
-            _errorHandler = errorHandler;
+        public CodeModelBuilder(CompilerOptions options, IErrorHandler errorHandler)
+        {
+            this.options = options;
+            this.errorHandler = errorHandler;
         }
 
-        public CompilationUnitNode BuildCodeModel(IStreamSource source) {
-            _hasErrors = false;
+        public CompilationUnitNode BuildCodeModel(IStreamSource source)
+        {
+            hasErrors = false;
 
             string filePath = source.FullName;
 
             char[] buffer = GetBuffer(source);
-            if (buffer == null) {
-                _errorHandler.ReportError("Unable to read from file " + filePath, filePath);
+
+            if (buffer == null)
+            {
+                errorHandler.ReportError("Unable to read from file " + filePath, filePath);
+
                 return null;
             }
 
             IDictionary definesTable = new Hashtable();
-            if ((_options.Defines != null) && (_options.Defines.Count != 0)) {
-                foreach (string s in _options.Defines) {
-                    definesTable[s] = null;
-                }
+
+            if (options.Defines != null && options.Defines.Count != 0)
+            {
+                foreach (string s in options.Defines) definesTable[s] = null;
             }
 
             NameTable nameTable = new NameTable();
             LineMap lineMap = new LineMap(filePath);
 
             FileLexer lexer = new FileLexer(nameTable, filePath);
-            lexer.OnError += new FileErrorEventHandler(OnError);
+            lexer.OnError += OnError;
             Token[] tokens = lexer.Lex(buffer, definesTable, lineMap, /* includeComments */ false);
 
-            if (_hasErrors == false) {
+            if (hasErrors == false)
+            {
                 FileParser parser = new FileParser(nameTable, filePath);
-                parser.OnError += new FileErrorEventHandler(OnError);
+                parser.OnError += OnError;
 
                 CompilationUnitNode compilationUnit = parser.Parse(tokens, lineMap);
-                foreach (ParseNode node in compilationUnit.Members) {
-                    NamespaceNode namespaceNode = node as NamespaceNode;
-                    if (namespaceNode != null) {
+
+                foreach (ParseNode node in compilationUnit.Members)
+                {
+                    if (node is NamespaceNode namespaceNode)
+                    {
                         namespaceNode.IncludeCompilationUnitUsingClauses();
                     }
                 }
 
-                if (_hasErrors == false) {
+                if (hasErrors == false)
+                {
                     return compilationUnit;
                 }
             }
@@ -70,27 +78,32 @@ namespace ScriptSharp.CodeModel {
             return null;
         }
 
-        private char[] GetBuffer(IStreamSource source) {
+        private char[] GetBuffer(IStreamSource source)
+        {
             char[] buffer = null;
 
             Stream stream = source.GetStream();
-            if (stream != null) {
+
+            if (stream != null)
+            {
                 StreamReader reader = new StreamReader(stream);
                 string text = reader.ReadToEnd();
 
                 buffer = text.ToCharArray();
                 source.CloseStream(stream);
             }
+
             return buffer;
         }
 
-        private void OnError(object sender, FileErrorEventArgs e) {
-            _hasErrors = true;
+        private void OnError(object sender, FileErrorEventArgs e)
+        {
+            hasErrors = true;
 
             string location = e.Position.ToString();
-            string message = String.Format(e.Error.Message, e.Args);
+            string message = string.Format(e.Error.Message, e.Args);
 
-            _errorHandler.ReportError(message, location);
+            errorHandler.ReportError(message, location);
         }
     }
 }

@@ -3,36 +3,44 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using ScriptSharp;
-using ScriptSharp.CodeModel;
+using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.CodeModel.Attributes;
+using DSharp.Compiler.CodeModel.Expressions;
+using DSharp.Compiler.CodeModel.Types;
 
-namespace ScriptSharp.Validator {
+namespace DSharp.Compiler.Validator
+{
+    internal sealed class CompilationUnitNodeValidator : IParseNodeValidator
+    {
+        bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
+        {
+            CompilationUnitNode compilationUnitNode = (CompilationUnitNode) node;
 
-    internal sealed class CompilationUnitNodeValidator : IParseNodeValidator {
+            foreach (AttributeBlockNode attribBlock in compilationUnitNode.Attributes)
+            {
+                AttributeNode scriptNamespaceNode =
+                    AttributeNode.FindAttribute(attribBlock.Attributes, "ScriptNamespace");
 
-        bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler) {
-            CompilationUnitNode compilationUnitNode = (CompilationUnitNode)node;
+                if (scriptNamespaceNode != null)
+                {
+                    string scriptNamespace = (string) ((LiteralNode) scriptNamespaceNode.Arguments[0]).Value;
 
-            foreach (AttributeBlockNode attribBlock in compilationUnitNode.Attributes) {
-                AttributeNode scriptNamespaceNode = AttributeNode.FindAttribute(attribBlock.Attributes, "ScriptNamespace");
-                if (scriptNamespaceNode != null) {
-                    string scriptNamespace = (string)((LiteralNode)scriptNamespaceNode.Arguments[0]).Value;
-
-                    if (Utility.IsValidScriptNamespace(scriptNamespace) == false) {
+                    if (Utility.IsValidScriptNamespace(scriptNamespace) == false)
+                    {
                         errorHandler.ReportError("A script namespace must be a valid script identifier.",
-                                                 scriptNamespaceNode.Token.Location);
+                            scriptNamespaceNode.Token.Location);
                     }
                 }
-            } 
+            }
 
-            foreach (ParseNode childNode in compilationUnitNode.Members) {
-                if (!(childNode is NamespaceNode)) {
+            foreach (ParseNode childNode in compilationUnitNode.Members)
+                if (!(childNode is NamespaceNode))
+                {
                     errorHandler.ReportError("Non-namespaced types are not supported.",
-                                             childNode.Token.Location);
+                        childNode.Token.Location);
+
                     return false;
                 }
-            }
 
             return true;
         }

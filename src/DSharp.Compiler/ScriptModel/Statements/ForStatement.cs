@@ -3,117 +3,109 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Expressions;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class ForStatement : Statement {
-
-        private Expression _condition;
-        private List<Expression> _initializers;
-        private List<Expression> _increments;
-        private VariableDeclarationStatement _variables;
-        private Statement _body;
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal sealed class ForStatement : Statement
+    {
+        private List<Expression> increments;
+        private List<Expression> initializers;
 
         public ForStatement()
-            : base(StatementType.For) {
+            : base(StatementType.For)
+        {
         }
 
-        public Statement Body {
-            get {
-                return _body;
-            }
-        }
+        public Statement Body { get; private set; }
 
-        public Expression Condition {
-            get {
-                return _condition;
-            }
-        }
+        public Expression Condition { get; private set; }
 
-        public bool HasScopeVariables {
-            get {
-                return (_variables != null);
-            }
-        }
+        public bool HasScopeVariables => Variables != null;
 
-        public ICollection<Expression> Increments {
-            get {
-                return _increments;
-            }
-        }
+        public ICollection<Expression> Increments => increments;
 
-        public ICollection<Expression> Initializers {
-            get {
-                return _initializers;
-            }
-        }
+        public ICollection<Expression> Initializers => initializers;
 
-        public override bool RequiresThisContext {
-            get {
-                if ((_body != null) && _body.RequiresThisContext) {
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                if (Body != null && Body.RequiresThisContext)
+                {
                     return true;
                 }
-                if ((_condition != null) && _condition.RequiresThisContext) {
+
+                if (Condition != null && Condition.RequiresThisContext)
+                {
                     return true;
                 }
-                if (_increments != null) {
-                    foreach (Expression expression in _increments) {
-                        if (expression.RequiresThisContext) {
+
+                if (increments != null)
+                {
+                    foreach (Expression expression in increments)
+                        if (expression.RequiresThisContext)
+                        {
                             return true;
                         }
-                    }
                 }
-                if (_initializers != null) {
-                    foreach (Expression expression in _initializers) {
-                        if (expression.RequiresThisContext) {
+
+                if (initializers != null)
+                {
+                    foreach (Expression expression in initializers)
+                        if (expression.RequiresThisContext)
+                        {
                             return true;
                         }
-                    }
                 }
+
                 return false;
             }
         }
 
-        public VariableDeclarationStatement Variables {
-            get {
-                return _variables;
+        public VariableDeclarationStatement Variables { get; private set; }
+
+        public void AddBody(Statement statement)
+        {
+            Debug.Assert(Body == null);
+            Body = statement;
+        }
+
+        public void AddCondition(Expression expression)
+        {
+            Debug.Assert(Condition == null);
+            Condition = expression;
+        }
+
+        public void AddIncrement(Expression expression)
+        {
+            if (increments == null)
+            {
+                increments = new List<Expression>();
             }
+
+            increments.Add(expression);
         }
 
-        public void AddBody(Statement statement) {
-            Debug.Assert(_body == null);
-            _body = statement;
-        }
+        public void AddInitializer(Expression expression)
+        {
+            Debug.Assert(Variables == null);
 
-        public void AddCondition(Expression expression) {
-            Debug.Assert(_condition == null);
-            _condition = expression;
-        }
-
-        public void AddIncrement(Expression expression) {
-            if (_increments == null) {
-                _increments = new List<Expression>();
+            if (initializers == null)
+            {
+                initializers = new List<Expression>();
             }
-            _increments.Add(expression);
+
+            initializers.Add(expression);
         }
 
-        public void AddInitializer(Expression expression) {
-            Debug.Assert(_variables == null);
-            if (_initializers == null) {
-                _initializers = new List<Expression>();
-            }
-            _initializers.Add(expression);
-        }
-
-        public void AddInitializer(VariableDeclarationStatement variables) {
-            Debug.Assert(_initializers == null);
-            Debug.Assert(_variables == null);
-            _variables = variables;
+        public void AddInitializer(VariableDeclarationStatement variables)
+        {
+            Debug.Assert(initializers == null);
+            Debug.Assert(Variables == null);
+            Variables = variables;
         }
     }
 }

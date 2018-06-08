@@ -4,64 +4,81 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using ScriptSharp;
-using ScriptSharp.CodeModel;
+using DSharp.Compiler.CodeModel;
 
-namespace ScriptSharp.Validator {
-
+namespace DSharp.Compiler.Validator
+{
     /// <summary>
-    /// Validates the code model based on the constrained subset of C# supposed
-    /// in Script#.
+    ///     Validates the code model based on the constrained subset of C# supposed
+    ///     in Script#.
     /// </summary>
-    internal sealed class CodeModelValidator : IParseNodeHandler {
+    internal sealed class CodeModelValidator : IParseNodeHandler
+    {
+        private readonly IErrorHandler errorHandler;
+        private readonly Dictionary<Type, IParseNodeValidator> validatorTable;
 
-        private IErrorHandler _errorHandler;
-        private Dictionary<Type, IParseNodeValidator> _validatorTable;
-
-        public CodeModelValidator(IErrorHandler errorHandler) {
-            _errorHandler = errorHandler;
-            _validatorTable = new Dictionary<Type, IParseNodeValidator>();
+        public CodeModelValidator(IErrorHandler errorHandler)
+        {
+            this.errorHandler = errorHandler;
+            validatorTable = new Dictionary<Type, IParseNodeValidator>();
         }
 
-        private Type GetValidatorType(ParseNodeType nodeType, CompilerOptions options) {
-            switch (nodeType) {
+        private Type GetValidatorType(ParseNodeType nodeType, CompilerOptions options)
+        {
+            switch (nodeType)
+            {
                 case ParseNodeType.CompilationUnit:
+
                     return typeof(CompilationUnitNodeValidator);
                 case ParseNodeType.Namespace:
+
                     return typeof(NamespaceNodeValidator);
                 case ParseNodeType.Name:
                 case ParseNodeType.GenericName:
+
                     return typeof(NameNodeValidator);
                 case ParseNodeType.Type:
+
                     return typeof(CustomTypeNodeValidator);
                 case ParseNodeType.ArrayType:
+
                     return typeof(ArrayTypeNodeValidator);
                 case ParseNodeType.FormalParameter:
+
                     return typeof(ParameterNodeValidator);
                 case ParseNodeType.EnumerationFieldDeclaration:
+
                     return typeof(EnumerationFieldNodeValidator);
                 case ParseNodeType.FieldDeclaration:
                 case ParseNodeType.ConstFieldDeclaration:
+
                     return typeof(FieldDeclarationNodeValidator);
                 case ParseNodeType.IndexerDeclaration:
+
                     return typeof(IndexerDeclarationNodeValidator);
                 case ParseNodeType.PropertyDeclaration:
+
                     return typeof(PropertyDeclarationNodeValidator);
                 case ParseNodeType.EventDeclaration:
+
                     return typeof(EventDeclarationNodeValidator);
                 case ParseNodeType.MethodDeclaration:
                 case ParseNodeType.ConstructorDeclaration:
+
                     return typeof(MethodDeclarationNodeValidator);
                 case ParseNodeType.Throw:
+
                     return typeof(ThrowNodeValidator);
                 case ParseNodeType.Try:
+
                     return typeof(TryNodeValidator);
                 case ParseNodeType.ArrayNew:
+
                     return typeof(ArrayNewNodeValidator);
                 case ParseNodeType.New:
+
                     return typeof(NewNodeValidator);
                 case ParseNodeType.Catch:
                 case ParseNodeType.ArrayInitializer:
@@ -102,6 +119,7 @@ namespace ScriptSharp.Validator {
                 case ParseNodeType.AnonymousMethod:
                 case ParseNodeType.BinaryExpression:
                 case ParseNodeType.Using:
+
                     // No validation required
                     break;
                 case ParseNodeType.PointerType:
@@ -123,9 +141,11 @@ namespace ScriptSharp.Validator {
                 case ParseNodeType.AliasQualifiedName:
                 case ParseNodeType.TypeParameter:
                 case ParseNodeType.ConstraintClause:
+
                     return typeof(UnsupportedParseNodeValidator);
                 default:
                     Debug.Fail("Unexpected node type in validator: " + nodeType);
+
                     break;
             }
 
@@ -133,38 +153,44 @@ namespace ScriptSharp.Validator {
         }
 
         #region IParseNodeHandler Members
-        bool IParseNodeHandler.RequiresChildrenGrouping {
-            get {
-                return false;
-            }
-        }
 
-        bool IParseNodeHandler.HandleNode(ParseNode node, object context) {
-            CompilerOptions options = (CompilerOptions)context;
+        bool IParseNodeHandler.RequiresChildrenGrouping => false;
+
+        bool IParseNodeHandler.HandleNode(ParseNode node, object context)
+        {
+            CompilerOptions options = (CompilerOptions) context;
 
             Type validatorType = GetValidatorType(node.NodeType, options);
-            if (validatorType == null) {
+
+            if (validatorType == null)
+            {
                 // valid; continue with children...
                 return true;
             }
 
             IParseNodeValidator validator = null;
-            if (_validatorTable.ContainsKey(validatorType)) {
-                validator = _validatorTable[validatorType];
+
+            if (validatorTable.ContainsKey(validatorType))
+            {
+                validator = validatorTable[validatorType];
             }
-            else {
-                validator = (IParseNodeValidator)Activator.CreateInstance(validatorType);
-                _validatorTable[validatorType] = validator;
+            else
+            {
+                validator = (IParseNodeValidator) Activator.CreateInstance(validatorType);
+                validatorTable[validatorType] = validator;
             }
 
-            return validator.Validate(node, options, _errorHandler);
+            return validator.Validate(node, options, errorHandler);
         }
 
-        void IParseNodeHandler.StartChildren(string identifier) {
+        void IParseNodeHandler.StartChildren(string identifier)
+        {
         }
 
-        void IParseNodeHandler.EndChildren() {
+        void IParseNodeHandler.EndChildren()
+        {
         }
+
         #endregion
     }
 }

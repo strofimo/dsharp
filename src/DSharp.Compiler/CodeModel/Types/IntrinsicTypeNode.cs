@@ -3,33 +3,24 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class IntrinsicTypeNode : TypeNode {
-
-        private bool _nullable;
-
+namespace DSharp.Compiler.CodeModel.Types
+{
+    internal sealed class IntrinsicTypeNode : TypeNode
+    {
         public IntrinsicTypeNode(Token token)
-            : base(ParseNodeType.PredefinedType, token) {
+            : base(ParseNodeType.PredefinedType, token)
+        {
         }
 
-        public TokenType Type {
-            get {
-                return token.Type;
-            }
-        }
+        public TokenType Type => Token.Type;
 
-        public bool IsNullable {
-            get {
-                return _nullable;
-            }
-        }
+        public bool IsNullable { get; private set; }
 
-        public void AddNullability() {
-            _nullable = true;
+        public void AddNullability()
+        {
+            IsNullable = true;
         }
     }
 }

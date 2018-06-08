@@ -3,39 +3,65 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
-using ScriptSharp.CodeModel;
-using AttributeTargets = ScriptSharp.CodeModel.AttributeTargets;
+using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.CodeModel.Attributes;
+using DSharp.Compiler.CodeModel.Expressions;
+using DSharp.Compiler.CodeModel.Members;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Statements;
+using DSharp.Compiler.CodeModel.Tokens;
+using DSharp.Compiler.CodeModel.Types;
 
-namespace ScriptSharp.Parser {
+namespace DSharp.Compiler.Parser
+{
+    internal sealed class Parser
+    {
+        // UNDONE use an array of TID's here instead
+        private static readonly string[] ModifierNames =
+        {
+            "abstract",
+            "sealed",
 
-    internal sealed class Parser {
+            "public",
+            "internal",
+            "private",
+            "protected",
 
-        private Token[] tokens;
-        private int iToken;
-        private BufferPosition lastErrorPosition;
-        private NameTable symbolTable;
-        private string _path;
+            "new",
+            "virtual",
+            "static",
+            "readonly",
+            "extern",
+            "override",
+            "unsafe"
+        };
+
+        private readonly Name addName;
+        private readonly Name aliasName;
 
         //
         // some handy predefined names
         //
         private readonly Name assemblyName;
-        private readonly Name moduleName;
-        private readonly Name unknownName;
         private readonly Name getName;
-        private readonly Name setName;
-        private readonly Name addName;
-        private readonly Name removeName;
+        private readonly Name moduleName;
         private readonly Name partialName;
-        private readonly Name yieldName;
+        private readonly string path;
+        private readonly Name removeName;
+        private readonly Name setName;
+        private readonly Name unknownName;
         private readonly Name whereName;
-        private readonly Name aliasName;
+        private readonly Name yieldName;
+        private int iToken;
+        private BufferPosition lastErrorPosition;
+        private NameTable symbolTable;
+        private Token[] tokens;
 
-        public Parser(NameTable symbolTable, string path) {
+        public Parser(NameTable symbolTable, string path)
+        {
             this.symbolTable = symbolTable;
-            _path = path;
+            this.path = path;
 
             assemblyName = symbolTable.Add("assembly");
             moduleName = symbolTable.Add("module");
@@ -51,10 +77,11 @@ namespace ScriptSharp.Parser {
         }
 
         /// <summary>
-        /// Parses an array of C# tokens. Subscribe to the OnError event before
-        /// calling Parse to receive errors while Parsing.
+        ///     Parses an array of C# tokens. Subscribe to the OnError event before
+        ///     calling Parse to receive errors while Parsing.
         /// </summary>
-        public CompilationUnitNode Parse(Token[] tokens) {
+        public CompilationUnitNode Parse(Token[] tokens)
+        {
             this.tokens = tokens;
 
             iToken = 0;
@@ -65,127 +92,154 @@ namespace ScriptSharp.Parser {
 
         public event ErrorEventHandler OnError;
 
-        private void ReportError(Error error, Token token, params object[] args) {
+        private void ReportError(Error error, Token token, params object[] args)
+        {
             BufferPosition newPosition = token.Position;
-            if (OnError != null && lastErrorPosition != newPosition) {
+
+            if (OnError != null && lastErrorPosition != newPosition)
+            {
                 OnError(this, new ErrorEventArgs(error, newPosition, args));
             }
+
             lastErrorPosition = newPosition;
         }
 
-        private void ReportError(Error error, params object[] args) {
+        private void ReportError(Error error, params object[] args)
+        {
             ReportError(error, PeekToken(), args);
         }
 
-        private void ReportTokenExpectedError(TokenType type) {
+        private void ReportTokenExpectedError(TokenType type)
+        {
             ReportError(ParseError.TokenExpected, Token.GetString(type));
         }
 
-        private void ReportUnexpectedError(TokenType type) {
+        private void ReportUnexpectedError(TokenType type)
+        {
             ReportError(ParseError.TokenUnexpected, Token.GetString(type));
         }
 
-        private bool CheckType(TokenType type) {
-            if (PeekType() == type) {
+        private bool CheckType(TokenType type)
+        {
+            if (PeekType() == type)
+            {
                 return true;
             }
-            else {
-                ReportTokenExpectedError(type);
-                return false;
-            }
+
+            ReportTokenExpectedError(type);
+
+            return false;
         }
 
-        private Token Eat(TokenType type) {
-            if (PeekType() == type) {
+        private Token Eat(TokenType type)
+        {
+            if (PeekType() == type)
+            {
                 return NextToken();
             }
-            else {
-                ReportTokenExpectedError(type);
-                return ErrorToken();
-            }
+
+            ReportTokenExpectedError(type);
+
+            return ErrorToken();
         }
 
-        private Token EatOpt(TokenType type) {
-            if (PeekType() == type) {
+        private Token EatOpt(TokenType type)
+        {
+            if (PeekType() == type)
+            {
                 return NextToken();
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
-        private Token ErrorToken() {
-            return new Token(TokenType.Error, _path, PeekToken().Position);
+        private Token ErrorToken()
+        {
+            return new Token(TokenType.Error, path, PeekToken().Position);
         }
 
-        private Token PeekToken() {
+        private Token PeekToken()
+        {
             return PeekToken(0);
         }
 
-        private Token PeekToken(int index) {
+        private Token PeekToken(int index)
+        {
             int skippedTokens = 0;
             int i = 0;
-            while (skippedTokens < index) {
+
+            while (skippedTokens < index)
+            {
                 Debug.Assert(tokens[iToken + i].Type != TokenType.Comment);
                 i += 1;
-                while (tokens[iToken + i].Type == TokenType.Comment) {
-                    i += 1;
-                }
+
+                while (tokens[iToken + i].Type == TokenType.Comment) i += 1;
+
                 skippedTokens += 1;
             }
+
             Debug.Assert(tokens[iToken + i].Type != TokenType.Comment);
 
             return tokens[iToken + i];
         }
 
-        private TokenType PeekType() {
+        private TokenType PeekType()
+        {
             return PeekToken().Type;
         }
 
-        private TokenType PeekType(int index) {
+        private TokenType PeekType(int index)
+        {
             return PeekToken(index).Type;
         }
 
-        private Token NextToken() {
+        private Token NextToken()
+        {
             Token token = tokens[iToken++];
             Debug.Assert(token.Type != TokenType.Comment);
-            while (iToken < tokens.Length && tokens[iToken].Type == TokenType.Comment) {
-                iToken++;
-            }
+
+            while (iToken < tokens.Length && tokens[iToken].Type == TokenType.Comment) iToken++;
+
             return token;
         }
 
-        private int Mark() {
+        private int Mark()
+        {
             return iToken;
         }
 
-        private void Rewind(int mark) {
+        private void Rewind(int mark)
+        {
             iToken = mark;
         }
 
-        private CompilationUnitNode ParseCompilationUnit() {
+        private CompilationUnitNode ParseCompilationUnit()
+        {
             CompilationUnitNode tree
                 = new CompilationUnitNode(
-                    Eat(TokenType.BOF),
+                    Eat(TokenType.Bof),
                     ParseExternAliases(),
                     ParseUsingClauses(),
                     ParseGlobalAttributes(),
                     ParseNamespaceMembers()
-                    );
-            Eat(TokenType.EOF);
+                );
+            Eat(TokenType.Eof);
 
             return tree;
         }
 
-        private ParseNodeList ParseExternAliases() {
+        private ParseNodeList ParseExternAliases()
+        {
             ParseNodeList list = new ParseNodeList();
             Token token;
-            while (null != (token = EatOpt(TokenType.Extern))) {
+
+            while (null != (token = EatOpt(TokenType.Extern)))
+            {
                 EatContextualKeyword(aliasName);
                 list.Append(
-                        new ExternAliasNode(
-                            token,
-                            ParseIdentifier()));
+                    new ExternAliasNode(
+                        token,
+                        ParseIdentifier()));
                 Eat(TokenType.Semicolon);
             }
 
@@ -193,27 +247,34 @@ namespace ScriptSharp.Parser {
         }
 
         // using-directives
-        private ParseNodeList ParseUsingClauses() {
+        private ParseNodeList ParseUsingClauses()
+        {
             ParseNodeList list = new ParseNodeList();
-            while (PeekType() == TokenType.Using) {
+
+            while (PeekType() == TokenType.Using)
+            {
                 Token token = Eat(TokenType.Using);
-                if (PeekType() == TokenType.Identifier && PeekType(1) == TokenType.Equal) {
+
+                if (PeekType() == TokenType.Identifier && PeekType(1) == TokenType.Equal)
+                {
                     // using-alias-directive
                     AtomicNameNode name = ParseIdentifier();
                     Eat(TokenType.Equal);
                     list.Append(
-                            new UsingAliasNode(
-                                token,
-                                name,
-                                ParseNamespaceOrTypeName()));
+                        new UsingAliasNode(
+                            token,
+                            name,
+                            ParseNamespaceOrTypeName()));
                 }
-                else {
+                else
+                {
                     // using-namespace-directive
                     list.Append(
-                            new UsingNamespaceNode(
-                                token,
-                                ParseNamespaceOrTypeName()));
+                        new UsingNamespaceNode(
+                            token,
+                            ParseNamespaceOrTypeName()));
                 }
+
                 Eat(TokenType.Semicolon);
             }
 
@@ -221,24 +282,31 @@ namespace ScriptSharp.Parser {
         }
 
         // identifier
-        private AtomicNameNode ParseIdentifier() {
-            if (CheckType(TokenType.Identifier)) {
-                return new AtomicNameNode((IdentifierToken)Eat(TokenType.Identifier));
+        private AtomicNameNode ParseIdentifier()
+        {
+            if (CheckType(TokenType.Identifier))
+            {
+                return new AtomicNameNode((IdentifierToken) Eat(TokenType.Identifier));
             }
-            else {
-                return new AtomicNameNode(new IdentifierToken(unknownName, false, _path, PeekToken().Position));
-            }
+
+            return new AtomicNameNode(new IdentifierToken(unknownName, false, path, PeekToken().Position));
         }
 
-        private NameNode ParseSimpleName(bool inExpression) {
-            if (CheckType(TokenType.Identifier)) {
-                IdentifierToken name = (IdentifierToken)Eat(TokenType.Identifier);
+        private NameNode ParseSimpleName(bool inExpression)
+        {
+            if (CheckType(TokenType.Identifier))
+            {
+                IdentifierToken name = (IdentifierToken) Eat(TokenType.Identifier);
 
                 int mark = Mark();
                 TypeArgumentListScan scan = ScanTypeArgumentListOpt();
-                if (scan == TypeArgumentListScan.MayBeTypeArgumentList) {
-                    if (inExpression) {
-                        switch (PeekType()) {
+
+                if (scan == TypeArgumentListScan.MayBeTypeArgumentList)
+                {
+                    if (inExpression)
+                    {
+                        switch (PeekType())
+                        {
                             case TokenType.OpenParen:
                             case TokenType.CloseParen:
                             case TokenType.CloseSquare:
@@ -249,142 +317,184 @@ namespace ScriptSharp.Parser {
                             case TokenType.Dot:
                             case TokenType.Question:
                                 scan = TypeArgumentListScan.MustBeTypeArgumentList;
+
                                 break;
                             default:
                                 scan = TypeArgumentListScan.NotTypeArgumentList;
+
                                 break;
                         }
                     }
-                    else {
+                    else
+                    {
                         scan = TypeArgumentListScan.MustBeTypeArgumentList;
                     }
                 }
+
                 Rewind(mark);
+
                 if (scan == TypeArgumentListScan.MustBeTypeArgumentList)
+                {
                     return new GenericNameNode(name, ParseTypeArgumentList());
-                else
-                    return new AtomicNameNode(name);
+                }
+
+                return new AtomicNameNode(name);
             }
-            else {
-                return new AtomicNameNode(new IdentifierToken(unknownName, false, _path, PeekToken().Position));
-            }
+
+            return new AtomicNameNode(new IdentifierToken(unknownName, false, path, PeekToken().Position));
         }
 
-        private ParseNodeList ParseTypeArgumentList() {
+        private ParseNodeList ParseTypeArgumentList()
+        {
             ParseNodeList returnValue = new ParseNodeList();
             Eat(TokenType.OpenAngle);
-            do {
+
+            do
+            {
                 returnValue.Append(ParseType());
             } while (null != EatOpt(TokenType.Comma));
+
             Eat(TokenType.CloseAngle);
+
             return returnValue;
         }
 
-        private enum TypeArgumentListScan {
-            MustBeTypeArgumentList,
-            MayBeTypeArgumentList,
-            TypeParameterList,
-            NotTypeArgumentList,
-        }
-
-        private TypeArgumentListScan ScanTypeArgumentListOpt() {
+        private TypeArgumentListScan ScanTypeArgumentListOpt()
+        {
             if (PeekType() != TokenType.OpenAngle)
+            {
                 return TypeArgumentListScan.NotTypeArgumentList;
+            }
+
             NextToken();
 
-            Token token;
             bool couldBeParamList = true;
-            do {
+
+            do
+            {
                 if (PeekType() == TokenType.OpenSquare)
+                {
                     return TypeArgumentListScan.TypeParameterList;
+                }
 
-                if (PeekType() != TokenType.Identifier || (PeekType(1) != TokenType.Comma && PeekType(1) != TokenType.CloseAngle))
+                if (PeekType() != TokenType.Identifier ||
+                    PeekType(1) != TokenType.Comma && PeekType(1) != TokenType.CloseAngle)
+                {
                     couldBeParamList = false;
+                }
 
-                switch (ScanType()) {
-                    case SCAN.COULD_BE_TYPE:
-                    case SCAN.TYPE:
+                switch (ScanType())
+                {
+                    case Scan.CouldBeType:
+                    case Scan.Type:
+
                         break;
-                    case SCAN.NOTTYPE:
-                    case SCAN.POINTER_OR_MULT:
+                    case Scan.Nottype:
+                    case Scan.PointerOrMult:
+
                         return TypeArgumentListScan.NotTypeArgumentList;
                     default:
                         Debug.Fail("bad scan result");
+
                         return TypeArgumentListScan.NotTypeArgumentList;
                 }
-            } while (null != (token = EatOpt(TokenType.Comma)));
+            } while (null != (EatOpt(TokenType.Comma)));
 
             if (PeekType() != TokenType.CloseAngle)
+            {
                 return TypeArgumentListScan.NotTypeArgumentList;
+            }
+
             NextToken();
 
-            return couldBeParamList ? TypeArgumentListScan.MayBeTypeArgumentList : TypeArgumentListScan.MustBeTypeArgumentList;
+            return couldBeParamList
+                ? TypeArgumentListScan.MayBeTypeArgumentList
+                : TypeArgumentListScan.MustBeTypeArgumentList;
         }
 
         // qualified-name
-        private NameNode ParseMultiPartName() {
+        private NameNode ParseMultiPartName()
+        {
             Token token = PeekToken();
             NameNode name = ParseIdentifier();
-            if (PeekType() == TokenType.Dot && PeekType(1) == TokenType.Identifier) {
+
+            if (PeekType() == TokenType.Dot && PeekType(1) == TokenType.Identifier)
+            {
                 ParseNodeList list = new ParseNodeList(name);
-                do {
+
+                do
+                {
                     Eat(TokenType.Dot);
                     list.Append(ParseIdentifier());
-                }
-                while (PeekType() == TokenType.Dot && PeekType(1) == TokenType.Identifier);
+                } while (PeekType() == TokenType.Dot && PeekType(1) == TokenType.Identifier);
 
                 return new MultiPartNameNode(token, list);
             }
-            else {
-                return name;
-            }
-        }
 
-        // alias-qualified-name
-        private NameNode ParseAliasQualifiedName(bool inExpression) {
-            NameNode name = ParseSimpleName(inExpression);
-
-            if (name.nodeType == ParseNodeType.Name && PeekType() == TokenType.ColonColon) {
-                NextToken();
-                name = new AliasQualifiedNameNode((AtomicNameNode)name, ParseSimpleName(inExpression));
-            }
             return name;
         }
 
-        private void EatDotOrColonColon() {
+        // alias-qualified-name
+        private NameNode ParseAliasQualifiedName(bool inExpression)
+        {
+            NameNode name = ParseSimpleName(inExpression);
+
+            if (name.NodeType == ParseNodeType.Name && PeekType() == TokenType.ColonColon)
+            {
+                NextToken();
+                name = new AliasQualifiedNameNode((AtomicNameNode) name, ParseSimpleName(inExpression));
+            }
+
+            return name;
+        }
+
+        private void EatDotOrColonColon()
+        {
             if (PeekType() == TokenType.ColonColon)
+            {
                 ReportError(ParseError.UseDotInsteadOfColonColon);
+            }
+
             Eat(TokenType.Dot);
         }
 
         // namespace-or-type-name
-        private NameNode ParseNamespaceOrTypeName() {
+        private NameNode ParseNamespaceOrTypeName()
+        {
             Token token = PeekToken();
             NameNode name = ParseAliasQualifiedName(false);
 
-            if ((PeekType() == TokenType.Dot || PeekType() == TokenType.ColonColon) && PeekType(1) == TokenType.Identifier) {
+            if ((PeekType() == TokenType.Dot || PeekType() == TokenType.ColonColon) &&
+                PeekType(1) == TokenType.Identifier)
+            {
                 ParseNodeList list = new ParseNodeList(name);
-                do {
+
+                do
+                {
                     EatDotOrColonColon();
                     list.Append(ParseSimpleName(false));
-                }
-                while (PeekType() == TokenType.Dot && PeekType(1) == TokenType.Identifier);
+                } while (PeekType() == TokenType.Dot && PeekType(1) == TokenType.Identifier);
 
                 return new MultiPartNameNode(token, list);
             }
-            else {
-                return name;
-            }
+
+            return name;
         }
 
         // namespace-member-declarations
-        private ParseNodeList ParseNamespaceMembers() {
+        private ParseNodeList ParseNamespaceMembers()
+        {
             ParseNodeList list = new ParseNodeList();
-            while (true) {
+
+            while (true)
+            {
                 TokenType type = PeekType();
-                switch (type) {
+
+                switch (type)
+                {
                     case TokenType.Namespace:
                         list.Append(ParseNamespace());
+
                         break;
 
                     case TokenType.Class:
@@ -411,21 +521,28 @@ namespace ScriptSharp.Parser {
 
                     case TokenType.OpenSquare:
                         list.Append(ParseTypeDeclaration());
+
                         break;
 
                     case TokenType.Identifier:
+
                         if (PeekPartial())
+                        {
                             goto case TokenType.Class;
+                        }
+
                         goto default;
 
                     default:
+
                         return list;
                 }
             }
         }
 
         // namespace-declaration
-        private NamespaceNode ParseNamespace() {
+        private NamespaceNode ParseNamespace()
+        {
             Token token = Eat(TokenType.Namespace);
             NameNode name = ParseMultiPartName();
 
@@ -442,87 +559,112 @@ namespace ScriptSharp.Parser {
         }
 
         // type-declaration
-        private TypeNode ParseTypeDeclaration() {
+        private TypeNode ParseTypeDeclaration()
+        {
             Token token = PeekToken();
             ParseNodeList attributes = ParseAttributes();
             Modifiers modifiers = ParseTypeModifiers();
-            switch (PeekType()) {
+
+            switch (PeekType())
+            {
                 case TokenType.Class:
+
                     return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.ClassModifiers, modifiers));
                 case TokenType.Struct:
-                    return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.StructModifiers, modifiers));
+
+                    return ParseTypeDeclaration(token, attributes,
+                        CheckModifiers(Modifiers.StructModifiers, modifiers));
                 case TokenType.Interface:
-                    return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.InterfaceModifiers, modifiers));
+
+                    return ParseTypeDeclaration(token, attributes,
+                        CheckModifiers(Modifiers.InterfaceModifiers, modifiers));
                 case TokenType.Enum:
+
                     return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.EnumModifiers, modifiers));
 
                 case TokenType.Delegate:
                     NextToken();
+
                     return ParseDelegate(token, attributes, CheckModifiers(Modifiers.DelegateModifiers, modifiers));
             }
 
             ReportError(ParseError.TypeQualifierExpected);
+
             return null;
         }
 
-        private TypeNode ParseTypeDeclaration(Token token, ParseNodeList attributes, Modifiers modifiers) {
+        private TypeNode ParseTypeDeclaration(Token token, ParseNodeList attributes, Modifiers modifiers)
+        {
             TokenType type = PeekType();
             NextToken();
-            if (type == TokenType.Enum) {
+
+            if (type == TokenType.Enum)
+            {
                 return new CustomTypeNode(
-                                token,
-                                type,
-                                attributes,
-                                modifiers,
-                                ParseIdentifier(),
-                                new ParseNodeList(),
-                                ParseBaseList(true),
-                                new ParseNodeList(),
-                                ParseEnumBody());
+                    token,
+                    type,
+                    attributes,
+                    modifiers,
+                    ParseIdentifier(),
+                    new ParseNodeList(),
+                    ParseBaseList(true),
+                    new ParseNodeList(),
+                    ParseEnumBody());
             }
-            else {
-                return new CustomTypeNode(
-                                token,
-                                type,
-                                attributes,
-                                modifiers,
-                                ParseIdentifier(),
-                                ParseTypeParametersOpt(),
-                                ParseBaseList(false),
-                                ParseConstraintClauses(),
-                                ParseClassOrStructBody());
-            }
+
+            return new CustomTypeNode(
+                token,
+                type,
+                attributes,
+                modifiers,
+                ParseIdentifier(),
+                ParseTypeParametersOpt(),
+                ParseBaseList(false),
+                ParseConstraintClauses(),
+                ParseClassOrStructBody());
         }
 
-        private ParseNodeList ParseTypeParametersOpt() {
+        private ParseNodeList ParseTypeParametersOpt()
+        {
             ParseNodeList returnValue = new ParseNodeList();
-            if (PeekType() == TokenType.OpenAngle) {
+
+            if (PeekType() == TokenType.OpenAngle)
+            {
                 Eat(TokenType.OpenAngle);
 
-                do {
+                do
+                {
                     returnValue.Append(ParseTypeParameter());
                 } while (null != EatOpt(TokenType.Comma));
 
                 Eat(TokenType.CloseAngle);
             }
+
             return returnValue;
         }
 
-        private TypeParameterNode ParseTypeParameter() {
+        private TypeParameterNode ParseTypeParameter()
+        {
             return new TypeParameterNode(ParseAttributes(), ParseIdentifier());
         }
 
-        private TypeParameterConstraintNode ParseConstraintClause() {
+        private TypeParameterConstraintNode ParseConstraintClause()
+        {
             EatWhere();
             AtomicNameNode name = ParseIdentifier();
             Eat(TokenType.Colon);
 
             bool hasConstructorConstraint = false;
             ParseNodeList typeConstraints = new ParseNodeList();
-            do {
-                if (PeekType() == TokenType.New) {
+
+            do
+            {
+                if (PeekType() == TokenType.New)
+                {
                     if (hasConstructorConstraint)
+                    {
                         ReportError(ParseError.DuplicateConstructorConstraint);
+                    }
 
                     hasConstructorConstraint = true;
 
@@ -530,56 +672,43 @@ namespace ScriptSharp.Parser {
                     Eat(TokenType.OpenParen);
                     Eat(TokenType.CloseParen);
                 }
-                else {
+                else
+                {
                     if (hasConstructorConstraint)
+                    {
                         ReportError(ParseError.ConstructorConstraintMustBeLast);
+                    }
 
                     typeConstraints.Append(ParseNamespaceOrTypeName());
                 }
-
             } while (null != EatOpt(TokenType.Comma));
 
             return new TypeParameterConstraintNode(name, typeConstraints, hasConstructorConstraint);
         }
 
-        private ParseNodeList ParseConstraintClauses() {
+        private ParseNodeList ParseConstraintClauses()
+        {
             ParseNodeList returnValue = new ParseNodeList();
-            while (PeekWhere()) {
-                returnValue.Append(ParseConstraintClause());
-            }
+
+            while (PeekWhere()) returnValue.Append(ParseConstraintClause());
 
             return returnValue;
         }
 
-        // UNDONE use an array of TID's here instead
-        private static string[] modifierNames =
-            new string[] {
-                "abstract",
-                "sealed",
-
-                "public",
-                "internal",
-                "private",
-                "protected",
-
-                "new",
-                "virtual",
-                "static",
-                "readonly",
-                "extern",
-                "override",
-                "unsafe",
-            };
-
-        private Modifiers CheckModifiers(Modifiers validModifiers, Modifiers modifiers) {
+        private Modifiers CheckModifiers(Modifiers validModifiers, Modifiers modifiers)
+        {
             // check for invalidModifiers
-            Modifiers invalidModifiers = (modifiers & ~validModifiers);
-            if (invalidModifiers != 0) {
-                for (int index = 0; invalidModifiers != 0; index += 1, invalidModifiers = (Modifiers)(((int)invalidModifiers) >> 1)) {
-                    if ((1 & (int)invalidModifiers) != 0) {
-                        ReportError(ParseError.InvalidModifier, modifierNames[index]);
+            Modifiers invalidModifiers = modifiers & ~validModifiers;
+
+            if (invalidModifiers != 0)
+            {
+                for (int index = 0;
+                    invalidModifiers != 0;
+                    index += 1, invalidModifiers = (Modifiers) ((int) invalidModifiers >> 1))
+                    if ((1 & (int) invalidModifiers) != 0)
+                    {
+                        ReportError(ParseError.InvalidModifier, ModifierNames[index]);
                     }
-                }
 
                 modifiers &= validModifiers;
             }
@@ -587,133 +716,167 @@ namespace ScriptSharp.Parser {
             return modifiers;
         }
 
-        private AttributeTargets CheckAttributeTargets(Token token) {
-            switch (token.ToString()) {
+        private AttributeTargets CheckAttributeTargets(Token token)
+        {
+            switch (token.ToString())
+            {
                 case "assembly": return AttributeTargets.Assembly;
-                case "field": return AttributeTargets.Field;
-                case "event": return AttributeTargets.Event;
-                case "method": return AttributeTargets.Method;
-                case "module": return AttributeTargets.Module;
-                case "param": return AttributeTargets.Param;
+                case "field":    return AttributeTargets.Field;
+                case "event":    return AttributeTargets.Event;
+                case "method":   return AttributeTargets.Method;
+                case "module":   return AttributeTargets.Module;
+                case "param":    return AttributeTargets.Param;
                 case "property": return AttributeTargets.Property;
-                case "return": return AttributeTargets.Return;
-                case "type": return AttributeTargets.Type;
+                case "return":   return AttributeTargets.Return;
+                case "type":     return AttributeTargets.Type;
                 default:
                     ReportError(ParseError.InvalidAttributeTarget, token, token.ToString());
+
                     return 0;
             }
         }
 
-        private bool PeekModifier(out Modifiers modifier) {
+        private bool PeekModifier(out Modifiers modifier)
+        {
             modifier = ToModifier(PeekType());
+
             return modifier != Modifiers.None;
         }
 
-        private bool PeekModifier() {
-            Modifiers modifier;
-            return PeekModifier(out modifier);
+        private bool PeekModifier()
+        {
+            return PeekModifier(out Modifiers _);
         }
 
-        private Modifiers ParseModifiers() {
+        private Modifiers ParseModifiers()
+        {
             Modifiers modifiers = 0;
-            Modifiers newModifier;
 
-            while (PeekModifier(out newModifier)) {
-                if ((newModifier & modifiers) != 0) {
+            while (PeekModifier(out Modifiers newModifier))
+            {
+                if ((newModifier & modifiers) != 0)
+                {
                     ReportError(ParseError.DuplicateModifier, Token.GetString(PeekType()));
                 }
-                else {
+                else
+                {
                     modifiers |= newModifier;
                 }
+
                 NextToken();
             }
 
             return modifiers;
         }
 
-        private bool PeekPostPartial() {
-            switch (PeekType(1)) {
+        private bool PeekPostPartial()
+        {
+            switch (PeekType(1))
+            {
                 case TokenType.Class:
                 case TokenType.Struct:
                 case TokenType.Interface:
+
                     return true;
                 default:
+
                     return false;
             }
         }
 
-        private bool PeekPartial() {
+        private bool PeekPartial()
+        {
             return PeekContextualKeyword(partialName) && PeekPostPartial();
         }
 
-        private bool PeekWhere() {
+        private bool PeekWhere()
+        {
             return PeekContextualKeyword(whereName);
         }
 
-        private bool PeekYield() {
+        private bool PeekYield()
+        {
             return PeekContextualKeyword(yieldName);
         }
 
-        private IdentifierToken EatYield() {
+        private IdentifierToken EatYield()
+        {
             return EatContextualKeyword(yieldName);
         }
 
-        private bool PeekContextualKeyword(Name contextualKeyword) {
-            return PeekType() == TokenType.Identifier && ((IdentifierToken)PeekToken()).Symbol == contextualKeyword;
+        private bool PeekContextualKeyword(Name contextualKeyword)
+        {
+            return PeekType() == TokenType.Identifier && ((IdentifierToken) PeekToken()).Symbol == contextualKeyword;
         }
 
-        private IdentifierToken EatWhere() {
+        private IdentifierToken EatWhere()
+        {
             return EatContextualKeyword(whereName);
         }
 
-        private IdentifierToken EatPartial() {
+        private IdentifierToken EatPartial()
+        {
             return EatContextualKeyword(partialName);
         }
 
-        private IdentifierToken EatContextualKeyword(Name contextualKeyword) {
-            IdentifierToken token = (IdentifierToken)Eat(TokenType.Identifier);
+        private IdentifierToken EatContextualKeyword(Name contextualKeyword)
+        {
+            IdentifierToken token = (IdentifierToken) Eat(TokenType.Identifier);
             Debug.Assert(token.Symbol == contextualKeyword);
+
             return token;
         }
 
-        private Modifiers ParseTypeModifiers() {
+        private Modifiers ParseTypeModifiers()
+        {
             Modifiers modifiers = ParseModifiers();
-            if (PeekPartial()) {
+
+            if (PeekPartial())
+            {
                 EatPartial();
                 modifiers |= Modifiers.Partial;
             }
+
             return modifiers;
         }
 
-        private static Modifiers ToModifier(TokenType type) {
-            switch (type) {
+        private static Modifiers ToModifier(TokenType type)
+        {
+            switch (type)
+            {
                 case TokenType.Abstract: return Modifiers.Abstract;
-                case TokenType.Sealed: return Modifiers.Sealed;
+                case TokenType.Sealed:   return Modifiers.Sealed;
 
-                case TokenType.Public: return Modifiers.Public;
-                case TokenType.Internal: return Modifiers.Internal;
-                case TokenType.Private: return Modifiers.Private;
+                case TokenType.Public:    return Modifiers.Public;
+                case TokenType.Internal:  return Modifiers.Internal;
+                case TokenType.Private:   return Modifiers.Private;
                 case TokenType.Protected: return Modifiers.Protected;
 
-                case TokenType.New: return Modifiers.New;
-                case TokenType.Virtual: return Modifiers.Virtual;
-                case TokenType.Static: return Modifiers.Static;
+                case TokenType.New:      return Modifiers.New;
+                case TokenType.Virtual:  return Modifiers.Virtual;
+                case TokenType.Static:   return Modifiers.Static;
                 case TokenType.Readonly: return Modifiers.Readonly;
-                case TokenType.Extern: return Modifiers.Extern;
+                case TokenType.Extern:   return Modifiers.Extern;
                 case TokenType.Override: return Modifiers.Override;
-                case TokenType.Unsafe: return Modifiers.Unsafe;
+                case TokenType.Unsafe:   return Modifiers.Unsafe;
                 case TokenType.Volatile: return Modifiers.Volatile;
 
                 default: return Modifiers.None;
             }
         }
 
-        private ParseNodeList ParseBaseList(bool isEnum) {
+        private ParseNodeList ParseBaseList(bool isEnum)
+        {
             ParseNodeList list = new ParseNodeList();
-            if (PeekType() == TokenType.Colon) {
+
+            if (PeekType() == TokenType.Colon)
+            {
                 NextToken();
-                if (isEnum) {
-                    switch (PeekType()) {
+
+                if (isEnum)
+                {
+                    switch (PeekType())
+                    {
                         case TokenType.SByte:
                         case TokenType.Short:
                         case TokenType.Int:
@@ -723,26 +886,35 @@ namespace ScriptSharp.Parser {
                         case TokenType.UInt:
                         case TokenType.ULong:
                             list = new ParseNodeList(ParsePredefinedType());
+
                             break;
                         default:
-                            this.ReportError(ParseError.BadEnumBase);
+                            ReportError(ParseError.BadEnumBase);
+
                             break;
                     }
                 }
-                else {
-                    switch (PeekType()) {
+                else
+                {
+                    switch (PeekType())
+                    {
                         case TokenType.Object:
                         case TokenType.String:
                             list.Append(ParsePredefinedType());
-                            if (null == EatOpt(TokenType.Comma)) {
+
+                            if (null == EatOpt(TokenType.Comma))
+                            {
                                 return list;
                             }
+
                             break;
                         default:
+
                             break;
                     }
 
-                    do {
+                    do
+                    {
                         list.Append(ParseNamespaceOrTypeName());
                     } while (null != EatOpt(TokenType.Comma));
                 }
@@ -751,16 +923,22 @@ namespace ScriptSharp.Parser {
             return list;
         }
 
-        private ParseNode ParseBaseType() {
+        private ParseNode ParseBaseType()
+        {
             ParseNode tree = ParsePredefinedType();
-            if (tree == null) {
+
+            if (tree == null)
+            {
                 tree = ParseNamespaceOrTypeName();
             }
+
             return tree;
         }
 
-        private ParseNode ParsePredefinedType() {
-            if (Token.IsPredefinedType(PeekType())) {
+        private ParseNode ParsePredefinedType()
+        {
+            if (Token.IsPredefinedType(PeekType()))
+            {
                 IntrinsicTypeNode typeNode = new IntrinsicTypeNode(NextToken());
 
                 // NOTE: We aren't supporting Nullable<T> for arbitrary T types
@@ -769,98 +947,115 @@ namespace ScriptSharp.Parser {
                 //       Nullable<T> scenarios
 
                 Token t = PeekToken();
-                if (t.Type == TokenType.Question) {
+
+                if (t.Type == TokenType.Question)
+                {
                     NextToken();
                     typeNode.AddNullability();
                 }
 
                 return typeNode;
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
-        private ParseNodeList ParseGlobalAttributes() {
+        private ParseNodeList ParseGlobalAttributes()
+        {
             ParseNodeList list = new ParseNodeList();
 
             while (PeekType() == TokenType.OpenSquare &&
                    PeekType(1) == TokenType.Identifier &&
                    PeekType(2) == TokenType.Colon &&
-                   (((IdentifierToken)PeekToken(1)).Symbol == assemblyName ||
-                    ((IdentifierToken)PeekToken(1)).Symbol == moduleName)) {
+                   (((IdentifierToken) PeekToken(1)).Symbol == assemblyName ||
+                    ((IdentifierToken) PeekToken(1)).Symbol == moduleName))
                 list.Append(ParseAttributeBlock());
-            }
 
             return list;
         }
 
-        private ParseNodeList ParseAttributes() {
+        private ParseNodeList ParseAttributes()
+        {
             ParseNodeList list = new ParseNodeList();
 
-            while (PeekType() == TokenType.OpenSquare) {
-                list.Append(ParseAttributeBlock());
-            }
+            while (PeekType() == TokenType.OpenSquare) list.Append(ParseAttributeBlock());
 
             return list;
         }
 
-        private ParseNode ParseAttributeBlock() {
+        private ParseNode ParseAttributeBlock()
+        {
             Token token = Eat(TokenType.OpenSquare);
             AttributeTargets location;
-            if (PeekType() <= TokenType.Identifier && PeekType(1) == TokenType.Colon) {
+
+            if (PeekType() <= TokenType.Identifier && PeekType(1) == TokenType.Colon)
+            {
                 location = CheckAttributeTargets(NextToken());
                 Eat(TokenType.Colon);
             }
-            else {
+            else
+            {
                 location = 0;
             }
 
             ParseNodeList list = new ParseNodeList();
-            do {
+
+            do
+            {
                 list.Append(ParseAttribute());
-            } while ((null != EatOpt(TokenType.Comma)) && (PeekType() != TokenType.CloseSquare));
+            } while (null != EatOpt(TokenType.Comma) && PeekType() != TokenType.CloseSquare);
+
             Eat(TokenType.CloseSquare);
 
             return new AttributeBlockNode(
-                        token,
-                        location,
-                        list);
+                token,
+                list);
         }
 
-        private ParseNode ParseAttribute() {
+        private ParseNode ParseAttribute()
+        {
             NameNode name = ParseNamespaceOrTypeName();
             ParseNode arguments;
 
-            if (PeekType() == TokenType.OpenParen) {
+            if (PeekType() == TokenType.OpenParen)
+            {
                 Eat(TokenType.OpenParen);
                 arguments = ParseExpressionList(TokenType.CloseParen);
                 Eat(TokenType.CloseParen);
             }
-            else {
+            else
+            {
                 arguments = null;
             }
 
             return new AttributeNode(name, arguments);
         }
 
-        private ParseNodeList ParseClassOrStructMembers() {
+        private ParseNodeList ParseClassOrStructMembers()
+        {
             ParseNodeList list = new ParseNodeList();
             TokenType type = PeekType();
-            while (type != TokenType.CloseCurly && type != TokenType.EOF) {
+
+            while (type != TokenType.CloseCurly && type != TokenType.Eof)
+            {
                 int mark = Mark();
                 list.Append(ParseClassOrStructMember());
-                if (mark == Mark()) {
+
+                if (mark == Mark())
+                {
                     // didn't consume any tokens!
                     // ensure we make some progress
                     NextToken();
                 }
+
                 type = PeekType();
             }
+
             return list;
         }
 
-        private ParseNodeList ParseClassOrStructBody() {
+        private ParseNodeList ParseClassOrStructBody()
+        {
             Eat(TokenType.OpenCurly);
             ParseNodeList members = ParseClassOrStructMembers();
             Eat(TokenType.CloseCurly);
@@ -869,69 +1064,97 @@ namespace ScriptSharp.Parser {
             return members;
         }
 
-        private TypeNode ParseNestedType(Token token, ParseNodeList attributes, Modifiers modifiers) {
-            switch (PeekType()) {
+        private TypeNode ParseNestedType(Token token, ParseNodeList attributes, Modifiers modifiers)
+        {
+            switch (PeekType())
+            {
                 case TokenType.Delegate:
                     NextToken();
+
                     return ParseDelegate(token, attributes, CheckModifiers(Modifiers.DelegateModifiers, modifiers));
                 case TokenType.Class:
+
                     return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.ClassModifiers, modifiers));
                 case TokenType.Struct:
-                    return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.StructModifiers, modifiers));
+
+                    return ParseTypeDeclaration(token, attributes,
+                        CheckModifiers(Modifiers.StructModifiers, modifiers));
                 case TokenType.Enum:
+
                     return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.EnumModifiers, modifiers));
                 case TokenType.Interface:
-                    return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.InterfaceModifiers, modifiers));
+
+                    return ParseTypeDeclaration(token, attributes,
+                        CheckModifiers(Modifiers.InterfaceModifiers, modifiers));
                 default:
                     Debug.Fail("Bad token type");
+
                     return null;
             }
         }
 
-        private ParseNode ParseClassOrStructMember() {
+        private ParseNode ParseClassOrStructMember()
+        {
             Token token = PeekToken();
             ParseNodeList attributes = ParseAttributes();
             Modifiers modifiers = ParseModifiers();
-            switch (PeekType()) {
+
+            switch (PeekType())
+            {
                 case TokenType.Const:
                     NextToken();
+
                     return new ConstantFieldDeclarationNode(
-                                token,
-                                attributes,
-                                CheckModifiers(Modifiers.ConstantModifiers, modifiers),
-                                ParseType(),
-                                ParseFieldInitializersStatement(false));
+                        token,
+                        attributes,
+                        CheckModifiers(Modifiers.ConstantModifiers, modifiers),
+                        ParseType(),
+                        ParseFieldInitializersStatement(false));
 
                 case TokenType.Delegate:
                 case TokenType.Class:
                 case TokenType.Struct:
                 case TokenType.Enum:
                 case TokenType.Interface:
+
                     return ParseNestedType(token, attributes, modifiers);
 
                 case TokenType.Event:
+
                     return ParseEvent(token, attributes, CheckModifiers(Modifiers.EventModifiers, modifiers));
 
                 case TokenType.Tilde:
+
                     return ParseDestructor(token, attributes, CheckModifiers(Modifiers.DestructorModifiers, modifiers));
 
                 case TokenType.Implicit:
                 case TokenType.Explicit:
-                    return ParseConversionOperator(token, attributes, CheckModifiers(Modifiers.OperatorModifiers, modifiers));
+
+                    return ParseConversionOperator(token, attributes,
+                        CheckModifiers(Modifiers.OperatorModifiers, modifiers));
 
                 case TokenType.Identifier:
-                    if (PeekType(1) == TokenType.OpenParen) {
-                        return ParseConstructor(token, attributes, CheckModifiers(0 != (modifiers & Modifiers.Static) ? Modifiers.StaticConstructorModifiers : Modifiers.ConstructorModifiers, modifiers));
+
+                    if (PeekType(1) == TokenType.OpenParen)
+                    {
+                        return ParseConstructor(token, attributes,
+                            CheckModifiers(
+                                0 != (modifiers & Modifiers.Static)
+                                    ? Modifiers.StaticConstructorModifiers
+                                    : Modifiers.ConstructorModifiers, modifiers));
                     }
-                    else if (PeekPartial()) {
+                    else if (PeekPartial())
+                    {
                         EatPartial();
                         modifiers |= Modifiers.Partial;
                         goto case TokenType.Class;
                     }
+
                     goto default;
 
                 case TokenType.Fixed:
                     Eat(TokenType.Fixed);
+
                     return new FieldDeclarationNode(
                         token,
                         attributes,
@@ -940,50 +1163,57 @@ namespace ScriptSharp.Parser {
                         ParseFieldInitializersStatement(true),
                         true);
 
-                default: {
-                        ParseNode type = ParseReturnType();
-                        NameNode interfaceType;
-                        switch (ParseMemberName(out interfaceType)) {
-                            case ScanMemberNameKind.Operator:
-                                return ParseOperator(token, attributes, CheckModifiers(Modifiers.OperatorModifiers, modifiers), CheckIsType(type, false));
+                default:
+                {
+                    ParseNode type = ParseReturnType();
 
-                            case ScanMemberNameKind.Indexer:
-                                return ParseIndexer(token, attributes, CheckModifiers(Modifiers.IndexerModifiers, modifiers), CheckIsType(type, false), interfaceType);
+                    switch (ParseMemberName(out NameNode interfaceType))
+                    {
+                        case ScanMemberNameKind.Operator:
 
-                            case ScanMemberNameKind.Field:
-                                ReportInterfaceVariable(interfaceType);
-                                return new FieldDeclarationNode(
-                                    token,
-                                    attributes,
-                                    CheckModifiers(Modifiers.FieldModifiers, modifiers),
-                                    CheckIsType(type, false),
-                                    ParseFieldInitializersStatement(false),
-                                    false);
-                            case ScanMemberNameKind.Method:
-                                return ParseMethod(token, attributes, CheckModifiers(Modifiers.MethodModifiers, modifiers), type, interfaceType);
-                            case ScanMemberNameKind.Property:
-                                return ParseProperty(token, attributes, CheckModifiers(Modifiers.PropertyModifiers, modifiers), CheckIsType(type, false), interfaceType, false);
-                            default:
-                                Debug.Fail("Invalid Member name kind");
-                                return null;
-                        }
+                            return ParseOperator(token, attributes,
+                                CheckModifiers(Modifiers.OperatorModifiers, modifiers), CheckIsType(type, false));
+
+                        case ScanMemberNameKind.Indexer:
+
+                            return ParseIndexer(token, attributes,
+                                CheckModifiers(Modifiers.IndexerModifiers, modifiers), CheckIsType(type, false),
+                                interfaceType);
+
+                        case ScanMemberNameKind.Field:
+                            ReportInterfaceVariable(interfaceType);
+
+                            return new FieldDeclarationNode(
+                                token,
+                                attributes,
+                                CheckModifiers(Modifiers.FieldModifiers, modifiers),
+                                CheckIsType(type, false),
+                                ParseFieldInitializersStatement(false),
+                                false);
+                        case ScanMemberNameKind.Method:
+
+                            return ParseMethod(token, attributes, CheckModifiers(Modifiers.MethodModifiers, modifiers),
+                                type, interfaceType);
+                        case ScanMemberNameKind.Property:
+
+                            return ParseProperty(token, attributes,
+                                CheckModifiers(Modifiers.PropertyModifiers, modifiers), CheckIsType(type, false),
+                                interfaceType, false);
+                        default:
+                            Debug.Fail("Invalid Member name kind");
+
+                            return null;
                     }
+                }
             }
         }
 
-        private void ReportInterfaceVariable(NameNode interfaceType) {
-            if (interfaceType != null) {
-                ReportError(ParseError.VariableCannotBeInterfaceImpl, interfaceType.token);
+        private void ReportInterfaceVariable(NameNode interfaceType)
+        {
+            if (interfaceType != null)
+            {
+                ReportError(ParseError.VariableCannotBeInterfaceImpl, interfaceType.Token);
             }
-        }
-
-        enum ScanMemberNameKind {
-            Invalid,
-            Method,
-            Property,
-            Indexer,
-            Field,
-            Operator,
         }
 
         // this
@@ -995,85 +1225,117 @@ namespace ScriptSharp.Parser {
         // typename.propertyName {
         // typename.methodName<[Attr]T> (
         // fieldName
-        private ScanMemberNameKind ParseMemberName(out NameNode interfaceType) {
-            if (PeekType() == TokenType.Operator) {
+        private ScanMemberNameKind ParseMemberName(out NameNode interfaceType)
+        {
+            if (PeekType() == TokenType.Operator)
+            {
                 interfaceType = null;
+
                 return ScanMemberNameKind.Operator;
             }
 
             Token token = PeekToken();
             ParseNodeList list = new ParseNodeList();
-            if (PeekType() == TokenType.Identifier && PeekType(1) == TokenType.ColonColon) {
+
+            if (PeekType() == TokenType.Identifier && PeekType(1) == TokenType.ColonColon)
+            {
                 interfaceType = ParseAliasQualifiedName(false);
                 list.Append(interfaceType);
                 EatDotOrColonColon();
             }
-            else {
+            else
+            {
                 interfaceType = null;
             }
 
             ScanMemberNameKind result = ScanMemberNameKind.Invalid;
-            do {
+
+            do
+            {
                 if (PeekType() == TokenType.This)
+                {
                     result = ScanMemberNameKind.Indexer;
+                }
                 else if (PeekType() != TokenType.Identifier)
+                {
                     result = ScanMemberNameKind.Field;
-                else {
-                    switch (PeekType(1)) {
+                }
+                else
+                {
+                    switch (PeekType(1))
+                    {
                         case TokenType.OpenCurly:
                             result = ScanMemberNameKind.Property;
+
                             break;
                         case TokenType.OpenParen:
                             result = ScanMemberNameKind.Method;
+
                             break;
                         case TokenType.OpenAngle:
                             int mark = Mark();
-                            NextToken();        // _id
+                            NextToken(); // _id
                             TypeArgumentListScan scan = ScanTypeArgumentListOpt();
-                            if (scan == TypeArgumentListScan.MayBeTypeArgumentList) {
-                                switch (PeekType()) {
+
+                            if (scan == TypeArgumentListScan.MayBeTypeArgumentList)
+                            {
+                                switch (PeekType())
+                                {
                                     case TokenType.Dot:
                                     case TokenType.ColonColon:
                                         scan = TypeArgumentListScan.MustBeTypeArgumentList;
+
                                         break;
                                     default:
                                         scan = TypeArgumentListScan.TypeParameterList;
+
                                         break;
                                 }
                             }
+
                             Rewind(mark);
 
-                            if (scan == TypeArgumentListScan.TypeParameterList || scan == TypeArgumentListScan.NotTypeArgumentList) {
+                            if (scan == TypeArgumentListScan.TypeParameterList ||
+                                scan == TypeArgumentListScan.NotTypeArgumentList)
+                            {
                                 result = ScanMemberNameKind.Method;
+
                                 break;
                             }
 
                             list.Append(ParseSimpleName(false));
                             EatDotOrColonColon();
+
                             break;
                         case TokenType.ColonColon:
                         case TokenType.Dot:
                             list.Append(ParseSimpleName(false));
                             EatDotOrColonColon();
+
                             break;
                         default:
                             result = ScanMemberNameKind.Field;
+
                             break;
                     }
                 }
             } while (ScanMemberNameKind.Invalid == result);
 
             if (list.Count > 1)
+            {
                 interfaceType = new MultiPartNameNode(token, list);
+            }
 
             return result;
         }
 
-        private DestructorDeclarationNode ParseDestructor(Token token, ParseNodeList attributes, Modifiers modifiers) {
-            NextToken();    // ~
+        private DestructorDeclarationNode ParseDestructor(Token token, ParseNodeList attributes, Modifiers modifiers)
+        {
+            NextToken(); // ~
             AtomicNameNode name = ParseIdentifier();
             Eat(TokenType.OpenParen);
             Eat(TokenType.CloseParen);
+
             return new DestructorDeclarationNode(
                 token,
                 attributes,
@@ -1082,29 +1344,38 @@ namespace ScriptSharp.Parser {
                 ParseBlockOpt());
         }
 
-        private ConstructorDeclarationNode ParseConstructor(Token token, ParseNodeList attributes, Modifiers modifiers) {
+        private ConstructorDeclarationNode ParseConstructor(Token token, ParseNodeList attributes, Modifiers modifiers)
+        {
             AtomicNameNode name = ParseIdentifier();
             ParseNodeList formals = ParseParensFormalParameterList();
             ParseNode initializer;
             bool thisCall;
-            if (PeekType() == TokenType.Colon) {
+
+            if (PeekType() == TokenType.Colon)
+            {
                 Eat(TokenType.Colon);
-                if (PeekType() == TokenType.This) {
+
+                if (PeekType() == TokenType.This)
+                {
                     thisCall = true;
                     Eat(TokenType.This);
                 }
-                else {
+                else
+                {
                     thisCall = false;
                     Eat(TokenType.Base);
                 }
 
                 initializer = ParseParenArgumentList();
             }
-            else {
+            else
+            {
                 thisCall = false;
                 initializer = null;
             }
+
             BlockStatementNode body = ParseBlockOpt();
+
             return new ConstructorDeclarationNode(
                 token,
                 attributes,
@@ -1116,8 +1387,10 @@ namespace ScriptSharp.Parser {
                 body);
         }
 
-        private OperatorDeclarationNode ParseConversionOperator(Token token, ParseNodeList attributes, Modifiers modifiers) {
-            TokenType implicitExplicit = NextToken().Type;   // implicit/explicit
+        private OperatorDeclarationNode ParseConversionOperator(Token token, ParseNodeList attributes,
+                                                                Modifiers modifiers)
+        {
+            TokenType implicitExplicit = NextToken().Type; // implicit/explicit
             Eat(TokenType.Operator);
             OperatorDeclarationNode tree = new OperatorDeclarationNode(
                 token,
@@ -1128,15 +1401,18 @@ namespace ScriptSharp.Parser {
                 ParseParensFormalParameterList(),
                 ParseBlockOpt());
 
-            if (tree.Parameters.Count != 1) {
-                ReportError(ParseError.ConversionMustHaveOneParam, tree.token);
+            if (tree.Parameters.Count != 1)
+            {
+                ReportError(ParseError.ConversionMustHaveOneParam, tree.Token);
             }
 
             return tree;
         }
 
-        private OperatorDeclarationNode ParseOperator(Token token, ParseNodeList attributes, Modifiers modifiers, ParseNode type) {
-            NextToken();        // operator
+        private OperatorDeclarationNode ParseOperator(Token token, ParseNodeList attributes, Modifiers modifiers,
+                                                      ParseNode type)
+        {
+            NextToken(); // operator
             TokenType operatorKind = EatOverloadableOperator();
 
             OperatorDeclarationNode tree = new OperatorDeclarationNode(
@@ -1148,13 +1424,17 @@ namespace ScriptSharp.Parser {
                 ParseParensFormalParameterList(),
                 ParseBlockOpt());
 
-            switch (tree.operatorTokenType) {
+            switch (tree.OperatorTokenType)
+            {
                 // unary or binary operators
                 case TokenType.Plus:
                 case TokenType.Minus:
-                    if (tree.Parameters.Count != 1 && tree.Parameters.Count != 2) {
-                        ReportError(ParseError.WrongNumberOfArgsToOperator, tree.token);
+
+                    if (tree.Parameters.Count != 1 && tree.Parameters.Count != 2)
+                    {
+                        ReportError(ParseError.WrongNumberOfArgsToOperator, tree.Token);
                     }
+
                     break;
 
                 // unary operators
@@ -1164,9 +1444,12 @@ namespace ScriptSharp.Parser {
                 case TokenType.MinusMinus:
                 case TokenType.True:
                 case TokenType.False:
-                    if (tree.Parameters.Count != 1) {
-                        ReportError(ParseError.WrongNumberOfArgsToUnaryOperator, tree.token);
+
+                    if (tree.Parameters.Count != 1)
+                    {
+                        ReportError(ParseError.WrongNumberOfArgsToUnaryOperator, tree.Token);
                     }
+
                     break;
 
                 // binary operators
@@ -1184,12 +1467,16 @@ namespace ScriptSharp.Parser {
                 case TokenType.GreaterEqual:
                 case TokenType.Less:
                 case TokenType.LessEqual:
-                    if (tree.Parameters.Count != 2) {
-                        ReportError(ParseError.WrongNumberOfArgsToBinnaryOperator, tree.token);
+
+                    if (tree.Parameters.Count != 2)
+                    {
+                        ReportError(ParseError.WrongNumberOfArgsToBinnaryOperator, tree.Token);
                     }
+
                     break;
 
                 default:
+
                     break;
             }
 
@@ -1197,11 +1484,12 @@ namespace ScriptSharp.Parser {
         }
 
         private MethodDeclarationNode ParseMethod(
-                                            Token token,
-                                            ParseNodeList attributes,
-                                            Modifiers modifiers,
-                                            ParseNode type,
-                                            NameNode interfaceType) {
+            Token token,
+            ParseNodeList attributes,
+            Modifiers modifiers,
+            ParseNode type,
+            NameNode interfaceType)
+        {
             return new MethodDeclarationNode(
                 token,
                 attributes,
@@ -1216,58 +1504,55 @@ namespace ScriptSharp.Parser {
         }
 
         private IndexerDeclarationNode ParseIndexer(
-                                            Token token,
-                                            ParseNodeList attributes,
-                                            Modifiers modifiers,
-                                            ParseNode type,
-                                            NameNode interfaceType) {
+            Token token,
+            ParseNodeList attributes,
+            Modifiers modifiers,
+            ParseNode type,
+            NameNode interfaceType)
+        {
             Eat(TokenType.This);
             Eat(TokenType.OpenSquare);
             ParseNodeList formals = ParseFormalParameterList(TokenType.CloseSquare);
             Eat(TokenType.CloseSquare);
 
-            AccessorNode get;
-            AccessorNode set;
-
-            ParseAccessors(false, out get, out set);
+            ParseAccessors(false, out AccessorNode get, out AccessorNode set);
 
             return new IndexerDeclarationNode(
-                        token,
-                        attributes,
-                        modifiers,
-                        type,
-                        interfaceType,
-                        formals,
-                        get,
-                        set);
+                token,
+                attributes,
+                modifiers,
+                type,
+                interfaceType,
+                formals,
+                get,
+                set);
         }
 
         private PropertyDeclarationNode ParseProperty(
-                                            Token token,
-                                            ParseNodeList attributes,
-                                            Modifiers modifiers,
-                                            ParseNode type,
-                                            NameNode interfaceType,
-                                            bool isEvent) {
+            Token token,
+            ParseNodeList attributes,
+            Modifiers modifiers,
+            ParseNode type,
+            NameNode interfaceType,
+            bool isEvent)
+        {
             AtomicNameNode name = ParseIdentifier();
 
-            AccessorNode get;
-            AccessorNode set;
-
-            ParseAccessors(isEvent, out get, out set);
+            ParseAccessors(isEvent, out AccessorNode get, out AccessorNode set);
 
             return new PropertyDeclarationNode(
-                        token,
-                        attributes,
-                        modifiers,
-                        type,
-                        interfaceType,
-                        name,
-                        get,
-                        set);
+                token,
+                attributes,
+                modifiers,
+                type,
+                interfaceType,
+                name,
+                get,
+                set);
         }
 
-        private void ParseAccessors(bool isEvent, out AccessorNode get, out AccessorNode set) {
+        private void ParseAccessors(bool isEvent, out AccessorNode get, out AccessorNode set)
+        {
             get = null;
             set = null;
 
@@ -1276,36 +1561,53 @@ namespace ScriptSharp.Parser {
             // first accessor
             Token token = PeekToken();
             ParseNodeList attributes = ParseAttributes();
-            while (attributes.Count != 0 || PeekType() == TokenType.Identifier || (!isEvent && PeekModifier())) {
+
+            while (attributes.Count != 0 || PeekType() == TokenType.Identifier || !isEvent && PeekModifier())
+            {
                 Modifiers modifiers = 0;
-                if (!isEvent) {
+
+                if (!isEvent)
+                {
                     modifiers = ParseModifiers();
                 }
+
                 AtomicNameNode name = ParseIdentifier();
                 BlockStatementNode body = ParseBlockOpt();
-                if ((name.Identifier.Symbol == getName && !isEvent) ||
-                    (name.Identifier.Symbol == removeName && isEvent)) {
-                    if (get != null) {
+
+                if (name.Identifier.Symbol == getName && !isEvent ||
+                    name.Identifier.Symbol == removeName && isEvent)
+                {
+                    if (get != null)
+                    {
                         ReportError(ParseError.DuplicateAccessor, name.Identifier.Symbol);
                     }
-                    else {
+                    else
+                    {
                         get = new AccessorNode(token, attributes, name, body, modifiers);
                     }
                 }
-                else if ((name.Identifier.Symbol == setName && !isEvent) ||
-                         (name.Identifier.Symbol == addName && isEvent)) {
-                    if (set != null) {
+                else if (name.Identifier.Symbol == setName && !isEvent ||
+                         name.Identifier.Symbol == addName && isEvent)
+                {
+                    if (set != null)
+                    {
                         ReportError(ParseError.DuplicateAccessor, name.Identifier.Symbol, modifiers);
                     }
-                    else {
+                    else
+                    {
                         set = new AccessorNode(token, attributes, name, body, modifiers);
                     }
                 }
-                else {
+                else
+                {
                     if (!isEvent)
+                    {
                         ReportError(ParseError.GetOrSetExpected);
+                    }
                     else
+                    {
                         ReportError(ParseError.AddOrRemoveExpected);
+                    }
                 }
 
                 // next accessor
@@ -1313,57 +1615,72 @@ namespace ScriptSharp.Parser {
                 attributes = ParseAttributes();
             }
 
-            if (get == null && set == null) {
+            if (get == null && set == null)
+            {
                 ReportError(ParseError.NeedAtLeastOneAccessor);
             }
-            else if (isEvent && (get == null || set == null)) {
+            else if (isEvent && (get == null || set == null))
+            {
                 ReportError(ParseError.EventMissingAcessor);
             }
+
             Eat(TokenType.CloseCurly);
         }
 
-        private ParseNode ParseEvent(Token token, ParseNodeList attributes, Modifiers modifiers) {
+        private ParseNode ParseEvent(Token token, ParseNodeList attributes, Modifiers modifiers)
+        {
             ParseNode backingMember;
-            NextToken();    // event
+            NextToken(); // event
             ParseNode type = ParseType();
-            NameNode interfaceType;
-            switch (ParseMemberName(out interfaceType)) {
+
+            switch (ParseMemberName(out NameNode interfaceType))
+            {
                 case ScanMemberNameKind.Property:
 
                     backingMember = ParseProperty(token, new ParseNodeList(), modifiers, type, interfaceType, true);
+
                     break;
                 case ScanMemberNameKind.Field:
                 default:
                     ReportInterfaceVariable(interfaceType);
                     backingMember = new VariableDeclarationNode(
-                                token,
-                                new ParseNodeList(),
-                                modifiers,
-                                type,
-                                ParseFieldInitializersStatement(false),
-                                false);
+                        token,
+                        new ParseNodeList(),
+                        modifiers,
+                        type,
+                        ParseFieldInitializersStatement(false),
+                        false);
+
                     break;
             }
 
             return new EventDeclarationNode(
-                        token,
-                        attributes,
-                        backingMember);
+                token,
+                attributes,
+                backingMember);
         }
 
-        private ParseNodeList ParseFieldInitializers(bool isFixed) {
+        private ParseNodeList ParseFieldInitializers(bool isFixed)
+        {
             ParseNodeList list = new ParseNodeList();
-            do {
+
+            do
+            {
                 if (!isFixed)
+                {
                     list.Append(new VariableInitializerNode(ParseIdentifier(), ParseVariableInitializer()));
+                }
                 else
+                {
                     list.Append(new VariableInitializerNode(ParseIdentifier(), ParseFixedArrayDimension()));
+                }
             } while (EatOpt(TokenType.Comma) != null);
 
             return list;
         }
 
-        private ParseNode ParseFixedArrayDimension() {
+        private ParseNode ParseFixedArrayDimension()
+        {
             Eat(TokenType.OpenSquare);
             ParseNode returnValue = ParseExpression();
             Eat(TokenType.CloseSquare);
@@ -1371,88 +1688,108 @@ namespace ScriptSharp.Parser {
             return returnValue;
         }
 
-        private ParseNodeList ParseFieldInitializersStatement(bool isFixed) {
+        private ParseNodeList ParseFieldInitializersStatement(bool isFixed)
+        {
             ParseNodeList returnValue = ParseFieldInitializers(isFixed);
             Eat(TokenType.Semicolon);
+
             return returnValue;
         }
 
-        private ParseNodeList ParseEnumMembers() {
+        private ParseNodeList ParseEnumMembers()
+        {
             ParseNodeList list = new ParseNodeList();
 
-            while (PeekType() == TokenType.Identifier || PeekType() == TokenType.OpenSquare) {
+            while (PeekType() == TokenType.Identifier || PeekType() == TokenType.OpenSquare)
+            {
                 list.Append(ParseEnumerationField());
-                if (null == EatOpt(TokenType.Comma)) {
+
+                if (null == EatOpt(TokenType.Comma))
+                {
                     break;
                 }
             }
+
             return list;
         }
 
-        private ParseNodeList ParseEnumBody() {
+        private ParseNodeList ParseEnumBody()
+        {
             Eat(TokenType.OpenCurly);
             ParseNodeList members = ParseEnumMembers();
             Eat(TokenType.CloseCurly);
             EatOpt(TokenType.Semicolon);
+
             return members;
         }
 
-        private ParseNode ParseEnumerationField() {
+        private ParseNode ParseEnumerationField()
+        {
             return new EnumerationFieldNode(
-                    ParseAttributes(),
-                    ParseIdentifier(),
-                    ParseVariableInitializer());
+                ParseAttributes(),
+                ParseIdentifier(),
+                ParseVariableInitializer());
         }
 
-        private ParseNode ParseVariableInitializer() {
-            if (PeekType() == TokenType.Equal) {
+        private ParseNode ParseVariableInitializer()
+        {
+            if (PeekType() == TokenType.Equal)
+            {
                 NextToken();
-                if (PeekType() == TokenType.OpenCurly) {
+
+                if (PeekType() == TokenType.OpenCurly)
+                {
                     return ParseArrayInitializer();
                 }
-                else if (PeekType() == TokenType.Stackalloc) {
+
+                if (PeekType() == TokenType.Stackalloc)
+                {
                     return ParseStackAlloc();
                 }
-                else {
-                    return ParseExpression();
-                }
+
+                return ParseExpression();
             }
-            else {
-                return null;
-            }
+
+            return null;
         }
 
-        private StackAllocNode ParseStackAlloc() {
+        private StackAllocNode ParseStackAlloc()
+        {
             Token token = Eat(TokenType.Stackalloc);
             ParseNode type = ParseType();
             Eat(TokenType.OpenSquare);
             ParseNode numberOfElements = ParseExpression();
             Eat(TokenType.CloseSquare);
+
             return new StackAllocNode(token, type, numberOfElements);
         }
 
-        private DelegateTypeNode ParseDelegate(Token token, ParseNodeList attributes, Modifiers modifiers) {
+        private DelegateTypeNode ParseDelegate(Token token, ParseNodeList attributes, Modifiers modifiers)
+        {
             ParseNode returnType = ParseReturnType();
             AtomicNameNode name = ParseIdentifier();
             ParseNodeList typeParameters = ParseTypeParametersOpt();
             ParseNodeList formals = ParseParensFormalParameterList();
             ParseNodeList constraints = ParseConstraintClauses();
             Eat(TokenType.Semicolon);
+
             return new DelegateTypeNode(
-                        token,
-                        attributes,
-                        modifiers,
-                        returnType,
-                        name,
-                        typeParameters,
-                        formals,
-                        constraints);
+                token,
+                attributes,
+                modifiers,
+                returnType,
+                name,
+                typeParameters,
+                formals,
+                constraints);
         }
 
-        private ParseNode ParseNonArrayType() {
+        private ParseNode ParseNonArrayType()
+        {
             ParseNode type = ParseBaseType();
 
-            while (PeekType() == TokenType.Star) {
+            while (PeekType() == TokenType.Star)
+            {
                 NextToken();
                 type = new PointerTypeNode(type);
             }
@@ -1460,44 +1797,57 @@ namespace ScriptSharp.Parser {
             return type;
         }
 
-        private ParseNode ParseArrayRanks(ParseNode type) {
-            if (PeekType() == TokenType.OpenSquare && (PeekType(1) == TokenType.Comma || PeekType(1) == TokenType.CloseSquare)) {
+        private ParseNode ParseArrayRanks(ParseNode type)
+        {
+            if (PeekType() == TokenType.OpenSquare &&
+                (PeekType(1) == TokenType.Comma || PeekType(1) == TokenType.CloseSquare))
+            {
                 CheckIsType(type, true);
 
-                do {
+                do
+                {
                     NextToken();
                     int rank = 1;
-                    while (null != EatOpt(TokenType.Comma)) {
-                        rank += 1;
-                    }
+
+                    while (null != EatOpt(TokenType.Comma)) rank += 1;
+
                     type = new ArrayTypeNode(type, rank);
                     Eat(TokenType.CloseSquare);
-                } while (PeekType() == TokenType.OpenSquare && (PeekType(1) == TokenType.Comma || PeekType(1) == TokenType.CloseSquare));
+                } while (PeekType() == TokenType.OpenSquare &&
+                         (PeekType(1) == TokenType.Comma || PeekType(1) == TokenType.CloseSquare));
             }
+
             return type;
         }
 
-        private ParseNode ParseReturnType() {
+        private ParseNode ParseReturnType()
+        {
             return ParseArrayRanks(ParseNonArrayType());
         }
 
-        private ParseNode CheckIsType(ParseNode type, bool isArray) {
-            if (type.nodeType == ParseNodeType.PredefinedType && ((IntrinsicTypeNode)type).token.Type == TokenType.Void) {
+        private ParseNode CheckIsType(ParseNode type, bool isArray)
+        {
+            if (type.NodeType == ParseNodeType.PredefinedType &&
+                ((IntrinsicTypeNode) type).Token.Type == TokenType.Void)
+            {
                 ReportError(isArray ? ParseError.ArrayOfVoidType : ParseError.VoidNotType);
             }
 
             return type;
         }
 
-        private ParseNode ParseType() {
+        private ParseNode ParseType()
+        {
             return CheckIsType(ParseReturnType(), false);
         }
 
-        private ParseNodeList ParseParensFormalParameterList() {
+        private ParseNodeList ParseParensFormalParameterList()
+        {
             return ParseParensFormalParameterList(true);
         }
 
-        private ParseNodeList ParseParensFormalParameterList(bool allowAttributes) {
+        private ParseNodeList ParseParensFormalParameterList(bool allowAttributes)
+        {
             Eat(TokenType.OpenParen);
             ParseNodeList tree = ParseFormalParameterList(TokenType.CloseParen, allowAttributes);
             Eat(TokenType.CloseParen);
@@ -1505,16 +1855,21 @@ namespace ScriptSharp.Parser {
             return tree;
         }
 
-        private ParseNodeList ParseFormalParameterList(TokenType endType) {
+        private ParseNodeList ParseFormalParameterList(TokenType endType)
+        {
             return ParseFormalParameterList(endType, true);
         }
 
-        private ParseNodeList ParseFormalParameterList(TokenType endType, bool allowAttributes) {
+        private ParseNodeList ParseFormalParameterList(TokenType endType, bool allowAttributes)
+        {
             ParseNodeList list = new ParseNodeList();
 
-            if (PeekType() != endType) {
+            if (PeekType() != endType)
+            {
                 ParameterNode lastParam;
-                do {
+
+                do
+                {
                     lastParam = ParseFormalParameter(allowAttributes);
                     list.Append(lastParam);
                 } while (null != EatOpt(TokenType.Comma) && lastParam.Flags != ParameterFlags.Params);
@@ -1523,38 +1878,48 @@ namespace ScriptSharp.Parser {
             return list;
         }
 
-        private ParameterNode ParseFormalParameter() {
+        private ParameterNode ParseFormalParameter()
+        {
             return ParseFormalParameter(true);
         }
 
-        private ParameterNode ParseFormalParameter(bool allowAttributes) {
+        private ParameterNode ParseFormalParameter(bool allowAttributes)
+        {
             return new ParameterNode(
-                        PeekToken(),
-                        allowAttributes ? ParseAttributes() : new ParseNodeList(),
-                        ParseParameterFlags(),
-                        ParseType(),
-                        ParseIdentifier());
+                PeekToken(),
+                allowAttributes ? ParseAttributes() : new ParseNodeList(),
+                ParseParameterFlags(),
+                ParseType(),
+                ParseIdentifier());
         }
 
-        private ParameterFlags ParseParameterFlags() {
+        private ParameterFlags ParseParameterFlags()
+        {
             ParameterFlags flags = ParameterFlags.None;
             TokenType type = PeekType();
-            while (type == TokenType.Ref || type == TokenType.Out || type == TokenType.Params) {
-                if (flags != ParameterFlags.None) {
+
+            while (type == TokenType.Ref || type == TokenType.Out || type == TokenType.Params)
+            {
+                if (flags != ParameterFlags.None)
+                {
                     ReportError(ParseError.DuplicateParameterModifier);
                 }
-                else {
-                    if (type == TokenType.Ref) {
+                else
+                {
+                    if (type == TokenType.Ref)
+                    {
                         flags = ParameterFlags.Ref;
                     }
-                    else if (type == TokenType.Out) {
+                    else if (type == TokenType.Out)
+                    {
                         flags = ParameterFlags.Out;
                     }
-                    else {
+                    else
+                    {
                         flags = ParameterFlags.Params;
                     }
-
                 }
+
                 NextToken();
                 type = PeekType();
             }
@@ -1562,48 +1927,60 @@ namespace ScriptSharp.Parser {
             return flags;
         }
 
-        private BlockStatementNode ParseBlockOpt() {
-            if (PeekType() == TokenType.Semicolon) {
+        private BlockStatementNode ParseBlockOpt()
+        {
+            if (PeekType() == TokenType.Semicolon)
+            {
                 Eat(TokenType.Semicolon);
+
                 return null;
             }
 
             return ParseBlock();
         }
 
-        private BlockStatementNode ParseBlock() {
+        private BlockStatementNode ParseBlock()
+        {
             Token token = PeekToken();
 
             ParseNodeList statements = new ParseNodeList();
             Eat(TokenType.OpenCurly);
 
             TokenType type = PeekType();
-            while (type != TokenType.CloseCurly && type != TokenType.EOF) {
+
+            while (type != TokenType.CloseCurly && type != TokenType.Eof)
+            {
                 int mark = Mark();
                 statements.Append(ParseStatement());
 
                 // ensure we make progress in an error case
-                if (mark == Mark()) {
+                if (mark == Mark())
+                {
                     NextToken();
                 }
 
                 type = PeekType();
             }
+
             Eat(TokenType.CloseCurly);
 
             return new BlockStatementNode(token, statements);
         }
 
-        private StatementNode ParseStatement() {
+        private StatementNode ParseStatement()
+        {
             return ParseStatement(false);
         }
 
-        private StatementNode ParseEmbeddedStatement() {
+        private StatementNode ParseEmbeddedStatement()
+        {
             return ParseStatement(true);
         }
 
-        private StatementNode ParseStatement(bool embeddedOnly) {
-            switch (PeekType()) {
+        private StatementNode ParseStatement(bool embeddedOnly)
+        {
+            switch (PeekType())
+            {
                 // block
                 case TokenType.OpenCurly: return ParseBlock();
 
@@ -1612,55 +1989,66 @@ namespace ScriptSharp.Parser {
 
                 // local const
                 case TokenType.Const:
-                    if (!embeddedOnly) {
+
+                    if (!embeddedOnly)
+                    {
                         return new ConstantDeclarationNode(
-                                        NextToken(),
-                                        new ParseNodeList(),
-                                        Modifiers.None,
-                                        ParseType(),
-                                        ParseFieldInitializersStatement(false));
+                            NextToken(),
+                            new ParseNodeList(),
+                            Modifiers.None,
+                            ParseType(),
+                            ParseFieldInitializersStatement(false));
                     }
+
                     goto default;
 
                 // selection statements
-                case TokenType.If: return ParseIf();
+                case TokenType.If:     return ParseIf();
                 case TokenType.Switch: return ParseSwitch();
 
                 // iteration statements
-                case TokenType.While: return ParseWhile();
-                case TokenType.For: return ParseFor();
-                case TokenType.Do: return ParseDo();
+                case TokenType.While:   return ParseWhile();
+                case TokenType.For:     return ParseFor();
+                case TokenType.Do:      return ParseDo();
                 case TokenType.Foreach: return ParseForeach();
 
                 // labelled statement
-                case TokenType.Identifier: {
-                        TokenType peek = PeekType(1);
-                        if (peek == TokenType.Colon && !embeddedOnly) {
-                            return ParseLabeledStatement();
-                        }
-                        else if (PeekYield() && peek == TokenType.Break) {
-                            return ParseYieldBreak();
-                        }
-                        else if (PeekYield() && peek == TokenType.Return) {
-                            return ParseYieldReturn();
-                        }
-                        goto default;
+                case TokenType.Identifier:
+                {
+                    TokenType peek = PeekType(1);
+
+                    if (peek == TokenType.Colon && !embeddedOnly)
+                    {
+                        return ParseLabeledStatement();
                     }
 
+                    if (PeekYield() && peek == TokenType.Break)
+                    {
+                        return ParseYieldBreak();
+                    }
+
+                    if (PeekYield() && peek == TokenType.Return)
+                    {
+                        return ParseYieldReturn();
+                    }
+
+                    goto default;
+                }
+
                 // jump statements
-                case TokenType.Break: return ParseBreak();
+                case TokenType.Break:    return ParseBreak();
                 case TokenType.Continue: return ParseContinue();
-                case TokenType.Goto: return ParseGoto();
-                case TokenType.Return: return ParseReturn();
-                case TokenType.Throw: return ParseThrow();
+                case TokenType.Goto:     return ParseGoto();
+                case TokenType.Return:   return ParseReturn();
+                case TokenType.Throw:    return ParseThrow();
 
                 // try
                 case TokenType.Try: return ParseTry();
 
                 // checked
-                case TokenType.Checked: return ParseChecked();
+                case TokenType.Checked:   return ParseChecked();
                 case TokenType.Unchecked: return ParseUnchecked();
-                case TokenType.Using: return ParseUsing();
+                case TokenType.Using:     return ParseUsing();
 
                 // lock
                 case TokenType.Lock: return ParseLock();
@@ -1670,38 +2058,45 @@ namespace ScriptSharp.Parser {
 
                 case TokenType.Unsafe: return ParseUnsafeStatement();
 
-                default: {
-                        if (!embeddedOnly && ScanLocalVariableDeclaration()) {
-                            return ParseDeclarationStatement();
-                        }
-                        else {
-                            return ParseExpressionStatement();
-                        }
+                default:
+                {
+                    if (!embeddedOnly && ScanLocalVariableDeclaration())
+                    {
+                        return ParseDeclarationStatement();
                     }
+
+                    return ParseExpressionStatement();
+                }
             }
         }
 
-        private EmptyStatementNode ParseEmptyStatement() {
+        private EmptyStatementNode ParseEmptyStatement()
+        {
             return new EmptyStatementNode(Eat(TokenType.Semicolon));
         }
 
-        private IfElseNode ParseIf() {
+        private IfElseNode ParseIf()
+        {
             Token token = Eat(TokenType.If);
             ParseNode condition = ParseParenExpression();
             ParseNode ifBlock = ParseEmbeddedStatement();
             ParseNode elseBlock;
-            if (PeekType() == TokenType.Else) {
+
+            if (PeekType() == TokenType.Else)
+            {
                 NextToken();
                 elseBlock = ParseEmbeddedStatement();
             }
-            else {
+            else
+            {
                 elseBlock = null;
             }
 
             return new IfElseNode(token, condition, ifBlock, elseBlock);
         }
 
-        private ParseNode ParseParenExpression() {
+        private ParseNode ParseParenExpression()
+        {
             Eat(TokenType.OpenParen);
             ParseNode expr = ParseExpression();
             Eat(TokenType.CloseParen);
@@ -1709,49 +2104,63 @@ namespace ScriptSharp.Parser {
             return expr;
         }
 
-        private SwitchNode ParseSwitch() {
+        private SwitchNode ParseSwitch()
+        {
             Token token = Eat(TokenType.Switch);
             ParseNode condition = ParseParenExpression();
             ParseNodeList cases = new ParseNodeList();
             Eat(TokenType.OpenCurly);
 
             TokenType type = PeekType();
-            while (type != TokenType.CloseCurly && type != TokenType.EOF) {
+
+            while (type != TokenType.CloseCurly && type != TokenType.Eof)
+            {
                 Token sectionToken = PeekToken();
 
                 // parse case labels
                 ParseNodeList labels = new ParseNodeList();
                 ParseNode label;
-                while ((label = ParseSwitchLabel()) != null) {
+
+                while ((label = ParseSwitchLabel()) != null)
+                {
                     Eat(TokenType.Colon);
                     labels.Append(label);
                 }
-                if (labels.Count == 0) {
+
+                if (labels.Count == 0)
+                {
                     ReportError(ParseError.CaseOrDefaultExpected);
                 }
 
                 // parse statements
                 ParseNodeList statements = new ParseNodeList();
                 type = PeekType();
-                while (type != TokenType.Case && type != TokenType.Default && type != TokenType.CloseCurly && type != TokenType.EOF) {
+
+                while (type != TokenType.Case && type != TokenType.Default && type != TokenType.CloseCurly &&
+                       type != TokenType.Eof)
+                {
                     int mark = Mark();
 
                     statements.Append(ParseStatement());
 
                     // ensure we make progress in an error case
-                    if (mark == Mark()) {
+                    if (mark == Mark())
+                    {
                         NextToken();
                     }
 
                     type = PeekType();
                 }
-                if (statements.Count == 0) {
+
+                if (statements.Count == 0)
+                {
                     ReportError(ParseError.StatementExpected);
                 }
+
                 cases.Append(new SwitchSectionNode(
-                                    sectionToken,
-                                    labels,
-                                    statements));
+                    sectionToken,
+                    labels,
+                    statements));
             }
 
             Eat(TokenType.CloseCurly);
@@ -1759,29 +2168,36 @@ namespace ScriptSharp.Parser {
             return new SwitchNode(token, condition, cases);
         }
 
-        private ParseNode ParseSwitchLabel() {
+        private ParseNode ParseSwitchLabel()
+        {
             ParseNode tree;
-            if (PeekType() == TokenType.Case) {
+
+            if (PeekType() == TokenType.Case)
+            {
                 tree = new CaseLabelNode(Eat(TokenType.Case), ParseExpression());
             }
-            else if (PeekType() == TokenType.Default) {
+            else if (PeekType() == TokenType.Default)
+            {
                 tree = new DefaultLabelNode(Eat(TokenType.Default));
             }
-            else {
+            else
+            {
                 return null;
             }
 
             return tree;
         }
 
-        private WhileNode ParseWhile() {
+        private WhileNode ParseWhile()
+        {
             return new WhileNode(
-                        Eat(TokenType.While),
-                        ParseParenExpression(),
-                        ParseEmbeddedStatement());
+                Eat(TokenType.While),
+                ParseParenExpression(),
+                ParseEmbeddedStatement());
         }
 
-        private DoWhileNode ParseDo() {
+        private DoWhileNode ParseDo()
+        {
             Token token = Eat(TokenType.Do);
             ParseNode body = ParseEmbeddedStatement();
             Eat(TokenType.While);
@@ -1791,69 +2207,92 @@ namespace ScriptSharp.Parser {
             return new DoWhileNode(token, body, condition);
         }
 
-        private ForNode ParseFor() {
+        private ForNode ParseFor()
+        {
             Token token = Eat(TokenType.For);
             Eat(TokenType.OpenParen);
 
             // local vardecl or statement list
             ParseNode initializer;
-            if (ScanLocalVariableDeclaration()) {
+
+            if (ScanLocalVariableDeclaration())
+            {
                 initializer = ParseDeclarationStatement();
             }
-            else {
+            else
+            {
                 initializer = ParseStatementExpressionList(TokenType.Semicolon);
                 Eat(TokenType.Semicolon);
             }
 
             ParseNode condition;
-            if (PeekType() == TokenType.Semicolon) {
+
+            if (PeekType() == TokenType.Semicolon)
+            {
                 condition = null;
             }
-            else {
+            else
+            {
                 condition = ParseExpression();
             }
+
             Eat(TokenType.Semicolon);
 
             ParseNode increment;
-            if (PeekType() == TokenType.CloseParen) {
+
+            if (PeekType() == TokenType.CloseParen)
+            {
                 increment = null;
             }
-            else {
+            else
+            {
                 increment = ParseStatementExpressionList(TokenType.CloseParen);
             }
+
             Eat(TokenType.CloseParen);
 
             return new ForNode(
-                            token,
-                            initializer,
-                            condition,
-                            increment,
-                            ParseEmbeddedStatement());
+                token,
+                initializer,
+                condition,
+                increment,
+                ParseEmbeddedStatement());
         }
 
-        private ExpressionListNode ParseStatementExpressionList(TokenType terminator) {
+        private ExpressionListNode ParseStatementExpressionList(TokenType terminator)
+        {
             Token token = PeekToken();
             ParseNodeList list = new ParseNodeList();
-            if (PeekType() != terminator) {
-                do {
+
+            if (PeekType() != terminator)
+            {
+                do
+                {
                     list.Append(ParseStatementExpression());
                 } while (null != EatOpt(TokenType.Comma));
             }
+
             return new ExpressionListNode(token, list);
         }
 
-        private ExpressionListNode ParseExpressionList(TokenType terminator) {
+        private ExpressionListNode ParseExpressionList(TokenType terminator)
+        {
             Token token = PeekToken();
             ParseNodeList list = new ParseNodeList();
-            if (PeekType() != terminator) {
-                do {
+
+            if (PeekType() != terminator)
+            {
+                do
+                {
                     list.Append(ParseExpression());
                 } while (null != EatOpt(TokenType.Comma));
             }
+
             return new ExpressionListNode(token, list);
         }
 
-        private ForeachNode ParseForeach() {
+        private ForeachNode ParseForeach()
+        {
             Token token = Eat(TokenType.Foreach);
             Eat(TokenType.OpenParen);
             ParseNode type = ParseType();
@@ -1861,69 +2300,89 @@ namespace ScriptSharp.Parser {
             Eat(TokenType.In);
             ParseNode container = ParseExpression();
             Eat(TokenType.CloseParen);
+
             return new ForeachNode(
-                            token,
-                            type,
-                            identifier,
-                            container,
-                            ParseEmbeddedStatement());
+                token,
+                type,
+                identifier,
+                container,
+                ParseEmbeddedStatement());
         }
 
-        private BreakNode ParseBreak() {
+        private BreakNode ParseBreak()
+        {
             Token token = Eat(TokenType.Break);
             Eat(TokenType.Semicolon);
+
             return new BreakNode(token);
         }
 
-        private ContinueNode ParseContinue() {
+        private ContinueNode ParseContinue()
+        {
             Token token = Eat(TokenType.Continue);
             Eat(TokenType.Semicolon);
+
             return new ContinueNode(token);
         }
 
-        private GotoNode ParseGoto() {
+        private GotoNode ParseGoto()
+        {
             Token token = Eat(TokenType.Goto);
             ParseNode destination;
             destination = ParseSwitchLabel();
-            if (null == destination) {
+
+            if (null == destination)
+            {
                 destination = ParseIdentifier();
             }
+
             Eat(TokenType.Semicolon);
 
             return new GotoNode(token, destination);
         }
 
-        private ThrowNode ParseThrow() {
+        private ThrowNode ParseThrow()
+        {
             Token token = Eat(TokenType.Throw);
 
             ParseNode value;
-            if (PeekType() != TokenType.Semicolon) {
+
+            if (PeekType() != TokenType.Semicolon)
+            {
                 value = ParseExpression();
             }
-            else {
+            else
+            {
                 value = null;
             }
+
             Eat(TokenType.Semicolon);
 
             return new ThrowNode(token, value);
         }
 
-        private ReturnNode ParseReturn() {
+        private ReturnNode ParseReturn()
+        {
             Token token = Eat(TokenType.Return);
 
             ParseNode value;
-            if (PeekType() != TokenType.Semicolon) {
+
+            if (PeekType() != TokenType.Semicolon)
+            {
                 value = ParseExpression();
             }
-            else {
+            else
+            {
                 value = null;
             }
+
             Eat(TokenType.Semicolon);
 
             return new ReturnNode(token, value);
         }
 
-        private YieldReturnNode ParseYieldReturn() {
+        private YieldReturnNode ParseYieldReturn()
+        {
             IdentifierToken token = EatYield();
             Eat(TokenType.Return);
 
@@ -1933,386 +2392,511 @@ namespace ScriptSharp.Parser {
             return new YieldReturnNode(token, value);
         }
 
-        private YieldBreakNode ParseYieldBreak() {
+        private YieldBreakNode ParseYieldBreak()
+        {
             IdentifierToken token = EatYield();
             Eat(TokenType.Break);
             Eat(TokenType.Semicolon);
+
             return new YieldBreakNode(token);
         }
 
-        private TryNode ParseTry() {
+        private TryNode ParseTry()
+        {
             Token token = Eat(TokenType.Try);
             ParseNode body = ParseBlock();
 
             ParseNodeList catchClauses = new ParseNodeList();
-            while (PeekType() == TokenType.Catch) {
+
+            while (PeekType() == TokenType.Catch)
+            {
                 Token catchToken = Eat(TokenType.Catch);
                 ParseNode type;
                 AtomicNameNode name;
 
-                if (PeekType() == TokenType.OpenParen) {
+                if (PeekType() == TokenType.OpenParen)
+                {
                     Eat(TokenType.OpenParen);
                     type = ParseType();
-                    if (PeekType() == TokenType.Identifier) {
+
+                    if (PeekType() == TokenType.Identifier)
+                    {
                         name = ParseIdentifier();
                     }
-                    else {
+                    else
+                    {
                         name = null;
                     }
+
                     Eat(TokenType.CloseParen);
                 }
-                else {
+                else
+                {
                     type = null;
                     name = null;
                 }
 
                 catchClauses.Append(new CatchNode(
-                                        catchToken,
-                                        type,
-                                        name,
-                                        ParseBlock()));
+                    catchToken,
+                    type,
+                    name,
+                    ParseBlock()));
             }
 
             ParseNode finallyClause;
-            if (PeekType() == TokenType.Finally) {
+
+            if (PeekType() == TokenType.Finally)
+            {
                 Eat(TokenType.Finally);
                 finallyClause = ParseBlock();
             }
-            else {
+            else
+            {
                 finallyClause = null;
             }
 
             return new TryNode(
-                            token,
-                            body,
-                            catchClauses,
-                            finallyClause);
+                token,
+                body,
+                catchClauses,
+                finallyClause);
         }
 
-        private CheckedNode ParseChecked() {
+        private CheckedNode ParseChecked()
+        {
             return new CheckedNode(Eat(TokenType.Checked), ParseBlock());
         }
 
-        private UncheckedNode ParseUnchecked() {
+        private UncheckedNode ParseUnchecked()
+        {
             return new UncheckedNode(Eat(TokenType.Unchecked), ParseBlock());
         }
 
-        private UsingNode ParseUsing() {
+        private UsingNode ParseUsing()
+        {
             Token token = Eat(TokenType.Using);
             Eat(TokenType.OpenParen);
             ParseNode guard;
-            if (ScanLocalVariableDeclaration()) {
+
+            if (ScanLocalVariableDeclaration())
+            {
                 guard = ParseDeclaration();
-                foreach (VariableInitializerNode i in ((VariableDeclarationNode)guard).Initializers) {
-                    if (i.Value == null) {
-                        ReportError(ParseError.UsingDeclaratorsMustHaveValue, i.token);
+
+                foreach (VariableInitializerNode i in ((VariableDeclarationNode) guard).Initializers)
+                    if (i.Value == null)
+                    {
+                        ReportError(ParseError.UsingDeclaratorsMustHaveValue, i.Token);
                     }
-                }
             }
-            else {
+            else
+            {
                 guard = ParseExpression();
             }
+
             Eat(TokenType.CloseParen);
 
             return new UsingNode(token, guard, ParseEmbeddedStatement());
         }
 
-        private LockNode ParseLock() {
+        private LockNode ParseLock()
+        {
             return new LockNode(
-                            Eat(TokenType.Lock),
-                            ParseParenExpression(),
-                            ParseEmbeddedStatement());
+                Eat(TokenType.Lock),
+                ParseParenExpression(),
+                ParseEmbeddedStatement());
         }
 
-        private FixedNode ParseFixed() {
+        private FixedNode ParseFixed()
+        {
             Token token = Eat(TokenType.Fixed);
             Eat(TokenType.OpenParen);
             VariableDeclarationNode declaration = ParseDeclaration();
-            if (declaration.Type.nodeType != ParseNodeType.PointerType) {
+
+            if (declaration.Type.NodeType != ParseNodeType.PointerType)
+            {
                 ReportError(ParseError.FixedVariablesMustBeOfPointerType, token);
             }
-            foreach (VariableInitializerNode i in declaration.Initializers) {
-                if (i.Value == null) {
-                    ReportError(ParseError.FixedDeclaratorsMustHaveValue, i.token);
+
+            foreach (VariableInitializerNode i in declaration.Initializers)
+                if (i.Value == null)
+                {
+                    ReportError(ParseError.FixedDeclaratorsMustHaveValue, i.Token);
                 }
-            }
+
             Eat(TokenType.CloseParen);
+
             return new FixedNode(token, declaration, ParseEmbeddedStatement());
         }
 
-        private UnsafeNode ParseUnsafeStatement() {
+        private UnsafeNode ParseUnsafeStatement()
+        {
             return new UnsafeNode(Eat(TokenType.Unsafe), ParseBlock());
         }
 
-        private ExpressionStatementNode ParseExpressionStatement() {
+        private ExpressionStatementNode ParseExpressionStatement()
+        {
             ParseNode expression = ParseStatementExpression();
             Eat(TokenType.Semicolon);
+
             return new ExpressionStatementNode(expression);
         }
 
-        private ParseNode ParseStatementExpression() {
+        private ParseNode ParseStatementExpression()
+        {
             ParseNode expression = ParseExpression();
-            if (expression != null) {
-                switch (expression.nodeType) {
+
+            if (expression != null)
+            {
+                switch (expression.NodeType)
+                {
                     case ParseNodeType.BinaryExpression:
+
                         // postincrment, postdecrement
                         // method call
                         // assignment
-                        switch (((BinaryExpressionNode)expression).Operator) {
+                        switch (((BinaryExpressionNode) expression).Operator)
+                        {
                             case TokenType.PlusPlus:
                             case TokenType.MinusMinus:
                             case TokenType.OpenParen:
+
                                 break;
                             default:
-                                if (Token.IsAssignmentOperator(((BinaryExpressionNode)expression).Operator)) {
+
+                                if (Token.IsAssignmentOperator(((BinaryExpressionNode) expression).Operator))
+                                {
                                     break;
                                 }
-                                ReportError(ParseError.ExpressionStatementMustDoWork, expression.token);
+
+                                ReportError(ParseError.ExpressionStatementMustDoWork, expression.Token);
+
                                 break;
                         }
+
                         break;
                     case ParseNodeType.New:
                     case ParseNodeType.ArrayNew:
+
                         break;
                     case ParseNodeType.UnaryExpression:
+
                         // preincrement, predecrement
-                        switch (((UnaryExpressionNode)expression).token.Type) {
+                        switch (((UnaryExpressionNode) expression).Token.Type)
+                        {
                             case TokenType.PlusPlus:
                             case TokenType.MinusMinus:
+
                                 break;
                             default:
-                                ReportError(ParseError.ExpressionStatementMustDoWork, expression.token);
+                                ReportError(ParseError.ExpressionStatementMustDoWork, expression.Token);
+
                                 break;
                         }
+
                         break;
                     default:
-                        ReportError(ParseError.ExpressionStatementMustDoWork, expression.token);
+                        ReportError(ParseError.ExpressionStatementMustDoWork, expression.Token);
+
                         break;
                 }
             }
+
             return expression;
         }
 
-        private LabeledStatementNode ParseLabeledStatement() {
+        private LabeledStatementNode ParseLabeledStatement()
+        {
             AtomicNameNode label = ParseIdentifier();
             Eat(TokenType.Colon);
 
             return new LabeledStatementNode(label, ParseStatement());
         }
 
-        private enum SCAN {
-            TYPE,
-            COULD_BE_TYPE,
-            POINTER_OR_MULT,
-            NOTTYPE,
-        }
-
-        private bool ScanLocalVariableDeclaration() {
+        private bool ScanLocalVariableDeclaration()
+        {
             int mark = Mark();
-            bool returnValue = (ScanType() != SCAN.NOTTYPE) && (PeekType() == TokenType.Identifier);
+            bool returnValue = ScanType() != Scan.Nottype && PeekType() == TokenType.Identifier;
             Rewind(mark);
+
             return returnValue;
         }
 
-        private SCAN ScanTypeNamePart() {
-            if (PeekType() == TokenType.Identifier) {
+        private Scan ScanTypeNamePart()
+        {
+            if (PeekType() == TokenType.Identifier)
+            {
                 NextToken();
-                if (PeekType() == TokenType.OpenAngle) {
-                    switch (ScanTypeArgumentListOpt()) {
+
+                if (PeekType() == TokenType.OpenAngle)
+                {
+                    switch (ScanTypeArgumentListOpt())
+                    {
                         case TypeArgumentListScan.TypeParameterList:
                         case TypeArgumentListScan.NotTypeArgumentList:
-                            return SCAN.NOTTYPE;
+
+                            return Scan.Nottype;
                         case TypeArgumentListScan.MustBeTypeArgumentList:
                         case TypeArgumentListScan.MayBeTypeArgumentList:
-                            return SCAN.COULD_BE_TYPE;
+
+                            return Scan.CouldBeType;
                         default:
                             Debug.Fail("Invalid scan result");
+
                             break;
                     }
 
-                    return SCAN.NOTTYPE;
+                    return Scan.Nottype;
                 }
-                return SCAN.COULD_BE_TYPE;
+
+                return Scan.CouldBeType;
             }
-            return SCAN.NOTTYPE;
+
+            return Scan.Nottype;
         }
 
-        private SCAN ScanBaseType() {
+        private Scan ScanBaseType()
+        {
             // scan a base type
-            if (PeekType() == TokenType.Identifier) {
-                do {
-                    SCAN result = SCAN.COULD_BE_TYPE;
-                    switch (ScanTypeNamePart()) {
-                        case SCAN.NOTTYPE:
-                            return SCAN.NOTTYPE;
-                        case SCAN.COULD_BE_TYPE:
+            if (PeekType() == TokenType.Identifier)
+            {
+                do
+                {
+                    Scan result = Scan.CouldBeType;
+
+                    switch (ScanTypeNamePart())
+                    {
+                        case Scan.Nottype:
+
+                            return Scan.Nottype;
+                        case Scan.CouldBeType:
+
                             break;
-                        case SCAN.TYPE:
-                            result = SCAN.TYPE;
+                        case Scan.Type:
+                            result = Scan.Type;
+
                             break;
                         default:
                             Debug.Fail("Invalid scan result");
+
                             break;
                     }
 
                     TokenType peek = PeekType();
-                    if ((peek = PeekType()) == TokenType.Dot || peek == TokenType.ColonColon) {
+
+                    if ((peek = PeekType()) == TokenType.Dot || peek == TokenType.ColonColon)
+                    {
                         if (peek == TokenType.Dot)
-                            result = SCAN.COULD_BE_TYPE;
+                        {
+                            result = Scan.CouldBeType;
+                        }
                         else
-                            result = SCAN.TYPE;
+                        {
+                            result = Scan.Type;
+                        }
 
                         NextToken();
+
                         if (PeekType() != TokenType.Identifier)
-                            return SCAN.NOTTYPE;
+                        {
+                            return Scan.Nottype;
+                        }
                     }
-                    else {
+                    else
+                    {
                         return result;
                     }
                 } while (true);
             }
-            else if (Token.IsPredefinedType(PeekType())) {
+
+            if (Token.IsPredefinedType(PeekType()))
+            {
                 NextToken();
-                return SCAN.TYPE;
+
+                return Scan.Type;
             }
-            else {
-                return SCAN.NOTTYPE;
-            }
+
+            return Scan.Nottype;
         }
 
-        private SCAN ScanType() {
-            SCAN result = ScanBaseType();
-            if (result == SCAN.NOTTYPE)
-                return SCAN.NOTTYPE;
+        private Scan ScanType()
+        {
+            Scan result = ScanBaseType();
+
+            if (result == Scan.Nottype)
+            {
+                return Scan.Nottype;
+            }
 
             // scan pointer flags
             int numberOfStars = 0;
-            while (null != EatOpt(TokenType.Star)) {
+
+            while (null != EatOpt(TokenType.Star))
+            {
                 numberOfStars += 1;
-                if ((result == SCAN.COULD_BE_TYPE) && (numberOfStars == 1)) {
-                    result = SCAN.POINTER_OR_MULT;
+
+                if (result == Scan.CouldBeType && numberOfStars == 1)
+                {
+                    result = Scan.PointerOrMult;
                 }
-                else if ((result == SCAN.POINTER_OR_MULT) && (numberOfStars > 1)) {
-                    result = SCAN.TYPE;
+                else if (result == Scan.PointerOrMult && numberOfStars > 1)
+                {
+                    result = Scan.Type;
                 }
             }
 
             // scan nullable flags
-            while (null != EatOpt(TokenType.Question)) {
-                result = SCAN.TYPE;
-            }
+            while (null != EatOpt(TokenType.Question)) result = Scan.Type;
 
             // scan array flags
-            while (null != EatOpt(TokenType.OpenSquare)) {
-                while (null != EatOpt(TokenType.Comma)) { }
-
-                if (null == EatOpt(TokenType.CloseSquare)) {
-                    return SCAN.NOTTYPE;
+            while (null != EatOpt(TokenType.OpenSquare))
+            {
+                while (null != EatOpt(TokenType.Comma))
+                {
                 }
-                result = SCAN.TYPE;
+
+                if (null == EatOpt(TokenType.CloseSquare))
+                {
+                    return Scan.Nottype;
+                }
+
+                result = Scan.Type;
             }
 
             return result;
         }
 
-        private VariableDeclarationNode ParseDeclaration() {
+        private VariableDeclarationNode ParseDeclaration()
+        {
             return new VariableDeclarationNode(
                 PeekToken(),
-                new ParseNodeList(),       // _attributes
+                new ParseNodeList(), // _attributes
                 Modifiers.None,
                 ParseType(),
                 ParseFieldInitializers(false),
                 false);
         }
 
-        private VariableDeclarationNode ParseDeclarationStatement() {
+        private VariableDeclarationNode ParseDeclarationStatement()
+        {
             return new VariableDeclarationNode(
                 PeekToken(),
-                new ParseNodeList(),       // _attributes
+                new ParseNodeList(), // _attributes
                 Modifiers.None,
                 ParseType(),
                 ParseFieldInitializersStatement(false),
                 false);
         }
 
-        private ParseNode ParseExpression() {
+        private ParseNode ParseExpression()
+        {
             return ParseAssignment();
         }
 
-        private ParseNode ParseConditional() {
+        private ParseNode ParseConditional()
+        {
             ParseNode condition = ParseBinaryExpression();
-            if (null != EatOpt(TokenType.Question)) {
+
+            if (null != EatOpt(TokenType.Question))
+            {
                 ParseNode left = ParseExpression();
                 Eat(TokenType.Colon);
                 ParseNode right = ParseExpression();
+
                 return new ConditionalNode(condition, left, right);
             }
 
             return condition;
         }
 
-        private TokenType PeekAssignmentOperator() {
+        private TokenType PeekAssignmentOperator()
+        {
             if (Token.IsAssignmentOperator(PeekType()))
+            {
                 return PeekType();
-            else if (PeekType() == TokenType.Greater &&
-                     PeekType(1) == TokenType.GreaterEqual &&
-                     PeekToken().IsAdjacent(PeekToken(1)))
-                return TokenType.ShiftRightEqual;
-            else
-                return TokenType.Invalid;
-        }
+            }
 
-        private TokenType EatAssignmentOperator() {
-            if (Token.IsAssignmentOperator(PeekType()))
-                return NextToken().Type;
-            else {
-                Debug.Assert(PeekType() == TokenType.Greater &&
-                                PeekType(1) == TokenType.GreaterEqual &&
-                                PeekToken().IsAdjacent(PeekToken(1)));
-
-                Eat(TokenType.Greater);
-                Eat(TokenType.GreaterEqual);
-
+            if (PeekType() == TokenType.Greater &&
+                PeekType(1) == TokenType.GreaterEqual &&
+                PeekToken().IsAdjacent(PeekToken(1)))
+            {
                 return TokenType.ShiftRightEqual;
             }
+
+            return TokenType.Invalid;
         }
 
-        private ParseNode ParseAssignment() {
+        private TokenType EatAssignmentOperator()
+        {
+            if (Token.IsAssignmentOperator(PeekType()))
+            {
+                return NextToken().Type;
+            }
+
+            Debug.Assert(PeekType() == TokenType.Greater &&
+                         PeekType(1) == TokenType.GreaterEqual &&
+                         PeekToken().IsAdjacent(PeekToken(1)));
+
+            Eat(TokenType.Greater);
+            Eat(TokenType.GreaterEqual);
+
+            return TokenType.ShiftRightEqual;
+        }
+
+        private ParseNode ParseAssignment()
+        {
             ParseNode left = ParseConditional();
-            if (PeekAssignmentOperator() != TokenType.Invalid) {
+
+            if (PeekAssignmentOperator() != TokenType.Invalid)
+            {
                 left = new BinaryExpressionNode(left, EatAssignmentOperator(), ParseAssignment());
             }
 
             return left;
         }
 
-        private TokenType PeekOverloadableOperator() {
+        private TokenType PeekOverloadableOperator()
+        {
             TokenType result = PeekBinaryOperator();
-            if (result == TokenType.Invalid) {
+
+            if (result == TokenType.Invalid)
+            {
                 if (Token.IsOverloadableOperator(PeekType()))
+                {
                     result = PeekType();
+                }
             }
 
             return result;
         }
 
-        private TokenType EatOverloadableOperator() {
+        private TokenType EatOverloadableOperator()
+        {
             TokenType operatorKind = PeekType();
+
             if (operatorKind == TokenType.Greater)
+            {
                 operatorKind = EatBinaryOperator();
-            else {
-                if (Token.IsOverloadableOperator(operatorKind)) {
+            }
+            else
+            {
+                if (Token.IsOverloadableOperator(operatorKind))
+                {
                     NextToken();
                 }
-                else {
+                else
+                {
                     ReportError(ParseError.OverloadableOperatorExpected);
-                    switch (operatorKind) {
+
+                    switch (operatorKind)
+                    {
                         case TokenType.OpenParen:
                         case TokenType.OpenCurly:
+
                             break;
 
                         default:
                             NextToken();
+
                             break;
                     }
                 }
@@ -2321,79 +2905,103 @@ namespace ScriptSharp.Parser {
             return operatorKind;
         }
 
-        private TokenType PeekBinaryOperator() {
+        private TokenType PeekBinaryOperator()
+        {
             if (Token.IsBinaryOperator(PeekType()))
+            {
                 if (PeekType() == TokenType.Greater &&
                     PeekType(1) == TokenType.Greater &&
                     PeekToken().IsAdjacent(PeekToken(1)))
+                {
                     return TokenType.ShiftRight;
-                else if (PeekType() == TokenType.Greater &&
+                }
+
+                if (PeekType() == TokenType.Greater &&
                     PeekType(1) == TokenType.GreaterEqual &&
                     PeekToken().IsAdjacent(PeekToken(1)))
+                {
                     return TokenType.ShiftRightEqual;
-                else
-                    return PeekType();
-            else
-                return TokenType.Invalid;
+                }
+
+                return PeekType();
+            }
+
+            return TokenType.Invalid;
         }
 
-        private int PeekBinaryOperatorPrecedence() {
+        private int PeekBinaryOperatorPrecedence()
+        {
             return Token.GetTokenPrecedence(PeekBinaryOperator());
         }
 
-        private TokenType EatBinaryOperator() {
+        private TokenType EatBinaryOperator()
+        {
             Debug.Assert(Token.IsBinaryOperator(PeekType()));
 
             if (PeekType() == TokenType.Greater &&
                 PeekType(1) == TokenType.Greater &&
-                PeekToken().IsAdjacent(PeekToken(1))) {
+                PeekToken().IsAdjacent(PeekToken(1)))
+            {
                 Eat(TokenType.Greater);
                 Eat(TokenType.Greater);
 
                 return TokenType.ShiftRight;
             }
-            else if (PeekType() == TokenType.Greater &&
+
+            if (PeekType() == TokenType.Greater &&
                 PeekType(1) == TokenType.GreaterEqual &&
-                PeekToken().IsAdjacent(PeekToken(1))) {
+                PeekToken().IsAdjacent(PeekToken(1)))
+            {
                 Eat(TokenType.Greater);
                 Eat(TokenType.GreaterEqual);
 
                 return TokenType.ShiftRightEqual;
             }
-            else
-                return NextToken().Type;
+
+            return NextToken().Type;
         }
 
-        private ParseNode ParseBinaryExpression() {
+        private ParseNode ParseBinaryExpression()
+        {
             return ParseBinaryExpression(int.MaxValue - 1);
         }
 
-        private ParseNode ParseBinaryExpression(int precedence) {
+        private ParseNode ParseBinaryExpression(int precedence)
+        {
             return ParseBinaryExpression(precedence, ParseUnaryExpression());
         }
 
-        private ParseNode ParseBinaryExpression(int precedence, ParseNode left) {
+        private ParseNode ParseBinaryExpression(int precedence, ParseNode left)
+        {
             int newPrecedence;
-            while ((newPrecedence = PeekBinaryOperatorPrecedence()) <= precedence) {
+
+            while ((newPrecedence = PeekBinaryOperatorPrecedence()) <= precedence)
+            {
                 TokenType op = EatBinaryOperator();
                 ParseNode right;
-                if (op == TokenType.Is || op == TokenType.As) {
+
+                if (op == TokenType.Is || op == TokenType.As)
+                {
                     right = ParseType();
                 }
-                else {
+                else
+                {
                     right = ParseBinaryExpression(newPrecedence - 1);
                 }
+
                 left = new BinaryExpressionNode(
-                                left,
-                                op,
-                                right);
+                    left,
+                    op,
+                    right);
             }
 
             return left;
         }
 
-        private ParseNode ParseUnaryExpression() {
-            switch (PeekType()) {
+        private ParseNode ParseUnaryExpression()
+        {
+            switch (PeekType())
+            {
                 case TokenType.Plus:
                 case TokenType.Minus:
                 case TokenType.Bang:
@@ -2402,13 +3010,17 @@ namespace ScriptSharp.Parser {
                 case TokenType.MinusMinus:
                 case TokenType.Star:
                 case TokenType.Ampersand:
+
                     return new UnaryExpressionNode(NextToken(), ParseUnaryExpression());
 
                 case TokenType.OpenParen:
+
                     // check for cast expression
-                    if (ScanCast()) {
+                    if (ScanCast())
+                    {
                         return ParseCastExpression();
                     }
+
                     break;
             }
 
@@ -2416,56 +3028,70 @@ namespace ScriptSharp.Parser {
             return ParsePrimaryExpression();
         }
 
-        private bool ScanCast() {
+        private bool ScanCast()
+        {
             int mark = Mark();
             bool returnValue;
 
             NextToken();
-            SCAN scan = ScanType();
+            Scan scan = ScanType();
 
-            if (scan == SCAN.NOTTYPE) {
+            if (scan == Scan.Nottype)
+            {
                 returnValue = false;
             }
-            else if (PeekType() != TokenType.CloseParen) {
+            else if (PeekType() != TokenType.CloseParen)
+            {
                 returnValue = false;
             }
-            else {
-                switch (scan) {
-                    case SCAN.TYPE:
-                    case SCAN.POINTER_OR_MULT:
+            else
+            {
+                switch (scan)
+                {
+                    case Scan.Type:
+                    case Scan.PointerOrMult:
                         returnValue = true;
+
                         break;
 
-                    case SCAN.COULD_BE_TYPE:
+                    case Scan.CouldBeType:
                     default:
                         TokenType type = PeekType(1);
-                        switch (type) {
+
+                        switch (type)
+                        {
                             case TokenType.Tilde:
                             case TokenType.Bang:
                             case TokenType.OpenParen:
                             case TokenType.Identifier:
                             case TokenType.Literal:
                                 returnValue = true;
+
                                 break;
 
                             case TokenType.Is:
                             case TokenType.As:
                                 returnValue = false;
+
                                 break;
 
                             default:
                                 returnValue = Token.IsKeyword(type);
+
                                 break;
                         }
+
                         break;
                 }
             }
+
             Rewind(mark);
 
             return returnValue;
         }
 
-        private ParseNode ParseCastExpression() {
+        private ParseNode ParseCastExpression()
+        {
             Token token = Eat(TokenType.OpenParen);
             ParseNode type = ParseType();
             Eat(TokenType.CloseParen);
@@ -2473,120 +3099,160 @@ namespace ScriptSharp.Parser {
             return new CastNode(token, type, ParseUnaryExpression());
         }
 
-        private ParseNode ParsePrimaryExpression() {
+        private ParseNode ParsePrimaryExpression()
+        {
             ParseNode expr;
-            switch (PeekType()) {
+
+            switch (PeekType())
+            {
                 case TokenType.Null:
                 case TokenType.True:
                 case TokenType.False:
                 case TokenType.Literal:
                     expr = new LiteralNode(NextToken());
+
                     break;
 
                 case TokenType.OpenParen:
                     Eat(TokenType.OpenParen);
                     expr = ParseExpression();
-                    if (expr is ExpressionNode) {
-                        ((ExpressionNode)expr).AddParenthesisHint();
+
+                    if (expr is ExpressionNode)
+                    {
+                        ((ExpressionNode) expr).AddParenthesisHint();
                     }
+
                     Eat(TokenType.CloseParen);
+
                     break;
 
                 case TokenType.New:
                     expr = ParseNew();
+
                     break;
 
-                case TokenType.Typeof: {
-                        Token token = NextToken();
-                        Eat(TokenType.OpenParen);
-                        expr = new TypeofNode(token, ParseReturnType());
-                        Eat(TokenType.CloseParen);
-                        break;
-                    }
+                case TokenType.Typeof:
+                {
+                    Token token = NextToken();
+                    Eat(TokenType.OpenParen);
+                    expr = new TypeofNode(token, ParseReturnType());
+                    Eat(TokenType.CloseParen);
 
-                case TokenType.Sizeof: {
-                        Token token = NextToken();
-                        Eat(TokenType.OpenParen);
-                        expr = new SizeofNode(token, ParseType());
-                        Eat(TokenType.CloseParen);
-                        break;
-                    }
+                    break;
+                }
+
+                case TokenType.Sizeof:
+                {
+                    Token token = NextToken();
+                    Eat(TokenType.OpenParen);
+                    expr = new SizeofNode(token, ParseType());
+                    Eat(TokenType.CloseParen);
+
+                    break;
+                }
 
                 case TokenType.Checked:
-                case TokenType.Unchecked: {
-                        Token token = NextToken();
-                        Eat(TokenType.OpenParen);
-                        expr = new UnaryExpressionNode(token, ParseExpression());
-                        Eat(TokenType.CloseParen);
-                        break;
-                    }
+                case TokenType.Unchecked:
+                {
+                    Token token = NextToken();
+                    Eat(TokenType.OpenParen);
+                    expr = new UnaryExpressionNode(token, ParseExpression());
+                    Eat(TokenType.CloseParen);
+
+                    break;
+                }
 
                 case TokenType.This:
                     expr = new ThisNode(NextToken());
+
                     break;
 
                 case TokenType.Base:
                     expr = new BaseNode(NextToken());
-                    if (PeekType() != TokenType.Dot && PeekType() != TokenType.OpenSquare) {
-                        this.ReportError(ParseError.BadBaseExpression);
+
+                    if (PeekType() != TokenType.Dot && PeekType() != TokenType.OpenSquare)
+                    {
+                        ReportError(ParseError.BadBaseExpression);
                     }
+
                     break;
 
                 case TokenType.Identifier:
                     expr = ParseAliasQualifiedName(true);
+
                     break;
 
                 case TokenType.Delegate:
                     expr = ParseAnonymousMethod();
+
                     break;
 
                 default:
-                    if (Token.IsPredefinedType(PeekType()) && PeekType() != TokenType.Void) {
+
+                    if (Token.IsPredefinedType(PeekType()) && PeekType() != TokenType.Void)
+                    {
                         expr = ParsePredefinedType();
                         CheckType(TokenType.Dot);
                     }
-                    else {
+                    else
+                    {
                         ReportError(ParseError.ExpressionExpected);
                         expr = ParseIdentifier();
                     }
+
                     break;
             }
 
             // postfix operators
             bool foundPostfix = true;
-            do {
+
+            do
+            {
                 Token token = PeekToken();
-                switch (PeekType()) {
+
+                switch (PeekType())
+                {
                     case TokenType.Dot:
-                        if (PeekType(1) == TokenType.Default) {
+
+                        if (PeekType(1) == TokenType.Default)
+                        {
                             expr = new DefaultValueNode(expr);
                             Eat(TokenType.Dot);
                             Eat(TokenType.Default);
                         }
                         else
+                        {
                             expr = new BinaryExpressionNode(expr, NextToken().Type, ParseSimpleName(true));
+                        }
+
                         break;
 
                     case TokenType.OpenParen:
                         expr = new BinaryExpressionNode(expr, token.Type, ParseParenArgumentList());
+
                         break;
 
                     case TokenType.PlusPlus:
                     case TokenType.MinusMinus:
                         expr = new BinaryExpressionNode(expr, NextToken().Type, null);
+
                         break;
 
                     case TokenType.OpenSquare:
-                        expr = new BinaryExpressionNode(expr, NextToken().Type, ParseExpressionList(TokenType.CloseSquare));
+                        expr = new BinaryExpressionNode(expr, NextToken().Type,
+                            ParseExpressionList(TokenType.CloseSquare));
                         Eat(TokenType.CloseSquare);
+
                         break;
 
                     case TokenType.Arrow:
                         expr = new BinaryExpressionNode(expr, NextToken().Type, ParseIdentifier());
+
                         break;
 
                     default:
                         foundPostfix = false;
+
                         break;
                 }
             } while (foundPostfix);
@@ -2594,23 +3260,31 @@ namespace ScriptSharp.Parser {
             return expr;
         }
 
-        private ParseNode ParseNew() {
+        private ParseNode ParseNew()
+        {
             Token token = Eat(TokenType.New);
             ParseNode type = ParseNonArrayType();
-            if (TokenType.OpenSquare == PeekType()) {
+
+            if (TokenType.OpenSquare == PeekType())
+            {
                 bool needArrayInit;
                 ParseNode exprList;
-                if (PeekType(1) == TokenType.CloseSquare || PeekType(1) == TokenType.Comma) {
+
+                if (PeekType(1) == TokenType.CloseSquare || PeekType(1) == TokenType.Comma)
+                {
                     type = ParseArrayRanks(type);
                     needArrayInit = true;
                     exprList = null;
                 }
-                else {
+                else
+                {
                     Eat(TokenType.OpenSquare);
                     exprList = ParseExpressionList(TokenType.CloseSquare);
                     Eat(TokenType.CloseSquare);
 
-                    if (TokenType.OpenSquare == PeekType() && (PeekType(1) == TokenType.CloseSquare || PeekType(1) == TokenType.Comma)) {
+                    if (TokenType.OpenSquare == PeekType() &&
+                        (PeekType(1) == TokenType.CloseSquare || PeekType(1) == TokenType.Comma))
+                    {
                         type = ParseArrayRanks(type);
                     }
 
@@ -2618,52 +3292,66 @@ namespace ScriptSharp.Parser {
                 }
 
                 ParseNode initExpr;
-                if (needArrayInit || PeekType() == TokenType.OpenCurly) {
+
+                if (needArrayInit || PeekType() == TokenType.OpenCurly)
+                {
                     initExpr = ParseArrayInitializer();
                 }
-                else {
+                else
+                {
                     initExpr = null;
                 }
 
                 return new ArrayNewNode(token, type, exprList, initExpr);
             }
-            else {
-                return new NewNode(
-                    token,
-                    type,
-                    ParseParenArgumentList());
-            }
+
+            return new NewNode(
+                token,
+                type,
+                ParseParenArgumentList());
         }
 
-        private ArrayInitializerNode ParseArrayInitializer() {
+        private ArrayInitializerNode ParseArrayInitializer()
+        {
             Token token = Eat(TokenType.OpenCurly);
 
             ParseNodeList list = new ParseNodeList();
-            while (PeekType() != TokenType.CloseCurly && PeekType() != TokenType.EOF) {
-                if (PeekType() == TokenType.OpenCurly) {
+
+            while (PeekType() != TokenType.CloseCurly && PeekType() != TokenType.Eof)
+            {
+                if (PeekType() == TokenType.OpenCurly)
+                {
                     list.Append(ParseArrayInitializer());
                 }
-                else {
+                else
+                {
                     list.Append(ParseExpression());
                 }
-                if (null == EatOpt(TokenType.Comma)) {
+
+                if (null == EatOpt(TokenType.Comma))
+                {
                     break;
                 }
             }
+
             Eat(TokenType.CloseCurly);
 
             return new ArrayInitializerNode(token, list);
         }
 
-        private ExpressionListNode ParseParenArgumentList() {
+        private ExpressionListNode ParseParenArgumentList()
+        {
             Token token = PeekToken();
 
             Eat(TokenType.OpenParen);
             ParseNodeList list = new ParseNodeList();
 
-            while (PeekType() != TokenType.CloseParen) {
+            while (PeekType() != TokenType.CloseParen)
+            {
                 list.Append(ParseArgument());
-                if (null == EatOpt(TokenType.Comma)) {
+
+                if (null == EatOpt(TokenType.Comma))
+                {
                     break;
                 }
             }
@@ -2673,22 +3361,48 @@ namespace ScriptSharp.Parser {
             return new ExpressionListNode(token, list);
         }
 
-        private ParseNode ParseArgument() {
-            if (PeekType() == TokenType.Ref || PeekType() == TokenType.Out) {
+        private ParseNode ParseArgument()
+        {
+            if (PeekType() == TokenType.Ref || PeekType() == TokenType.Out)
+            {
                 return new UnaryExpressionNode(NextToken(), ParseExpression());
             }
-            else {
-                return ParseExpression();
-            }
+
+            return ParseExpression();
         }
 
-        private AnonymousMethodNode ParseAnonymousMethod() {
+        private AnonymousMethodNode ParseAnonymousMethod()
+        {
             return new AnonymousMethodNode(
-                                    Eat(TokenType.Delegate),
-                                    PeekType() == TokenType.OpenParen ?
-                                        ParseParensFormalParameterList(false) :
-                                        new ParseNodeList(),
-                                    ParseBlock());
+                Eat(TokenType.Delegate),
+                PeekType() == TokenType.OpenParen ? ParseParensFormalParameterList(false) : new ParseNodeList(),
+                ParseBlock());
+        }
+
+        private enum TypeArgumentListScan
+        {
+            MustBeTypeArgumentList,
+            MayBeTypeArgumentList,
+            TypeParameterList,
+            NotTypeArgumentList
+        }
+
+        private enum ScanMemberNameKind
+        {
+            Invalid,
+            Method,
+            Property,
+            Indexer,
+            Field,
+            Operator
+        }
+
+        private enum Scan
+        {
+            Type,
+            CouldBeType,
+            PointerOrMult,
+            Nottype
         }
     }
 }

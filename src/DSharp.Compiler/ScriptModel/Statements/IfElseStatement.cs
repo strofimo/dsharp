@@ -3,53 +3,45 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Expressions;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class IfElseStatement : Statement {
-
-        private Expression _condition;
-        private Statement _ifStatement;
-        private Statement _elseStatement;
-
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal sealed class IfElseStatement : Statement
+    {
         public IfElseStatement(Expression condition, Statement ifStatement, Statement elseStatement)
-            : base(StatementType.IfElse) {
-            _condition = condition;
-            _ifStatement = ifStatement;
-            _elseStatement = elseStatement;
+            : base(StatementType.IfElse)
+        {
+            Condition = condition;
+            IfStatement = ifStatement;
+            ElseStatement = elseStatement;
         }
 
-        public Expression Condition {
-            get {
-                return _condition;
-            }
-        }
+        public Expression Condition { get; }
 
-        public Statement ElseStatement {
-            get {
-                return _elseStatement;
-            }
-        }
+        public Statement ElseStatement { get; }
 
-        public Statement IfStatement {
-            get {
-                return _ifStatement;
-            }
-        }
+        public Statement IfStatement { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                if (_condition.RequiresThisContext) {
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                if (Condition.RequiresThisContext)
+                {
                     return true;
                 }
-                if ((_ifStatement != null) && _ifStatement.RequiresThisContext) {
+
+                if (IfStatement != null && IfStatement.RequiresThisContext)
+                {
                     return true;
                 }
-                if ((_elseStatement != null) && _elseStatement.RequiresThisContext) {
+
+                if (ElseStatement != null && ElseStatement.RequiresThisContext)
+                {
                     return true;
                 }
+
                 return false;
             }
         }

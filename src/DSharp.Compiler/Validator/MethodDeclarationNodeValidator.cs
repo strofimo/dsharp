@@ -4,57 +4,71 @@
 //
 
 using System;
-using ScriptSharp;
-using ScriptSharp.CodeModel;
+using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.CodeModel.Members;
+using DSharp.Compiler.CodeModel.Types;
 
-namespace ScriptSharp.Validator {
+namespace DSharp.Compiler.Validator
+{
+    internal sealed class MethodDeclarationNodeValidator : IParseNodeValidator
+    {
+        bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
+        {
+            MethodDeclarationNode methodNode = (MethodDeclarationNode) node;
 
-    internal sealed class MethodDeclarationNodeValidator : IParseNodeValidator {
-
-        bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler) {
-            MethodDeclarationNode methodNode = (MethodDeclarationNode)node;
-
-            if (((methodNode.Modifiers & Modifiers.Static) == 0) &&
-                ((methodNode.Modifiers & Modifiers.New) != 0)) {
+            if ((methodNode.Modifiers & Modifiers.Static) == 0 &&
+                (methodNode.Modifiers & Modifiers.New) != 0)
+            {
                 errorHandler.ReportError("The new modifier is not supported on instance members.",
-                                         methodNode.Token.Location);
+                    methodNode.Token.Location);
+
                 return false;
             }
 
-            if ((methodNode.Modifiers & Modifiers.Extern) != 0) {
-                CustomTypeNode typeNode = (CustomTypeNode)methodNode.Parent;
+            if ((methodNode.Modifiers & Modifiers.Extern) != 0)
+            {
+                CustomTypeNode typeNode = (CustomTypeNode) methodNode.Parent;
                 MethodDeclarationNode implMethodNode = null;
 
-                if (methodNode.NodeType == ParseNodeType.MethodDeclaration) {
-                    foreach (MemberNode memberNode in typeNode.Members) {
-                        if ((memberNode.NodeType == ParseNodeType.MethodDeclaration) &&
-                            ((memberNode.Modifiers & Modifiers.Extern) == 0) &&
-                            memberNode.Name.Equals(methodNode.Name, StringComparison.Ordinal)) {
-                            implMethodNode = (MethodDeclarationNode)memberNode;
+                if (methodNode.NodeType == ParseNodeType.MethodDeclaration)
+                {
+                    foreach (MemberNode memberNode in typeNode.Members)
+                        if (memberNode.NodeType == ParseNodeType.MethodDeclaration &&
+                            (memberNode.Modifiers & Modifiers.Extern) == 0 &&
+                            memberNode.Name.Equals(methodNode.Name, StringComparison.Ordinal))
+                        {
+                            implMethodNode = (MethodDeclarationNode) memberNode;
+
                             break;
                         }
-                    }
                 }
-                else if (methodNode.NodeType == ParseNodeType.ConstructorDeclaration) {
-                    foreach (MemberNode memberNode in typeNode.Members) {
-                        if ((memberNode.NodeType == ParseNodeType.ConstructorDeclaration) &&
-                            ((memberNode.Modifiers & Modifiers.Extern) == 0)) {
-                            implMethodNode = (MethodDeclarationNode)memberNode;
+                else if (methodNode.NodeType == ParseNodeType.ConstructorDeclaration)
+                {
+                    foreach (MemberNode memberNode in typeNode.Members)
+                        if (memberNode.NodeType == ParseNodeType.ConstructorDeclaration &&
+                            (memberNode.Modifiers & Modifiers.Extern) == 0)
+                        {
+                            implMethodNode = (MethodDeclarationNode) memberNode;
+
                             break;
                         }
-                    }
                 }
 
-                if (implMethodNode == null) {
-                    errorHandler.ReportError("Extern methods used to declare alternate signatures should have a corresponding non-extern implementation as well.",
-                                             methodNode.Token.Location);
+                if (implMethodNode == null)
+                {
+                    errorHandler.ReportError(
+                        "Extern methods used to declare alternate signatures should have a corresponding non-extern implementation as well.",
+                        methodNode.Token.Location);
+
                     return false;
                 }
 
                 if ((methodNode.Modifiers & (Modifiers.Static | Modifiers.AccessMask)) !=
-                    (implMethodNode.Modifiers & (Modifiers.Static | Modifiers.AccessMask))) {
-                    errorHandler.ReportError("The implemenation method and associated alternate signature methods should have the same access type.",
-                                             methodNode.Token.Location);
+                    (implMethodNode.Modifiers & (Modifiers.Static | Modifiers.AccessMask)))
+                {
+                    errorHandler.ReportError(
+                        "The implemenation method and associated alternate signature methods should have the same access type.",
+                        methodNode.Token.Location);
                 }
             }
 

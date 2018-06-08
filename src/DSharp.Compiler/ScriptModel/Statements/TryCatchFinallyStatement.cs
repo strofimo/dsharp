@@ -3,74 +3,63 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class TryCatchFinallyStatement : Statement {
-
-        private Statement _body;
-        private VariableSymbol _exceptionVariable;
-        private Statement _catch;
-        private Statement _finally;
-
+namespace DSharp.Compiler.ScriptModel.Statements
+{
+    internal sealed class TryCatchFinallyStatement : Statement
+    {
         public TryCatchFinallyStatement()
-            : base(StatementType.TryCatchFinally) {
+            : base(StatementType.TryCatchFinally)
+        {
         }
 
-        public Statement Body {
-            get {
-                return _body;
-            }
-        }
+        public Statement Body { get; private set; }
 
-        public Statement Catch {
-            get {
-                return _catch;
-            }
-        }
+        public Statement Catch { get; private set; }
 
-        public VariableSymbol ExceptionVariable {
-            get {
-                return _exceptionVariable;
-            }
-        }
+        public VariableSymbol ExceptionVariable { get; private set; }
 
-        public Statement Finally {
-            get {
-                return _finally;
-            }
-        }
+        public Statement Finally { get; private set; }
 
-        public override bool RequiresThisContext {
-            get {
-                if (_body.RequiresThisContext || _catch.RequiresThisContext) {
+        public override bool RequiresThisContext
+        {
+            get
+            {
+                if (Body.RequiresThisContext || Catch.RequiresThisContext)
+                {
                     return true;
                 }
-                if (_finally != null) {
-                    return _finally.RequiresThisContext;
+
+                if (Finally != null)
+                {
+                    return Finally.RequiresThisContext;
                 }
+
                 return false;
             }
         }
 
-        public void AddBody(Statement statement) {
-            Debug.Assert(_body == null);
-            _body = statement;
+        public void AddBody(Statement statement)
+        {
+            Debug.Assert(Body == null);
+            Body = statement;
         }
 
-        public void AddCatch(VariableSymbol exceptionVariable, Statement catchStatement) {
-            Debug.Assert(_exceptionVariable == null);
-            Debug.Assert(_catch == null);
+        public void AddCatch(VariableSymbol exceptionVariable, Statement catchStatement)
+        {
+            Debug.Assert(ExceptionVariable == null);
+            Debug.Assert(Catch == null);
 
-            _exceptionVariable = exceptionVariable;
-            _catch = catchStatement;
+            ExceptionVariable = exceptionVariable;
+            Catch = catchStatement;
         }
 
-        public void AddFinally(Statement finallyStatement) {
-            Debug.Assert(_finally == null);
-            _finally = finallyStatement;
+        public void AddFinally(Statement finallyStatement)
+        {
+            Debug.Assert(Finally == null);
+            Finally = finallyStatement;
         }
     }
 }

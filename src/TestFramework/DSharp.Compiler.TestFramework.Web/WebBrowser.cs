@@ -7,40 +7,40 @@ using System;
 using System.IO;
 using Microsoft.Win32;
 
-namespace ScriptSharp.Testing {
+namespace DSharp.Compiler.TestFramework.Web {
 
     public sealed class WebBrowser {
 
         public static readonly WebBrowser InternetExplorer = new WebBrowser("Internet Explorer", "iexplore.exe", "-noframemerging ");
         public static readonly WebBrowser Chrome = new WebBrowser("Chrome", GetChromeExecutablePath(), "--new-window ");
         public static readonly WebBrowser Firefox = new WebBrowser("Firefox", GetFirefoxExecutablePath(), "-new-window ");
-        public static readonly WebBrowser Safari = new WebBrowser("Safari", GetSafariExecutablePath(), String.Empty);
+        public static readonly WebBrowser Safari = new WebBrowser("Safari", GetSafariExecutablePath(), string.Empty);
 
-        private string _name;
-        private string _executablePath;
-        private string _arguments;
+        private readonly string name;
+        private readonly string executablePath;
+        private readonly string arguments;
 
         private WebBrowser(string name, string executablePath, string arguments) {
-            _name = name;
-            _executablePath = executablePath;
-            _arguments = arguments;
+            this.name = name;
+            this.executablePath = executablePath;
+            this.arguments = arguments;
         }
 
         internal string Arguments {
             get {
-                return _arguments;
+                return arguments;
             }
         }
 
         internal string ExecutablePath {
             get {
-                return _executablePath;
+                return executablePath;
             }
         }
 
         public string Name {
             get {
-                return _name;
+                return name;
             }
         }
 
@@ -74,8 +74,8 @@ namespace ScriptSharp.Testing {
             RegistryKey mozillaKey = Registry.LocalMachine.OpenSubKey(@"Software\Mozilla\Mozilla Firefox");
             if (mozillaKey != null) {
                 string currentVersion = (string)mozillaKey.GetValue("CurrentVersion");
-                if (String.IsNullOrEmpty(currentVersion) == false) {
-                    RegistryKey currentMain = mozillaKey.OpenSubKey(String.Format(@"{0}\Main", currentVersion));
+                if (string.IsNullOrEmpty(currentVersion) == false) {
+                    RegistryKey currentMain = mozillaKey.OpenSubKey(string.Format(@"{0}\Main", currentVersion));
                     if (currentMain != null) {
                         path = (string)currentMain.GetValue("PathToExe");
                         if (File.Exists(path) == false) {

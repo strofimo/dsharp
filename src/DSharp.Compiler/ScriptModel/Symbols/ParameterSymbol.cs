@@ -3,46 +3,35 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
-using System.Text;
-
-namespace ScriptSharp.ScriptModel {
-    
-    internal sealed class ParameterSymbol : LocalSymbol {
-
-        private ParameterMode _mode;
-
+namespace DSharp.Compiler.ScriptModel.Symbols
+{
+    internal sealed class ParameterSymbol : LocalSymbol
+    {
         public ParameterSymbol(string name, MemberSymbol parent, TypeSymbol valueType, ParameterMode mode)
-            : base(SymbolType.Parameter, name, parent, valueType) {
-            _mode = mode;
+            : base(SymbolType.Parameter, name, parent, valueType)
+        {
+            Mode = mode;
         }
 
-        public override string Documentation {
-            get {
-                return SymbolSet.GetParameterDocumentation(Parent.DocumentationID, Name);
-            }
-        }
+        public override string Documentation => SymbolSet.GetParameterDocumentation(Parent.DocumentationId, Name);
 
-        public override string DocumentationID {
-            get {
+        public override string DocumentationId
+        {
+            get
+            {
                 TypeSymbol parameterType = ValueType;
 
-                if (parameterType.IsArray) {
-                    parameterType = ((ClassSymbol)parameterType).Indexer.AssociatedType;
+                if (parameterType.IsArray)
+                {
+                    parameterType = ((ClassSymbol) parameterType).Indexer.AssociatedType;
 
-                    return String.Format("{0}.{1}[]", parameterType.Namespace, parameterType.Name);
+                    return string.Format("{0}.{1}[]", parameterType.Namespace, parameterType.Name);
                 }
-                else {
-                    return String.Format("{0}.{1}", parameterType.Namespace, parameterType.Name);
-                }
+
+                return string.Format("{0}.{1}", parameterType.Namespace, parameterType.Name);
             }
         }
 
-        public ParameterMode Mode {
-            get {
-                return _mode;
-            }
-        }
+        public ParameterMode Mode { get; }
     }
 }

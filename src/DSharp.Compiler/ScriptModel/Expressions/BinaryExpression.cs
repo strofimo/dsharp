@@ -3,56 +3,34 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class BinaryExpression : Expression {
-
-        private Expression _leftOperand;
-        private Expression _rightOperand;
-        private Operator _operator;
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class BinaryExpression : Expression
+    {
         public BinaryExpression(Operator operatorType, Expression leftOperand, Expression rightOperand)
-            : this(operatorType, leftOperand, rightOperand, leftOperand.EvaluatedType) {
+            : this(operatorType, leftOperand, rightOperand, leftOperand.EvaluatedType)
+        {
         }
 
-        public BinaryExpression(Operator operatorType, Expression leftOperand, Expression rightOperand, TypeSymbol evaluatedType)
-            : base(ExpressionType.Binary, evaluatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _operator = operatorType;
-            _leftOperand = leftOperand;
-            _rightOperand = rightOperand;
+        public BinaryExpression(Operator operatorType, Expression leftOperand, Expression rightOperand,
+                                TypeSymbol evaluatedType)
+            : base(ExpressionType.Binary, evaluatedType, SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            Operator = operatorType;
+            LeftOperand = leftOperand;
+            RightOperand = rightOperand;
         }
 
-        protected override bool IsParenthesisRedundant {
-            get {
-                return false;
-            }
-        }
+        protected override bool IsParenthesisRedundant => false;
 
-        public Expression LeftOperand {
-            get {
-                return _leftOperand;
-            }
-        }
+        public Expression LeftOperand { get; }
 
-        public Operator Operator {
-            get {
-                return _operator;
-            }
-        }
+        public Operator Operator { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                return _leftOperand.RequiresThisContext || _rightOperand.RequiresThisContext;
-            }
-        }
+        public override bool RequiresThisContext => LeftOperand.RequiresThisContext || RightOperand.RequiresThisContext;
 
-        public Expression RightOperand {
-            get {
-                return _rightOperand;
-            }
-        }
+        public Expression RightOperand { get; }
     }
 }

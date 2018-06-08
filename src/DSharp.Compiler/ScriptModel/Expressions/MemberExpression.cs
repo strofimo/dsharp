@@ -3,39 +3,27 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.ScriptModel.Symbols;
 
-namespace ScriptSharp.ScriptModel {
-
-    internal sealed class MemberExpression : Expression {
-
-        private MemberSymbol _member;
-        private Expression _objectReference;
-
+namespace DSharp.Compiler.ScriptModel.Expressions
+{
+    internal sealed class MemberExpression : Expression
+    {
         public MemberExpression(Expression objectReference, MemberSymbol member)
-            : base(ExpressionType.Member, (member.AssociatedType.Type == SymbolType.GenericParameter ? objectReference.EvaluatedType : member.AssociatedType),
-                   SymbolFilter.Public | SymbolFilter.InstanceMembers) {
-            _member = member;
-            _objectReference = objectReference;
+            : base(ExpressionType.Member,
+                member.AssociatedType.Type == SymbolType.GenericParameter
+                    ? objectReference.EvaluatedType
+                    : member.AssociatedType,
+                SymbolFilter.Public | SymbolFilter.InstanceMembers)
+        {
+            Member = member;
+            ObjectReference = objectReference;
         }
 
-        public MemberSymbol Member {
-            get {
-                return _member;
-            }
-        }
+        public MemberSymbol Member { get; }
 
-        public Expression ObjectReference {
-            get {
-                return _objectReference;
-            }
-        }
+        public Expression ObjectReference { get; }
 
-        public override bool RequiresThisContext {
-            get {
-                return _objectReference.RequiresThisContext;
-            }
-        }
+        public override bool RequiresThisContext => ObjectReference.RequiresThisContext;
     }
 }

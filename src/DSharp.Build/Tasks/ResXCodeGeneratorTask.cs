@@ -6,11 +6,11 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using DSharp.Generators;
+using DSharp.Build.Generators;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace DSharp.Tasks
+namespace DSharp.Build.Tasks
 {
     public sealed class ResXCodeGeneratorTask : Task
     {

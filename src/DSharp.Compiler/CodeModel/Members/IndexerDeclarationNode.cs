@@ -3,15 +3,13 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
-using System.Diagnostics;
+using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Tokens;
 
-namespace ScriptSharp.CodeModel {
-
-    internal sealed class IndexerDeclarationNode : PropertyDeclarationNode {
-
-        private ParseNodeList _parameters;
-
+namespace DSharp.Compiler.CodeModel.Members
+{
+    internal sealed class IndexerDeclarationNode : PropertyDeclarationNode
+    {
         public IndexerDeclarationNode(Token token,
                                       ParseNodeList attributes,
                                       Modifiers modifiers,
@@ -20,21 +18,13 @@ namespace ScriptSharp.CodeModel {
                                       ParseNodeList parameters,
                                       AccessorNode get,
                                       AccessorNode set)
-            : base(ParseNodeType.IndexerDeclaration, token, attributes, modifiers, type, interfaceType, get, set) {
-
-            _parameters = GetParentedNodeList(parameters);
+            : base(ParseNodeType.IndexerDeclaration, token, attributes, modifiers, type, interfaceType, get, set)
+        {
+            Parameters = GetParentedNodeList(parameters);
         }
 
-        public override string Name {
-            get {
-                return "Item";
-            }
-        }
+        public override string Name => "Item";
 
-        public ParseNodeList Parameters {
-            get {
-                return _parameters;
-            }
-        }
+        public ParseNodeList Parameters { get; }
     }
 }

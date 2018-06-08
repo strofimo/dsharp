@@ -3,14 +3,14 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
-using System;
 using System.Diagnostics;
 
-namespace ScriptSharp.Parser {
-
-    internal class PreprocessorToken {
-
-        private static readonly string[] strings = new string[] {
+namespace DSharp.Compiler.Parser
+{
+    internal class PreprocessorToken
+    {
+        private static readonly string[] Strings =
+        {
             "define",
             "undef",
             "if",
@@ -41,32 +41,24 @@ namespace ScriptSharp.Parser {
             ")",
             "end of line",
             "unknown",
-            "invalid",
+            "invalid"
         };
 
-        private PreprocessorTokenType _type;
-        private BufferPosition _position;
-
-        public PreprocessorToken(PreprocessorTokenType type, BufferPosition position) {
-            _type = type;
-            _position = position;
+        public PreprocessorToken(PreprocessorTokenType type, BufferPosition position)
+        {
+            Type = type;
+            Position = position;
         }
 
-        public BufferPosition Position {
-            get {
-                return _position;
-            }
-        }
+        public BufferPosition Position { get; }
 
-        public PreprocessorTokenType Type {
-            get {
-                return _type;
-            }
-        }
+        public PreprocessorTokenType Type { get; }
 
-        public static string TypeString(PreprocessorTokenType type) {
-            Debug.Assert(strings.Length == (int)PreprocessorTokenType.Last);
-            return strings[(int)type];
+        public static string TypeString(PreprocessorTokenType type)
+        {
+            Debug.Assert(Strings.Length == (int) PreprocessorTokenType.Last);
+
+            return Strings[(int) type];
         }
     }
 }
