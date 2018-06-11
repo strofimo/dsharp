@@ -14,7 +14,6 @@
     </packageTypes>
   </metadata>
   <files>
-    <file src="Build\**\*" target="Build" />
     <file src="Sdk\**\*" target="Sdk" />
     <file src="bin\$configuration$\net461\*.dll" target="tools" />
   </files>

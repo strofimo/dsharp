@@ -29,6 +29,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Compiler.TestFramework.Web", "TestFramework\DSharp.Compiler.TestFramework.Web\DSharp.Compiler.TestFramework.Web.csproj", "{590D7427-81A9-469C-B393-2CCCFFC1B23E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Compiler.Tests", "DSharp.Compiler.Tests\DSharp.Compiler.Tests.csproj", "{3E60FDD5-9E13-4935-B250-24BBA1E57BD5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{36D4B098-A21C-4725-ACD3-400922885F38} = {36D4B098-A21C-4725-ACD3-400922885F38}
+		{3681A9A8-FC40-4125-B842-7775713C8DCE} = {3681A9A8-FC40-4125-B842-7775713C8DCE}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Deployment", "DSharp.Deployment\DSharp.Deployment.csproj", "{68D8CFCA-815B-460B-BF2C-7E5CD72CE9B3}"
 EndProject
