@@ -15,6 +15,7 @@ nuget:
 configuration: Release
 
 before_build:
+  - cmd: mkdir src/Output/Packages
   - cmd: nuget restore src/DSharp.sln
 
 build:
