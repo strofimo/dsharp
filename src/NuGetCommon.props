@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Derivco Ipswich</Authors>
+    <PackageVersion>1.0.2</PackageVersion>
+    <Copyright>Copyright (c) 2018, Derivco Ipswich</Copyright>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageOutputPath>$(SolutionDir)Output\Packages</PackageOutputPath>
+    <NuspecFile>$().nuspec</NuspecFile>
+  </PropertyGroup>
+</Project>

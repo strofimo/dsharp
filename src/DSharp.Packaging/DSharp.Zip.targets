@@ -1,16 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0">
   <PropertyGroup>
-    <SourceDirectory>$(SolutionDir)</SourceDirectory>
-    <OutputDirectory>$(ProjectDir)Output\</OutputDirectory>
+    <OutputDirectory>$(SolutionDir)Output\</OutputDirectory>
+    <CoreLibDirectory>$(SolutionDir)DSharp.Mscorlib\bin\$(Configuration)\net461\</CoreLibDirectory>
+    <WebLibDirectory>$(SolutionDir)DSharp.Web\bin\$(Configuration)\net461\</WebLibDirectory>
   </PropertyGroup>
   
   <Target Name="BuildPackages" AfterTargets="Build">
     <ItemGroup>
-      <NuGetProperties Include="libPath=$(SourceDirectory)Output\$(Configuration);
-                                buildPath=$(SourceDirectory)DSharp.Build\bin\$(Configuration)\net461;
-                                consolePath=$(SourceDirectory)DSharp.Shell\bin\$(Configuration)\net461;
-                                scriptPath=$(SourceDirectory)DSharp.Script\dist;
+      <NuGetProperties Include="coreLibPath=$(CoreLibDirectory);
+                                webLibPath=$(WebLibDirectory);
+                                buildPath=$(SolutionDir)DSharp.Build\bin\$(Configuration)\net461;
+                                consolePath=$(SolutionDir)DSharp.Shell\bin\$(Configuration)\net461;
+                                scriptPath=$(SolutionDir)DSharp.Script\dist;
                                 version=$(PackageVersion);
                                 configuration=$(Configuration)" />
     </ItemGroup>

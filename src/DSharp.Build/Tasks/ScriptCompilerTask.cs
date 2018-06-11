@@ -191,8 +191,9 @@ namespace DSharp.Build.Tasks
             {
                 success = ExecuteCore(Sources, Resources);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Log.LogErrorFromException(e);
                 success = false;
             }
 

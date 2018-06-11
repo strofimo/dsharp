@@ -18,7 +18,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$libPath$\DSharp.Web.dll" target="lib" />
-    <file src="$libPath$\DSharp.Web.xml" target="lib" />
+    <file src="$webLibPath$DSharp.Web.dll" target="lib" />
+    <file src="$webLibPath$DSharp.Web.xml" target="lib" />
   </files>
 </package>

@@ -7,7 +7,6 @@ using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("mscorlib")]
 [assembly: AssemblyDescription("Script# Core Assembly")]
 [assembly: ScriptAssembly("ss")]
 

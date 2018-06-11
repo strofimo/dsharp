@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <CoreLibDirectory>$(SolutionDir)Output\$(Configuration)\</CoreLibDirectory>
+    <CoreLibDirectory>$(SolutionDir)DSharp.Mscorlib\bin\$(Configuration)\net461\</CoreLibDirectory>
+    <WebLibDirectory>$(SolutionDir)DSharp.Web\bin\$(Configuration)\net461\</WebLibDirectory>
   </PropertyGroup>
   
   <ItemGroup>
     <RequiredResources Include="$(CoreLibDirectory)mscorlib.dll;
-                                $(CoreLibDirectory)DSharp.Web.dll" />
+                                $(WebLibDirectory)DSharp.Web.dll" />
   </ItemGroup>
   <Target Name="CopyRequiredResources" AfterTargets="Build">
     <Copy SourceFiles="@(RequiredResources)" DestinationFolder="$(OutputPath)" />

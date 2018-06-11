@@ -27,13 +27,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Build", "DSharp.Buil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Compiler", "DSharp.Compiler\DSharp.Compiler.csproj", "{35E58E1C-E298-44D8-9CA5-FB427C16FD1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharp.Mscorlib", "DSharp.Mscorlib\DSharp.Mscorlib.csproj", "{36D4B098-A21C-4725-ACD3-400922885F38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Mscorlib", "DSharp.Mscorlib\DSharp.Mscorlib.csproj", "{36D4B098-A21C-4725-ACD3-400922885F38}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Scripts", "DSharp.Script\DSharp.Scripts.csproj", "{8780581F-7C26-4B64-9236-BA1C458DF36E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Shell", "DSharp.Shell\DSharp.Shell.csproj", "{0C545112-DD6A-4270-B95C-CC488501EF5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharp.Web", "DSharp.Web\DSharp.Web.csproj", "{3681A9A8-FC40-4125-B842-7775713C8DCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Web", "DSharp.Web\DSharp.Web.csproj", "{3681A9A8-FC40-4125-B842-7775713C8DCE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Compiler.TestFramework", "TestFramework\DSharp.Compiler.TestFramework\DSharp.Compiler.TestFramework.csproj", "{F04779C4-5ECB-4C23-B751-2E9EE4B550F5}"
 EndProject
@@ -44,6 +44,18 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Deployment", "DSharp.Deployment\DSharp.Deployment.csproj", "{68D8CFCA-815B-460B-BF2C-7E5CD72CE9B3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{A1A548EF-DBE4-4111-BB93-3C65C77E2FDD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{9ECDD7B6-4D4A-4578-9157-B99214BEDE6F}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		NuGet.Config = NuGet.Config
+		NuGetCommon.props = NuGetCommon.props
+		version.targets = version.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sdk", "Sdk", "{33DE9F89-1472-4662-8780-22DD0B6E6138}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Sdk", "DSharp.Sdk\DSharp.Sdk.csproj", "{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -233,6 +245,22 @@ Global
 		{68D8CFCA-815B-460B-BF2C-7E5CD72CE9B3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{68D8CFCA-815B-460B-BF2C-7E5CD72CE9B3}.Release|x86.ActiveCfg = Release|Any CPU
 		{68D8CFCA-815B-460B-BF2C-7E5CD72CE9B3}.Release|x86.Build.0 = Release|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Debug|.NET.Build.0 = Debug|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Debug|x86.Build.0 = Debug|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Release|.NET.ActiveCfg = Release|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Release|.NET.Build.0 = Release|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Release|x86.ActiveCfg = Release|Any CPU
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -250,6 +278,7 @@ Global
 		{3E60FDD5-9E13-4935-B250-24BBA1E57BD5} = {CF118BCB-F594-4EBD-9571-107AD2E1B569}
 		{68D8CFCA-815B-460B-BF2C-7E5CD72CE9B3} = {37239BB8-2FA4-4831-A7EA-AF89D74EA10E}
 		{A1A548EF-DBE4-4111-BB93-3C65C77E2FDD} = {CF118BCB-F594-4EBD-9571-107AD2E1B569}
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46} = {33DE9F89-1472-4662-8780-22DD0B6E6138}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B1006BD-2201-4F50-8538-98F531B765CF}

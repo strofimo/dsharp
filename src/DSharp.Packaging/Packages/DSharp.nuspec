@@ -23,8 +23,8 @@
     <file src="$buildPath$\DSharp.Compiler.dll" target="tools" />
     <file src="$buildPath$\DSharp.Build.dll" target="tools" />
     <file src="$buildPath$\DSharp.targets" target="tools" />
-    <file src="$libPath$\mscorlib.dll" target="tools" />
-    <file src="$libPath$\mscorlib.xml" target="tools" />
+    <file src="$coreLibPath$mscorlib.dll" target="tools" />
+    <file src="$coreLibPath$mscorlib.xml" target="tools" />
     <file src="$scriptPath$\ds.js" target="tools" />
     <file src="$scriptPath$\ds.min.js" target="tools" />
     <file src="$consolePath$\DSharp.Shell.exe" target="tools" />

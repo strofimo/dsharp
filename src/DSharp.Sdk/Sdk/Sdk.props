@@ -1,0 +1,25 @@
+<Project>
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk"/>
+  
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <AdditionalExplicitAssemblyReferences />
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <NoStdLib>True</NoStdLib>
+
+    <ScriptSharp>true</ScriptSharp>
+    <Optimize>false</Optimize>
+    <AutoUnifyAssemblyReferences>false</AutoUnifyAssemblyReferences>
+    <BuildingProject>true</BuildingProject>
+    <UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
+    <LangVersion Condition="'$(GenerateScript)' == 'True'">ISO-2</LangVersion>
+  </PropertyGroup>
+
+</Project>
