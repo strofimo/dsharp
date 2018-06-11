@@ -1,10 +1,24 @@
 <Project>
   <PropertyGroup>
-    <Authors>Derivco Ipswich</Authors>
-    <PackageVersion>1.0.2</PackageVersion>
-    <Copyright>Copyright (c) 2018, Derivco Ipswich</Copyright>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageOutputPath>$(SolutionDir)Output\Packages</PackageOutputPath>
-    <NuspecFile>$().nuspec</NuspecFile>
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(SolutionDir)Output\Packages</PackageOutputPath>
+    <NuspecFile Condition="'$(NuspecFile)' == ''">$(AssemblyName).nuspec</NuspecFile>
   </PropertyGroup>
+
+  <Target Name="UpdateNuspecFileProperties" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <Authors>Derivco Ipswich</Authors>
+      <PackageVersion>1.0.0</PackageVersion>
+      <Copyright>Copyright (c) 2018, Derivco Ipswich</Copyright>
+      <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+      <NuspecProperties>
+        $(NuspecProperties);
+        version=$(PackageVersion);
+        copyright=$(Copyright);
+        authors=$(Authors);
+        configuration=$(Configuration);
+      </NuspecProperties>
+
+    </PropertyGroup>
+  </Target>
 </Project>

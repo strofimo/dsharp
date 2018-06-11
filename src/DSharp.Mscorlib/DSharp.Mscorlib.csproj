@@ -1,4 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
+
   <PropertyGroup>
     <RootNamespace>System</RootNamespace>
     <AssemblyName>mscorlib</AssemblyName>
@@ -12,6 +14,9 @@
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <TargetFramework>net461</TargetFramework>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <NuspecFile>DSharp.Mscorlib.nuspec</NuspecFile>
   </PropertyGroup>
   
   <ItemGroup>

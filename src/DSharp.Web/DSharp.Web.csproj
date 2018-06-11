@@ -1,4 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
+
   <PropertyGroup>
     <RootNamespace>System</RootNamespace>
     <AssemblyName>DSharp.Web</AssemblyName>
@@ -6,6 +8,7 @@
     <AssemblyOriginatorKeyFile>$(SolutionDir)DSharp.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   
   <!-- These should come from the DSharp.Sdk once its completed and on nuget-->

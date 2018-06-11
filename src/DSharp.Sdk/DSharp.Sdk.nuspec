@@ -2,9 +2,9 @@
   <metadata>
     <id>DSharp.Sdk</id>
     <title>DSharp Sdk</title>
-    <authors>Derivco Ipswich</authors>
-    <version>1.0.0</version>
-    <copyright>Copyright (c) 2018, Derivco Ipswich</copyright>
+    <authors>$authors$</authors>
+    <version>$version$</version>
+    <copyright>$copyright$</copyright>
     <description>Defines the DSharp Sdk</description>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <developmentDependency>true</developmentDependency>
@@ -16,6 +16,6 @@
   <files>
     <file src="Build\**\*" target="Build" />
     <file src="Sdk\**\*" target="Sdk" />
-    <file src="bin\debug\net461\*.dll" target="tools" />
+    <file src="bin\$configuration$\net461\*.dll" target="tools" />
   </files>
 </package>

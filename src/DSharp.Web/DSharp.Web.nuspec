@@ -1,0 +1,15 @@
+﻿<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>DSharp.Web</id>
+    <title>DSharp Web</title>
+    <authors>$authors$</authors>
+    <version>$version$</version>
+    <copyright>$copyright$</copyright>
+    <description>DSharp web definitions for JS and Html bindings</description>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <developmentDependency>true</developmentDependency>
+  </metadata>
+  <files>
+    <file src="bin\$configuration$\net461\DSharp.Web.dll" target="tools" />
+  </files>
+</package>
