@@ -33,7 +33,7 @@ namespace DSharp.Compiler.Tests
             Assert.True(compilationUnit.Compile(out ICompilationUnitResult result), result?.WriteErrors());
 
             string expectedOutput = testContext.GetExpectedOutput();
-            Assert.Equal(result.Output, expectedOutput, StringComparer.InvariantCultureIgnoreCase);
+            Assert.Equal(result.Output, expectedOutput, StringComparer.OrdinalIgnoreCase);
         }
     }
 }
