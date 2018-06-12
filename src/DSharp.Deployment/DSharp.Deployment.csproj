@@ -23,5 +23,4 @@
   <ItemGroup>
     <Reference Include="Microsoft.Build" />
   </ItemGroup>
-  <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
 </Project>

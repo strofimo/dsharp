@@ -25,6 +25,4 @@
   <ItemGroup>
     <ProjectReference Include="..\DSharp.Mscorlib\DSharp.Mscorlib.csproj" />
   </ItemGroup>
-  
-  <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
 </Project>

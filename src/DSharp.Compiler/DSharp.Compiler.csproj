@@ -22,5 +22,4 @@
   <ItemGroup>
     <PackageReference Include="Mono.Cecil" Version="0.10.0" />
   </ItemGroup>
-  <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
 </Project>

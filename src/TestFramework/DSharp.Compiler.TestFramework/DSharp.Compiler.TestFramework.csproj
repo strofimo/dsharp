@@ -23,6 +23,4 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-  
-  <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
 </Project>

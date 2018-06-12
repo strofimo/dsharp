@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packaging", "Packaging", "{37239BB8-2FA4-4831-A7EA-AF89D74EA10E}"
-	ProjectSection(SolutionItems) = preProject
-		version.targets = version.targets
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D1DF352A-45B6-4130-9A8B-A24C20257B7D}"
 EndProject
@@ -39,7 +36,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{9ECDD7
 		global.json = global.json
 		NuGet.Config = NuGet.Config
 		NuGetCommon.props = NuGetCommon.props
-		version.targets = version.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sdk", "Sdk", "{33DE9F89-1472-4662-8780-22DD0B6E6138}"

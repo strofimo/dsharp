@@ -22,6 +22,4 @@
   <ItemGroup>
     <None Include="AdditionalCompilerOptions.txt" />
   </ItemGroup>
-
-  <Import Project="$(SolutionDir)version.targets" Condition="Exists('$(SolutionDir)version.targets')" />
 </Project>
