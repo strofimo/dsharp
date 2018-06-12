@@ -1,6 +1,4 @@
-﻿using System;
-using DSharp.Compiler.TestFramework;
-using DSharp.Compiler.TestFramework.Compilation;
+﻿using DSharp.Compiler.TestFramework.Compilation;
 using DSharp.Compiler.TestFramework.Context;
 using DSharp.Compiler.TestFramework.Data;
 using DSharp.Compiler.Tests.Fixtures;
@@ -33,7 +31,7 @@ namespace DSharp.Compiler.Tests
             Assert.True(compilationUnit.Compile(out ICompilationUnitResult result), result?.WriteErrors());
 
             string expectedOutput = testContext.GetExpectedOutput();
-            Assert.Equal(result.Output, expectedOutput, StringComparer.OrdinalIgnoreCase);
+            Assert.Equal(result.Output, expectedOutput, compilerCompliationFixture.FileComparer);
         }
     }
 }
