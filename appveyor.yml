@@ -33,3 +33,10 @@ dotnet_csproj:
 
 artifacts:
   - path: src\Output\Packages\*.nupkg
+
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/dsharptest/api/v2/package
+  api_key:
+    secure: ai0SCQmu5aYBepeAYVjCylgRhjqH6VuSVQyn+Clmwdl+SE0yFCMH84oeyFgh8gqO
+  skip_symbols: true
