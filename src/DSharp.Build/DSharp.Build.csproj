@@ -24,13 +24,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Content Include="DSharp.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  
-  <ItemGroup>
     <PackageReference Include="AjaxMin" Version="5.14.5506.26202" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.6.85" />
   </ItemGroup>
