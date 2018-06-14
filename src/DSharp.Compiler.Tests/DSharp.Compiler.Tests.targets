@@ -5,7 +5,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <RequiredResources Include="$(CoreLibDirectory)mscorlib.dll;
+    <RequiredResources Include="$(CoreLibDirectory)DSharp.Mscorlib.dll;
                                 $(WebLibDirectory)DSharp.Web.dll" />
   </ItemGroup>
   <Target Name="CopyRequiredResources" AfterTargets="Build">

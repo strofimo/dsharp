@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <RootNamespace>System</RootNamespace>
-    <AssemblyName>mscorlib</AssemblyName>
+    <AssemblyName>DSharp.Mscorlib</AssemblyName>
     <NoStdLib>True</NoStdLib>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)DSharp.snk</AssemblyOriginatorKeyFile>

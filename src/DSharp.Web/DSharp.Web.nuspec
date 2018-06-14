@@ -8,8 +8,11 @@
     <description>DSharp web definitions for JS and Html bindings</description>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <developmentDependency>true</developmentDependency>
+    <dependencies>
+      <dependency id="DSharp.Mscorlib" version="$version$" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="bin\$configuration$\net461\DSharp.Web.dll" target="tools" />
+    <file src="bin\$configuration$\net461\DSharp.Web.dll" target="lib\net461" />
   </files>
 </package>

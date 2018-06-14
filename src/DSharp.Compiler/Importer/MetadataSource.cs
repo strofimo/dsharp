@@ -1,4 +1,4 @@
-// MetadataSource.cs
+﻿// MetadataSource.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -14,7 +14,7 @@ namespace DSharp.Compiler.Importer
 {
     internal sealed class MetadataSource
     {
-        private static readonly string CoreAssemblyName = "mscorlib";
+        private static readonly string CoreAssemblyName = "DSharp.Mscorlib";
 
         private Dictionary<string, AssemblyDefinition> assemblyMap;
 
