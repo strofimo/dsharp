@@ -44,12 +44,6 @@ deploy:
 notifications:
 - provider: Slack
   incoming_webhook: https://hooks.slack.com/services/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
-  template: >-
-    <{{buildUrl}}|Build {{projectName}} {{buildVersion}} {{status}}>
-
-    Commit <{{commitUrl}}|{{commitId}}> by {{commitAuthor}} on {{commitDate}}:
-
-    _{{commitMessage}}_
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: true
