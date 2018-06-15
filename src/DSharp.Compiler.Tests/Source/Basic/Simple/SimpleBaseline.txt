@@ -3,7 +3,7 @@
 "use strict";
 
 (function($global) {
-  var ss = require('scriptsharp');
+  var ss = require('dsharp');
 
   // Basic.EventArgs
 

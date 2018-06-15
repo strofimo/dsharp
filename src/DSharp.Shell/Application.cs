@@ -1,4 +1,4 @@
-// Application.cs
+﻿// Application.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -14,11 +14,7 @@ namespace DSharp.Shell
 {
     internal static class Application
     {
-        private const string ABOUT_TEXT_FORMAT = @"
-Script# Compiler v{0} (C# to JavaScript compiler)
-Written by Nikhil Kothari.
-More information at http://projects.nikhilk.net/ScriptSharp.
-";
+        private const string ABOUT_TEXT_FORMAT = "DSharp Compiler v{0} (C# to JavaScript compiler)";
 
         private const string USAGE_TEXT = @"
 Usage:

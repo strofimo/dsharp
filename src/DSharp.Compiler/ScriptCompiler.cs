@@ -1,4 +1,4 @@
-// ScriptCompiler.cs
+﻿// ScriptCompiler.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -335,10 +335,10 @@ namespace DSharp.Compiler
                 if (name == "ss")
                 {
                     // TODO: This is a hack... to make generated node.js scripts
-                    //       be able to reference the 'scriptsharp' node module.
+                    //       be able to reference the 'dsharp' node module.
                     //       Fix this in a better/1st class manner by allowing
                     //       script assemblies to declare such things.
-                    name = "scriptsharp";
+                    name = "dsharp";
                 }
 
                 requiresBuilder.Append("'" + dependency.Path + "'");

@@ -8,7 +8,7 @@
         {
             return new TestCompilationUnitBuilder()
                 .AddReferences(MSCORLIB)
-                .AddDefines("SCRIPTSHARP");
+                .AddDefines("DSHARP");
         }
     }
 }
