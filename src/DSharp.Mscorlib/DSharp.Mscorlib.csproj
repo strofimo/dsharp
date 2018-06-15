@@ -14,9 +14,12 @@
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <TargetFramework>net461</TargetFramework>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NuspecFile>DSharp.Mscorlib.nuspec</NuspecFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1705;1591;0626</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>

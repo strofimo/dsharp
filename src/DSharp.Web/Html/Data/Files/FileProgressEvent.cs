@@ -1,4 +1,4 @@
-// FileProgressEvent.cs
+﻿// FileProgressEvent.cs
 // Script#/Libraries/Web
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -14,8 +14,6 @@ namespace System.Html.Data.Files {
         private FileProgressEvent() {
         }
 
-        public bool Bubbles;
-        public bool Cancelable;
         public bool DefaultPrevented;
         public bool LengthComputable;
 
