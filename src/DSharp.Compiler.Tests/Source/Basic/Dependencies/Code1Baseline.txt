@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds', 'lib1'], function(ss, lib1) {
+define('test', ['ds', 'lib1'], function(ds, lib1) {
   var $global = this;
 
   // BasicTests.App

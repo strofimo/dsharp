@@ -21,19 +21,19 @@ namespace System
         [ScriptField]
         public extern Dictionary Prototype { get; }
 
-        [ScriptAlias("ss.type")]
+        [DSharpScriptMemberName("type")]
         public extern static Type GetType(string typeName);
 
-        [ScriptAlias("ss.canAssign")]
+        [DSharpScriptMemberName("canAssign")]
         public extern bool IsAssignableFrom(Type type);
 
-        [ScriptAlias("ss.isClass")]
+        [DSharpScriptMemberName("isClass")]
         public extern static bool IsClass(Type type);
 
-        [ScriptAlias("ss.isInterface")]
+        [DSharpScriptMemberName("isInterface")]
         public extern static bool IsInterface(Type type);
 
-        [ScriptAlias("ss.instanceOf")]
+        [DSharpScriptMemberName("instanceOf")]
         public extern bool IsInstanceOfType(object instance);
 
         [EditorBrowsable(EditorBrowsableState.Never)]

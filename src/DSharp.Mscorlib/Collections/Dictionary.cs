@@ -18,10 +18,10 @@ namespace System.Collections
         [ScriptField]
         public extern object this[string key] { get; set; }
 
-        [ScriptAlias("ss.clearKeys")]
+        [DSharpScriptMemberName("clearKeys")]
         public extern void Clear();
 
-        [ScriptAlias("ss.keyExists")]
+        [DSharpScriptMemberName("keyExists")]
         public extern bool ContainsKey(string key);
 
         public extern static Dictionary GetDictionary(object o);

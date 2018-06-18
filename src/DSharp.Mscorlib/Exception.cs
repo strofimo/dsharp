@@ -26,10 +26,10 @@ namespace System
         [ScriptField]
         public extern object this[string key] { get; }
 
-        [ScriptAlias("ss.error")]
+        [DSharpScriptMemberName("error")] //TODO: Should be createError
         public extern static Exception Create(string message, Dictionary errorInfo);
 
-        [ScriptAlias("ss.error")]
+        [DSharpScriptMemberName("error")] //TODO: Should be createError
         public extern static Exception Create(string message, Dictionary errorInfo, Exception innerException);
     }
 }

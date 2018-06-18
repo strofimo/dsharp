@@ -1,4 +1,4 @@
-// MetadataImporter.cs
+﻿// MetadataImporter.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -488,7 +488,7 @@ namespace DSharp.Compiler.Importer
 
                 if (string.IsNullOrEmpty(alias) == false)
                 {
-                    methodSymbol.SetAlias(alias);
+                    methodSymbol.SetTransformName(alias);
                 }
 
                 string selector = MetadataHelpers.GetScriptMethodSelector(method);
@@ -575,7 +575,7 @@ namespace DSharp.Compiler.Importer
 
                         if (string.IsNullOrEmpty(alias) == false)
                         {
-                            fieldSymbol.SetAlias(alias);
+                            fieldSymbol.SetTransformName(alias);
                         }
 
                         typeSymbol.AddMember(fieldSymbol);
@@ -609,6 +609,7 @@ namespace DSharp.Compiler.Importer
             }
         }
 
+        //TODO: Investigate removing these.
         private void ImportPseudoMembers(PseudoClassMembers memberSet, ClassSymbol classSymbol)
         {
             // Import pseudo members that go on the class but aren't defined in mscorlib.dll
@@ -640,7 +641,7 @@ namespace DSharp.Compiler.Importer
 
                 MethodSymbol enumerateMethod = new MethodSymbol("Enumerate", classSymbol, objectType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                enumerateMethod.SetAlias("ss.enumerate");
+                enumerateMethod.SetTransformName(DSharpStringResources.ScriptExportMember("enumerate"));
                 enumerateMethod.AddParameter(new ParameterSymbol("obj", enumerateMethod, objectType, ParameterMode.In));
                 classSymbol.AddMember(enumerateMethod);
 
@@ -648,7 +649,7 @@ namespace DSharp.Compiler.Importer
 
                 MethodSymbol typeNameMethod = new MethodSymbol("GetTypeName", classSymbol, stringType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                typeNameMethod.SetAlias("ss.typeName");
+                typeNameMethod.SetTransformName(DSharpStringResources.ScriptExportMember("typeName"));
                 typeNameMethod.AddParameter(new ParameterSymbol("obj", typeNameMethod, objectType, ParameterMode.In));
                 classSymbol.AddMember(typeNameMethod);
 
@@ -656,7 +657,7 @@ namespace DSharp.Compiler.Importer
 
                 MethodSymbol compareDatesMethod = new MethodSymbol("CompareDates", classSymbol, boolType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                compareDatesMethod.SetAlias("ss.compareDates");
+                compareDatesMethod.SetTransformName(DSharpStringResources.ScriptExportMember("compareDates"));
                 compareDatesMethod.AddParameter(new ParameterSymbol("d1", compareDatesMethod, dateType,
                     ParameterMode.In));
                 compareDatesMethod.AddParameter(new ParameterSymbol("d2", compareDatesMethod, dateType,
@@ -695,13 +696,13 @@ namespace DSharp.Compiler.Importer
                 // Define Dictionary.Keys
                 MethodSymbol getKeysMethod = new MethodSymbol("GetKeys", classSymbol,
                     symbols.CreateArrayTypeSymbol(stringType), MemberVisibility.Public | MemberVisibility.Static);
-                getKeysMethod.SetAlias("ss.keys");
+                getKeysMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keys"));
                 classSymbol.AddMember(getKeysMethod);
 
                 // Define Dictionary.GetCount
                 MethodSymbol countMethod = new MethodSymbol("GetKeyCount", classSymbol, intType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                countMethod.SetAlias("ss.keyCount");
+                countMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keyCount"));
                 classSymbol.AddMember(countMethod);
             }
         }

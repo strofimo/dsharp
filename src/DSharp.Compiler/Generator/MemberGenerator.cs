@@ -1,4 +1,4 @@
-// MemberGenerator.cs
+﻿// MemberGenerator.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -80,7 +80,7 @@ namespace DSharp.Compiler.Generator
             if (eventSymbol.DefaultImplementation)
             {
                 writer.Write(fieldReference);
-                writer.Write(" = ss.bindAdd(");
+                writer.Write($" = {DSharpStringResources.ScriptExportMember("bindAdd")}(");
                 writer.Write(fieldReference);
                 writer.Write(", ");
                 writer.Write(valueParameter.GeneratedName);
@@ -134,7 +134,7 @@ namespace DSharp.Compiler.Generator
             if (eventSymbol.DefaultImplementation)
             {
                 writer.Write(fieldReference);
-                writer.Write(" = ss.bindSub(");
+                writer.Write($" = {DSharpStringResources.ScriptExportMember("bindSub")}(");
                 writer.Write(fieldReference);
                 writer.Write(", ");
                 writer.Write(valueParameter.GeneratedName);
@@ -314,7 +314,7 @@ namespace DSharp.Compiler.Generator
 
             if (hasParams)
             {
-                writer.Write("ss.paramsGenerator(");
+                writer.Write($"{DSharpStringResources.ScriptExportMember("paramsGenerator")}(");
                 writer.Write("{0}, ", methodSymbol.Parameters.Count - 1);
             }
 
@@ -420,7 +420,7 @@ namespace DSharp.Compiler.Generator
             }
             else
             {
-                writer.Write("ss.createPropertyGet(");
+                writer.Write($"{DSharpStringResources.ScriptExportMember("createPropertyGet")}(");
                 writer.Write(typeName);
                 writer.Write(", '");
                 writer.Write(propertySymbol.GeneratedName);
@@ -459,7 +459,7 @@ namespace DSharp.Compiler.Generator
             }
             else
             {
-                writer.Write("ss.createPropertySet(");
+                writer.Write($"{DSharpStringResources.ScriptExportMember("createPropertySet")}(");
                 writer.Write(typeName);
                 writer.Write(", '");
                 writer.Write(propertySymbol.GeneratedName);

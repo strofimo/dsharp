@@ -14,7 +14,7 @@ namespace System
         /// </summary>
         /// <param name="s">The string to be parsed.</param>
         /// <returns>The resulting boolean value.</returns>
-        [ScriptAlias("ss.boolean")]
+        [DSharpScriptMemberName("boolean")] //TODO: Should be parseBoolean
         public extern static bool Parse(string s);
     }
 }

@@ -31,7 +31,7 @@ namespace System
         [ScriptAlias("isNaN")]
         public extern static bool IsNaN(Number n);
 
-        [ScriptAlias("ss.number")]
+        [DSharpScriptMemberName("number")] //TODO: Should be parseNumber
         public extern static Number Parse(string s);
 
         [ScriptAlias("parseFloat")]

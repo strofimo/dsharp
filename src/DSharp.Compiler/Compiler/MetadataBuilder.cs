@@ -15,6 +15,7 @@ using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.Extensions;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Compiler
@@ -61,8 +62,8 @@ namespace DSharp.Compiler.Compiler
 
                 Debug.Assert(attribNode.Arguments.Count != 0 &&
                              attribNode.Arguments[0].NodeType == ParseNodeType.Literal);
-                Debug.Assert(((LiteralNode) attribNode.Arguments[0]).Value is string);
-                name = (string) ((LiteralNode) attribNode.Arguments[0]).Value;
+                Debug.Assert(((LiteralNode)attribNode.Arguments[0]).Value is string);
+                name = (string)((LiteralNode)attribNode.Arguments[0]).Value;
 
                 if (attribNode.Arguments.Count > 1)
                 {
@@ -70,32 +71,32 @@ namespace DSharp.Compiler.Compiler
                     {
                         Debug.Assert(attribNode.Arguments[1] is BinaryExpressionNode);
 
-                        BinaryExpressionNode propExpression = (BinaryExpressionNode) attribNode.Arguments[1];
+                        BinaryExpressionNode propExpression = (BinaryExpressionNode)attribNode.Arguments[1];
                         Debug.Assert(propExpression.LeftChild.NodeType == ParseNodeType.Name);
 
-                        string propName = ((NameNode) propExpression.LeftChild).Name;
+                        string propName = ((NameNode)propExpression.LeftChild).Name;
 
                         if (string.CompareOrdinal(propName, "Identifier") == 0)
                         {
                             Debug.Assert(propExpression.RightChild.NodeType == ParseNodeType.Literal);
-                            Debug.Assert(((LiteralNode) propExpression.RightChild).Value is string);
+                            Debug.Assert(((LiteralNode)propExpression.RightChild).Value is string);
 
-                            identifier = (string) ((LiteralNode) propExpression.RightChild).Value;
+                            identifier = (string)((LiteralNode)propExpression.RightChild).Value;
                         }
 
                         if (string.CompareOrdinal(propName, "Path") == 0)
                         {
                             Debug.Assert(propExpression.RightChild.NodeType == ParseNodeType.Literal);
-                            Debug.Assert(((LiteralNode) propExpression.RightChild).Value is string);
+                            Debug.Assert(((LiteralNode)propExpression.RightChild).Value is string);
 
-                            path = (string) ((LiteralNode) propExpression.RightChild).Value;
+                            path = (string)((LiteralNode)propExpression.RightChild).Value;
                         }
                         else if (string.CompareOrdinal(propName, "DelayLoad") == 0)
                         {
                             Debug.Assert(propExpression.RightChild.NodeType == ParseNodeType.Literal);
-                            Debug.Assert(((LiteralNode) propExpression.RightChild).Value is bool);
+                            Debug.Assert(((LiteralNode)propExpression.RightChild).Value is bool);
 
-                            delayLoad = (bool) ((LiteralNode) propExpression.RightChild).Value;
+                            delayLoad = (bool)((LiteralNode)propExpression.RightChild).Value;
                         }
                     }
                 }
@@ -136,7 +137,7 @@ namespace DSharp.Compiler.Compiler
         private EnumerationFieldSymbol BuildEnumField(EnumerationFieldNode fieldNode, TypeSymbol typeSymbol)
         {
             Debug.Assert(typeSymbol is EnumerationSymbol);
-            EnumerationSymbol enumSymbol = (EnumerationSymbol) typeSymbol;
+            EnumerationSymbol enumSymbol = (EnumerationSymbol)typeSymbol;
 
             TypeSymbol fieldTypeSymbol;
 
@@ -189,8 +190,8 @@ namespace DSharp.Compiler.Compiler
                     if (eventAttribute != null && eventAttribute.Arguments != null &&
                         eventAttribute.Arguments.Count == 2)
                     {
-                        string addAccessor = (string) ((LiteralNode) eventAttribute.Arguments[0]).Value;
-                        string removeAccessor = (string) ((LiteralNode) eventAttribute.Arguments[1]).Value;
+                        string addAccessor = (string)((LiteralNode)eventAttribute.Arguments[0]).Value;
+                        string removeAccessor = (string)((LiteralNode)eventAttribute.Arguments[1]).Value;
 
                         eventSymbol.SetAccessors(addAccessor, removeAccessor);
                     }
@@ -214,7 +215,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (fieldNode.Initializers.Count != 0)
                 {
-                    VariableInitializerNode initializer = (VariableInitializerNode) fieldNode.Initializers[0];
+                    VariableInitializerNode initializer = (VariableInitializerNode)fieldNode.Initializers[0];
 
                     if (initializer.Value != null)
                     {
@@ -226,12 +227,12 @@ namespace DSharp.Compiler.Compiler
                 {
                     Debug.Assert(fieldNode.Initializers.Count == 1);
 
-                    VariableInitializerNode initializer = (VariableInitializerNode) fieldNode.Initializers[0];
+                    VariableInitializerNode initializer = (VariableInitializerNode)fieldNode.Initializers[0];
 
                     if (initializer.Value != null && initializer.Value.NodeType == ParseNodeType.Literal)
                     {
                         symbol.SetConstant();
-                        symbol.Value = ((LiteralToken) initializer.Value.Token).LiteralValue;
+                        symbol.Value = ((LiteralToken)initializer.Value.Token).LiteralValue;
                     }
 
                     // TODO: Handle other constant cases that can be evaluated at compile
@@ -377,22 +378,22 @@ namespace DSharp.Compiler.Compiler
 
                     if (argNode.NodeType == ParseNodeType.Literal)
                     {
-                        Debug.Assert(((LiteralNode) argNode).Value is string);
-                        name = (string) ((LiteralNode) argNode).Value;
+                        Debug.Assert(((LiteralNode)argNode).Value is string);
+                        name = (string)((LiteralNode)argNode).Value;
                         preserveName = preserveCase = true;
 
                         break;
                     }
 
-                    BinaryExpressionNode propSetNode = (BinaryExpressionNode) argNode;
+                    BinaryExpressionNode propSetNode = (BinaryExpressionNode)argNode;
 
-                    if (string.CompareOrdinal(((NameNode) propSetNode.LeftChild).Name, "PreserveName") == 0)
+                    if (string.CompareOrdinal(((NameNode)propSetNode.LeftChild).Name, "PreserveName") == 0)
                     {
-                        preserveName = (bool) ((LiteralNode) propSetNode.RightChild).Value;
+                        preserveName = (bool)((LiteralNode)propSetNode.RightChild).Value;
                     }
                     else
                     {
-                        preserveCase = (bool) ((LiteralNode) propSetNode.RightChild).Value;
+                        preserveCase = (bool)((LiteralNode)propSetNode.RightChild).Value;
 
                         if (preserveCase)
                         {
@@ -423,7 +424,7 @@ namespace DSharp.Compiler.Compiler
         {
             if (typeSymbol.Type == SymbolType.Delegate)
             {
-                DelegateTypeNode delegateNode = (DelegateTypeNode) typeSymbol.ParseContext;
+                DelegateTypeNode delegateNode = (DelegateTypeNode)typeSymbol.ParseContext;
 
                 TypeSymbol returnType =
                     typeSymbol.SymbolSet.ResolveType(delegateNode.ReturnType, symbolTable, typeSymbol);
@@ -445,7 +446,7 @@ namespace DSharp.Compiler.Compiler
                 return;
             }
 
-            CustomTypeNode typeNode = (CustomTypeNode) typeSymbol.ParseContext;
+            CustomTypeNode typeNode = (CustomTypeNode)typeSymbol.ParseContext;
 
             foreach (MemberNode member in typeNode.Members)
             {
@@ -455,20 +456,20 @@ namespace DSharp.Compiler.Compiler
                 {
                     case ParseNodeType.FieldDeclaration:
                     case ParseNodeType.ConstFieldDeclaration:
-                        memberSymbol = BuildField((FieldDeclarationNode) member, typeSymbol);
+                        memberSymbol = BuildField((FieldDeclarationNode)member, typeSymbol);
 
                         break;
                     case ParseNodeType.PropertyDeclaration:
-                        memberSymbol = BuildPropertyAsField((PropertyDeclarationNode) member, typeSymbol);
+                        memberSymbol = BuildPropertyAsField((PropertyDeclarationNode)member, typeSymbol);
 
                         if (memberSymbol == null)
                         {
-                            memberSymbol = BuildProperty((PropertyDeclarationNode) member, typeSymbol);
+                            memberSymbol = BuildProperty((PropertyDeclarationNode)member, typeSymbol);
                         }
 
                         break;
                     case ParseNodeType.IndexerDeclaration:
-                        memberSymbol = BuildIndexer((IndexerDeclarationNode) member, typeSymbol);
+                        memberSymbol = BuildIndexer((IndexerDeclarationNode)member, typeSymbol);
 
                         break;
                     case ParseNodeType.ConstructorDeclaration:
@@ -482,15 +483,15 @@ namespace DSharp.Compiler.Compiler
                             continue;
                         }
 
-                        memberSymbol = BuildMethod((MethodDeclarationNode) member, typeSymbol);
+                        memberSymbol = BuildMethod((MethodDeclarationNode)member, typeSymbol);
 
                         break;
                     case ParseNodeType.EventDeclaration:
-                        memberSymbol = BuildEvent((EventDeclarationNode) member, typeSymbol);
+                        memberSymbol = BuildEvent((EventDeclarationNode)member, typeSymbol);
 
                         break;
                     case ParseNodeType.EnumerationFieldDeclaration:
-                        memberSymbol = BuildEnumField((EnumerationFieldNode) member, typeSymbol);
+                        memberSymbol = BuildEnumField((EnumerationFieldNode)member, typeSymbol);
 
                         break;
                 }
@@ -513,7 +514,7 @@ namespace DSharp.Compiler.Compiler
 
                     if (typeSymbol.Type == SymbolType.Class && memberSymbol.Type == SymbolType.Event)
                     {
-                        EventSymbol eventSymbol = (EventSymbol) memberSymbol;
+                        EventSymbol eventSymbol = (EventSymbol)memberSymbol;
 
                         if (eventSymbol.DefaultImplementation)
                         {
@@ -530,7 +531,7 @@ namespace DSharp.Compiler.Compiler
                                 new FieldSymbol("__" + Utility.CreateCamelCaseName(eventSymbol.Name), typeSymbol,
                                     eventSymbol.AssociatedType);
                             fieldSymbol.SetVisibility(visibility);
-                            fieldSymbol.SetParseContext(((EventDeclarationNode) eventSymbol.ParseContext).Field);
+                            fieldSymbol.SetParseContext(((EventDeclarationNode)eventSymbol.ParseContext).Field);
 
                             typeSymbol.AddMember(fieldSymbol);
                         }
@@ -556,165 +557,165 @@ namespace DSharp.Compiler.Compiler
             // Types need to be loaded upfront so that they can be used in resolving types associated
             // with members.
             foreach (CompilationUnitNode compilationUnit in compilationUnits)
-            foreach (NamespaceNode namespaceNode in compilationUnit.Members)
-            {
-                string namespaceName = namespaceNode.Name;
-
-                NamespaceSymbol namespaceSymbol = symbols.GetNamespace(namespaceName);
-
-                List<string> imports = null;
-                Dictionary<string, string> aliases = null;
-
-                ParseNodeList usingClauses = namespaceNode.UsingClauses;
-
-                if (usingClauses != null && usingClauses.Count != 0)
+                foreach (NamespaceNode namespaceNode in compilationUnit.Members)
                 {
-                    foreach (ParseNode usingNode in namespaceNode.UsingClauses)
-                        if (usingNode is UsingNamespaceNode)
+                    string namespaceName = namespaceNode.Name;
+
+                    NamespaceSymbol namespaceSymbol = symbols.GetNamespace(namespaceName);
+
+                    List<string> imports = null;
+                    Dictionary<string, string> aliases = null;
+
+                    ParseNodeList usingClauses = namespaceNode.UsingClauses;
+
+                    if (usingClauses != null && usingClauses.Count != 0)
+                    {
+                        foreach (ParseNode usingNode in namespaceNode.UsingClauses)
+                            if (usingNode is UsingNamespaceNode)
+                            {
+                                if (imports == null)
+                                {
+                                    imports = new List<string>(usingClauses.Count);
+                                }
+
+                                string referencedNamespace = ((UsingNamespaceNode)usingNode).ReferencedNamespace;
+
+                                if (imports.Contains(referencedNamespace) == false)
+                                {
+                                    imports.Add(referencedNamespace);
+                                }
+                            }
+                            else
+                            {
+                                Debug.Assert(usingNode is UsingAliasNode);
+
+                                if (aliases == null)
+                                {
+                                    aliases = new Dictionary<string, string>();
+                                }
+
+                                UsingAliasNode aliasNode = (UsingAliasNode)usingNode;
+                                aliases[aliasNode.Alias] = aliasNode.TypeName;
+                            }
+                    }
+
+                    // Add parent namespaces as imports in reverse order since they
+                    // are searched in that fashion.
+                    string[] namespaceParts = namespaceName.Split('.');
+
+                    for (int i = namespaceParts.Length - 2; i >= 0; i--)
+                    {
+                        string partialNamespace;
+
+                        if (i == 0)
                         {
-                            if (imports == null)
-                            {
-                                imports = new List<string>(usingClauses.Count);
-                            }
-
-                            string referencedNamespace = ((UsingNamespaceNode) usingNode).ReferencedNamespace;
-
-                            if (imports.Contains(referencedNamespace) == false)
-                            {
-                                imports.Add(referencedNamespace);
-                            }
+                            partialNamespace = namespaceParts[0];
                         }
                         else
                         {
-                            Debug.Assert(usingNode is UsingAliasNode);
+                            partialNamespace = string.Join(".", namespaceParts, 0, i + 1);
+                        }
 
-                            if (aliases == null)
+                        if (imports == null)
+                        {
+                            imports = new List<string>();
+                        }
+
+                        if (imports.Contains(partialNamespace) == false)
+                        {
+                            imports.Add(partialNamespace);
+                        }
+                    }
+
+                    // Build type symbols for all user-defined types
+                    foreach (TypeNode typeNode in namespaceNode.Members)
+                    {
+                        UserTypeNode userTypeNode = typeNode as UserTypeNode;
+
+                        if (userTypeNode == null)
+                        {
+                            continue;
+                        }
+
+                        ClassSymbol partialTypeSymbol = null;
+                        bool isPartial = false;
+
+                        if ((userTypeNode.Modifiers & Modifiers.Partial) != 0)
+                        {
+                            partialTypeSymbol =
+                                (ClassSymbol)((ISymbolTable)namespaceSymbol).FindSymbol(userTypeNode.Name, /* context */
+                                    null, SymbolFilter.Types);
+
+                            if (partialTypeSymbol != null && partialTypeSymbol.IsApplicationType)
                             {
-                                aliases = new Dictionary<string, string>();
+                                // This class will be considered as a partial class
+                                isPartial = true;
+
+                                // Merge code model information for the partial class onto the code model node
+                                // for the primary partial class. Interesting bits of information include things
+                                // such as base class etc. that is yet to be processed.
+                                CustomTypeNode partialTypeNode = (CustomTypeNode)partialTypeSymbol.ParseContext;
+                                partialTypeNode.MergePartialType((CustomTypeNode)userTypeNode);
+
+                                // Merge interesting bits of information onto the primary type symbol as well
+                                // representing this partial class
+                                BuildType(partialTypeSymbol, userTypeNode);
+                            }
+                        }
+
+                        TypeSymbol typeSymbol = BuildType(userTypeNode, namespaceSymbol);
+
+                        if (typeSymbol != null)
+                        {
+                            typeSymbol.SetParseContext(userTypeNode);
+                            typeSymbol.SetParentSymbolTable(symbols);
+
+                            if (imports != null)
+                            {
+                                typeSymbol.SetImports(imports);
                             }
 
-                            UsingAliasNode aliasNode = (UsingAliasNode) usingNode;
-                            aliases[aliasNode.Alias] = aliasNode.TypeName;
+                            if (aliases != null)
+                            {
+                                typeSymbol.SetAliases(aliases);
+                            }
+
+                            if (isPartial == false)
+                            {
+                                namespaceSymbol.AddType(typeSymbol);
+                            }
+                            else
+                            {
+                                // Partial types don't get added to the namespace, so we don't have
+                                // duplicated named items. However, they still do get instantiated
+                                // and processed as usual.
+                                //
+                                // The members within partial classes refer to the partial type as their parent,
+                                // and hence derive context such as the list of imports scoped to the
+                                // particular type.
+                                // However, the members will get added to the primary partial type's list of
+                                // members so they can be found.
+                                // Effectively the partial class here gets created just to hold
+                                // context of type-symbol level bits of information such as the list of
+                                // imports, that are consumed when generating code for the members defined
+                                // within a specific partial class.
+                                ((ClassSymbol)typeSymbol).SetPrimaryPartialClass(partialTypeSymbol);
+                            }
+
+                            types.Add(typeSymbol);
                         }
-                }
-
-                // Add parent namespaces as imports in reverse order since they
-                // are searched in that fashion.
-                string[] namespaceParts = namespaceName.Split('.');
-
-                for (int i = namespaceParts.Length - 2; i >= 0; i--)
-                {
-                    string partialNamespace;
-
-                    if (i == 0)
-                    {
-                        partialNamespace = namespaceParts[0];
-                    }
-                    else
-                    {
-                        partialNamespace = string.Join(".", namespaceParts, 0, i + 1);
-                    }
-
-                    if (imports == null)
-                    {
-                        imports = new List<string>();
-                    }
-
-                    if (imports.Contains(partialNamespace) == false)
-                    {
-                        imports.Add(partialNamespace);
-                    }
-                }
-
-                // Build type symbols for all user-defined types
-                foreach (TypeNode typeNode in namespaceNode.Members)
-                {
-                    UserTypeNode userTypeNode = typeNode as UserTypeNode;
-
-                    if (userTypeNode == null)
-                    {
-                        continue;
-                    }
-
-                    ClassSymbol partialTypeSymbol = null;
-                    bool isPartial = false;
-
-                    if ((userTypeNode.Modifiers & Modifiers.Partial) != 0)
-                    {
-                        partialTypeSymbol =
-                            (ClassSymbol) ((ISymbolTable) namespaceSymbol).FindSymbol(userTypeNode.Name, /* context */
-                                null, SymbolFilter.Types);
-
-                        if (partialTypeSymbol != null && partialTypeSymbol.IsApplicationType)
-                        {
-                            // This class will be considered as a partial class
-                            isPartial = true;
-
-                            // Merge code model information for the partial class onto the code model node
-                            // for the primary partial class. Interesting bits of information include things
-                            // such as base class etc. that is yet to be processed.
-                            CustomTypeNode partialTypeNode = (CustomTypeNode) partialTypeSymbol.ParseContext;
-                            partialTypeNode.MergePartialType((CustomTypeNode) userTypeNode);
-
-                            // Merge interesting bits of information onto the primary type symbol as well
-                            // representing this partial class
-                            BuildType(partialTypeSymbol, userTypeNode);
-                        }
-                    }
-
-                    TypeSymbol typeSymbol = BuildType(userTypeNode, namespaceSymbol);
-
-                    if (typeSymbol != null)
-                    {
-                        typeSymbol.SetParseContext(userTypeNode);
-                        typeSymbol.SetParentSymbolTable(symbols);
-
-                        if (imports != null)
-                        {
-                            typeSymbol.SetImports(imports);
-                        }
-
-                        if (aliases != null)
-                        {
-                            typeSymbol.SetAliases(aliases);
-                        }
-
-                        if (isPartial == false)
-                        {
-                            namespaceSymbol.AddType(typeSymbol);
-                        }
-                        else
-                        {
-                            // Partial types don't get added to the namespace, so we don't have
-                            // duplicated named items. However, they still do get instantiated
-                            // and processed as usual.
-                            //
-                            // The members within partial classes refer to the partial type as their parent,
-                            // and hence derive context such as the list of imports scoped to the
-                            // particular type.
-                            // However, the members will get added to the primary partial type's list of
-                            // members so they can be found.
-                            // Effectively the partial class here gets created just to hold
-                            // context of type-symbol level bits of information such as the list of
-                            // imports, that are consumed when generating code for the members defined
-                            // within a specific partial class.
-                            ((ClassSymbol) typeSymbol).SetPrimaryPartialClass(partialTypeSymbol);
-                        }
-
-                        types.Add(typeSymbol);
                     }
                 }
-            }
 
             // Build inheritance chains
             foreach (TypeSymbol typeSymbol in types)
                 if (typeSymbol.Type == SymbolType.Class)
                 {
-                    BuildTypeInheritance((ClassSymbol) typeSymbol);
+                    BuildTypeInheritance((ClassSymbol)typeSymbol);
                 }
                 else if (typeSymbol.Type == SymbolType.Interface)
                 {
-                    BuildTypeInheritance((InterfaceSymbol) typeSymbol);
+                    BuildTypeInheritance((InterfaceSymbol)typeSymbol);
                 }
 
             // Import members
@@ -724,7 +725,7 @@ namespace DSharp.Compiler.Compiler
             foreach (TypeSymbol typeSymbol in types)
                 if (typeSymbol.Type == SymbolType.Class)
                 {
-                    BuildInterfaceAssociations((ClassSymbol) typeSymbol);
+                    BuildInterfaceAssociations((ClassSymbol)typeSymbol);
                 }
 
             // Load resource values
@@ -733,7 +734,7 @@ namespace DSharp.Compiler.Compiler
                 foreach (TypeSymbol typeSymbol in types)
                     if (typeSymbol.Type == SymbolType.Resources)
                     {
-                        BuildResources((ResourcesSymbol) typeSymbol);
+                        BuildResources((ResourcesSymbol)typeSymbol);
                     }
             }
 
@@ -790,9 +791,9 @@ namespace DSharp.Compiler.Compiler
                             }
 
                             Debug.Assert(attrNode.Arguments[0] is LiteralNode);
-                            Debug.Assert(((LiteralNode) attrNode.Arguments[0]).Value is string);
+                            Debug.Assert(((LiteralNode)attrNode.Arguments[0]).Value is string);
 
-                            conditions.Add((string) ((LiteralNode) attrNode.Arguments[0]).Value);
+                            conditions.Add((string)((LiteralNode)attrNode.Arguments[0]).Value);
                         }
 
                     if (conditions != null)
@@ -806,9 +807,9 @@ namespace DSharp.Compiler.Compiler
                             if (attrNode.TypeName.Equals("ScriptMethod", StringComparison.Ordinal))
                             {
                                 Debug.Assert(attrNode.Arguments[0] is LiteralNode);
-                                Debug.Assert(((LiteralNode) attrNode.Arguments[0]).Value is string);
+                                Debug.Assert(((LiteralNode)attrNode.Arguments[0]).Value is string);
 
-                                method.SetSelector((string) ((LiteralNode) attrNode.Arguments[0]).Value);
+                                method.SetSelector((string)((LiteralNode)attrNode.Arguments[0]).Value);
 
                                 break;
                             }
@@ -841,11 +842,11 @@ namespace DSharp.Compiler.Compiler
                     }
                 }
 
-                string scriptAlias = GetAttributeValue(methodNode.Attributes, "ScriptAlias");
+                string nodeTransformName = methodNode.Attributes.GetNodeTransformName();
 
-                if (scriptAlias != null)
+                if (nodeTransformName != null)
                 {
-                    method.SetAlias(scriptAlias);
+                    method.SetTransformName(nodeTransformName);
                 }
             }
 
@@ -945,11 +946,11 @@ namespace DSharp.Compiler.Compiler
                 FieldSymbol symbol = new FieldSymbol(propertyNode.Name, typeSymbol, fieldType);
                 BuildMemberDetails(symbol, typeSymbol, propertyNode, propertyNode.Attributes);
 
-                string scriptAlias = GetAttributeValue(propertyNode.Attributes, "ScriptAlias");
+                string nodeTransformName = propertyNode.Attributes.GetNodeTransformName();
 
-                if (scriptAlias != null)
+                if (nodeTransformName != null)
                 {
-                    symbol.SetAlias(scriptAlias);
+                    symbol.SetTransformName(nodeTransformName);
                 }
 
                 return symbol;
@@ -987,7 +988,7 @@ namespace DSharp.Compiler.Compiler
 
             if (typeNode.Type == TokenType.Class || typeNode.Type == TokenType.Struct)
             {
-                CustomTypeNode customTypeNode = (CustomTypeNode) typeNode;
+                CustomTypeNode customTypeNode = (CustomTypeNode)typeNode;
                 Debug.Assert(customTypeNode != null);
 
                 if (AttributeNode.FindAttribute(attributes, "ScriptObject") != null)
@@ -1012,7 +1013,7 @@ namespace DSharp.Compiler.Compiler
                     if (baseTypeNameNode != null &&
                         string.CompareOrdinal(baseTypeNameNode.Name, "TestClass") == 0)
                     {
-                        ((ClassSymbol) typeSymbol).SetTestClass();
+                        ((ClassSymbol)typeSymbol).SetTestClass();
                     }
                 }
             }
@@ -1080,22 +1081,22 @@ namespace DSharp.Compiler.Compiler
 
                     Debug.Assert(dependencyAttribute.Arguments.Count != 0 &&
                                  dependencyAttribute.Arguments[0].NodeType == ParseNodeType.Literal);
-                    Debug.Assert(((LiteralNode) dependencyAttribute.Arguments[0]).Value is string);
-                    string dependencyName = (string) ((LiteralNode) dependencyAttribute.Arguments[0]).Value;
+                    Debug.Assert(((LiteralNode)dependencyAttribute.Arguments[0]).Value is string);
+                    string dependencyName = (string)((LiteralNode)dependencyAttribute.Arguments[0]).Value;
 
                     if (dependencyAttribute.Arguments.Count > 1)
                     {
                         Debug.Assert(dependencyAttribute.Arguments[1] is BinaryExpressionNode);
 
-                        BinaryExpressionNode propExpression = (BinaryExpressionNode) dependencyAttribute.Arguments[1];
+                        BinaryExpressionNode propExpression = (BinaryExpressionNode)dependencyAttribute.Arguments[1];
                         Debug.Assert(propExpression.LeftChild.NodeType == ParseNodeType.Name &&
-                                     string.CompareOrdinal(((NameNode) propExpression.LeftChild).Name, "Identifier") ==
+                                     string.CompareOrdinal(((NameNode)propExpression.LeftChild).Name, "Identifier") ==
                                      0);
 
                         Debug.Assert(propExpression.RightChild.NodeType == ParseNodeType.Literal);
-                        Debug.Assert(((LiteralNode) propExpression.RightChild).Value is string);
+                        Debug.Assert(((LiteralNode)propExpression.RightChild).Value is string);
 
-                        dependencyIdentifier = (string) ((LiteralNode) propExpression.RightChild).Value;
+                        dependencyIdentifier = (string)((LiteralNode)propExpression.RightChild).Value;
                     }
 
                     dependency = new ScriptReference(dependencyName, dependencyIdentifier);
@@ -1119,7 +1120,7 @@ namespace DSharp.Compiler.Compiler
                 typeSymbol.DisableNameTransformation();
             }
 
-            string scriptName = GetAttributeValue(attributes, "ScriptName");
+            string scriptName = attributes.GetAttributeValue("ScriptName");
 
             if (scriptName != null)
             {
@@ -1133,24 +1134,24 @@ namespace DSharp.Compiler.Compiler
                 if (extensionAttribute != null)
                 {
                     Debug.Assert(extensionAttribute.Arguments[0] is LiteralNode);
-                    Debug.Assert(((LiteralNode) extensionAttribute.Arguments[0]).Value is string);
+                    Debug.Assert(((LiteralNode)extensionAttribute.Arguments[0]).Value is string);
 
-                    string extendee = (string) ((LiteralNode) extensionAttribute.Arguments[0]).Value;
+                    string extendee = (string)((LiteralNode)extensionAttribute.Arguments[0]).Value;
                     Debug.Assert(string.IsNullOrEmpty(extendee) == false);
 
-                    ((ClassSymbol) typeSymbol).SetExtenderClass(extendee);
+                    ((ClassSymbol)typeSymbol).SetExtenderClass(extendee);
                 }
 
                 AttributeNode moduleAttribute = AttributeNode.FindAttribute(attributes, "ScriptModule");
 
                 if (moduleAttribute != null)
                 {
-                    ((ClassSymbol) typeSymbol).SetModuleClass();
+                    ((ClassSymbol)typeSymbol).SetModuleClass();
                 }
 
                 if ((typeNode.Modifiers & Modifiers.Static) != 0)
                 {
-                    ((ClassSymbol) typeSymbol).SetStaticClass();
+                    ((ClassSymbol)typeSymbol).SetStaticClass();
                 }
             }
 
@@ -1166,24 +1167,24 @@ namespace DSharp.Compiler.Compiler
                     {
                         Debug.Assert(constantsAttribute.Arguments[0] is BinaryExpressionNode);
 
-                        BinaryExpressionNode propExpression = (BinaryExpressionNode) constantsAttribute.Arguments[0];
+                        BinaryExpressionNode propExpression = (BinaryExpressionNode)constantsAttribute.Arguments[0];
                         Debug.Assert(propExpression.LeftChild.NodeType == ParseNodeType.Name &&
-                                     string.CompareOrdinal(((NameNode) propExpression.LeftChild).Name, "UseNames") ==
+                                     string.CompareOrdinal(((NameNode)propExpression.LeftChild).Name, "UseNames") ==
                                      0);
 
                         Debug.Assert(propExpression.RightChild.NodeType == ParseNodeType.Literal);
-                        Debug.Assert(((LiteralNode) propExpression.RightChild).Value is bool);
+                        Debug.Assert(((LiteralNode)propExpression.RightChild).Value is bool);
 
-                        useNames = (bool) ((LiteralNode) propExpression.RightChild).Value;
+                        useNames = (bool)((LiteralNode)propExpression.RightChild).Value;
                     }
 
                     if (useNames)
                     {
-                        ((EnumerationSymbol) typeSymbol).SetNamedValues();
+                        ((EnumerationSymbol)typeSymbol).SetNamedValues();
                     }
                     else
                     {
-                        ((EnumerationSymbol) typeSymbol).SetNumericValues();
+                        ((EnumerationSymbol)typeSymbol).SetNumericValues();
                     }
                 }
             }
@@ -1197,7 +1198,7 @@ namespace DSharp.Compiler.Compiler
                 return;
             }
 
-            CustomTypeNode customTypeNode = (CustomTypeNode) classSymbol.ParseContext;
+            CustomTypeNode customTypeNode = (CustomTypeNode)classSymbol.ParseContext;
 
             if (customTypeNode.BaseTypes != null && customTypeNode.BaseTypes.Count != 0)
             {
@@ -1207,13 +1208,13 @@ namespace DSharp.Compiler.Compiler
                 foreach (NameNode node in customTypeNode.BaseTypes)
                 {
                     TypeSymbol baseTypeSymbol =
-                        (TypeSymbol) symbolTable.FindSymbol(node.Name, classSymbol, SymbolFilter.Types);
+                        (TypeSymbol)symbolTable.FindSymbol(node.Name, classSymbol, SymbolFilter.Types);
                     Debug.Assert(baseTypeSymbol != null);
 
                     if (baseTypeSymbol.Type == SymbolType.Class)
                     {
                         Debug.Assert(baseClass == null);
-                        baseClass = (ClassSymbol) baseTypeSymbol;
+                        baseClass = (ClassSymbol)baseTypeSymbol;
                     }
                     else
                     {
@@ -1224,7 +1225,7 @@ namespace DSharp.Compiler.Compiler
                             interfaces = new List<InterfaceSymbol>();
                         }
 
-                        interfaces.Add((InterfaceSymbol) baseTypeSymbol);
+                        interfaces.Add((InterfaceSymbol)baseTypeSymbol);
                     }
                 }
 
@@ -1237,7 +1238,7 @@ namespace DSharp.Compiler.Compiler
 
         private void BuildTypeInheritance(InterfaceSymbol interfaceSymbol)
         {
-            CustomTypeNode customTypeNode = (CustomTypeNode) interfaceSymbol.ParseContext;
+            CustomTypeNode customTypeNode = (CustomTypeNode)interfaceSymbol.ParseContext;
 
             if (customTypeNode.BaseTypes != null && customTypeNode.BaseTypes.Count != 0)
             {
@@ -1246,7 +1247,7 @@ namespace DSharp.Compiler.Compiler
                 foreach (NameNode node in customTypeNode.BaseTypes)
                 {
                     TypeSymbol baseTypeSymbol =
-                        (TypeSymbol) symbolTable.FindSymbol(node.Name, interfaceSymbol, SymbolFilter.Types);
+                        (TypeSymbol)symbolTable.FindSymbol(node.Name, interfaceSymbol, SymbolFilter.Types);
                     Debug.Assert(baseTypeSymbol.Type == SymbolType.Interface);
 
                     if (interfaces == null)
@@ -1254,7 +1255,7 @@ namespace DSharp.Compiler.Compiler
                         interfaces = new List<InterfaceSymbol>();
                     }
 
-                    interfaces.Add((InterfaceSymbol) baseTypeSymbol);
+                    interfaces.Add((InterfaceSymbol)baseTypeSymbol);
                 }
 
                 if (interfaces != null)
@@ -1272,37 +1273,37 @@ namespace DSharp.Compiler.Compiler
             version = null;
 
             foreach (CompilationUnitNode compilationUnit in compilationUnits)
-            foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
-            {
-                if (description == null)
+                foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
                 {
-                    description = GetAttributeValue(attribBlock.Attributes, "AssemblyDescription");
-                }
+                    if (description == null)
+                    {
+                        description = attribBlock.Attributes.GetAttributeValue("AssemblyDescription");
+                    }
 
-                if (copyright == null)
-                {
-                    copyright = GetAttributeValue(attribBlock.Attributes, "AssemblyCopyright");
-                }
+                    if (copyright == null)
+                    {
+                        copyright = attribBlock.Attributes.GetAttributeValue("AssemblyCopyright");
+                    }
 
-                if (version == null)
-                {
-                    version = GetAttributeValue(attribBlock.Attributes, "AssemblyFileVersion");
+                    if (version == null)
+                    {
+                        version = attribBlock.Attributes.GetAttributeValue("AssemblyFileVersion");
+                    }
                 }
-            }
         }
 
         private string GetAssemblyScriptName(ParseNodeList compilationUnits)
         {
             foreach (CompilationUnitNode compilationUnit in compilationUnits)
-            foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
-            {
-                string scriptName = GetAttributeValue(attribBlock.Attributes, "ScriptAssembly");
-
-                if (scriptName != null)
+                foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
                 {
-                    return scriptName;
+                    string scriptName = attribBlock.Attributes.GetAttributeValue("ScriptAssembly");
+
+                    if (scriptName != null)
+                    {
+                        return scriptName;
+                    }
                 }
-            }
 
             return null;
         }
@@ -1312,29 +1313,14 @@ namespace DSharp.Compiler.Compiler
             List<AttributeNode> attributes = new List<AttributeNode>();
 
             foreach (CompilationUnitNode compilationUnit in compilationUnits)
-            foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
-            foreach (AttributeNode attribNode in attribBlock.Attributes)
-                if (attribNode.TypeName.Equals(attributeName, StringComparison.Ordinal))
-                {
-                    attributes.Add(attribNode);
-                }
+                foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
+                    foreach (AttributeNode attribNode in attribBlock.Attributes)
+                        if (attribNode.TypeName.Equals(attributeName, StringComparison.Ordinal))
+                        {
+                            attributes.Add(attribNode);
+                        }
 
             return attributes;
-        }
-
-        private string GetAttributeValue(ParseNodeList attributes, string attributeName)
-        {
-            AttributeNode node = AttributeNode.FindAttribute(attributes, attributeName);
-
-            if (node != null &&
-                node.Arguments.Count != 0 && node.Arguments[0].NodeType == ParseNodeType.Literal)
-            {
-                Debug.Assert(((LiteralNode) node.Arguments[0]).Value is string);
-
-                return (string) ((LiteralNode) node.Arguments[0]).Value;
-            }
-
-            return null;
         }
 
         private bool GetScriptTemplate(ParseNodeList compilationUnits, out string template)
@@ -1342,15 +1328,15 @@ namespace DSharp.Compiler.Compiler
             template = null;
 
             foreach (CompilationUnitNode compilationUnit in compilationUnits)
-            foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
-            {
-                template = GetAttributeValue(attribBlock.Attributes, "ScriptTemplate");
-
-                if (template != null)
+                foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
                 {
-                    return true;
+                    template = attribBlock.Attributes.GetAttributeValue("ScriptTemplate");
+
+                    if (template != null)
+                    {
+                        return true;
+                    }
                 }
-            }
 
             return false;
         }

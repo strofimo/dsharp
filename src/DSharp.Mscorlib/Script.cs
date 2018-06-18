@@ -16,7 +16,7 @@ namespace System
         public extern static object Global { get; }
 
         [ScriptField]
-        [ScriptAlias("ss.modules")]
+        [DSharpScriptMemberName("modules")] //TODO: Look into removing this
         public extern static Dictionary<string, object> Modules { get; }
 
         [ScriptField]
@@ -36,10 +36,6 @@ namespace System
         [ScriptAlias("clearTimeout")]
         public extern static void ClearTimeout(int timeoutID);
 
-        [Obsolete("Switch to using Activator.CreateInstance")]
-        [ScriptAlias("ss.createInstance")]
-        public extern static object CreateInstance(Type type, params object[] arguments);
-
         public extern static void DeleteField(object instance, string name);
 
         public extern static void DeleteField(Type type, string name);
@@ -54,7 +50,7 @@ namespace System
         [ScriptAlias("eval")]
         public extern static object Eval(string s);
 
-        [ScriptAlias("ss.getConstructorParams")]
+        [DSharpScriptMemberName("getConstructorParams")]
         public extern static Type[] GetConstructorParameterTypes(Type type);
 
         public extern static object GetField(object instance, string name);
@@ -102,7 +98,7 @@ namespace System
         /// </summary>
         /// <param name="o">The object to test against null.</param>
         /// <returns>true if the object is null; false otherwise.</returns>
-        [ScriptAlias("ss.isNull")]
+        [DSharpScriptMemberName("isNull")]
         public extern static bool IsNull(object o);
 
         /// <summary>
@@ -112,7 +108,7 @@ namespace System
         /// </summary>
         /// <param name="o">The object to test against null or undefined.</param>
         /// <returns>true if the object is null or undefined; false otherwise.</returns>
-        [ScriptAlias("ss.isNullOrUndefined")]
+        [DSharpScriptMemberName("isNullOrUndefined")]
         public extern static bool IsNullOrUndefined(object o);
 
         /// <summary>
@@ -122,7 +118,7 @@ namespace System
         /// </summary>
         /// <param name="o">The object to test against undefined.</param>
         /// <returns>true if the object is undefined; false otherwise.</returns>
-        [ScriptAlias("ss.isUndefined")]
+        [DSharpScriptMemberName("isUndefined")]
         public extern static bool IsUndefined(object o);
 
         /// <summary>
@@ -131,7 +127,7 @@ namespace System
         /// </summary>
         /// <param name="o">The object to test.</param>
         /// <returns>true if the object represents a value; false otherwise.</returns>
-        [ScriptAlias("ss.isValue")]
+        [DSharpScriptMemberName("isValue")]
         public extern static bool IsValue(object o);
 
         /// <summary>
@@ -204,7 +200,7 @@ namespace System
         /// <param name="alternateValue">The alternate value to use if the first is invalid.</param>
         /// <param name="alternateValues">Additional alternative values to use if the first is invalid.</param>
         /// <returns>The first valid value.</returns>
-        [ScriptAlias("ss.value")]
+        [DSharpScriptMemberName("value")]
         public extern static TValue Value<TValue>(TValue value, TValue alternateValue, params TValue[] alternateValues);
     }
 }

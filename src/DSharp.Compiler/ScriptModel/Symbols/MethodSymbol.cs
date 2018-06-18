@@ -1,4 +1,4 @@
-// MethodSymbol.cs
+﻿// MethodSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -30,7 +30,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
         }
 
-        public string Alias { get; private set; }
+        public string TransformName { get; private set; }
 
         public ICollection<string> Conditions { get; private set; }
 
@@ -83,7 +83,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public bool IsAliased => string.IsNullOrEmpty(Alias) == false;
+        public bool IsAliased => string.IsNullOrEmpty(TransformName) == false;
 
         public bool IsExtension
         {
@@ -146,13 +146,13 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return false;
         }
 
-        public void SetAlias(string alias)
+        public void SetTransformName(string transformName)
         {
-            Debug.Assert(Alias == null);
-            Debug.Assert(string.IsNullOrEmpty(alias) == false);
+            Debug.Assert(TransformName == null);
+            Debug.Assert(string.IsNullOrEmpty(transformName) == false);
 
-            Alias = alias;
-            SetTransformedName(alias);
+            TransformName = transformName;
+            SetTransformedName(transformName);
         }
 
         public void SetConditions(ICollection<string> conditions)

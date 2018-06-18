@@ -1,4 +1,4 @@
-// FieldSymbol.cs
+﻿// FieldSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -82,11 +82,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             this.implementation = implementation;
         }
 
-        public void SetAlias(string alias)
+        public void SetTransformName(string transformName)
         {
             Debug.Assert((Visibility & MemberVisibility.Static) != 0);
 
-            SetTransformedName(alias);
+            SetTransformedName(transformName);
             IsGlobalField = true;
         }
 

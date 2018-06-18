@@ -1,4 +1,4 @@
-// ExpressionGenerator.cs
+﻿// ExpressionGenerator.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -51,7 +51,7 @@ namespace DSharp.Compiler.Generator
                     if (propExpression.ObjectReference is BaseExpression)
                     {
                         ClassSymbol classSymbol = (ClassSymbol) symbol.Parent;
-                        writer.Write("ss.baseProperty(");
+                        writer.Write($"{DSharpStringResources.ScriptExportMember("baseProperty")}(");
                         writer.Write(classSymbol.FullGeneratedName);
                         writer.Write(", '");
                         writer.Write(propExpression.Property.GeneratedName);
@@ -142,7 +142,7 @@ namespace DSharp.Compiler.Generator
                 TypeExpression typeExpression = expression.RightOperand as TypeExpression;
                 Debug.Assert(typeExpression != null);
 
-                writer.Write("ss.");
+                writer.Write(DSharpStringResources.ScriptExportMember(string.Empty));
 
                 if (expression.Operator == Operator.Is)
                 {
@@ -308,7 +308,7 @@ namespace DSharp.Compiler.Generator
             }
             else
             {
-                writer.Write("ss.bind('");
+                writer.Write($"{DSharpStringResources.ScriptExportMember("bind")}('");
                 writer.Write(expression.Method.GeneratedName);
                 writer.Write("', ");
                 GenerateExpression(generator, symbol, expression.ObjectReference);
@@ -891,7 +891,7 @@ namespace DSharp.Compiler.Generator
             {
                 if (expression.Method.IsAliased)
                 {
-                    writer.Write(expression.Method.Alias);
+                    writer.Write(expression.Method.TransformName);
                     writer.Write("(");
 
                     if ((expression.Method.Visibility & MemberVisibility.Static) == 0)
@@ -1085,7 +1085,7 @@ namespace DSharp.Compiler.Generator
 
                 ClassSymbol classSymbol = (ClassSymbol) symbol.Parent;
                 Debug.Assert(classSymbol.BaseClass != null);
-                writer.Write("ss.baseProperty(");
+                writer.Write($"{DSharpStringResources.ScriptExportMember("baseProperty")}(");
                 writer.Write(classSymbol.FullGeneratedName);
                 writer.Write(", '");
                 writer.Write(expression.Property.GeneratedName);

@@ -1,4 +1,4 @@
-// StatementGenerator.cs
+﻿// StatementGenerator.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -165,7 +165,7 @@ namespace DSharp.Compiler.Generator
                 writer.Write(statement.LoopVariable.GeneratedName);
                 writer.Write(" = ");
 
-                writer.Write("ss.enumerate(");
+                writer.Write($"{DSharpStringResources.ScriptExportMember("enumerate")}(");
                 ExpressionGenerator.GenerateExpression(generator, symbol, statement.CollectionExpression);
                 writer.Write(");");
 

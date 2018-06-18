@@ -35,7 +35,6 @@ namespace System
 
         public extern string[] Exec(string s);
 
-        [ScriptAlias("ss.regexp")]
         [DSharpScriptMemberName("regexp")]
         public extern static RegExp Parse(string s);
 

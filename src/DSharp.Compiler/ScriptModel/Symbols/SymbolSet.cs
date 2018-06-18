@@ -199,7 +199,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                 if (templateMethod.IsAliased)
                 {
-                    instanceMethod.SetAlias(templateMethod.Alias);
+                    instanceMethod.SetTransformName(templateMethod.TransformName);
                 }
                 else if (templateMethod.IsTransformed)
                 {

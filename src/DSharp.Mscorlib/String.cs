@@ -44,19 +44,19 @@ namespace System
         /// <returns>The character code of the character within the string.</returns>
         public extern int CharCodeAt(int index);
 
-        [ScriptAlias("ss.compareStrings")]
+        [DSharpScriptMemberName("compareStrings")]
         public extern static int Compare(string s1, string s2);
 
-        [ScriptAlias("ss.compareStrings")]
+        [DSharpScriptMemberName("compareStrings")]
         public extern static int Compare(string s1, string s2, bool ignoreCase);
 
-        [ScriptAlias("ss.string")]
+        [DSharpScriptMemberName("string")]
         public extern static string Concat(string s1, string s2);
 
-        [ScriptAlias("ss.string")]
+        [DSharpScriptMemberName("string")]
         public extern static string Concat(string s1, string s2, string s3);
 
-        [ScriptAlias("ss.string")]
+        [DSharpScriptMemberName("string")]
         public extern static string Concat(string s1, string s2, string s3, string s4);
 
         /// <summary>
@@ -64,23 +64,23 @@ namespace System
         /// </summary>
         /// <param name="strings">The sequence of strings</param>
         /// <returns>The concatenated string.</returns>
-        [ScriptAlias("ss.string")]
+        [DSharpScriptMemberName("string")]
         public extern static string Concat(params string[] strings);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [ScriptAlias("ss.string")]
+        [DSharpScriptMemberName("string")]
         public extern static string Concat(object o1, object o2);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [ScriptAlias("ss.string")]
+        [DSharpScriptMemberName("string")]
         public extern static string Concat(object o1, object o2, object o3);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [ScriptAlias("ss.string")]
+        [DSharpScriptMemberName("string")]
         public extern static string Concat(object o1, object o2, object o3, object o4);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [ScriptAlias("ss.string")]
+        [DSharpScriptMemberName("string")]
         public extern static string Concat(params object[] o);
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace System
         /// </summary>
         /// <param name="ch">The character to test for.</param>
         /// <returns>true if the string ends with the character; false otherwise.</returns>
-        [ScriptAlias("ss.endsWith")]
+        [DSharpScriptMemberName("endsWith")]
         public extern bool EndsWith(char ch);
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace System
         /// </summary>
         /// <param name="suffix">The string to test for.</param>
         /// <returns>true if the string ends with the suffix; false otherwise.</returns>
-        [ScriptAlias("ss.endsWith")]
+        [DSharpScriptMemberName("endsWith")]
         public extern bool EndsWith(string suffix);
 
         /// <summary>
@@ -134,13 +134,13 @@ namespace System
         [ScriptAlias("escape")]
         public extern string Escape();
 
-        [ScriptAlias("ss.format")]
+        [DSharpScriptMemberName("format")]
         public extern static string Format(string format, params object[] values);
 
-        [ScriptAlias("ss.format")]
+        [DSharpScriptMemberName("format")]
         public extern static string Format(CultureInfo culture, string format, params object[] values);
 
-        [ScriptAlias("ss.string")]
+        [DSharpScriptMemberName("string")]
         public extern static string FromChar(char ch, int count);
 
         public extern static string FromCharCode(int charCode);
@@ -155,13 +155,13 @@ namespace System
 
         public extern int IndexOf(string subString, int startIndex);
 
-        [ScriptAlias("ss.insertString")]
+        [DSharpScriptMemberName("insertString")]
         public extern string Insert(int index, string value);
 
-        [ScriptAlias("ss.emptyString")]
+        [DSharpScriptMemberName("emptyString")]
         public extern static bool IsNullOrEmpty(string s);
 
-        [ScriptAlias("ss.whitespace")]
+        [DSharpScriptMemberName("whitespace")]
         public extern static bool IsNullOrWhiteSpace(string s);
 
         public extern int LastIndexOf(Char ch);
@@ -174,25 +174,25 @@ namespace System
 
         public extern string[] Match(RegExp regex);
 
-        [ScriptAlias("ss.padLeft")]
+        [DSharpScriptMemberName("padLeft")]
         public extern string PadLeft(int totalWidth);
 
-        [ScriptAlias("ss.padLeft")]
+        [DSharpScriptMemberName("padLeft")]
         public extern string PadLeft(int totalWidth, char ch);
 
-        [ScriptAlias("ss.padRight")]
+        [DSharpScriptMemberName("padRight")]
         public extern string PadRight(int totalWidth);
 
-        [ScriptAlias("ss.padRight")]
+        [DSharpScriptMemberName("padRight")]
         public extern string PadRight(int totalWidth, char ch);
 
-        [ScriptAlias("ss.removeString")]
+        [DSharpScriptMemberName("removeString")]
         public extern string Remove(int index);
 
-        [ScriptAlias("ss.removeString")]
+        [DSharpScriptMemberName("removeString")]
         public extern string Remove(int index, int count);
 
-        [ScriptAlias("ss.replaceString")]
+        [DSharpScriptMemberName("replaceString")]
         public extern string Replace(string oldText, string replaceText);
 
         [ScriptName("replace")]
@@ -218,10 +218,10 @@ namespace System
 
         public extern string[] Split(RegExp regex, int limit);
 
-        [ScriptAlias("ss.startsWith")]
+        [DSharpScriptMemberName("startsWith")]
         public extern bool StartsWith(char ch);
 
-        [ScriptAlias("ss.startsWith")]
+        [DSharpScriptMemberName("startsWith")]
         public extern bool StartsWith(string prefix);
 
         public extern string Substr(int startIndex);
@@ -248,22 +248,22 @@ namespace System
         [ScriptName("toUpperCase")]
         public extern string ToUpper();
 
-        [ScriptAlias("ss.trim")]
+        [DSharpScriptMemberName("trim")]
         public extern string Trim();
 
-        [ScriptAlias("ss.trim")]
+        [DSharpScriptMemberName("trim")]
         public extern string Trim(char[] trimCharacters);
 
-        [ScriptAlias("ss.trimEnd")]
+        [DSharpScriptMemberName("trimEnd")]
         public extern string TrimEnd();
 
-        [ScriptAlias("ss.trimEnd")]
+        [DSharpScriptMemberName("trimEnd")]
         public extern string TrimEnd(char[] trimCharacters);
 
-        [ScriptAlias("ss.trimStart")]
+        [DSharpScriptMemberName("trimStart")]
         public extern string TrimStart();
 
-        [ScriptAlias("ss.trimStart")]
+        [DSharpScriptMemberName("trimStart")]
         public extern string TrimStart(char[] trimCharacters);
 
         /// <summary>

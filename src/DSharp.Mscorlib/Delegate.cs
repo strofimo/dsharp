@@ -9,13 +9,13 @@ namespace System
 
         protected Delegate(Type target, string method) { }
 
-        [ScriptAlias("ss.bindAdd")]
+        [DSharpScriptMemberName("bindAdd")]
         public extern static Delegate Combine(Delegate a, Delegate b);
 
-        [ScriptAlias("ss.bind")]
+        [DSharpScriptMemberName("bind")]
         public extern static Delegate Create(Function f, object instance);
 
-        [ScriptAlias("ss.bindSub")]
+        [DSharpScriptMemberName("bindSub")]
         public extern static Delegate Remove(Delegate source, Delegate value);
     }
 }

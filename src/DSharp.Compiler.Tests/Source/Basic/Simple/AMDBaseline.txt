@@ -5,7 +5,7 @@
 
 "use strict";
 
-define('basic', ['ds'], function(ss) {
+define('basic', ['ds'], function(ds) {
   var $global = this;
 
   // Basic.EventArgs

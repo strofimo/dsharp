@@ -54,7 +54,7 @@ namespace System
 
         public extern Array Map(ArrayItemMapCallback mapItemCallback);
 
-        [ScriptAlias("ss.array")]
+        [DSharpScriptMemberName("array")]
         public extern static Array Parse(string s);
 
         public extern object Reduce(ArrayReduceCallback callback);
@@ -93,7 +93,7 @@ namespace System
 
         public extern void Splice(int start, int deleteCount, params object[] itemsToInsert);
 
-        [ScriptAlias("ss.array")]
+        [DSharpScriptMemberName("array")]
         public extern static Array ToArray(object o);
 
         public extern void Unshift(params object[] items);

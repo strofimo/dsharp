@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ss) {
+define('test', ['ds'], function(ds) {
   var $global = this;
 
   // MemberTests.MyClass

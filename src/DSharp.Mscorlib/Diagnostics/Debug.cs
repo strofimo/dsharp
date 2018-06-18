@@ -14,7 +14,6 @@ namespace System.Diagnostics
         public extern static void Assert(bool condition, string message);
 
         [Conditional("DEBUG")]
-        [ScriptAlias("ss.fail")]
         [DSharpScriptMemberName("fail")]
         public extern static void Fail(string message);
 

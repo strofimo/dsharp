@@ -1,4 +1,4 @@
-// ScriptCompilerTask.cs
+﻿// ScriptCompilerTask.cs
 // Script#/Core/Build
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -408,7 +408,7 @@ namespace DSharp.Build.Tasks
                 string fileName = Path.GetFileNameWithoutExtension(scriptFile);
                 if (fileName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase))
                 {
-                    fileName = (minimized ? "ss.min" : "ss") + Path.GetExtension(scriptFile);
+                    fileName = (minimized ? DSharpStringResources.DSHARP_SCRIPT_NAME + ".min" : DSharpStringResources.DSHARP_SCRIPT_NAME) + Path.GetExtension(scriptFile);
                     scriptFile = Path.Combine(Path.GetDirectoryName(scriptFile), fileName);
                 }
 

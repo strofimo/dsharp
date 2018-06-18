@@ -89,7 +89,7 @@ namespace System.Collections
 
         public extern object ReduceRight(ArrayItemReduceCallback callback, object initialValue);
 
-        [ScriptAlias("ss.remove")]
+        [DSharpScriptMemberName("remove")]
         public extern bool Remove(object item);
 
         public extern void RemoveAt(int index);

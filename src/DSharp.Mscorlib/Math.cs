@@ -69,15 +69,12 @@ namespace System
 
         public extern static Number Tan(Number n);
 
-        [ScriptAlias("ss.truncate")]
         [DSharpScriptMemberName("truncate")]
         public extern static int Truncate(Number n);
 
-        [ScriptAlias("ss.truncate")]
         [DSharpScriptMemberName("truncate")]
         public extern static int Truncate(double n);
 
-        [ScriptAlias("ss.truncate")]
         [DSharpScriptMemberName("truncate")]
         public extern static int Truncate(float n);
     }

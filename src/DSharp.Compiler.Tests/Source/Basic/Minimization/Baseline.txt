@@ -39,7 +39,7 @@ Script
 
 "use strict";
 
-define('test', ['ds', 'lib'], function(ss, lib) {
+define('test', ['ds', 'lib'], function(ds, lib) {
   var $global = this;
 
   // BasicTests.AppFlags

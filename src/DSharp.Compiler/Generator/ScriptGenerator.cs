@@ -1,4 +1,4 @@
-// ScriptGenerator.cs
+﻿// ScriptGenerator.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -129,7 +129,7 @@ namespace DSharp.Compiler.Generator
 
             if (generateModule)
             {
-                Writer.Write("var $exports = ss.module('");
+                Writer.Write($"var $exports = {DSharpStringResources.ScriptExportMember("module")}('");
                 Writer.Write(symbolSet.ScriptName);
                 Writer.Write("',");
 

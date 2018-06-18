@@ -7,7 +7,8 @@ using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyDescription("Script# Core Assembly")]
-[assembly: ScriptAssembly("ss")]
+[assembly: AssemblyDescription("DSharp Mscorlib")]
+//TODO: Look at removing this attribute as a requirement
+[assembly: ScriptAssembly(DSharp.DSharpStringResources.ASSEMBLY_NAME)]
 
 [assembly: CLSCompliant(false)]

@@ -101,7 +101,6 @@ namespace System.Collections.Generic
 
         public extern TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue);
 
-        [ScriptAlias("ss.remove")]
         [DSharpScriptMemberName("remove")]
         public extern bool Remove(T item);
 

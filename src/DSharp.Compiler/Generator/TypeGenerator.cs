@@ -1,4 +1,4 @@
-// TypeGenerator.cs
+﻿// TypeGenerator.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -332,7 +332,7 @@ namespace DSharp.Compiler.Generator
             ScriptTextWriter writer = generator.Writer;
 
             //class definition
-            writer.Write("ss.defineClass(");
+            writer.Write($"{DSharpStringResources.ScriptExportMember("defineClass")}(");
             writer.Write(classSymbol.FullGeneratedName);
             writer.Write(", ");
 
@@ -447,7 +447,7 @@ namespace DSharp.Compiler.Generator
         {
             ScriptTextWriter writer = generator.Writer;
 
-            writer.Write("ss.defineInterface(");
+            writer.Write($"{DSharpStringResources.ScriptExportMember("defineInterface")}(");
             writer.Write(interfaceSymbol.FullGeneratedName);
 
             if (interfaceSymbol.Interfaces != null)

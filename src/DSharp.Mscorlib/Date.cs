@@ -81,14 +81,14 @@ namespace System
         /// Returns the current date and time.
         /// </summary>
         [ScriptField]
-        [ScriptAlias("ss.now()")]
+        [DSharpScriptMemberName("now()")]
         public extern static Date Now { get; }
 
         /// <summary>
         /// Returns the current date with the time part set to 00:00:00.
         /// </summary>
         [ScriptField]
-        [ScriptAlias("ss.today()")]
+        [DSharpScriptMemberName("today")]
         public static Date Today { get; }
 
         public extern int GetDate();
@@ -127,7 +127,7 @@ namespace System
 
         public extern int GetUTCSeconds();
 
-        [ScriptAlias("ss.date")]
+        [DSharpScriptMemberName("date")]
         public extern static Date Parse(string value);
 
         public extern void SetDate(int date);

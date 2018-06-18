@@ -47,7 +47,7 @@ namespace System.Collections.ObjectModel
 
         public abstract void Insert(int index, T item);
 
-        [ScriptAlias("ss.remove")]
+        [DSharpScriptMemberName("remove")]
         public abstract bool Remove(T item);
 
         public abstract void RemoveAt(int index);

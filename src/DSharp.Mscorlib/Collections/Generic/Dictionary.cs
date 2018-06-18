@@ -27,11 +27,9 @@ namespace System.Collections.Generic
         [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", /* error */ true)]
         public extern void Add(TKey key, TValue value);
 
-        [ScriptAlias("ds.clearKeys")]
         [DSharpScriptMemberName("clearKeys")]
         public extern void Clear();
 
-        [ScriptAlias("ds.keyExists")]
         [DSharpScriptMemberName("keyExists")]
         public extern bool ContainsKey(TKey key);
 
