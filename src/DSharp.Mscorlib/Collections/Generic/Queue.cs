@@ -1,39 +1,22 @@
-// Queue.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System.Runtime.CompilerServices;
-
-namespace System.Collections.Generic {
-
+namespace System.Collections.Generic
+{
     [ScriptImport]
     [ScriptName("Queue")]
-    public sealed class Queue<T> {
-
+    public sealed class Queue<T>
+    {
         [ScriptField]
-        public int Count {
-            get {
-                return 0;
-            }
-        }
+        public extern int Count { get; }
 
-        public void Clear() {
-        }
+        public extern void Clear();
 
-        public bool Contains(T item) {
-            return false;
-        }
+        public extern bool Contains(T item);
 
-        public T Dequeue() {
-            return default(T);
-        }
+        public extern T Dequeue();
 
-        public void Enqueue(T item) {
-        }
+        public extern void Enqueue(T item);
 
-        public T Peek() {
-            return default(T);
-        }
+        public extern T Peek();
     }
 }

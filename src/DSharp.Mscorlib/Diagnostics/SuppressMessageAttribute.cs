@@ -1,77 +1,28 @@
-// SuppressMessageAttribute.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
-namespace System.Diagnostics.CodeAnalysis {
-
+namespace System.Diagnostics.CodeAnalysis
+{
     [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
     [ScriptIgnore]
     [ScriptImport]
-    public sealed class SuppressMessageAttribute : Attribute {
-
-        private string _category;
-        private string _checkId;
-        private string _scope;
-        private string _target;
-        private string _messageId;
-        private string _justification;
-
-        public SuppressMessageAttribute(string category, string checkId) {
-            _category = category;
-            _checkId = checkId;
+    public sealed class SuppressMessageAttribute : Attribute
+    {
+        public SuppressMessageAttribute(string category, string checkId)
+        {
+            Category = category;
+            CheckId = checkId;
         }
 
-        public string Category {
-            get {
-                return _category;
-            }
-        }
+        public string Category { get; }
 
-        public string CheckId {
-            get {
-                return _checkId;
-            }
-        }
+        public string CheckId { get; }
 
-        public string Justification {
-            get {
-                return _justification;
-            }
-            set {
-                _justification = value;
-            }
-        }
+        public string Justification { get; set; }
 
-        public string Scope {
-            get {
-                return _scope;
-            }
-            set {
-                _scope = value;
-            }
-        }
+        public string Scope { get; set; }
 
-        public string Target {
-            get {
-                return _target;
-            }
-            set {
-                _target = value;
-            }
-        }
+        public string Target { get; set; }
 
-        public string MessageId {
-            get {
-                return _messageId;
-            }
-            set {
-                _messageId = value;
-            }
-        }
+        public string MessageId { get; set; }
     }
 }

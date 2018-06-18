@@ -1,202 +1,103 @@
-// NumberFormatInfo.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System;
-using System.Runtime.CompilerServices;
-
-namespace System.Globalization {
-
+namespace System.Globalization
+{
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public sealed class NumberFormatInfo {
-
-        private NumberFormatInfo() {
-        }
+    public sealed class NumberFormatInfo
+    {
+        private NumberFormatInfo() { }
 
         [ScriptField]
         [ScriptName("nan")]
-        public string NaNSymbol {
-            get {
-                return null;
-            }
-        }
+        public extern string NaNSymbol { get; }
 
         [ScriptField]
         [ScriptName("neg")]
-        public string NegativeSign {
-            get {
-                return null;
-            }
-        }
+        public extern string NegativeSign { get; }
 
         [ScriptField]
         [ScriptName("pos")]
-        public string PositiveSign {
-            get {
-                return null;
-            }
-        }
+        public extern string PositiveSign { get; }
 
         [ScriptField]
         [ScriptName("negInf")]
-        public string NegativeInfinityText {
-            get {
-                return null;
-            }
-        }
+        public extern string NegativeInfinityText { get; }
 
         [ScriptField]
         [ScriptName("posInf")]
-        public string PositiveInfinityText {
-            get {
-                return null;
-            }
-        }
+        public extern string PositiveInfinityText { get; }
 
         [ScriptField]
         [ScriptName("per")]
-        public string PercentSymbol {
-            get {
-                return null;
-            }
-        }
+        public extern string PercentSymbol { get; }
 
         [ScriptField]
         [ScriptName("perGW")]
-        public int[] PercentGroupSizes {
-            get {
-                return null;
-            }
-        }
+        public extern int[] PercentGroupSizes { get; }
 
         [ScriptField]
         [ScriptName("perDD")]
-        public int PercentDecimalDigits {
-            get {
-                return 0;
-            }
-        }
+        public extern int PercentDecimalDigits { get; }
 
         [ScriptField]
         [ScriptName("perDS")]
-        public string PercentDecimalSeparator {
-            get {
-                return null;
-            }
-        }
+        public extern string PercentDecimalSeparator { get; }
 
         [ScriptField]
         [ScriptName("perGS")]
-        public string PercentGroupSeparator {
-            get {
-                return null;
-            }
-        }
+        public extern string PercentGroupSeparator { get; }
 
         [ScriptField]
         [ScriptName("perNP")]
-        public string PercentNegativePattern {
-            get {
-                return null;
-            }
-        }
+        public extern string PercentNegativePattern { get; }
 
         [ScriptField]
         [ScriptName("perPP")]
-        public string PercentPositivePattern {
-            get {
-                return null;
-            }
-        }
+        public extern string PercentPositivePattern { get; }
 
         [ScriptField]
         [ScriptName("cur")]
-        public string CurrencySymbol {
-            get {
-                return null;
-            }
-        }
+        public extern string CurrencySymbol { get; }
 
         [ScriptField]
         [ScriptName("curGW")]
-        public int[] CurrencyGroupSizes {
-            get {
-                return null;
-            }
-        }
+        public extern int[] CurrencyGroupSizes { get; }
 
         [ScriptField]
         [ScriptName("curDD")]
-        public int CurrencyDecimalDigits {
-            get {
-                return 0;
-            }
-        }
+        public extern int CurrencyDecimalDigits { get; }
 
         [ScriptField]
         [ScriptName("curDS")]
-        public string CurrencyDecimalSeparator {
-            get {
-                return null;
-            }
-        }
+        public extern string CurrencyDecimalSeparator { get; }
 
         [ScriptField]
         [ScriptName("curGS")]
-        public string CurrencyGroupSeparator {
-            get {
-                return null;
-            }
-        }
+        public extern string CurrencyGroupSeparator { get; }
 
         [ScriptField]
         [ScriptName("curNP")]
-        public string CurrencyNegativePattern {
-            get {
-                return null;
-            }
-        }
+        public extern string CurrencyNegativePattern { get; }
 
         [ScriptField]
         [ScriptName("curPP")]
-        public string CurrencyPositivePattern {
-            get {
-                return null;
-            }
-        }
+        public extern string CurrencyPositivePattern { get; }
 
         [ScriptField]
         [ScriptName("gw")]
-        public int[] NumberGroupSizes {
-            get {
-                return null;
-            }
-        }
+        public extern int[] NumberGroupSizes { get; }
 
         [ScriptField]
         [ScriptName("dd")]
-        public int NumberDecimalDigits {
-            get {
-                return 0;
-            }
-        }
+        public extern int NumberDecimalDigits { get; }
 
         [ScriptField]
         [ScriptName("ds")]
-        public string NumberDecimalSeparator {
-            get {
-                return null;
-            }
-        }
+        public extern string NumberDecimalSeparator { get; }
 
         [ScriptField]
         [ScriptName("gs")]
-        public string NumberGroupSeparator {
-            get {
-                return null;
-            }
-        }
+        public extern string NumberGroupSeparator { get; }
     }
 }

@@ -1,66 +1,33 @@
-// Dictionary.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System;
-using System.Runtime.CompilerServices;
-
-namespace System.Collections {
-
-    /// <summary>
-    /// The Dictionary data type which is mapped to the Object type in Javascript.
-    /// </summary>
+namespace System.Collections
+{
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Object")]
-    public sealed class Dictionary : IEnumerable {
+    public sealed class Dictionary : IEnumerable
+    {
+        public Dictionary() { }
 
-        public Dictionary() {
-        }
+        public Dictionary(params object[] nameValuePairs) { }
 
-        public Dictionary(params object[] nameValuePairs) {
-        }
+        public extern int Count { get; }
 
-        public int Count {
-            get {
-                return 0;
-            }
-        }
-
-        public string[] Keys {
-            get {
-                return null;
-            }
-        }
+        public extern string[] Keys { get; }
 
         [ScriptField]
-        public object this[string key] {
-            get {
-                return null;
-            }
-            set {
-            }
-        }
+        public extern object this[string key] { get; set; }
 
         [ScriptAlias("ss.clearKeys")]
-        public void Clear() {
-        }
+        public extern void Clear();
 
         [ScriptAlias("ss.keyExists")]
-        public bool ContainsKey(string key) {
-            return false;
-        }
+        public extern bool ContainsKey(string key);
 
-        public static Dictionary GetDictionary(object o) {
-            return null;
-        }
+        public extern static Dictionary GetDictionary(object o);
 
-        public void Remove(string key) {
-        }
+        public extern void Remove(string key);
 
-        IEnumerator IEnumerable.GetEnumerator() {
-            return null;
-        }
+        extern IEnumerator IEnumerable.GetEnumerator();
     }
 }

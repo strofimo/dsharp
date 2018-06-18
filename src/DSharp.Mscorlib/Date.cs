@@ -1,38 +1,31 @@
-// Date.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System.Runtime.CompilerServices;
-
-namespace System {
-
+namespace System
+{
+    //TODO: Move to javascript library
     /// <summary>
     /// Equivalent to the Date type in Javascript.
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public sealed class Date {
-
+    public sealed class Date
+    {
         /// <summary>
         /// Creates a new instance of Date initialized from the current time.
         /// </summary>
-        public Date() {
-        }
+        public Date() { }
 
         /// <summary>
         /// Creates a new instance of Date initialized from the specified number of milliseconds.
         /// </summary>
         /// <param name="milliseconds">Milliseconds since January 1st, 1970.</param>
-        public Date(int milliseconds) {
-        }
+        public Date(int milliseconds) { }
 
         /// <summary>
         /// Creates a new instance of Date initialized from parsing the specified date.
         /// </summary>
         /// <param name="date"></param>
-        public Date(string date) {
-        }
+        public Date(string date) { }
 
         /// <summary>
         /// Creates a new instance of Date.
@@ -40,8 +33,7 @@ namespace System {
         /// <param name="year">The full year.</param>
         /// <param name="month">The month (0 through 11)</param>
         /// <param name="date">The day of the month (1 through # of days in the specified month)</param>
-        public Date(int year, int month, int date) {
-        }
+        public Date(int year, int month, int date) { }
 
         /// <summary>
         /// Creates a new instance of Date.
@@ -50,8 +42,7 @@ namespace System {
         /// <param name="month">The month (0 through 11)</param>
         /// <param name="date">The day of the month (1 through # of days in the specified month)</param>
         /// <param name="hours">The hours (0 through 23)</param>
-        public Date(int year, int month, int date, int hours) {
-        }
+        public Date(int year, int month, int date, int hours) { }
 
         /// <summary>
         /// Creates a new instance of Date.
@@ -61,8 +52,7 @@ namespace System {
         /// <param name="date">The day of the month (1 through # of days in the specified month)</param>
         /// <param name="hours">The hours (0 through 23)</param>
         /// <param name="minutes">The minutes (0 through 59)</param>
-        public Date(int year, int month, int date, int hours, int minutes) {
-        }
+        public Date(int year, int month, int date, int hours, int minutes) { }
 
         /// <summary>
         /// Creates a new instance of Date.
@@ -73,8 +63,7 @@ namespace System {
         /// <param name="hours">The hours (0 through 23)</param>
         /// <param name="minutes">The minutes (0 through 59)</param>
         /// <param name="seconds">The seconds (0 through 59)</param>
-        public Date(int year, int month, int date, int hours, int minutes, int seconds) {
-        }
+        public Date(int year, int month, int date, int hours, int minutes, int seconds) { }
 
         /// <summary>
         /// Creates a new instance of Date.
@@ -86,210 +75,123 @@ namespace System {
         /// <param name="minutes">The minutes (0 through 59)</param>
         /// <param name="seconds">The seconds (0 through 59)</param>
         /// <param name="milliseconds">The milliseconds (0 through 999)</param>
-        public Date(int year, int month, int date, int hours, int minutes, int seconds, int milliseconds) {
-        }
+        public Date(int year, int month, int date, int hours, int minutes, int seconds, int milliseconds) { }
 
         /// <summary>
         /// Returns the current date and time.
         /// </summary>
         [ScriptField]
         [ScriptAlias("ss.now()")]
-        public static Date Now {
-            get {
-                return null;
-            }
-        }
+        public extern static Date Now { get; }
 
         /// <summary>
         /// Returns the current date with the time part set to 00:00:00.
         /// </summary>
         [ScriptField]
         [ScriptAlias("ss.today()")]
-        public static Date Today {
-            get {
-                return null;
-            }
-        }
+        public static Date Today { get; }
 
-        public int GetDate() {
-            return 0;
-        }
+        public extern int GetDate();
 
-        public int GetDay() {
-            return 0;
-        }
+        public extern int GetDay();
 
-        public int GetFullYear() {
-            return 0;
-        }
+        public extern int GetFullYear();
 
-        public int GetHours() {
-            return 0;
-        }
+        public extern int GetHours();
 
-        public int GetMilliseconds() {
-            return 0;
-        }
+        public extern int GetMilliseconds();
 
-        public int GetMinutes() {
-            return 0;
-        }
+        public extern int GetMinutes();
 
-        public int GetMonth() {
-            return 0;
-        }
+        public extern int GetMonth();
 
-        public int GetSeconds() {
-            return 0;
-        }
+        public extern int GetSeconds();
 
-        public int GetTime() {
-            return 0;
-        }
+        public extern int GetTime();
 
-        public int GetTimezoneOffset() {
-            return 0;
-        }
+        public extern int GetTimezoneOffset();
 
-        public int GetUTCDate() {
-            return 0;
-        }
+        public extern int GetUTCDate();
 
-        public int GetUTCDay() {
-            return 0;
-        }
+        public extern int GetUTCDay();
 
-        public int GetUTCFullYear() {
-            return 0;
-        }
+        public extern int GetUTCFullYear();
 
-        public int GetUTCHours() {
-            return 0;
-        }
+        public extern int GetUTCHours();
 
-        public int GetUTCMilliseconds() {
-            return 0;
-        }
+        public extern int GetUTCMilliseconds();
 
-        public int GetUTCMinutes() {
-            return 0;
-        }
+        public extern int GetUTCMinutes();
 
-        public int GetUTCMonth() {
-            return 0;
-        }
+        public extern int GetUTCMonth();
 
-        public int GetUTCSeconds() {
-            return 0;
-        }
+        public extern int GetUTCSeconds();
 
         [ScriptAlias("ss.date")]
-        public static Date Parse(string value) {
-            return null;
-        }
+        public extern static Date Parse(string value);
 
-        public void SetDate(int date) {
-        }
+        public extern void SetDate(int date);
 
-        public void SetFullYear(int year) {
-        }
+        public extern void SetFullYear(int year);
 
-        public void SetFullYear(int year, int month) {
-        }
+        public extern void SetFullYear(int year, int month);
 
-        public void SetFullYear(int year, int month, int day) {
-        }
+        public extern void SetFullYear(int year, int month, int day);
 
-        public void SetHours(int hours) {
-        }
+        public extern void SetHours(int hours);
 
-        public void SetMilliseconds(int milliseconds) {
-        }
+        public extern void SetMilliseconds(int milliseconds);
 
-        public void SetMinutes(int minutes) {
-        }
+        public extern void SetMinutes(int minutes);
 
-        public void SetMonth(int month) {
-        }
+        public extern void SetMonth(int month);
 
-        public void SetSeconds(int seconds) {
-        }
+        public extern void SetSeconds(int seconds);
 
-        public void SetTime(int milliseconds) {
-        }
+        public extern void SetTime(int milliseconds);
 
-        public void SetUTCDate(int date) {
-        }
+        public extern void SetUTCDate(int date);
 
-        public void SetUTCFullYear(int year) {
-        }
+        public extern void SetUTCFullYear(int year);
 
-        public void SetUTCHours(int hours) {
-        }
+        public extern void SetUTCHours(int hours);
 
-        public void SetUTCMilliseconds(int milliseconds) {
-        }
+        public extern void SetUTCMilliseconds(int milliseconds);
 
-        public void SetUTCMinutes(int minutes) {
-        }
+        public extern void SetUTCMinutes(int minutes);
 
-        public void SetUTCMonth(int month) {
-        }
+        public extern void SetUTCMonth(int month);
 
-        public void SetUTCSeconds(int seconds) {
-        }
+        public extern void SetUTCSeconds(int seconds);
 
-        public void SetYear(int year) {
-        }
+        public extern void SetYear(int year);
 
-        public string ToDateString() {
-            return null;
-        }
+        public extern string ToDateString();
 
-        public string ToISOString() {
-            return null;
-        }
+        public extern string ToISOString();
 
-        public string ToLocaleDateString() {
-            return null;
-        }
+        public extern string ToLocaleDateString();
 
-        public string ToLocaleTimeString() {
-            return null;
-        }
+        public extern string ToLocaleTimeString();
 
-        public string ToTimeString() {
-            return null;
-        }
+        public extern string ToTimeString();
 
-        public string ToUTCString() {
-            return null;
-        }
+        public extern string ToUTCString();
 
         [ScriptName(PreserveCase = true)]
-        public static int UTC(int year, int month, int day) {
-            return 0;
-        }
+        public extern static int UTC(int year, int month, int day);
 
         [ScriptName(PreserveCase = true)]
-        public static int UTC(int year, int month, int day, int hours) {
-            return 0;
-        }
+        public extern static int UTC(int year, int month, int day, int hours);
 
         [ScriptName(PreserveCase = true)]
-        public static int UTC(int year, int month, int day, int hours, int minutes) {
-            return 0;
-        }
+        public extern static int UTC(int year, int month, int day, int hours, int minutes);
 
         [ScriptName(PreserveCase = true)]
-        public static int UTC(int year, int month, int day, int hours, int minutes, int seconds) {
-            return 0;
-        }
+        public extern static int UTC(int year, int month, int day, int hours, int minutes, int seconds);
 
         [ScriptName(PreserveCase = true)]
-        public static int UTC(int year, int month, int day, int hours, int minutes, int seconds, int milliseconds) {
-            return 0;
-        }
+        public extern static int UTC(int year, int month, int day, int hours, int minutes, int seconds, int milliseconds);
 
         // NOTE: There is no + operator since in JavaScript that returns the
         //       concatenation of the date strings, which is pretty much useless.
@@ -297,50 +199,36 @@ namespace System {
         /// <summary>
         /// Returns the difference in milliseconds between two dates.
         /// </summary>
-        public static int operator -(Date a, Date b) {
-            return 0;
-        }
+        public extern static int operator -(Date a, Date b);
 
         /// <summary>
         /// Compares two dates
         /// </summary>
-        public static bool operator ==(Date a, Date b) {
-            return false;
-        }
+        public extern static bool operator ==(Date a, Date b);
 
         /// <summary>
         /// Compares two dates
         /// </summary>
-        public static bool operator !=(Date a, Date b) {
-            return false;
-        }
+        public extern static bool operator !=(Date a, Date b);
 
         /// <summary>
         /// Compares two dates
         /// </summary>
-        public static bool operator <(Date a, Date b) {
-            return false;
-        }
+        public extern static bool operator <(Date a, Date b);
 
         /// <summary>
         /// Compares two dates
         /// </summary>
-        public static bool operator >(Date a, Date b) {
-            return false;
-        }
+        public extern static bool operator >(Date a, Date b);
 
         /// <summary>
         /// Compares two dates
         /// </summary>
-        public static bool operator <=(Date a, Date b) {
-            return false;
-        }
+        public extern static bool operator <=(Date a, Date b);
 
         /// <summary>
         /// Compares two dates
         /// </summary>
-        public static bool operator >=(Date a, Date b) {
-            return false;
-        }
+        public extern static bool operator >=(Date a, Date b);
     }
 }

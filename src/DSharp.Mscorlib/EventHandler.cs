@@ -1,12 +1,7 @@
-// EventHandler.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System.Runtime.CompilerServices;
-
-namespace System {
-
+namespace System
+{
     /// <summary>
     /// Delegate for handling generic events.
     /// </summary>
@@ -18,5 +13,6 @@ namespace System {
 
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public delegate void EventHandler<TArgument>(object sender, TArgument e) where TArgument : EventArgs;
+    public delegate void EventHandler<TArgument>(object sender, TArgument e) 
+        where TArgument : EventArgs;
 }

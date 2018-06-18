@@ -1,241 +1,129 @@
-// ArrayList.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace System.Collections {
-
-    // NOTE: Keep in sync with Array and List
-
-    /// <summary>
-    /// Equivalent to the Array type in Javascript.
-    /// </summary>
+namespace System.Collections
+{
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
     public sealed class ArrayList : IEnumerable {
 
-        public ArrayList() {
-        }
+        public ArrayList() { }
 
-        public ArrayList(int capacity) {
-        }
+        public ArrayList(int capacity) { }
 
-        public ArrayList(params object[] items) {
-        }
+        public ArrayList(params object[] items) { }
 
         [ScriptField]
         [ScriptName("length")]
-        public int Count {
-            get {
-                return 0;
-            }
-        }
+        public extern int Count { get; }
 
         [ScriptField]
-        public object this[int index] {
-            get {
-                return null;
-            }
-            set {
-            }
-        }
+        public extern object this[int index] { get; set; }
 
         [ScriptName("push")]
-        public void Add(object item) {
-        }
+        public extern void Add(object item);
 
         [ScriptName("push")]
-        public void AddRange(params object[] items) {
-        }
+        public extern void AddRange(params object[] items);
 
-        public void Clear() {
-        }
+        public extern void Clear();
 
-        public ArrayList Concat(params object[] objects) {
-            return null;
-        }
+        public extern ArrayList Concat(params object[] objects);
 
-        public bool Contains(object item) {
-            return false;
-        }
+        public extern bool Contains(object item);
 
-        public bool Every(ArrayFilterCallback filterCallback) {
-            return false;
-        }
+        public extern bool Every(ArrayFilterCallback filterCallback);
 
-        public bool Every(ArrayItemFilterCallback itemFilterCallback) {
-            return false;
-        }
+        public extern bool Every(ArrayItemFilterCallback itemFilterCallback);
 
-        public Array Filter(ArrayFilterCallback filterCallback) {
-            return null;
-        }
+        public extern Array Filter(ArrayFilterCallback filterCallback);
 
-        public Array Filter(ArrayItemFilterCallback itemFilterCallback) {
-            return null;
-        }
+        public extern Array Filter(ArrayItemFilterCallback itemFilterCallback);
 
-        public void ForEach(ArrayCallback callback) {
-        }
+        public extern void ForEach(ArrayCallback callback);
 
-        public void ForEach(ArrayItemCallback itemCallback) {
-        }
+        public extern void ForEach(ArrayItemCallback itemCallback);
 
-        public IEnumerator GetEnumerator() {
-            return null;
-        }
+        public extern IEnumerator GetEnumerator();
 
-        public Array GetRange(int index) {
-            return null;
-        }
+        public extern Array GetRange(int index);
 
-        public Array GetRange(int index, int count) {
-            return null;
-        }
+        public extern Array GetRange(int index, int count);
 
-        public int IndexOf(object item) {
-            return 0;
-        }
+        public extern int IndexOf(object item);
 
-        public int IndexOf(object item, int startIndex) {
-            return 0;
-        }
+        public extern int IndexOf(object item, int startIndex);
 
-        public void Insert(int index, object item) {
-        }
+        public extern void Insert(int index, object item);
 
-        public void InsertRange(int index, params object[] items) {
-        }
+        public extern void InsertRange(int index, params object[] items);
 
-        public string Join() {
-            return null;
-        }
+        public extern string Join();
 
-        public string Join(string delimiter) {
-            return null;
-        }
+        public extern string Join(string delimiter);
 
-        public int LastIndexOf(object item) {
-            return 0;
-        }
+        public extern int LastIndexOf(object item);
 
-        public int LastIndexOf(object item, int fromIndex) {
-            return 0;
-        }
+        public extern int LastIndexOf(object item, int fromIndex);
 
-        public Array Map(ArrayMapCallback mapCallback) {
-            return null;
-        }
+        public extern Array Map(ArrayMapCallback mapCallback);
 
-        public Array Map(ArrayItemMapCallback mapItemCallback) {
-            return null;
-        }
+        public extern Array Map(ArrayItemMapCallback mapItemCallback);
 
-        public static ArrayList Parse(string s) {
-            return null;
-        }
+        public extern static ArrayList Parse(string s);
 
-        public object Reduce(ArrayReduceCallback callback) {
-            return null;
-        }
+        public extern object Reduce(ArrayReduceCallback callback);
 
-        public object Reduce(ArrayReduceCallback callback, object initialValue) {
-            return null;
-        }
+        public extern object Reduce(ArrayReduceCallback callback, object initialValue);
 
-        public object Reduce(ArrayItemReduceCallback callback) {
-            return null;
-        }
+        public extern object Reduce(ArrayItemReduceCallback callback);
 
-        public object Reduce(ArrayItemReduceCallback callback, object initialValue) {
-            return null;
-        }
+        public extern object Reduce(ArrayItemReduceCallback callback, object initialValue);
 
-        public object ReduceRight(ArrayReduceCallback callback) {
-            return null;
-        }
+        public extern object ReduceRight(ArrayReduceCallback callback);
 
-        public object ReduceRight(ArrayReduceCallback callback, object initialValue) {
-            return null;
-        }
+        public extern object ReduceRight(ArrayReduceCallback callback, object initialValue);
 
-        public object ReduceRight(ArrayItemReduceCallback callback) {
-            return null;
-        }
+        public extern object ReduceRight(ArrayItemReduceCallback callback);
 
-        public object ReduceRight(ArrayItemReduceCallback callback, object initialValue) {
-            return null;
-        }
+        public extern object ReduceRight(ArrayItemReduceCallback callback, object initialValue);
 
         [ScriptAlias("ss.remove")]
-        public bool Remove(object item) {
-            return false;
-        }
+        public extern bool Remove(object item);
 
-        public void RemoveAt(int index) {
-        }
+        public extern void RemoveAt(int index);
 
-        public Array RemoveRange(int index, int count) {
-            return null;
-        }
+        public extern Array RemoveRange(int index, int count);
 
-        public void Reverse() {
-        }
+        public extern void Reverse();
 
-        public object Shift() {
-            return null;
-        }
+        public extern object Shift();
 
-        public Array Slice(int start) {
-            return null;
-        }
+        public extern Array Slice(int start);
 
-        public Array Slice(int start, int end) {
-            return null;
-        }
+        public extern Array Slice(int start, int end);
 
-        public bool Some(ArrayFilterCallback filterCallback) {
-            return false;
-        }
+        public extern bool Some(ArrayFilterCallback filterCallback);
 
-        public bool Some(ArrayItemFilterCallback itemFilterCallback) {
-            return false;
-        }
+        public extern bool Some(ArrayItemFilterCallback itemFilterCallback);
 
-        public void Sort() {
-        }
+        public extern void Sort();
 
-        public void Sort(CompareCallback compareCallback) {
-        }
+        public extern void Sort(CompareCallback compareCallback);
 
-        public void Splice(int start, int deleteCount) {
-        }
+        public extern void Splice(int start, int deleteCount);
 
-        public void Splice(int start, int deleteCount, params object[] itemsToInsert) {
-        }
+        public extern void Splice(int start, int deleteCount, params object[] itemsToInsert);
 
-        public void Unshift(params object[] items) {
-        }
+        public extern void Unshift(params object[] items);
 
-        public static implicit operator Array(ArrayList list) {
-            return null;
-        }
+        public extern static implicit operator Array(ArrayList list);
 
-        public static implicit operator object[](ArrayList list) {
-            return null;
-        }
+        public extern static implicit operator object[](ArrayList list);
 
-        public static implicit operator List<object>(ArrayList list) {
-            return null;
-        }
+        public extern static implicit operator List<object>(ArrayList list);
 
-        public static explicit operator ArrayList(object[] array) {
-            return null;
-        }
+        public extern static explicit operator ArrayList(object[] array);
     }
 }

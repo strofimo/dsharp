@@ -1,12 +1,7 @@
-// List.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System.Runtime.CompilerServices;
-
-namespace System.Collections.Generic {
-
+namespace System.Collections.Generic
+{
     // NOTE: Keep in sync with ArrayList and Array
 
     /// <summary>
@@ -15,236 +10,136 @@ namespace System.Collections.Generic {
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public sealed class List<T> : ICollection<T> {
-
-        public List() {
+    public sealed class List<T> : ICollection<T>
+    {
+        public List()
+        {
         }
 
-        public List(int capacity) {
+        public List(int capacity)
+        {
         }
 
-        public List(params T[] items) {
+        public List(params T[] items)
+        {
         }
 
         [ScriptField]
         [ScriptName("length")]
-        public int Count {
-            get {
-                return 0;
-            }
-        }
+        public int Count { get; }
 
         [ScriptField]
-        public T this[int index] {
-            get {
-                return default(T);
-            }
-            set {
-            }
-        }
+        public extern T this[int index] { get; set; }
 
         [ScriptName("push")]
-        public void Add(T item) {
-        }
+        public extern void Add(T item);
 
         [ScriptName("push")]
-        public void AddRange(params T[] items) {
-        }
+        public extern void AddRange(params T[] items);
 
-        public void Clear() {
-        }
+        public extern void Clear();
 
-        public List<T> Concat(params T[] objects) {
-            return null;
-        }
+        public extern List<T> Concat(params T[] objects);
 
-        public bool Contains(object item) {
-            return false;
-        }
+        public extern bool Contains(object item);
 
-        public bool Every(ListFilterCallback<T> filterCallback) {
-            return false;
-        }
+        public extern bool Every(ListFilterCallback<T> filterCallback);
 
-        public bool Every(ListItemFilterCallback<T> itemFilterCallback) {
-            return false;
-        }
+        public extern bool Every(ListItemFilterCallback<T> itemFilterCallback);
 
-        public List<T> Filter(ListFilterCallback<T> filterCallback) {
-            return null;
-        }
+        public extern List<T> Filter(ListFilterCallback<T> filterCallback);
 
-        public List<T> Filter(ListItemFilterCallback<T> itemFilterCallback) {
-            return null;
-        }
+        public extern List<T> Filter(ListItemFilterCallback<T> itemFilterCallback);
 
-        public void ForEach(ListCallback<T> callback) {
-        }
+        public extern void ForEach(ListCallback<T> callback);
 
-        public void ForEach(ListItemCallback<T> itemCallback) {
-        }
+        public extern void ForEach(ListItemCallback<T> itemCallback);
 
-        public IEnumerator<T> GetEnumerator() {
-            return null;
-        }
+        public extern IEnumerator<T> GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return null;
-        }
+        extern IEnumerator IEnumerable.GetEnumerator();
 
-        public List<T> GetRange(int index) {
-            return null;
-        }
+        public extern List<T> GetRange(int index);
 
-        public List<T> GetRange(int index, int count) {
-            return null;
-        }
+        public extern List<T> GetRange(int index, int count);
 
-        public int IndexOf(T item) {
-            return 0;
-        }
+        public extern int IndexOf(T item);
 
-        public int IndexOf(T item, int startIndex) {
-            return 0;
-        }
+        public extern int IndexOf(T item, int startIndex);
 
-        public void Insert(int index, T item) {
-        }
+        public extern void Insert(int index, T item);
 
-        public void InsertRange(int index, params T[] items) {
-        }
+        public extern void InsertRange(int index, params T[] items);
 
-        public string Join() {
-            return null;
-        }
+        public extern string Join();
 
-        public string Join(string delimiter) {
-            return null;
-        }
+        public extern string Join(string delimiter);
 
-        public int LastIndexOf(object item) {
-            return 0;
-        }
+        public extern int LastIndexOf(object item);
 
-        public int LastIndexOf(object item, int fromIndex) {
-            return 0;
-        }
+        public extern int LastIndexOf(object item, int fromIndex);
 
-        public List<TTarget> Map<TTarget>(ListMapCallback<T, TTarget> mapCallback) {
-            return null;
-        }
+        public extern List<TTarget> Map<TTarget>(ListMapCallback<T, TTarget> mapCallback);
 
-        public List<TTarget> Map<TTarget>(ListItemMapCallback<T, TTarget> mapItemCallback) {
-            return null;
-        }
+        public extern List<TTarget> Map<TTarget>(ListItemMapCallback<T, TTarget> mapItemCallback);
 
-        public static List<T> Parse(string s) {
-            return null;
-        }
+        public extern static List<T> Parse(string s);
 
-        public TReduced Reduce<TReduced>(ListReduceCallback<TReduced, T> callback) {
-            return default(TReduced);
-        }
+        public extern TReduced Reduce<TReduced>(ListReduceCallback<TReduced, T> callback);
 
-        public TReduced Reduce<TReduced>(ListReduceCallback<TReduced, T> callback, TReduced initialValue) {
-            return default(TReduced);
-        }
+        public extern TReduced Reduce<TReduced>(ListReduceCallback<TReduced, T> callback, TReduced initialValue);
 
-        public TReduced Reduce<TReduced>(ListItemReduceCallback<TReduced, T> callback) {
-            return default(TReduced);
-        }
+        public extern TReduced Reduce<TReduced>(ListItemReduceCallback<TReduced, T> callback);
 
-        public TReduced Reduce<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue) {
-            return default(TReduced);
-        }
+        public extern TReduced Reduce<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue);
 
-        public TReduced ReduceRight<TReduced>(ListReduceCallback<TReduced, T> callback) {
-            return default(TReduced);
-        }
+        public extern TReduced ReduceRight<TReduced>(ListReduceCallback<TReduced, T> callback);
 
-        public TReduced ReduceRight<TReduced>(ListReduceCallback<TReduced, T> callback, TReduced initialValue) {
-            return default(TReduced);
-        }
+        public extern TReduced ReduceRight<TReduced>(ListReduceCallback<TReduced, T> callback, TReduced initialValue);
 
-        public TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback) {
-            return default(TReduced);
-        }
+        public extern TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback);
 
-        public TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue) {
-            return default(TReduced);
-        }
+        public extern TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue);
 
         [ScriptAlias("ss.remove")]
-        public bool Remove(T item) {
-            return false;
-        }
+        [DSharpScriptMemberName("remove")]
+        public extern bool Remove(T item);
 
-        public void RemoveAt(int index) {
-        }
+        public extern void RemoveAt(int index);
 
-        public List<T> RemoveRange(int index, int count) {
-            return null;
-        }
+        public extern List<T> RemoveRange(int index, int count);
 
-        public void Reverse() {
-        }
+        public extern void Reverse();
 
-        public List<T> Slice(int start) {
-            return null;
-        }
+        public extern List<T> Slice(int start);
 
-        public List<T> Slice(int start, int end) {
-            return null;
-        }
+        public extern List<T> Slice(int start, int end);
 
-        public bool Some(ListFilterCallback<T> filterCallback) {
-            return false;
-        }
+        public extern bool Some(ListFilterCallback<T> filterCallback);
 
-        public bool Some(ListItemFilterCallback<T> itemFilterCallback) {
-            return false;
-        }
+        public extern bool Some(ListItemFilterCallback<T> itemFilterCallback);
 
-        public void Sort() {
-        }
+        public extern void Sort();
 
-        public void Sort(CompareCallback<T> compareCallback) {
-        }
+        public extern void Sort(CompareCallback<T> compareCallback);
 
-        public void Splice(int start, int deleteCount) {
-        }
+        public extern void Splice(int start, int deleteCount);
 
-        public void Splice(int start, int deleteCount, params T[] itemsToInsert) {
-        }
+        public extern void Splice(int start, int deleteCount, params T[] itemsToInsert);
 
-        public void Unshift(params T[] items) {
-        }
+        public extern void Unshift(params T[] items);
 
         [ScriptSkip]
-        public T[] ToArray()
-        {
-            return null;
-        }
+        public extern T[] ToArray();
 
-        public static explicit operator Array(List<T> list) {
-            return null;
-        }
+        public extern static explicit operator Array(List<T> list);
 
-        public static explicit operator object[](List<T> list) {
-            return null;
-        }
+        public extern static explicit operator object[] (List<T> list);
 
-        public static implicit operator T[](List<T> list) {
-            return null;
-        }
+        public extern static implicit operator T[] (List<T> list);
 
-        public static explicit operator ArrayList(List<T> list) {
-            return null;
-        }
+        public extern static explicit operator ArrayList(List<T> list);
 
-        public static explicit operator List<T>(T[] array) {
-            return null;
-        }
+        public extern static explicit operator List<T>(T[] array);
     }
 }

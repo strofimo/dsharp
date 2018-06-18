@@ -1,57 +1,30 @@
-// CultureInfo.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System;
-using System.Runtime.CompilerServices;
-
-namespace System.Globalization {
-
+namespace System.Globalization
+{
     [ScriptImport]
     [ScriptName("culture")]
-    public sealed class CultureInfo {
-
-        private CultureInfo() {
-        }
+    public sealed class CultureInfo
+    {
+        private CultureInfo() { }
 
         [ScriptField]
         [ScriptName("current")]
-        public static CultureInfo CurrentCulture {
-            get {
-                return null;
-            }
-        }
+        public extern static CultureInfo CurrentCulture { get; }
 
         [ScriptField]
         [ScriptName("dtf")]
-        public DateFormatInfo DateFormat {
-            get {
-                return null;
-            }
-        }
+        public extern DateFormatInfo DateFormat { get; }
 
         [ScriptField]
         [ScriptName("neutral")]
-        public static CultureInfo InvariantCulture {
-            get {
-                return null;
-            }
-        }
+        public extern static CultureInfo InvariantCulture { get; }
 
         [ScriptField]
-        public string Name {
-            get {
-                return null;
-            }
-        }
+        public extern string Name { get; }
 
         [ScriptField]
         [ScriptName("nf")]
-        public NumberFormatInfo NumberFormat {
-            get {
-                return null;
-            }
-        }
+        public extern NumberFormatInfo NumberFormat { get; }
     }
 }

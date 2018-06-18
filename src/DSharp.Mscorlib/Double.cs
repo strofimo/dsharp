@@ -1,20 +1,15 @@
-// Double.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System.Runtime.CompilerServices;
-
-namespace System {
-
+namespace System
+{
     /// <summary>
     /// The double data type which is mapped to the Number type in Javascript.
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Number")]
-    public struct Double {
-
+    public struct Double
+    {
         [ScriptName("MAX_VALUE")]
         public const double MaxValue = 0;
 
@@ -31,52 +26,40 @@ namespace System {
         public const double PositiveInfinity = 0;
 
         [ScriptAlias("parseFloat")]
-        public static double Parse(string s) {
-            return 0;
-        }
+        public extern static double Parse(string s);
 
         /// <summary>
         /// Returns a string containing the value represented in exponential notation.
         /// </summary>
         /// <returns>The exponential representation</returns>
-        public string ToExponential() {
-            return null;
-        }
+        public extern string ToExponential();
 
         /// <summary>
         /// Returns a string containing the value represented in exponential notation.
         /// </summary>
         /// <param name="fractionDigits">The number of digits after the decimal point from 0 - 20</param>
         /// <returns>The exponential representation</returns>
-        public string ToExponential(int fractionDigits) {
-            return null;
-        }
+        public extern string ToExponential(int fractionDigits);
 
         /// <summary>
         /// Returns a string representing the value in fixed-point notation.
         /// </summary>
         /// <returns>The fixed-point notation</returns>
-        public string ToFixed() {
-            return null;
-        }
+        public extern string ToFixed();
 
         /// <summary>
         /// Returns a string representing the value in fixed-point notation.
         /// </summary>
         /// <param name="fractionDigits">The number of digits after the decimal point from 0 - 20</param>
         /// <returns>The fixed-point notation</returns>
-        public string ToFixed(int fractionDigits) {
-            return null;
-        }
+        public extern string ToFixed(int fractionDigits);
 
         /// <summary>
         /// Returns a string containing the value represented either in exponential or
         /// fixed-point notation with a specified number of digits.
         /// </summary>
         /// <returns>The string representation of the value.</returns>
-        public string ToPrecision() {
-            return null;
-        }
+        public extern string ToPrecision();
 
         /// <summary>
         /// Returns a string containing the value represented either in exponential or
@@ -84,13 +67,9 @@ namespace System {
         /// </summary>
         /// <param name="precision">The number of significant digits (in the range 1 to 21)</param>
         /// <returns>The string representation of the value.</returns>
-        public string ToPrecision(int precision) {
-            return null;
-        }
+        public extern string ToPrecision(int precision);
 
-        /// <internalonly />
-        public static implicit operator Number(double i) {
-            return null;
-        }
+        //TODO: Move to Number type
+        public extern static implicit operator Number(double i);
     }
 }

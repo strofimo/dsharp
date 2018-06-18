@@ -1,61 +1,35 @@
-// Exception.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System.Collections;
+﻿using System.Collections;
 using System.Runtime.CompilerServices;
 
-namespace System {
-
+namespace System
+{
     /// <summary>
     /// Equivalent to the Error type in Javascript.
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Error")]
-    public class Exception {
-
-        public Exception(string message) {
-        }
-
-        [ScriptField]
-        public Exception InnerException {
-            get {
-                return null;
-            }
-        }
+    public class Exception
+    {
+        public Exception(string message) { }
 
         [ScriptField]
-        public string Message {
-            get {
-                return null;
-            }
-        }
+        public extern Exception InnerException { get; }
+
+        [ScriptField]
+        public extern string Message { get; }
 
         [ScriptField]
         [ScriptName("stack")]
-        public string StackTrace {
-            get {
-                return null;
-            }
-        }
+        public extern string StackTrace { get; }
 
         [ScriptField]
-        public object this[string key] {
-            get {
-                return null;
-            }
-        }
+        public extern object this[string key] { get; }
 
         [ScriptAlias("ss.error")]
-        public static Exception Create(string message, Dictionary errorInfo) {
-            return null;
-        }
+        public extern static Exception Create(string message, Dictionary errorInfo);
 
         [ScriptAlias("ss.error")]
-        public static Exception Create(string message, Dictionary errorInfo, Exception innerException) {
-            return null;
-        }
+        public extern static Exception Create(string message, Dictionary errorInfo, Exception innerException);
     }
 }

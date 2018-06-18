@@ -1,225 +1,102 @@
-// ElementEvent.cs
-// Script#/Libraries/Web
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System;
-using System.Runtime.CompilerServices;
-
-namespace System.Html {
+namespace System.Html
+{
 
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public class ElementEvent {
-
-        internal ElementEvent() {
-        }
-
-        [ScriptField]
-        public bool AltKey {
-            get {
-                return false;
-            }
-        }
-
-        [ScriptField]
-        public int Button {
-            get {
-                return 0;
-            }
-        }
-
-        [ScriptField]
-        public bool CancelBubble {
-            get {
-                return false;
-            }
-            set {
-            }
-        }
-
-        [ScriptField]
-        public int ClientX {
-            get {
-                return 0;
-            }
-        }
-
-        [ScriptField]
-        public int ClientY {
-            get {
-                return 0;
-            }
-        }
-
-        [ScriptField]
-        public bool CtrlKey {
-            get {
-                return false;
-            }
-        }
-
-        [ScriptField]
-        public Element CurrentTarget {
-            get {
-                return null;
-            }
-        }
-
-        [ScriptField]
-        public DataTransfer DataTransfer {
-            get {
-                return null;
-            }
-        }
-
-        [ScriptField]
-        public string Detail {
-            get {
-                return null;
-            }
-        }
-
-        [ScriptField]
-        public Element FromElement {
-            get {
-                return null;
-            }
-        }
-
-        [ScriptField]
-        public int KeyCode {
-            get {
-                return 0;
-            }
-        }
-
-        [ScriptField]
-        public bool MetaKey {
-            get {
-                return false;
-            }
-        }
-
-        [ScriptField]
-        public int OffsetX {
-            get {
-                return 0;
-            }
-        }
-
-        [ScriptField]
-        public int OffsetY {
-            get {
-                return 0;
-            }
-        }
-
-        [ScriptField]
-        public int PageX {
-            get {
-                return 0;
-            }
-        }
-
-        [ScriptField]
-        public int PageY {
-            get {
-                return 0;
-            }
-        }
-
-        [ScriptField]
-        public bool ReturnValue {
-            get {
-                return false;
-            }
-            set {
-            }
-        }
-
-        [ScriptField]
-        public int ScreenX {
-            get {
-                return 0;
-            }
-        }
-
-        [ScriptField]
-        public int ScreenY {
-            get {
-                return 0;
-            }
-        }
-
-        [ScriptField]
-        public bool ShiftKey {
-            get {
-                return false;
-            }
-        }
-
-        [ScriptField]
-        public Element SrcElement {
-            get {
-                return null;
-            }
-        }
-
-        [ScriptField]
-        public Element Target {
-            get {
-                return null;
-            }
-        }
-
-        [ScriptField]
-        public Date TimeStamp {
-            get {
-                return null;
-            }
-        }
-
-        [ScriptField]
-        public Element ToElement {
-            get {
-                return null;
-            }
-        }
-
-        [ScriptField]
-        public string Type {
-            get {
-                return null;
-            }
-        }
-
-        [ScriptField]
-        public bool Bubbles
+    public class ElementEvent
+    {
+        internal ElementEvent()
         {
-            get
-            {
-                return false;
-            }
         }
 
         [ScriptField]
-        public bool Cancelable
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public extern bool AltKey { get; }
+
+        [ScriptField]
+        public extern int Button { get; }
+
+        [ScriptField]
+        public extern bool CancelBubble { get; set; }
+
+        [ScriptField]
+        public extern int ClientX { get; }
+
+        [ScriptField]
+        public extern int ClientY { get; }
+
+        [ScriptField]
+        public extern bool CtrlKey { get; }
+
+        [ScriptField]
+        public extern Element CurrentTarget { get; }
+
+        [ScriptField]
+        public extern DataTransfer DataTransfer { get; }
+
+        [ScriptField]
+        public extern string Detail { get; }
+
+        [ScriptField]
+        public extern Element FromElement { get; }
+
+        [ScriptField]
+        public extern int KeyCode { get; }
+
+        [ScriptField]
+        public extern bool MetaKey { get; }
+
+        [ScriptField]
+        public extern int OffsetX { get; }
+
+        [ScriptField]
+        public extern int OffsetY { get; }
+
+        [ScriptField]
+        public extern int PageX { get; }
+
+        [ScriptField]
+        public extern int PageY { get; }
+
+        [ScriptField]
+        public extern bool ReturnValue { get; set; }
+
+        [ScriptField]
+        public extern int ScreenX { get; }
+
+        [ScriptField]
+        public extern int ScreenY { get; }
+
+        [ScriptField]
+        public extern bool ShiftKey { get; }
+
+        [ScriptField]
+        public extern Element SrcElement { get; }
+
+        [ScriptField]
+        public extern Element Target { get; }
+
+        [ScriptField]
+        public extern Date TimeStamp { get; }
+
+        [ScriptField]
+        public extern Element ToElement { get; }
+
+        [ScriptField]
+        public extern string Type { get; }
+
+        [ScriptField]
+        public extern bool Bubbles { get; }
+
+        [ScriptField]
+        public extern bool Cancelable { get; }
 
 
-        public void PreventDefault() {
-        }
+        public extern void PreventDefault();
 
-        public void StopImmediatePropagation() {
-        }
+        public extern void StopImmediatePropagation();
 
-        public void StopPropagation() {
-        }
+        public extern void StopPropagation();
     }
 }

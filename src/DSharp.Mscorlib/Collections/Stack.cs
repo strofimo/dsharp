@@ -1,39 +1,21 @@
-// Stack.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System;
-using System.Runtime.CompilerServices;
-
-namespace System.Collections {
-
+namespace System.Collections
+{
     [ScriptImport]
-    public sealed class Stack {
-
+    public sealed class Stack
+    {
         [ScriptField]
-        public int Count {
-            get {
-                return 0;
-            }
-        }
+        public extern int Count { get; }
 
-        public void Clear() {
-        }
+        public extern void Clear();
 
-        public bool Contains(object item) {
-            return false;
-        }
+        public extern bool Contains(object item);
 
-        public object Peek() {
-            return null;
-        }
+        public extern object Peek();
 
-        public object Pop() {
-            return null;
-        }
+        public extern object Pop();
 
-        public void Push(object item) {
-        }
+        public extern void Push(object item);
     }
 }

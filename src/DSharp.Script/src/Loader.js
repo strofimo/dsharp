@@ -8,18 +8,11 @@ var ds = (function (global) {
         IDisposable: defineInterface(IDisposable),
         IEnumerable: defineInterface(IEnumerable),
         IEnumerator: defineInterface(IEnumerator),
-        IObserver: defineInterface(IObserver),
-        IApplication: defineInterface(IApplication),
-        IContainer: defineInterface(IContainer),
-        IObjectFactory: defineInterface(IObjectFactory),
-        IEventManager: defineInterface(IEventManager),
-        IInitializable: defineInterface(IInitializable),
         EventArgs: defineClass(EventArgs, {}, [], null),
         CancelEventArgs: defineClass(CancelEventArgs, {}, [], null),
         StringBuilder: defineClass(StringBuilder, StringBuilder$, [], null),
         Stack: defineClass(Stack, Stack$, [], null),
         Queue: defineClass(Queue, Queue$, [], null),
-        Task: defineClass(Task, Task$, [], null),
         Guid: defineClass(Guid, Guid$, [], null)
     }), {
             version: {{version}},

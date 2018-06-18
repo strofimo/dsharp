@@ -1,10 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace System.Collections.ObjectModel
 {
+    //TODO: Look at removing this non-standard type
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
@@ -47,7 +46,7 @@ namespace System.Collections.ObjectModel
         public abstract int IndexOf(T item);
 
         public abstract void Insert(int index, T item);
-        
+
         [ScriptAlias("ss.remove")]
         public abstract bool Remove(T item);
 
