@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // TypeTests.Foo
@@ -49,7 +49,7 @@ define('test', ['ss'], function(ss) {
   // TypeTests.MyClass2
 
   function MyClass2() {
-    MyClass.call(this);
+    MyClads.call(this);
   }
   var MyClass2$ = {
 
@@ -59,24 +59,24 @@ define('test', ['ss'], function(ss) {
   // TypeTests.MyClass4
 
   function MyClass4(foo, bar, disposable) {
-    MyClass.call(this);
-    var f = ss.createInstance();
-    var b = ss.createInstance(BarBaz, f);
+    MyClads.call(this);
+    var f = ds.createInstance();
+    var b = ds.createInstance(BarBaz, f);
   }
   var MyClass4$ = {
 
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      FooBaz: ss.defineClass(FooBaz, FooBaz$, [], null),
-      BarBaz: ss.defineClass(BarBaz, BarBaz$, [FooBaz], null),
-      MyClass: ss.defineClass(MyClass, MyClass$, [], null),
-      MyClass3: ss.defineClass(MyClass3, MyClass3$, [], null, [ss.IDisposable]),
-      StaticClass: ss.defineClass(StaticClass, null, [], null),
-      MyClass2: ss.defineClass(MyClass2, MyClass2$, [], MyClass),
-      MyClass4: ss.defineClass(MyClass4, MyClass4$, [FooBaz, BarBaz, ss.IDisposable], MyClass, [ss.IDisposable])
+      FooBaz: ds.defineClass(FooBaz, FooBaz$, [], null),
+      BarBaz: ds.defineClass(BarBaz, BarBaz$, [FooBaz], null),
+      MyClass: ds.defineClass(MyClass, MyClass$, [], null),
+      MyClass3: ds.defineClass(MyClass3, MyClass3$, [], null, [ds.IDisposable]),
+      StaticClass: ds.defineClass(StaticClass, null, [], null),
+      MyClass2: ds.defineClass(MyClass2, MyClass2$, [], MyClass),
+      MyClass4: ds.defineClass(MyClass4, MyClass4$, [FooBaz, BarBaz, ds.IDisposable], MyClass, [ds.IDisposable])
     });
 
 

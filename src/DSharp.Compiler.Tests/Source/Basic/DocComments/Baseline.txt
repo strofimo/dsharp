@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // BasicTests.Suit
@@ -30,7 +30,7 @@ define('test', ['ss'], function(ss) {
 
   function BaseClass(domElement, name, count) {
     /// <summary>
-    /// Represents a base class.
+    /// Represents a base clads.
     /// </summary>
     /// <param name="domElement" type="Object" domElement="true">
     /// The parent element.
@@ -58,14 +58,14 @@ define('test', ['ss'], function(ss) {
     this.instanceField = 0;
     this._domElement = domElement;
   }
-  ss.createPropertyGet(BaseClass, 'TotalCount', function() {
+  ds.createPropertyGet(BaseClass, 'TotalCount', function() {
     /// <summary>
     /// Gets the total count.
     /// </summary>
     /// <value type="Number" integer="true"></value>
     return 0;
   });
-  BaseClass.staticMethod = function(length) {
+  BaseClads.staticMethod = function(length) {
     /// <summary>
     /// A static method.
     /// </summary>
@@ -121,14 +121,14 @@ define('test', ['ss'], function(ss) {
       /// Adds or removes a delegate for the Initialized event.
       /// </summary>
       /// <param name="value" type="Function" />
-      this.__initialized = ss.bindAdd(this.__initialized, value);
+      this.__initialized = ds.bindAdd(this.__initialized, value);
     },
     remove_initialized: function(value) {
       /// <summary>
       /// Adds or removes a delegate for the Initialized event.
       /// </summary>
       /// <param name="value" type="Function" />
-      this.__initialized = ss.bindSub(this.__initialized, value);
+      this.__initialized = ds.bindSub(this.__initialized, value);
     },
     method1: function() {
       /// <summary>
@@ -197,7 +197,7 @@ define('test', ['ss'], function(ss) {
 
   function InternalClass() {
     /// <summary>
-    /// An internal class.
+    /// An internal clads.
     /// </summary>
   }
   var InternalClass$ = {
@@ -227,9 +227,9 @@ define('test', ['ss'], function(ss) {
 
   function DerivedClass() {
     /// <summary>
-    /// Represents a derived class.
+    /// Represents a derived clads.
     /// </summary>
-    BaseClass.call(this, null, null, 0);
+    BaseClads.call(this, null, null, 0);
   }
   var DerivedClass$ = {
     method3: function(first, last) {
@@ -246,20 +246,20 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test',
+  var $exports = ds.module('test',
     {
-      InternalClass: ss.defineClass(InternalClass, InternalClass$, [], null),
-      InternalClassWithNoComments: ss.defineClass(InternalClassWithNoComments, InternalClassWithNoComments$, [], null)
+      InternalClass: ds.defineClass(InternalClass, InternalClass$, [], null),
+      InternalClassWithNoComments: ds.defineClass(InternalClassWithNoComments, InternalClassWithNoComments$, [], null)
     },
     {
       Suit: Suit,
-      IInterface: ss.defineInterface(IInterface),
+      IInterface: ds.defineInterface(IInterface),
       RecordClass: RecordClass,
-      BaseClass: ss.defineClass(BaseClass, BaseClass$, [Element, String, Number], null),
-      DerivedClass: ss.defineClass(DerivedClass, DerivedClass$, [], BaseClass)
+      BaseClass: ds.defineClass(BaseClass, BaseClass$, [Element, String, Number], null),
+      DerivedClass: ds.defineClass(DerivedClass, DerivedClass$, [], BaseClass)
     });
 
-  BaseClass.constantField = 3;
+  BaseClads.constantField = 3;
 
   return $exports;
 });

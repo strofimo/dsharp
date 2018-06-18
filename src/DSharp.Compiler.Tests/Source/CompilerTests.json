@@ -246,11 +246,6 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
-        "Name": "Tasks",
-        "SourceFiles": [ "Code.cs" ],
-        "ComparisonFile": "Baseline.txt"
-      },
-      {
         "Name": "Truthy",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"

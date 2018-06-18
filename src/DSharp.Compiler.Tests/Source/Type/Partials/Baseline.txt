@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // TypeTests.IMyInterface
@@ -88,7 +88,7 @@ define('test', ['ss'], function(ss) {
   // TypeTests.DerivedMemberClass
 
   function DerivedMemberClass() {
-    SingleMemberClass.call(this);
+    SingleMemberClads.call(this);
   }
   var DerivedMemberClass$ = {
 
@@ -98,7 +98,7 @@ define('test', ['ss'], function(ss) {
   // TypeTests.DerivedMergedMembersClass
 
   function DerivedMergedMembersClass() {
-    MergedMembersClass.call(this);
+    MergedMembersClads.call(this);
     this.name = this.bar + this.bar + 'Name';
   }
   var DerivedMergedMembersClass$ = {
@@ -112,7 +112,7 @@ define('test', ['ss'], function(ss) {
       var e1 = document.getElementById(this.bar);
       var e2 = document.getElementById(this.name);
       var e3 = document.getElementById(this.bar);
-      var s = this.testMethod() + MergedMembersClass.prototype.testMethod.call(this);
+      var s = this.testMethod() + MergedMembersClads.prototype.testMethod.call(this);
     },
     get_item: function(s) {
       return s;
@@ -120,19 +120,19 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test',
+  var $exports = ds.module('test',
     {
-      SingleMemberClass: ss.defineClass(SingleMemberClass, SingleMemberClass$, [], null),
-      SomeClass: ss.defineClass(SomeClass, SomeClass$, [], null)
+      SingleMemberClass: ds.defineClass(SingleMemberClass, SingleMemberClass$, [], null),
+      SomeClass: ds.defineClass(SomeClass, SomeClass$, [], null)
     },
     {
-      IMyInterface: ss.defineInterface(IMyInterface),
-      EmptyClass: ss.defineClass(EmptyClass, EmptyClass$, [], null),
-      MergedMembersClass: ss.defineClass(MergedMembersClass, MergedMembersClass$, [], null),
-      MyClass: ss.defineClass(MyClass, MyClass$, [], null, [IMyInterface]),
-      App: ss.defineClass(App, App$, [], null),
-      DerivedMemberClass: ss.defineClass(DerivedMemberClass, DerivedMemberClass$, [], SingleMemberClass),
-      DerivedMergedMembersClass: ss.defineClass(DerivedMergedMembersClass, DerivedMergedMembersClass$, [], MergedMembersClass)
+      IMyInterface: ds.defineInterface(IMyInterface),
+      EmptyClass: ds.defineClass(EmptyClass, EmptyClass$, [], null),
+      MergedMembersClass: ds.defineClass(MergedMembersClass, MergedMembersClass$, [], null),
+      MyClass: ds.defineClass(MyClass, MyClass$, [], null, [IMyInterface]),
+      App: ds.defineClass(App, App$, [], null),
+      DerivedMemberClass: ds.defineClass(DerivedMemberClass, DerivedMemberClass$, [], SingleMemberClass),
+      DerivedMergedMembersClass: ds.defineClass(DerivedMergedMembersClass, DerivedMergedMembersClass$, [], MergedMembersClass)
     });
 
 

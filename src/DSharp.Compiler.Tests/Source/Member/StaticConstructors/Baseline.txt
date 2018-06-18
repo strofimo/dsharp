@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // MemberTests.Behavior
@@ -58,17 +58,17 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      Behavior: ss.defineClass(Behavior, Behavior$, [Element, String], null),
-      MyClass: ss.defineClass(MyClass, MyClass$, [Date], null),
-      MyClassEmpty: ss.defineClass(MyClassEmpty, MyClassEmpty$, [], null),
-      MyClassSimple: ss.defineClass(MyClassSimple, MyClassSimple$, [], null),
-      MyClassSimpleMulti: ss.defineClass(MyClassSimpleMulti, MyClassSimpleMulti$, [], null),
-      MyBehavior: ss.defineClass(MyBehavior, MyBehavior$, [Element], Behavior)
+      Behavior: ds.defineClass(Behavior, Behavior$, [Element, String], null),
+      MyClass: ds.defineClass(MyClass, MyClass$, [Date], null),
+      MyClassEmpty: ds.defineClass(MyClassEmpty, MyClassEmpty$, [], null),
+      MyClassSimple: ds.defineClass(MyClassSimple, MyClassSimple$, [], null),
+      MyClassSimpleMulti: ds.defineClass(MyClassSimpleMulti, MyClassSimpleMulti$, [], null),
+      MyBehavior: ds.defineClass(MyBehavior, MyBehavior$, [Element], Behavior)
     });
 
-  MyClass.instance = new MyClass(ss.now());
+  MyClads.instance = new MyClass(ds.now());
   alert('simple static ctor');
   alert('simple static ctor with multiple statements');
   document.getElementById('foo').innerHTML = '...';

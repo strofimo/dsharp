@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // ExpressionTests.App
@@ -13,18 +13,18 @@ define('test', ['ss'], function(ss) {
       arg = (arg || 10 || 100);
       var s = (arg || 10).toString(10);
       var b = !!arg;
-      var sb = ss.createInstance(ss.StringBuilder);
-      sb = ss.createInstance(ss.StringBuilder, 'aaa');
+      var sb = ds.createInstance(ds.StringBuilder);
+      sb = ds.createInstance(ds.StringBuilder, 'aaa');
       var i;
       var tick = function() {
         i = 10;
       };
       var cookie = setInterval(tick, 500);
       clearInterval(cookie);
-      var isNotSet = !ss.isValue(i);
+      var isNotSet = !ds.isValue(i);
       b = (i === null);
       b = (i === undefined);
-      b = ss.isValue(i);
+      b = ds.isValue(i);
       b = isNaN(0);
       b = isFinite(3);
       b = !!(0);
@@ -37,14 +37,14 @@ define('test', ['ss'], function(ss) {
       addition = 2 + 3;
       var g = $global;
       var u = undefined;
-      var coreModule = ss.modules['ss'];
+      var coreModule = ds.modules['ds'];
     }
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      App: ss.defineClass(App, App$, [], null)
+      App: ds.defineClass(App, App$, [], null)
     });
 
 

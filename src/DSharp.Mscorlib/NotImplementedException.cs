@@ -7,7 +7,7 @@ namespace System
     [ScriptName("Error")]
     public class NotImplementedException : Exception
     {
-        public NotImplementedException() 
+        public NotImplementedException()
             : base(null)
         {
         }

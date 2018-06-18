@@ -13,9 +13,9 @@
   };
 
 
-  var $exports = ss.module('basic', null,
+  var $exports = ds.module('basic', null,
     {
-      App: ss.defineClass(App, App$, [], null)
+      App: ds.defineClass(App, App$, [], null)
     });
 
 

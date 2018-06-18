@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // TypeTests.Sub1.Sub2.MyClass
@@ -82,16 +82,16 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      MyClass: ss.defineClass(MyClass, MyClass$, [], null),
-      YourClass: ss.defineClass(YourClass, YourClass$, [], null),
-      YourClass1: ss.defineClass(YourClass1, YourClass1$, [], null),
-      MyClassF: ss.defineClass(MyClassF, MyClassF$, [], null),
-      Test: ss.defineClass(Test, Test$, [], null),
-      Utility: ss.defineClass(Utility, Utility$, [], null),
-      UtilityP: ss.defineClass(UtilityP, UtilityP$, [], null),
-      Component: ss.defineClass(Component, Component$, [], null)
+      MyClass: ds.defineClass(MyClass, MyClass$, [], null),
+      YourClass: ds.defineClass(YourClass, YourClass$, [], null),
+      YourClass1: ds.defineClass(YourClass1, YourClass1$, [], null),
+      MyClassF: ds.defineClass(MyClassF, MyClassF$, [], null),
+      Test: ds.defineClass(Test, Test$, [], null),
+      Utility: ds.defineClass(Utility, Utility$, [], null),
+      UtilityP: ds.defineClass(UtilityP, UtilityP$, [], null),
+      Component: ds.defineClass(Component, Component$, [], null)
     });
 
 

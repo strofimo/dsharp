@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // TypeTests.IMarker
@@ -62,7 +62,7 @@ define('test', ['ss'], function(ss) {
     useInterfaces: function(runnable) {
       runnable.dispose();
       var s = [];
-      ss.enumerate(s);
+      ds.enumerate(s);
       var someValue = new Foo().get_item('someValuesKey');
     }
   };
@@ -82,15 +82,15 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      IMarker: ss.defineInterface(IMarker),
-      ISerializable: ss.defineInterface(ISerializable),
-      IRunnable: ss.defineInterface(IRunnable, [IMarker, ss.IDisposable]),
-      MyObject: ss.defineClass(MyObject, MyObject$, [], null, [ss.IDisposable]),
-      Foo: ss.defineClass(Foo, Foo$, [], null, [IMarker, ISerializable, IRunnable]),
-      Program: ss.defineClass(Program, Program$, [], null),
-      MyObject2: ss.defineClass(MyObject2, MyObject2$, [], MyObject, [IRunnable])
+      IMarker: ds.defineInterface(IMarker),
+      ISerializable: ds.defineInterface(ISerializable),
+      IRunnable: ds.defineInterface(IRunnable, [IMarker, ds.IDisposable]),
+      MyObject: ds.defineClass(MyObject, MyObject$, [], null, [ds.IDisposable]),
+      Foo: ds.defineClass(Foo, Foo$, [], null, [IMarker, ISerializable, IRunnable]),
+      Program: ds.defineClass(Program, Program$, [], null),
+      MyObject2: ds.defineClass(MyObject2, MyObject2$, [], MyObject, [IRunnable])
     });
 
 

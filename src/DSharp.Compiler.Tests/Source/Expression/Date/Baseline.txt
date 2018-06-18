@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // ExpressionTests.App
@@ -11,13 +11,13 @@ define('test', ['ss'], function(ss) {
     equality: function() {
       var d1 = null;
       var d2 = null;
-      if (ss.compareDates(d1, d2)) {
+      if (ds.compareDates(d1, d2)) {
       }
-      if (!ss.compareDates(d1, d2)) {
+      if (!ds.compareDates(d1, d2)) {
       }
-      if (ss.compareDates(d1, ss.now())) {
+      if (ds.compareDates(d1, ds.now())) {
       }
-      if (!ss.compareDates(d1, new Date())) {
+      if (!ds.compareDates(d1, new Date())) {
       }
       var o;
       if (d1 === o) {
@@ -28,9 +28,9 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      App: ss.defineClass(App, App$, [], null)
+      App: ds.defineClass(App, App$, [], null)
     });
 
 

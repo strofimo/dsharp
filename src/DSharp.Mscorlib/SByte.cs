@@ -1,33 +1,24 @@
-// SByte.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System.Runtime.CompilerServices;
-
-namespace System {
-
+namespace System
+{
     /// <summary>
     /// The signed byte data type which is mapped to the Number type in Javascript.
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Number")]
-    public struct SByte {
-
+    public struct SByte
+    {
         /// <summary>
         /// Converts the value to its string representation.
         /// </summary>
         /// <param name="radix">The radix used in the conversion (eg. 10 for decimal, 16 for hexadecimal)</param>
         /// <returns>The string representation of the value.</returns>
-        public string ToString(int radix) {
-            return null;
-        }
+        public extern string ToString(int radix);
 
-        /// <internalonly />
+        //TODO: Move to number type
         [CLSCompliant(false)]
-        public static implicit operator Number(sbyte i) {
-            return null;
-        }
+        public extern static implicit operator Number(sbyte i);
     }
 }

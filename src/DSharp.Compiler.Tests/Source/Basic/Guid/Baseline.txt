@@ -1,21 +1,21 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // GuidTests.PublicClass
 
   function PublicClass() {
-    var guid = ss.Guid.NewGuid();
+    var guid = ds.Guid.NewGuid();
   }
   var PublicClass$ = {
 
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      PublicClass: ss.defineClass(PublicClass, PublicClass$, [], null)
+      PublicClass: ds.defineClass(PublicClass, PublicClass$, [], null)
     });
 
 

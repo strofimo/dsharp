@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // MemberTests.Mode
@@ -57,14 +57,14 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test',
+  var $exports = ds.module('test',
     {
       Point: Point
     },
     {
       Mode: Mode,
-      Test: ss.defineClass(Test, Test$, [], null),
-      App: ss.defineClass(App, App$, [], null)
+      Test: ds.defineClass(Test, Test$, [], null),
+      App: ds.defineClass(App, App$, [], null)
     });
 
   Test.greeting = 'Hello!';

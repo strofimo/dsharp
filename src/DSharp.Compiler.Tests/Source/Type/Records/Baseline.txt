@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // TypeTests.Point
@@ -18,7 +18,7 @@ define('test', ['ss'], function(ss) {
   function Pair() { return {}; }
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
       Point: Point,
       Pair: Pair

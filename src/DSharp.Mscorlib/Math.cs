@@ -1,19 +1,14 @@
-// Math.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System.Runtime.CompilerServices;
-
-namespace System {
-
+namespace System
+{
     /// <summary>
     /// Equivalent to the Math object in Javascript.
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public static class Math {
-
+    public static class Math
+    {
         [ScriptName(PreserveCase = true)]
         public static double E;
 
@@ -38,91 +33,52 @@ namespace System {
         [ScriptName(PreserveCase = true)]
         public static double SQRT2;
 
-        public static Number Abs(Number n) {
-            return 0;
-        }
+        public extern static Number Abs(Number n);
 
-        public static Number Acos(Number n) {
-            return 0;
-        }
+        public extern static Number Acos(Number n);
 
-        public static Number Asin(Number n) {
-            return 0;
-        }
+        public extern static Number Asin(Number n);
 
-        public static Number Atan(Number n) {
-            return 0;
-        }
+        public extern static Number Atan(Number n);
 
-        public static Number Atan2(Number x, Number y) {
-            return 0;
-        }
+        public extern static Number Atan2(Number x, Number y);
 
-        public static Number Ceil(Number n) {
-            return 0;
-        }
+        public extern static Number Ceil(Number n);
 
-        public static Number Cos(Number n) {
-            return 0;
-        }
+        public extern static Number Cos(Number n);
 
-        public static Number Exp(Number n) {
-            return 0;
-        }
+        public extern static Number Exp(Number n);
 
-        public static Number Floor(Number n) {
-            return 0;
-        }
+        public extern static Number Floor(Number n);
 
-        public static Number Log(Number n) {
-            return 0;
-        }
+        public extern static Number Log(Number n);
 
-        public static Number Max(params Number[] numbers) {
-            return 0;
-        }
+        public extern static Number Max(params Number[] numbers);
 
-        public static Number Min(params Number[] numbers) {
-            return 0;
-        }
+        public extern static Number Min(params Number[] numbers);
 
-        public static Number Pow(Number baseNumber, Number exponent) {
-            return 0;
-        }
+        public extern static Number Pow(Number baseNumber, Number exponent);
 
-        public static Number Random() {
-            return 0;
-        }
+        public extern static Number Random();
 
-        public static Number Round(Number n) {
-            return 0;
-        }
+        public extern static Number Round(Number n);
 
-        public static Number Sin(Number n) {
-            return 0;
-        }
+        public extern static Number Sin(Number n);
 
-        public static Number Sqrt(Number n) {
-            return 0;
-        }
+        public extern static Number Sqrt(Number n);
 
-        public static Number Tan(Number n) {
-            return 0;
-        }
+        public extern static Number Tan(Number n);
 
         [ScriptAlias("ss.truncate")]
-        public static int Truncate(Number n) {
-            return 0;
-        }
+        [DSharpScriptMemberName("truncate")]
+        public extern static int Truncate(Number n);
 
         [ScriptAlias("ss.truncate")]
-        public static int Truncate(double n) {
-            return 0;
-        }
+        [DSharpScriptMemberName("truncate")]
+        public extern static int Truncate(double n);
 
         [ScriptAlias("ss.truncate")]
-        public static int Truncate(float n) {
-            return 0;
-        }
+        [DSharpScriptMemberName("truncate")]
+        public extern static int Truncate(float n);
     }
 }

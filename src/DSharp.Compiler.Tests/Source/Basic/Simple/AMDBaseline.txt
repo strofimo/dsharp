@@ -5,7 +5,7 @@
 
 "use strict";
 
-define('basic', ['ss'], function(ss) {
+define('basic', ['ds'], function(ss) {
   var $global = this;
 
   // Basic.EventArgs
@@ -24,10 +24,10 @@ define('basic', ['ss'], function(ss) {
   }
   var Button$ = {
     add_click: function(value) {
-      this.__click = ss.bindAdd(this.__click, value);
+      this.__click = ds.bindAdd(this.__click, value);
     },
     remove_click: function(value) {
-      this.__click = ss.bindSub(this.__click, value);
+      this.__click = ds.bindSub(this.__click, value);
     },
     $get_text: function() {
       return this._text;
@@ -44,10 +44,10 @@ define('basic', ['ss'], function(ss) {
 
   function App() {
     this._btn1 = new Button('OK');
-    this._btn1.add_click(ss.bind('_onClickButton', this));
-    this._btn1.add_click(ss.bind('_onClickButtonDup', this));
+    this._btn1.add_click(ds.bind('_onClickButton', this));
+    this._btn1.add_click(ds.bind('_onClickButtonDup', this));
     this._btn2 = new Button('Cancel');
-    this._btn2.add_click(ss.bind('_onClickButton', this));
+    this._btn2.add_click(ds.bind('_onClickButton', this));
   }
   App.main = function(args) {
     var theApp = new App();
@@ -66,11 +66,11 @@ define('basic', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('basic', null,
+  var $exports = ds.module('basic', null,
     {
-      EventArgs: ss.defineClass(EventArgs, EventArgs$, [], null),
-      Button: ss.defineClass(Button, Button$, [String], null),
-      App: ss.defineClass(App, App$, [], null)
+      EventArgs: ds.defineClass(EventArgs, EventArgs$, [], null),
+      Button: ds.defineClass(Button, Button$, [String], null),
+      App: ds.defineClass(App, App$, [], null)
     });
 
   EventArgs.Empty = new EventArgs();

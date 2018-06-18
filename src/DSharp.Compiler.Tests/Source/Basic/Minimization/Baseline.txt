@@ -39,7 +39,7 @@ Script
 
 "use strict";
 
-define('test', ['ss', 'lib'], function(ss, lib) {
+define('test', ['ds', 'lib'], function(ss, lib) {
   var $global = this;
 
   // BasicTests.AppFlags
@@ -193,7 +193,7 @@ define('test', ['ss', 'lib'], function(ss, lib) {
   // BasicTests.BaseClass
 
   function BaseClass() {
-    BaseBaseClass.call(this);
+    BaseBaseClads.call(this);
   }
   var BaseClass$ = {
     $1: function() {
@@ -305,10 +305,10 @@ define('test', ['ss', 'lib'], function(ss, lib) {
   }
   var FooBehavior$ = {
     add_c$4: function(value) {
-      this.c$5 = ss.bindAdd(this.c$5, value);
+      this.c$5 = ds.bindAdd(this.c$5, value);
     },
     remove_c$4: function(value) {
-      this.c$5 = ss.bindSub(this.c$5, value);
+      this.c$5 = ds.bindSub(this.c$5, value);
     },
     dispose: function() {
       this.c$0 = 0;
@@ -328,7 +328,7 @@ define('test', ['ss', 'lib'], function(ss, lib) {
   // BasicTests.DerivedClass
 
   function DerivedClass() {
-    BaseClass.call(this);
+    BaseClads.call(this);
   }
   var DerivedClass$ = {
     $2: function() {
@@ -349,31 +349,31 @@ define('test', ['ss', 'lib'], function(ss, lib) {
   };
 
 
-  var $exports = ss.module('test',
+  var $exports = ds.module('test',
     {
-      IApp: ss.defineInterface(IApp),
+      IApp: ds.defineInterface(IApp),
       MyData: MyData,
-      AppHelper: ss.defineClass(AppHelper, AppHelper$, [], null),
-      InterfaceTest: ss.defineClass(InterfaceTest, InterfaceTest$, [], null, [IInterfaceTest4]),
-      Bar: ss.defineClass(Bar, Bar$, [], null),
-      BaseBaseClass: ss.defineClass(BaseBaseClass, BaseBaseClass$, [], null),
-      ABC: ss.defineClass(ABC, ABC$, [], null),
-      Bar2: ss.defineClass(Bar2, Bar2$, [], Bar),
-      BarCustom: ss.defineClass(BarCustom, BarCustom$, [], Bar),
-      BaseClass: ss.defineClass(BaseClass, BaseClass$, [], BaseBaseClass),
-      BarEx: ss.defineClass(BarEx, BarEx$, [], Bar2),
-      BarCustom2: ss.defineClass(BarCustom2, BarCustom2$, [], BarCustom),
-      DerivedClass: ss.defineClass(DerivedClass, DerivedClass$, [], BaseClass),
-      MaskTextBox: ss.defineClass(MaskTextBox, MaskTextBox$, [Element], lib.TextBox)
+      AppHelper: ds.defineClass(AppHelper, AppHelper$, [], null),
+      InterfaceTest: ds.defineClass(InterfaceTest, InterfaceTest$, [], null, [IInterfaceTest4]),
+      Bar: ds.defineClass(Bar, Bar$, [], null),
+      BaseBaseClass: ds.defineClass(BaseBaseClass, BaseBaseClass$, [], null),
+      ABC: ds.defineClass(ABC, ABC$, [], null),
+      Bar2: ds.defineClass(Bar2, Bar2$, [], Bar),
+      BarCustom: ds.defineClass(BarCustom, BarCustom$, [], Bar),
+      BaseClass: ds.defineClass(BaseClass, BaseClass$, [], BaseBaseClass),
+      BarEx: ds.defineClass(BarEx, BarEx$, [], Bar2),
+      BarCustom2: ds.defineClass(BarCustom2, BarCustom2$, [], BarCustom),
+      DerivedClass: ds.defineClass(DerivedClass, DerivedClass$, [], BaseClass),
+      MaskTextBox: ds.defineClass(MaskTextBox, MaskTextBox$, [Element], lib.TextBox)
     },
     {
       AppFlags: AppFlags,
-      IInterfaceTest1: ss.defineInterface(IInterfaceTest1),
-      IInterfaceTest2: ss.defineInterface(IInterfaceTest2, [IInterfaceTest1]),
-      IInterfaceTest3: ss.defineInterface(IInterfaceTest3),
-      IInterfaceTest4: ss.defineInterface(IInterfaceTest4, [IInterfaceTest2, IInterfaceTest3]),
-      App: ss.defineClass(App, App$, [], null),
-      FooBehavior: ss.defineClass(FooBehavior, FooBehavior$, [Element, Number], lib.Behavior)
+      IInterfaceTest1: ds.defineInterface(IInterfaceTest1),
+      IInterfaceTest2: ds.defineInterface(IInterfaceTest2, [IInterfaceTest1]),
+      IInterfaceTest3: ds.defineInterface(IInterfaceTest3),
+      IInterfaceTest4: ds.defineInterface(IInterfaceTest4, [IInterfaceTest2, IInterfaceTest3]),
+      App: ds.defineClass(App, App$, [], null),
+      FooBehavior: ds.defineClass(FooBehavior, FooBehavior$, [Element, Number], lib.Behavior)
     });
 
 

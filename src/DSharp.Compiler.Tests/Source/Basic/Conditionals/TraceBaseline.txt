@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // BasicTests.MyDebug
@@ -32,10 +32,10 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      MyDebug: ss.defineClass(MyDebug, null, [], null),
-      App: ss.defineClass(App, App$, [Number], null)
+      MyDebug: ds.defineClass(MyDebug, null, [], null),
+      App: ds.defineClass(App, App$, [Number], null)
     });
 
 

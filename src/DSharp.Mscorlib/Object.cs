@@ -1,19 +1,15 @@
-// Object.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System.Runtime.CompilerServices;
-
-namespace System {
-
+namespace System
+{
     /// <summary>
     /// Equivalent to the Object type in Javascript.
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public class Object {
-
+    public class Object
+    {
+        //TODO: Look at removing
         [ScriptName("name")]
         public const string NAME_DEFINITION = "Object";
 
@@ -22,24 +18,19 @@ namespace System {
         /// </summary>
         /// <returns>The type of the object.</returns>
         [ScriptAlias("ss.typeOf")]
-        public Type GetType() {
-            return null;
-        }
+        public extern Type GetType();
 
         /// <summary>
         /// Converts an object to its string representation.
         /// </summary>
         /// <returns>The string representation of the object.</returns>
-        public virtual string ToString() {
-            return null;
-        }
+        public extern virtual string ToString();
 
+        //TODO: Move to JSObject 
         /// <summary>
         /// Converts an object to its culture-sensitive string representation.
         /// </summary>
         /// <returns>The culture-sensitive string representation of the object.</returns>
-        public virtual string ToLocaleString() {
-            return null;
-        }
+        public extern virtual string ToLocaleString();
     }
 }

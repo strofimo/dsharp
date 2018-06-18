@@ -1,81 +1,44 @@
-// RegExp.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
+﻿using System.Runtime.CompilerServices;
 
-using System.Runtime.CompilerServices;
-
-namespace System {
-
+namespace System
+{
+    //TODO: Look at moving to Javascript library
     /// <summary>
     /// Equivalent to the RegExp type in Javascript.
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("RegExp")]
-    public sealed class RegExp {
+    public sealed class RegExp
+    {
+        public RegExp(string pattern) { }
 
-        public RegExp(string pattern) {
-        }
-
-        public RegExp(string pattern, string flags) {
-        }
+        public RegExp(string pattern, string flags) { }
 
         [ScriptField]
-        public int LastIndex {
-            get {
-                return 0;
-            }
-            set {
-            }
-        }
+        public extern int LastIndex { get; set; }
 
         [ScriptField]
-        public bool Global {
-            get {
-                return false;
-            }
-        }
+        public extern bool Global { get; }
 
         [ScriptField]
-        public bool IgnoreCase {
-            get {
-                return false;
-            }
-        }
+        public extern bool IgnoreCase { get; }
 
         [ScriptField]
-        public bool Multiline {
-            get {
-                return false;
-            }
-        }
+        public extern bool Multiline { get; }
 
         [ScriptField]
-        public string Pattern {
-            get {
-                return null;
-            }
-        }
+        public extern string Pattern { get; }
 
         [ScriptField]
-        public string Source {
-            get {
-                return null;
-            }
-        }
+        public extern string Source { get; }
 
-        public string[] Exec(string s) {
-            return null;
-        }
+        public extern string[] Exec(string s);
 
         [ScriptAlias("ss.regexp")]
-        public static RegExp Parse(string s) {
-            return null;
-        }
+        [DSharpScriptMemberName("regexp")]
+        public extern static RegExp Parse(string s);
 
-        public bool Test(string s) {
-            return false;
-        }
+        public extern bool Test(string s);
     }
 }

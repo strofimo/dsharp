@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // TypeTests.App
@@ -11,10 +11,10 @@ define('test', ['ss'], function(ss) {
     elem.do('foo');
     elem.do('bar', 10);
     elem['Smith'] = elem['Joe'];
-    var n = ss.truncate(5.5);
+    var n = ds.truncate(5.5);
     var parser = new DOMParser();
     var doc = parser.parseFromString('<markup></markup>', 'text/xml');
-    var d = ss.date('1/1/2010');
+    var d = ds.date('1/1/2010');
     var eventHandler = function() {
     };
     elem.addEventListener('click', eventHandler);
@@ -25,9 +25,9 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      App: ss.defineClass(App, App$, [], null)
+      App: ds.defineClass(App, App$, [], null)
     });
 
 

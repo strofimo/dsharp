@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss', 'lib1'], function(ss, lib1) {
+define('test', ['ds', 'lib1'], function(ss, lib1) {
   var $global = this;
 
   // BasicTests.App
@@ -14,9 +14,9 @@ define('test', ['ss', 'lib1'], function(ss, lib1) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      App: ss.defineClass(App, App$, [], null)
+      App: ds.defineClass(App, App$, [], null)
     });
 
 

@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // MemberTests.MyClass
@@ -42,12 +42,12 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      MyClass: ss.defineClass(MyClass, MyClass$, [], null),
-      MyClass2: ss.defineClass(MyClass2, MyClass2$, [], null),
-      MyClass3: ss.defineClass(MyClass3, MyClass3$, [Number, Number], null),
-      MyClass4: ss.defineClass(MyClass4, MyClass4$, [Number, Number, Number], MyClass3)
+      MyClass: ds.defineClass(MyClass, MyClass$, [], null),
+      MyClass2: ds.defineClass(MyClass2, MyClass2$, [], null),
+      MyClass3: ds.defineClass(MyClass3, MyClass3$, [Number, Number], null),
+      MyClass4: ds.defineClass(MyClass4, MyClass4$, [Number, Number, Number], MyClass3)
     });
 
   MyClass2._x = 'Hello';

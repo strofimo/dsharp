@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // ExpressionTests.Foo
@@ -32,10 +32,10 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      Foo: ss.defineClass(Foo, Foo$, [Number, Number], null),
-      Bar: ss.defineClass(Bar, Bar$, [Number, Number, Foo], Foo)
+      Foo: ds.defineClass(Foo, Foo$, [Number, Number], null),
+      Bar: ds.defineClass(Bar, Bar$, [Number, Number, Foo], Foo)
     });
 
 

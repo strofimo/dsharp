@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // MemberTests.IIndexable
@@ -188,21 +188,21 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      IIndexable: ss.defineInterface(IIndexable),
-      Normal: ss.defineClass(Normal, Normal$, [], null),
-      GetterOnly: ss.defineClass(GetterOnly, GetterOnly$, [], null),
-      VirtualIndexer: ss.defineClass(VirtualIndexer, VirtualIndexer$, [], null),
-      AbstractIndexer: ss.defineClass(AbstractIndexer, AbstractIndexer$, [], null),
-      MultipleArgs: ss.defineClass(MultipleArgs, MultipleArgs$, [], null),
-      ImplementedIndexer2: ss.defineClass(ImplementedIndexer2, ImplementedIndexer2$, [], null, [IIndexable]),
-      Test: ss.defineClass(Test, Test$, [], null),
-      A: ss.defineClass(A, A$, [], null),
-      OverriddenIndexer: ss.defineClass(OverriddenIndexer, OverriddenIndexer$, [], VirtualIndexer),
-      ImplementedIndexer: ss.defineClass(ImplementedIndexer, ImplementedIndexer$, [], AbstractIndexer),
-      B: ss.defineClass(B, B$, [], A),
-      C: ss.defineClass(C, C$, [], B)
+      IIndexable: ds.defineInterface(IIndexable),
+      Normal: ds.defineClass(Normal, Normal$, [], null),
+      GetterOnly: ds.defineClass(GetterOnly, GetterOnly$, [], null),
+      VirtualIndexer: ds.defineClass(VirtualIndexer, VirtualIndexer$, [], null),
+      AbstractIndexer: ds.defineClass(AbstractIndexer, AbstractIndexer$, [], null),
+      MultipleArgs: ds.defineClass(MultipleArgs, MultipleArgs$, [], null),
+      ImplementedIndexer2: ds.defineClass(ImplementedIndexer2, ImplementedIndexer2$, [], null, [IIndexable]),
+      Test: ds.defineClass(Test, Test$, [], null),
+      A: ds.defineClass(A, A$, [], null),
+      OverriddenIndexer: ds.defineClass(OverriddenIndexer, OverriddenIndexer$, [], VirtualIndexer),
+      ImplementedIndexer: ds.defineClass(ImplementedIndexer, ImplementedIndexer$, [], AbstractIndexer),
+      B: ds.defineClass(B, B$, [], A),
+      C: ds.defineClass(C, C$, [], B)
     });
 
 

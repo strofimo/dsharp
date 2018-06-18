@@ -1,73 +1,48 @@
-// Script.cs
-// Script#/Libraries/CoreLib
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace System {
-
+namespace System
+{
     /// <summary>
     /// The Script class contains various methods that represent global
     /// methods present in the underlying script engine.
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public static class Script {
-
+    public static class Script
+    {
         [ScriptField]
         [ScriptAlias("$global")]
-        public static object Global {
-            get {
-                return null;
-            }
-        }
+        public extern static object Global { get; }
 
         [ScriptField]
         [ScriptAlias("ss.modules")]
-        public static Dictionary<string, object> Modules {
-            get {
-                return null;
-            }
-        }
+        public extern static Dictionary<string, object> Modules { get; }
 
         [ScriptField]
         [ScriptAlias("undefined")]
-        public static object Undefined {
-            get {
-                return null;
-            }
-        }
+        public extern static object Undefined { get; }
 
         /// <summary>
         /// Converts an object into a boolean.
         /// </summary>
         /// <param name="o">The object to convert.</param>
         /// <returns>true if the object is not null, zero, empty string or undefined.</returns>
-        public static bool Boolean(object o) {
-            return false;
-        }
+        public extern static bool Boolean(object o);
 
         [ScriptAlias("clearInterval")]
-        public static void ClearInterval(int intervalID) {
-        }
+        public extern static void ClearInterval(int intervalID);
 
         [ScriptAlias("clearTimeout")]
-        public static void ClearTimeout(int timeoutID) {
-        }
+        public extern static void ClearTimeout(int timeoutID);
 
         [Obsolete("Switch to using Activator.CreateInstance")]
         [ScriptAlias("ss.createInstance")]
-        public static object CreateInstance(Type type, params object[] arguments) {
-            return null;
-        }
+        public extern static object CreateInstance(Type type, params object[] arguments);
 
-        public static void DeleteField(object instance, string name) {
-        }
+        public extern static void DeleteField(object instance, string name);
 
-        public static void DeleteField(Type type, string name) {
-        }
+        public extern static void DeleteField(Type type, string name);
 
         /// <summary>
         /// Enables you to evaluate (or execute) an arbitrary script
@@ -77,67 +52,36 @@ namespace System {
         /// <param name="s">The script to be evaluated.</param>
         /// <returns>The result of the evaluation.</returns>
         [ScriptAlias("eval")]
-        public static object Eval(string s) {
-            return null;
-        }
+        public extern static object Eval(string s);
 
         [ScriptAlias("ss.getConstructorParams")]
-        public static Type[] GetConstructorParameterTypes(Type type)
-        {
-            return null;
-        }
+        public extern static Type[] GetConstructorParameterTypes(Type type);
 
-        public static object GetField(object instance, string name) {
-            return null;
-        }
+        public extern static object GetField(object instance, string name);
 
-        public static T GetField<T>(object instance, string name) {
-            return default(T);
-        }
+        public extern static T GetField<T>(object instance, string name);
 
-        public static object GetField(Type type, string name) {
-            return null;
-        }
+        public extern static object GetField(Type type, string name);
 
-        public static T GetField<T>(Type type, string name) {
-            return default(T);
-        }
+        public extern static T GetField<T>(Type type, string name);
 
-        public static string GetScriptType(object instance) {
-            return null;
-        }
+        public extern static string GetScriptType(object instance);
 
-        public static bool HasField(object instance, string name) {
-            return false;
-        }
+        public extern static bool HasField(object instance, string name);
 
-        public static bool HasField(Type type, string name) {
-            return false;
-        }
+        public extern static bool HasField(Type type, string name);
 
-        public static bool HasMethod(object instance, string name) {
-            return false;
-        }
+        public extern static bool HasMethod(object instance, string name);
 
-        public static bool HasMethod(Type type, string name) {
-            return false;
-        }
+        public extern static bool HasMethod(Type type, string name);
 
-        public static object InvokeMethod(object instance, string name, params object[] args) {
-            return null;
-        }
+        public extern static object InvokeMethod(object instance, string name, params object[] args);
 
-        public static T InvokeMethod<T>(object instance, string name, params object[] args) {
-            return default(T);
-        }
+        public extern static T InvokeMethod<T>(object instance, string name, params object[] args);
 
-        public static object InvokeMethod(Type type, string name, params object[] args) {
-            return null;
-        }
+        public extern static object InvokeMethod(Type type, string name, params object[] args);
 
-        public static T InvokeMethod<T>(Type type, string name, params object[] args) {
-            return default(T);
-        }
+        public extern static T InvokeMethod<T>(Type type, string name, params object[] args);
 
         /// <summary>
         /// Checks if the specified object has a falsey value, i.e. it is null or
@@ -145,19 +89,13 @@ namespace System {
         /// </summary>
         /// <param name="o">The object to test.</param>
         /// <returns>true if the object represents a falsey value; false otherwise.</returns>
-        public static bool IsFalsey(object o) {
-            return false;
-        }
+        public extern static bool IsFalsey(object o);
 
         [ScriptAlias("isFinite")]
-        public static bool IsFinite(object o) {
-            return false;
-        }
+        public extern static bool IsFinite(object o);
 
         [ScriptAlias("isNaN")]
-        public static bool IsNaN(object o) {
-            return false;
-        }
+        public extern static bool IsNaN(object o);
 
         /// <summary>
         /// Checks if the specified object is null.
@@ -165,9 +103,7 @@ namespace System {
         /// <param name="o">The object to test against null.</param>
         /// <returns>true if the object is null; false otherwise.</returns>
         [ScriptAlias("ss.isNull")]
-        public static bool IsNull(object o) {
-            return false;
-        }
+        public extern static bool IsNull(object o);
 
         /// <summary>
         /// Checks if the specified object is null or undefined.
@@ -177,9 +113,7 @@ namespace System {
         /// <param name="o">The object to test against null or undefined.</param>
         /// <returns>true if the object is null or undefined; false otherwise.</returns>
         [ScriptAlias("ss.isNullOrUndefined")]
-        public static bool IsNullOrUndefined(object o) {
-            return false;
-        }
+        public extern static bool IsNullOrUndefined(object o);
 
         /// <summary>
         /// Checks if the specified object is undefined.
@@ -189,9 +123,7 @@ namespace System {
         /// <param name="o">The object to test against undefined.</param>
         /// <returns>true if the object is undefined; false otherwise.</returns>
         [ScriptAlias("ss.isUndefined")]
-        public static bool IsUndefined(object o) {
-            return false;
-        }
+        public extern static bool IsUndefined(object o);
 
         /// <summary>
         /// Checks if the specified object has a value, i.e. it is not
@@ -200,9 +132,7 @@ namespace System {
         /// <param name="o">The object to test.</param>
         /// <returns>true if the object represents a value; false otherwise.</returns>
         [ScriptAlias("ss.isValue")]
-        public static bool IsValue(object o) {
-            return false;
-        }
+        public extern static bool IsValue(object o);
 
         /// <summary>
         /// Checks if the specified object has a truthy value, i.e. it is not
@@ -210,9 +140,7 @@ namespace System {
         /// </summary>
         /// <param name="o">The object to test.</param>
         /// <returns>true if the object represents a truthy value; false otherwise.</returns>
-        public static bool IsTruthy(object o) {
-            return false;
-        }
+        public extern static bool IsTruthy(object o);
 
         /// <summary>
         /// Enables you to generate an arbitrary (literal) script expression.
@@ -222,9 +150,7 @@ namespace System {
         /// <param name="script">The script expression to be evaluated.</param>
         /// <param name="args">Optional arguments matching tokens in the script.</param>
         /// <returns>The result of the script expression.</returns>
-        public static object Literal(string script, params object[] args) {
-            return null;
-        }
+        public extern static object Literal(string script, params object[] args);
 
         /// <summary>
         /// Gets the first truthy (true, non-null, non-undefined, non-empty, non-zero) value.
@@ -234,65 +160,41 @@ namespace System {
         /// <param name="alternateValue">The alternate value to use if the first is invalid.</param>
         /// <param name="alternateValues">Additional alternative values to use if the first is invalid.</param>
         /// <returns>The first valid value.</returns>
-        public static TValue Or<TValue>(TValue value, TValue alternateValue, params TValue[] alternateValues) {
-            return default(TValue);
-        }
+        public extern static TValue Or<TValue>(TValue value, TValue alternateValue, params TValue[] alternateValues);
 
-        public static void SetField(object instance, string name, object value) {
-        }
+        public extern static void SetField(object instance, string name, object value);
 
-        public static void SetField(Type type, string name, object value) {
-        }
+        public extern static void SetField(Type type, string name, object value);
 
         [ScriptAlias("setInterval")]
-        public static int SetInterval(string code, int milliseconds) {
-            return 0;
-        }
+        public extern static int SetInterval(string code, int milliseconds);
 
         [ScriptAlias("setInterval")]
-        public static int SetInterval(Action callback, int milliseconds) {
-            return 0;
-        }
+        public extern static int SetInterval(Action callback, int milliseconds);
 
         [ScriptAlias("setInterval")]
-        public static int SetInterval<T>(Action<T> callback, int milliseconds, T arg) {
-            return 0;
-        }
+        public extern static int SetInterval<T>(Action<T> callback, int milliseconds, T arg);
 
         [ScriptAlias("setInterval")]
-        public static int SetInterval<T1, T2>(Action<T1, T2> callback, int milliseconds, T1 arg1, T2 arg2) {
-            return 0;
-        }
+        public extern static int SetInterval<T1, T2>(Action<T1, T2> callback, int milliseconds, T1 arg1, T2 arg2);
 
         [ScriptAlias("setInterval")]
-        public static int SetInterval(Delegate d, int milliseconds, params object[] args) {
-            return 0;
-        }
+        public extern static int SetInterval(Delegate d, int milliseconds, params object[] args);
 
         [ScriptAlias("setTimeout")]
-        public static int SetTimeout(string code, int milliseconds) {
-            return 0;
-        }
+        public extern static int SetTimeout(string code, int milliseconds);
 
         [ScriptAlias("setTimeout")]
-        public static int SetTimeout(Action callback, int milliseconds) {
-            return 0;
-        }
+        public extern static int SetTimeout(Action callback, int milliseconds);
 
         [ScriptAlias("setTimeout")]
-        public static int SetTimeout<T>(Action<T> callback, int milliseconds, T arg) {
-            return 0;
-        }
+        public extern static int SetTimeout<T>(Action<T> callback, int milliseconds, T arg);
 
         [ScriptAlias("setTimeout")]
-        public static int SetTimeout<T1, T2>(Action<T1, T2> callback, int milliseconds, T1 arg1, T2 arg2) {
-            return 0;
-        }
+        public extern static int SetTimeout<T1, T2>(Action<T1, T2> callback, int milliseconds, T1 arg1, T2 arg2);
 
         [ScriptAlias("setTimeout")]
-        public static int SetTimeout(Delegate d, int milliseconds, params object[] args) {
-            return 0;
-        }
+        public extern static int SetTimeout(Delegate d, int milliseconds, params object[] args);
 
         /// <summary>
         /// Gets the first non-null and non-undefined value.
@@ -303,8 +205,6 @@ namespace System {
         /// <param name="alternateValues">Additional alternative values to use if the first is invalid.</param>
         /// <returns>The first valid value.</returns>
         [ScriptAlias("ss.value")]
-        public static TValue Value<TValue>(TValue value, TValue alternateValue, params TValue[] alternateValues) {
-            return default(TValue);
-        }
+        public extern static TValue Value<TValue>(TValue value, TValue alternateValue, params TValue[] alternateValues);
     }
 }

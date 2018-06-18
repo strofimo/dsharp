@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // TypeTests.App1
@@ -25,16 +25,16 @@ define('test', ['ss'], function(ss) {
       var a;
       var b;
       var s = new Array(5);
-      var a1 = ss.enumerate(a);
-      a1 = ss.enumerate(b);
-      a1 = ss.enumerate(s);
-      var $enum1 = ss.enumerate(s);
+      var a1 = ds.enumerate(a);
+      a1 = ds.enumerate(b);
+      a1 = ds.enumerate(s);
+      var $enum1 = ds.enumerate(s);
       while ($enum1.moveNext()) {
         var str = $enum1.current;
         var s1 = str;
       }
       var app1;
-      var $enum2 = ss.enumerate(app1);
+      var $enum2 = ds.enumerate(app1);
       while ($enum2.moveNext()) {
         var str = $enum2.current;
         var s1 = str;
@@ -43,10 +43,10 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      App1: ss.defineClass(App1, App1$, [], null, [ss.IEnumerable]),
-      App: ss.defineClass(App, App$, [], null)
+      App1: ds.defineClass(App1, App1$, [], null, [ds.IEnumerable]),
+      App: ds.defineClass(App, App$, [], null)
     });
 
 

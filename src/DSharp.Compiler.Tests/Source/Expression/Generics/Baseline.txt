@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // ExpressionTests.Foo
@@ -8,16 +8,16 @@ define('test', ['ss'], function(ss) {
   function Foo() {
     this._numbers = [];
     var s = this._numbers[10].toString(10);
-    var s2 = ss.enumerate(this._numbers).current.toString(10);
+    var s2 = ds.enumerate(this._numbers).current.toString(10);
     var s3 = this._numbers.reduce(function(accumulated, item) {
       return accumulated + item;
     }, 0).toString(10);
     var s4 = encodeURIComponent(this._func(10));
     var f2 = this._func;
-    ss.trim(f2(11));
+    ds.trim(f2(11));
     var d = {};
-    var keys = ss.keyCount(d);
-    var b = ss.keyExists(d, 'abc');
+    var keys = ds.keyCount(d);
+    var b = ds.keyExists(d, 'abc');
     delete d.abc;
     for (var $key1 in d) {
       var de = { key: $key1, value: d[$key1] };
@@ -39,9 +39,9 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      Foo: ss.defineClass(Foo, Foo$, [], null)
+      Foo: ds.defineClass(Foo, Foo$, [], null)
     });
 
 

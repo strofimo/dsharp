@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // TypeTests.App
@@ -17,9 +17,9 @@ define('test', ['ss'], function(ss) {
       var num3 = 100;
       var xyz = false;
       var ch;
-      var hasValue = ss.isValue(xyz) || ss.isValue(num3);
+      var hasValue = ds.isValue(xyz) || ds.isValue(num3);
       var num3_ = num3;
-      var f = (ss.isValue(flag)) ? flag : true;
+      var f = (ds.isValue(flag)) ? flag : true;
       xyz = true;
       num2 = 10;
       num = 1;
@@ -30,9 +30,9 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      App: ss.defineClass(App, App$, [], null)
+      App: ds.defineClass(App, App$, [], null)
     });
 
 

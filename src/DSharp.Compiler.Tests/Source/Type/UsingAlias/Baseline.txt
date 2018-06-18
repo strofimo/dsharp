@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ds'], function(ss) {
   var $global = this;
 
   // TypeTests.MyClass
@@ -15,9 +15,9 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $exports = ds.module('test', null,
     {
-      MyClass: ss.defineClass(MyClass, MyClass$, [], null)
+      MyClass: ds.defineClass(MyClass, MyClass$, [], null)
     });
 
 
