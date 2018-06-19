@@ -5,7 +5,7 @@ namespace System
 
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    [ScriptName("ss")]
+    [ScriptName("ds")]
     public static class Activator
     {
         public extern static object CreateInstance(Type type);

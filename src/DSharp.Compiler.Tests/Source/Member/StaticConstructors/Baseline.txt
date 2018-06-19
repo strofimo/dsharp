@@ -68,7 +68,7 @@ define('test', ['ds'], function(ds) {
       MyBehavior: ds.defineClass(MyBehavior, MyBehavior$, [Element], Behavior)
     });
 
-  MyClads.instance = new MyClass(ds.now());
+  MyClass.instance = new MyClass(ds.now());
   alert('simple static ctor');
   alert('simple static ctor with multiple statements');
   document.getElementById('foo').innerHTML = '...';

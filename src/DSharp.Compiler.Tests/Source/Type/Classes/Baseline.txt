@@ -49,7 +49,7 @@ define('test', ['ds'], function(ds) {
   // TypeTests.MyClass2
 
   function MyClass2() {
-    MyClads.call(this);
+    MyClass.call(this);
   }
   var MyClass2$ = {
 
@@ -59,7 +59,7 @@ define('test', ['ds'], function(ds) {
   // TypeTests.MyClass4
 
   function MyClass4(foo, bar, disposable) {
-    MyClads.call(this);
+    MyClass.call(this);
     var f = ds.createInstance();
     var b = ds.createInstance(BarBaz, f);
   }

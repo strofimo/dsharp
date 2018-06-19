@@ -45,5 +45,10 @@ namespace DSharp.Compiler.TestFramework.Compilation
                 Location = location
             });
         }
+
+        void IErrorHandler.ReportError(IError error)
+        {
+            compilationErrors.Add(error);
+        }
     }
 }

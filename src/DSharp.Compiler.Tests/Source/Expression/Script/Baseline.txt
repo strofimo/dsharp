@@ -13,8 +13,6 @@ define('test', ['ds'], function(ds) {
       arg = (arg || 10 || 100);
       var s = (arg || 10).toString(10);
       var b = !!arg;
-      var sb = ds.createInstance(ds.StringBuilder);
-      sb = ds.createInstance(ds.StringBuilder, 'aaa');
       var i;
       var tick = function() {
         i = 10;

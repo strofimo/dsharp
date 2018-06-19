@@ -88,7 +88,7 @@ define('test', ['ds'], function(ds) {
   // TypeTests.DerivedMemberClass
 
   function DerivedMemberClass() {
-    SingleMemberClads.call(this);
+    SingleMemberClass.call(this);
   }
   var DerivedMemberClass$ = {
 
@@ -98,7 +98,7 @@ define('test', ['ds'], function(ds) {
   // TypeTests.DerivedMergedMembersClass
 
   function DerivedMergedMembersClass() {
-    MergedMembersClads.call(this);
+    MergedMembersClass.call(this);
     this.name = this.bar + this.bar + 'Name';
   }
   var DerivedMergedMembersClass$ = {
@@ -112,7 +112,7 @@ define('test', ['ds'], function(ds) {
       var e1 = document.getElementById(this.bar);
       var e2 = document.getElementById(this.name);
       var e3 = document.getElementById(this.bar);
-      var s = this.testMethod() + MergedMembersClads.prototype.testMethod.call(this);
+      var s = this.testMethod() + MergedMembersClass.prototype.testMethod.call(this);
     },
     get_item: function(s) {
       return s;

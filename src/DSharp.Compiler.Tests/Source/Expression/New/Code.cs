@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
@@ -65,11 +65,11 @@ namespace ExpressionTests {
             CustomDictionary cd = new CustomDictionary();
             CustomDictionary cd2 = new CustomDictionary("abc", 123, "def", true);
 
-            object o1 = Script.CreateInstance(typeof(Test));
+            object o1 = Activator.CreateInstance(typeof(Test));
 
             Type type1 = typeof(Foo);
-            object o2 = Script.CreateInstance(type1, 1, 2);
-            object o3 = Script.CreateInstance(typeof(Bar), 1, 2, (Foo)o2);
+            object o2 = Activator.CreateInstance(type1, 1, 2);
+            object o3 = Activator.CreateInstance(typeof(Bar), 1, 2, (Foo)o2);
 
             Function f1 = new Function("alert('hello');");
             Function f2 = new Function("alert(s);", "s");

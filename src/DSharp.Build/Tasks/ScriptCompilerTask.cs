@@ -495,14 +495,25 @@ namespace DSharp.Build.Tasks
         }
 
         #region Implementation of IErrorHandler
+
         void IErrorHandler.ReportError(string errorMessage, string location)
+        {
+            ReportError(errorMessage, location);
+        }
+
+        void IErrorHandler.ReportError(IError error)
+        {
+            ReportError(error.Message, error.Location);
+        }
+
+        private void ReportError(string errorMessage, string location)
         {
             hasErrors = true;
 
             int line = 0;
             int column = 0;
 
-            if (string.IsNullOrEmpty(location) == false)
+            if (!string.IsNullOrEmpty(location))
             {
                 if (location.EndsWith(")", StringComparison.Ordinal))
                 {
@@ -522,6 +533,7 @@ namespace DSharp.Build.Tasks
 
             Log.LogError(string.Empty, string.Empty, string.Empty, location, line, column, 0, 0, errorMessage);
         }
+
         #endregion
 
         #region Implementation of IStreamSourceResolver

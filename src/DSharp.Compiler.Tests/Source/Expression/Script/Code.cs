@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using System.Runtime.CompilerServices;
 
@@ -13,9 +13,6 @@ namespace ExpressionTests {
             arg = Script.Or(arg, 10, 100);
             string s = Script.Or(arg, 10).ToString(10);
             bool b = Script.Boolean(arg);
-
-            StringBuilder sb = (StringBuilder)Script.CreateInstance(typeof(StringBuilder));
-            sb = (StringBuilder)Script.CreateInstance(typeof(StringBuilder), "aaa");
 
             int i;
             Action tick = delegate() {
@@ -44,7 +41,7 @@ namespace ExpressionTests {
             object g = Script.Global;
             object u = Script.Undefined;
 
-            object coreModule = Script.Modules["ss"];
+            object coreModule = Script.Modules["ds"];
         }
     }
 }

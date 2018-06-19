@@ -66,6 +66,29 @@ namespace DSharp.Compiler
             Console.Error.WriteLine(errorMessage);
         }
 
+        void IErrorHandler.ReportError(IError error)
+        {
+            if(errorHandler != null)
+            {
+                errorHandler.ReportError(error);
+                return;
+            }
+
+            //TODO: Look at adding a logger interface
+            LogError(error);
+        }
+
+        private void LogError(IError error)
+        {
+            if (!string.IsNullOrEmpty(error.Location))
+            {
+                Console.Error.Write(error.Location);
+                Console.Error.Write(": ");
+            }
+
+            Console.Error.WriteLine(error.Message);
+        }
+
         #endregion
 
         private void BuildCodeModel()

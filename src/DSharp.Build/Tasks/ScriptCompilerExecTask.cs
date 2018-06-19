@@ -1,4 +1,4 @@
-// ScriptCompilerExecTask.cs
+﻿// ScriptCompilerExecTask.cs
 // Script#/Core/Build
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -236,6 +236,16 @@ namespace DSharp.Build.Tasks
         #region Implementation of IErrorHandler
 
         void IErrorHandler.ReportError(string errorMessage, string location)
+        {
+            LogError(errorMessage, location);
+        }
+
+        void IErrorHandler.ReportError(IError error)
+        {
+            LogError(error.Message, error.Location);
+        }
+
+        private void LogError(string errorMessage, string location)
         {
             hasErrors = true;
 

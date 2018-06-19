@@ -30,7 +30,7 @@ define('test', ['ds'], function(ds) {
 
   function BaseClass(domElement, name, count) {
     /// <summary>
-    /// Represents a base clads.
+    /// Represents a base class.
     /// </summary>
     /// <param name="domElement" type="Object" domElement="true">
     /// The parent element.
@@ -65,7 +65,7 @@ define('test', ['ds'], function(ds) {
     /// <value type="Number" integer="true"></value>
     return 0;
   });
-  BaseClads.staticMethod = function(length) {
+  BaseClass.staticMethod = function(length) {
     /// <summary>
     /// A static method.
     /// </summary>
@@ -197,7 +197,7 @@ define('test', ['ds'], function(ds) {
 
   function InternalClass() {
     /// <summary>
-    /// An internal clads.
+    /// An internal class.
     /// </summary>
   }
   var InternalClass$ = {
@@ -227,9 +227,9 @@ define('test', ['ds'], function(ds) {
 
   function DerivedClass() {
     /// <summary>
-    /// Represents a derived clads.
+    /// Represents a derived class.
     /// </summary>
-    BaseClads.call(this, null, null, 0);
+    BaseClass.call(this, null, null, 0);
   }
   var DerivedClass$ = {
     method3: function(first, last) {
@@ -259,7 +259,7 @@ define('test', ['ds'], function(ds) {
       DerivedClass: ds.defineClass(DerivedClass, DerivedClass$, [], BaseClass)
     });
 
-  BaseClads.constantField = 3;
+  BaseClass.constantField = 3;
 
   return $exports;
 });

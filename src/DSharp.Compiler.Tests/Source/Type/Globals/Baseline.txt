@@ -49,7 +49,7 @@ define('test', ['ds'], function(ds) {
   // MyClass2
 
   function MyClass2() {
-    MyClads.call(this);
+    MyClass.call(this);
   }
   var MyClass2$ = {
 
@@ -59,7 +59,7 @@ define('test', ['ds'], function(ds) {
   // MyClass4
 
   function MyClass4() {
-    MyClads.call(this);
+    MyClass.call(this);
   }
   var MyClass4$ = {
     someMethod: function() {

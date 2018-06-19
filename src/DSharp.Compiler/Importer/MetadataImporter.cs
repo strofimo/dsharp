@@ -484,11 +484,11 @@ namespace DSharp.Compiler.Importer
                     methodSymbol.SetSkipGeneration();
                 }
 
-                string alias = MetadataHelpers.GetScriptAlias(method);
+                string transformedName = MetadataHelpers.GetTransformedName(method);
 
-                if (string.IsNullOrEmpty(alias) == false)
+                if (string.IsNullOrEmpty(transformedName) == false)
                 {
-                    methodSymbol.SetTransformName(alias);
+                    methodSymbol.SetTransformName(transformedName);
                 }
 
                 string selector = MetadataHelpers.GetScriptMethodSelector(method);
@@ -571,11 +571,11 @@ namespace DSharp.Compiler.Importer
                         FieldSymbol fieldSymbol = new FieldSymbol(propertyName, typeSymbol, propertyType);
                         ImportMemberDetails(fieldSymbol, property.GetMethod, property);
 
-                        string alias = MetadataHelpers.GetScriptAlias(property);
+                        string transformedName = MetadataHelpers.GetTransformedName(property);
 
-                        if (string.IsNullOrEmpty(alias) == false)
+                        if (string.IsNullOrEmpty(transformedName) == false)
                         {
-                            fieldSymbol.SetTransformName(alias);
+                            fieldSymbol.SetTransformName(transformedName);
                         }
 
                         typeSymbol.AddMember(fieldSymbol);

@@ -1,8 +1,9 @@
-// StatementBuilder.cs
+﻿// StatementBuilder.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DSharp.Compiler.CodeModel;
@@ -43,7 +44,7 @@ namespace DSharp.Compiler.Compiler
             {
                 statement = BuildStatementCore(statementNode);
             }
-            catch
+            catch(Exception e)
             {
                 string location = statementNode.Token.Location;
                 string message =

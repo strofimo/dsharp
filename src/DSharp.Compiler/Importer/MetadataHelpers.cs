@@ -1,4 +1,4 @@
-// MetadataHelpers.cs
+﻿// MetadataHelpers.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -28,8 +28,15 @@ namespace DSharp.Compiler.Importer
             return attribute.ConstructorArguments[0].Value as string;
         }
 
-        public static string GetScriptAlias(ICustomAttributeProvider attributeProvider)
+        public static string GetTransformedName(ICustomAttributeProvider attributeProvider)
         {
+            CustomAttribute dsharpScriptMemberName = GetAttribute(attributeProvider, "System.Runtime.CompilerServices.DSharpScriptMemberNameAttribute");
+
+            if(dsharpScriptMemberName != null)
+            {
+                return DSharpStringResources.ScriptExportMember(GetAttributeArgument(dsharpScriptMemberName));
+            }
+
             CustomAttribute scriptAliasAttribute =
                 GetAttribute(attributeProvider, "System.Runtime.CompilerServices.ScriptAliasAttribute");
 
