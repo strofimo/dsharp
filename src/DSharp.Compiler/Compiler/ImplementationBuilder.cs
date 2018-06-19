@@ -1,4 +1,4 @@
-// ImplementationBuilder.cs
+﻿// ImplementationBuilder.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -9,6 +9,7 @@ using System.Diagnostics;
 using DSharp.Compiler.CodeModel.Expressions;
 using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Statements;
+using DSharp.Compiler.Errors;
 using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Statements;
 using DSharp.Compiler.ScriptModel.Symbols;

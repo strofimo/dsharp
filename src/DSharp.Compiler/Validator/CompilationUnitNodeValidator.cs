@@ -1,12 +1,8 @@
-// CompilationUnitNodeValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using DSharp.Compiler.CodeModel;
+﻿using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Attributes;
 using DSharp.Compiler.CodeModel.Expressions;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -14,7 +10,7 @@ namespace DSharp.Compiler.Validator
     {
         bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
         {
-            CompilationUnitNode compilationUnitNode = (CompilationUnitNode) node;
+            CompilationUnitNode compilationUnitNode = (CompilationUnitNode)node;
 
             foreach (AttributeBlockNode attribBlock in compilationUnitNode.Attributes)
             {
@@ -23,12 +19,11 @@ namespace DSharp.Compiler.Validator
 
                 if (scriptNamespaceNode != null)
                 {
-                    string scriptNamespace = (string) ((LiteralNode) scriptNamespaceNode.Arguments[0]).Value;
+                    string scriptNamespace = (string)((LiteralNode)scriptNamespaceNode.Arguments[0]).Value;
 
                     if (Utility.IsValidScriptNamespace(scriptNamespace) == false)
                     {
-                        errorHandler.ReportError("A script namespace must be a valid script identifier.",
-                            scriptNamespaceNode.Token.Location);
+                        errorHandler.ReportError(new NodeValidationError("A script namespace must be a valid script identifier.", scriptNamespaceNode));
                     }
                 }
             }
@@ -36,8 +31,7 @@ namespace DSharp.Compiler.Validator
             foreach (ParseNode childNode in compilationUnitNode.Members)
                 if (!(childNode is NamespaceNode))
                 {
-                    errorHandler.ReportError("Non-namespaced types are not supported.",
-                        childNode.Token.Location);
+                    errorHandler.ReportError(new NodeValidationError("Non-namespaced types are not supported.", childNode));
 
                     return false;
                 }

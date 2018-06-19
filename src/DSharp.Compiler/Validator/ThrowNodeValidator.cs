@@ -1,10 +1,6 @@
-// ThrowNodeValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using DSharp.Compiler.CodeModel;
+﻿using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Statements;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -12,12 +8,11 @@ namespace DSharp.Compiler.Validator
     {
         bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
         {
-            ThrowNode throwNode = (ThrowNode) node;
+            ThrowNode throwNode = (ThrowNode)node;
 
             if (throwNode.Value == null)
             {
-                errorHandler.ReportError("Throw statements must specify an exception object.",
-                    throwNode.Token.Location);
+                errorHandler.ReportError(new NodeValidationError("Throw statements must specify an exception object.", throwNode));
 
                 return false;
             }

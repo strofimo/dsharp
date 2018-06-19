@@ -1,12 +1,8 @@
-// MethodDeclarationNodeValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System;
+﻿using System;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -14,20 +10,19 @@ namespace DSharp.Compiler.Validator
     {
         bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
         {
-            MethodDeclarationNode methodNode = (MethodDeclarationNode) node;
+            MethodDeclarationNode methodNode = (MethodDeclarationNode)node;
 
             if ((methodNode.Modifiers & Modifiers.Static) == 0 &&
                 (methodNode.Modifiers & Modifiers.New) != 0)
             {
-                errorHandler.ReportError("The new modifier is not supported on instance members.",
-                    methodNode.Token.Location);
+                errorHandler.ReportError(new NodeValidationError("The new modifier is not supported on instance members.", methodNode));
 
                 return false;
             }
 
             if ((methodNode.Modifiers & Modifiers.Extern) != 0)
             {
-                CustomTypeNode typeNode = (CustomTypeNode) methodNode.Parent;
+                CustomTypeNode typeNode = (CustomTypeNode)methodNode.Parent;
                 MethodDeclarationNode implMethodNode = null;
 
                 if (methodNode.NodeType == ParseNodeType.MethodDeclaration)
@@ -37,7 +32,7 @@ namespace DSharp.Compiler.Validator
                             (memberNode.Modifiers & Modifiers.Extern) == 0 &&
                             memberNode.Name.Equals(methodNode.Name, StringComparison.Ordinal))
                         {
-                            implMethodNode = (MethodDeclarationNode) memberNode;
+                            implMethodNode = (MethodDeclarationNode)memberNode;
 
                             break;
                         }
@@ -48,7 +43,7 @@ namespace DSharp.Compiler.Validator
                         if (memberNode.NodeType == ParseNodeType.ConstructorDeclaration &&
                             (memberNode.Modifiers & Modifiers.Extern) == 0)
                         {
-                            implMethodNode = (MethodDeclarationNode) memberNode;
+                            implMethodNode = (MethodDeclarationNode)memberNode;
 
                             break;
                         }
@@ -56,9 +51,7 @@ namespace DSharp.Compiler.Validator
 
                 if (implMethodNode == null)
                 {
-                    errorHandler.ReportError(
-                        "Extern methods used to declare alternate signatures should have a corresponding non-extern implementation as well.",
-                        methodNode.Token.Location);
+                    errorHandler.ReportError(new NodeValidationError("Extern methods used to declare alternate signatures should have a corresponding non-extern implementation as well.", methodNode));
 
                     return false;
                 }
@@ -66,9 +59,7 @@ namespace DSharp.Compiler.Validator
                 if ((methodNode.Modifiers & (Modifiers.Static | Modifiers.AccessMask)) !=
                     (implMethodNode.Modifiers & (Modifiers.Static | Modifiers.AccessMask)))
                 {
-                    errorHandler.ReportError(
-                        "The implemenation method and associated alternate signature methods should have the same access type.",
-                        methodNode.Token.Location);
+                    errorHandler.ReportError(new NodeValidationError("The implemenation method and associated alternate signature methods should have the same access type.", methodNode));
                 }
             }
 

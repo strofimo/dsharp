@@ -1,10 +1,6 @@
-// ArrayTypeNodeValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using DSharp.Compiler.CodeModel;
+﻿using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -16,8 +12,7 @@ namespace DSharp.Compiler.Validator
 
             if (typeNode.Rank != 1)
             {
-                errorHandler.ReportError("Only single dimensional arrays are supported.",
-                    typeNode.Token.Location);
+                errorHandler.ReportError(new NodeValidationError("Only single dimensional arrays are supported.",typeNode));
             }
 
             return true;

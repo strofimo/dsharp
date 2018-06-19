@@ -1,4 +1,6 @@
-﻿namespace DSharp.Compiler.TestFramework.Compilation
+﻿using DSharp.Compiler.Errors;
+
+namespace DSharp.Compiler.TestFramework.Compilation
 {
     public class CompilationError : IError
     {

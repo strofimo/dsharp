@@ -1,9 +1,10 @@
-// UnsupportedParseNodeValidator.cs
+﻿// UnsupportedParseNodeValidator.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
 using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -110,7 +111,7 @@ namespace DSharp.Compiler.Validator
                 message = message + " are not supported.";
             }
 
-            errorHandler.ReportError(message, node.Token.Location);
+            errorHandler.ReportError(new UnsupportedParseNode(message, node.Token.Location));
 
             return false;
         }

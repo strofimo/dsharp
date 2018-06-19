@@ -2,10 +2,11 @@
 {
     public static class DSharpStringResources
     {
-        public const string DSHARP_SCRIPT_NAME = "ds";
+        public static readonly string DSHARP_MSCORLIB_ASSEMBLY_NAME = "DSharp.Mscorlib";
+        public static readonly string DSHARP_SCRIPT_NAME = "ds";
 
-        public const string SCRIPT_ALIAS_ATTRIBUTE = "ScriptAlias";
-        public const string DSHARP_MEMBER_NAME_ATTRIBUTE = "DSharpScriptMemberName";
+        public static readonly string SCRIPT_ALIAS_ATTRIBUTE = "ScriptAlias";
+        public static readonly string DSHARP_MEMBER_NAME_ATTRIBUTE = "DSharpScriptMemberName";
 
         public static string ScriptExportMember(string methodName)
         {

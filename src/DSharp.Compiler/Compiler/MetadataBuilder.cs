@@ -15,6 +15,7 @@ using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.Errors;
 using DSharp.Compiler.Extensions;
 using DSharp.Compiler.ScriptModel.Symbols;
 
@@ -34,19 +35,243 @@ namespace DSharp.Compiler.Compiler
             this.errorHandler = errorHandler;
         }
 
+        public ICollection<TypeSymbol> BuildMetadata(
+            ParseNodeList compilationUnits, 
+            SymbolSet symbols,
+            CompilerOptions options)
+        {
+            Debug.Assert(compilationUnits != null);
+            Debug.Assert(symbols != null);
+
+            this.symbols = symbols;
+            symbolTable = symbols;
+            this.options = options;
+            BuildAssembly(compilationUnits);
+
+            List<TypeSymbol> types = new List<TypeSymbol>();
+
+            // Build all the types first.
+            // Types need to be loaded upfront so that they can be used in resolving types associated
+            // with members.
+            foreach (CompilationUnitNode compilationUnit in compilationUnits)
+                foreach (NamespaceNode namespaceNode in compilationUnit.Members)
+                {
+                    string namespaceName = namespaceNode.Name;
+
+                    NamespaceSymbol namespaceSymbol = symbols.GetNamespace(namespaceName);
+
+                    List<string> imports = null;
+                    Dictionary<string, string> aliases = null;
+
+                    ParseNodeList usingClauses = namespaceNode.UsingClauses;
+
+                    if (usingClauses != null && usingClauses.Count != 0)
+                    {
+                        foreach (ParseNode usingNode in namespaceNode.UsingClauses)
+                            if (usingNode is UsingNamespaceNode)
+                            {
+                                if (imports == null)
+                                {
+                                    imports = new List<string>(usingClauses.Count);
+                                }
+
+                                string referencedNamespace = ((UsingNamespaceNode)usingNode).ReferencedNamespace;
+
+                                if (imports.Contains(referencedNamespace) == false)
+                                {
+                                    imports.Add(referencedNamespace);
+                                }
+                            }
+                            else
+                            {
+                                Debug.Assert(usingNode is UsingAliasNode);
+
+                                if (aliases == null)
+                                {
+                                    aliases = new Dictionary<string, string>();
+                                }
+
+                                UsingAliasNode aliasNode = (UsingAliasNode)usingNode;
+                                aliases[aliasNode.Alias] = aliasNode.TypeName;
+                            }
+                    }
+
+                    // Add parent namespaces as imports in reverse order since they
+                    // are searched in that fashion.
+                    string[] namespaceParts = namespaceName.Split('.');
+
+                    for (int i = namespaceParts.Length - 2; i >= 0; i--)
+                    {
+                        string partialNamespace;
+
+                        if (i == 0)
+                        {
+                            partialNamespace = namespaceParts[0];
+                        }
+                        else
+                        {
+                            partialNamespace = string.Join(".", namespaceParts, 0, i + 1);
+                        }
+
+                        if (imports == null)
+                        {
+                            imports = new List<string>();
+                        }
+
+                        if (imports.Contains(partialNamespace) == false)
+                        {
+                            imports.Add(partialNamespace);
+                        }
+                    }
+
+                    // Build type symbols for all user-defined types
+                    foreach (TypeNode typeNode in namespaceNode.Members)
+                    {
+                        UserTypeNode userTypeNode = typeNode as UserTypeNode;
+
+                        if (userTypeNode == null)
+                        {
+                            continue;
+                        }
+
+                        ClassSymbol partialTypeSymbol = null;
+                        bool isPartial = false;
+
+                        if ((userTypeNode.Modifiers & Modifiers.Partial) != 0)
+                        {
+                            partialTypeSymbol =
+                                (ClassSymbol)((ISymbolTable)namespaceSymbol).FindSymbol(userTypeNode.Name, /* context */
+                                    null, SymbolFilter.Types);
+
+                            if (partialTypeSymbol != null && partialTypeSymbol.IsApplicationType)
+                            {
+                                // This class will be considered as a partial class
+                                isPartial = true;
+
+                                // Merge code model information for the partial class onto the code model node
+                                // for the primary partial class. Interesting bits of information include things
+                                // such as base class etc. that is yet to be processed.
+                                CustomTypeNode partialTypeNode = (CustomTypeNode)partialTypeSymbol.ParseContext;
+                                partialTypeNode.MergePartialType((CustomTypeNode)userTypeNode);
+
+                                // Merge interesting bits of information onto the primary type symbol as well
+                                // representing this partial class
+                                BuildType(partialTypeSymbol, userTypeNode);
+                            }
+                        }
+
+                        TypeSymbol typeSymbol = BuildType(userTypeNode, namespaceSymbol);
+
+                        if (typeSymbol != null)
+                        {
+                            typeSymbol.SetParseContext(userTypeNode);
+                            typeSymbol.SetParentSymbolTable(symbols);
+
+                            if (imports != null)
+                            {
+                                typeSymbol.SetImports(imports);
+                            }
+
+                            if (aliases != null)
+                            {
+                                typeSymbol.SetAliases(aliases);
+                            }
+
+                            if (isPartial == false)
+                            {
+                                namespaceSymbol.AddType(typeSymbol);
+                            }
+                            else
+                            {
+                                // Partial types don't get added to the namespace, so we don't have
+                                // duplicated named items. However, they still do get instantiated
+                                // and processed as usual.
+                                //
+                                // The members within partial classes refer to the partial type as their parent,
+                                // and hence derive context such as the list of imports scoped to the
+                                // particular type.
+                                // However, the members will get added to the primary partial type's list of
+                                // members so they can be found.
+                                // Effectively the partial class here gets created just to hold
+                                // context of type-symbol level bits of information such as the list of
+                                // imports, that are consumed when generating code for the members defined
+                                // within a specific partial class.
+                                ((ClassSymbol)typeSymbol).SetPrimaryPartialClass(partialTypeSymbol);
+                            }
+
+                            types.Add(typeSymbol);
+                        }
+                    }
+                }
+
+            // Build inheritance chains
+            foreach (TypeSymbol typeSymbol in types)
+                if (typeSymbol.Type == SymbolType.Class)
+                {
+                    BuildTypeInheritance((ClassSymbol)typeSymbol);
+                }
+                else if (typeSymbol.Type == SymbolType.Interface)
+                {
+                    BuildTypeInheritance((InterfaceSymbol)typeSymbol);
+                }
+
+            // Import members
+            foreach (TypeSymbol typeSymbol in types) BuildMembers(typeSymbol);
+
+            // Associate interface members with interface member symbols
+            foreach (TypeSymbol typeSymbol in types)
+                if (typeSymbol.Type == SymbolType.Class)
+                {
+                    BuildInterfaceAssociations((ClassSymbol)typeSymbol);
+                }
+
+            // Load resource values
+            if (this.symbols.HasResources)
+            {
+                foreach (TypeSymbol typeSymbol in types)
+                    if (typeSymbol.Type == SymbolType.Resources)
+                    {
+                        BuildResources((ResourcesSymbol)typeSymbol);
+                    }
+            }
+
+            // Load documentation
+            if (this.options.EnableDocComments)
+            {
+                Stream docCommentsStream = options.DocCommentFile.GetStream();
+
+                if (docCommentsStream != null)
+                {
+                    try
+                    {
+                        XmlDocument docComments = new XmlDocument();
+                        docComments.Load(docCommentsStream);
+
+                        symbols.SetComments(docComments);
+                    }
+                    finally
+                    {
+                        options.DocCommentFile.CloseStream(docCommentsStream);
+                    }
+                }
+            }
+
+            return types;
+        }
+
         private void BuildAssembly(ParseNodeList compilationUnits)
         {
             string scriptName = GetAssemblyScriptName(compilationUnits);
 
             if (string.IsNullOrEmpty(scriptName))
             {
-                errorHandler.ReportError("You must declare a ScriptAssembly attribute.", string.Empty);
+                errorHandler.ReportError(new AssemblyError(string.Empty, "You must declare a ScriptAssembly attribute."));
             }
             else if (Utility.IsValidScriptName(scriptName) == false)
             {
                 string errorMessage =
-                    "The ScriptAssembly attribute referenced an invalid name '{0}'. Script names must only contain letters, numbers, dots or underscores.";
-                errorHandler.ReportError(string.Format(errorMessage, scriptName), string.Empty);
+                    $"The ScriptAssembly attribute referenced an invalid name '{scriptName}'. Script names must only contain letters, numbers, dots or underscores.";
+                errorHandler.ReportError(new AssemblyError(string.Empty, errorMessage));
             }
 
             symbols.ScriptName = scriptName;
@@ -538,228 +763,6 @@ namespace DSharp.Compiler.Compiler
                     }
                 }
             }
-        }
-
-        public ICollection<TypeSymbol> BuildMetadata(ParseNodeList compilationUnits, SymbolSet symbols,
-                                                     CompilerOptions options)
-        {
-            Debug.Assert(compilationUnits != null);
-            Debug.Assert(symbols != null);
-
-            this.symbols = symbols;
-            symbolTable = symbols;
-            this.options = options;
-            BuildAssembly(compilationUnits);
-
-            List<TypeSymbol> types = new List<TypeSymbol>();
-
-            // Build all the types first.
-            // Types need to be loaded upfront so that they can be used in resolving types associated
-            // with members.
-            foreach (CompilationUnitNode compilationUnit in compilationUnits)
-                foreach (NamespaceNode namespaceNode in compilationUnit.Members)
-                {
-                    string namespaceName = namespaceNode.Name;
-
-                    NamespaceSymbol namespaceSymbol = symbols.GetNamespace(namespaceName);
-
-                    List<string> imports = null;
-                    Dictionary<string, string> aliases = null;
-
-                    ParseNodeList usingClauses = namespaceNode.UsingClauses;
-
-                    if (usingClauses != null && usingClauses.Count != 0)
-                    {
-                        foreach (ParseNode usingNode in namespaceNode.UsingClauses)
-                            if (usingNode is UsingNamespaceNode)
-                            {
-                                if (imports == null)
-                                {
-                                    imports = new List<string>(usingClauses.Count);
-                                }
-
-                                string referencedNamespace = ((UsingNamespaceNode)usingNode).ReferencedNamespace;
-
-                                if (imports.Contains(referencedNamespace) == false)
-                                {
-                                    imports.Add(referencedNamespace);
-                                }
-                            }
-                            else
-                            {
-                                Debug.Assert(usingNode is UsingAliasNode);
-
-                                if (aliases == null)
-                                {
-                                    aliases = new Dictionary<string, string>();
-                                }
-
-                                UsingAliasNode aliasNode = (UsingAliasNode)usingNode;
-                                aliases[aliasNode.Alias] = aliasNode.TypeName;
-                            }
-                    }
-
-                    // Add parent namespaces as imports in reverse order since they
-                    // are searched in that fashion.
-                    string[] namespaceParts = namespaceName.Split('.');
-
-                    for (int i = namespaceParts.Length - 2; i >= 0; i--)
-                    {
-                        string partialNamespace;
-
-                        if (i == 0)
-                        {
-                            partialNamespace = namespaceParts[0];
-                        }
-                        else
-                        {
-                            partialNamespace = string.Join(".", namespaceParts, 0, i + 1);
-                        }
-
-                        if (imports == null)
-                        {
-                            imports = new List<string>();
-                        }
-
-                        if (imports.Contains(partialNamespace) == false)
-                        {
-                            imports.Add(partialNamespace);
-                        }
-                    }
-
-                    // Build type symbols for all user-defined types
-                    foreach (TypeNode typeNode in namespaceNode.Members)
-                    {
-                        UserTypeNode userTypeNode = typeNode as UserTypeNode;
-
-                        if (userTypeNode == null)
-                        {
-                            continue;
-                        }
-
-                        ClassSymbol partialTypeSymbol = null;
-                        bool isPartial = false;
-
-                        if ((userTypeNode.Modifiers & Modifiers.Partial) != 0)
-                        {
-                            partialTypeSymbol =
-                                (ClassSymbol)((ISymbolTable)namespaceSymbol).FindSymbol(userTypeNode.Name, /* context */
-                                    null, SymbolFilter.Types);
-
-                            if (partialTypeSymbol != null && partialTypeSymbol.IsApplicationType)
-                            {
-                                // This class will be considered as a partial class
-                                isPartial = true;
-
-                                // Merge code model information for the partial class onto the code model node
-                                // for the primary partial class. Interesting bits of information include things
-                                // such as base class etc. that is yet to be processed.
-                                CustomTypeNode partialTypeNode = (CustomTypeNode)partialTypeSymbol.ParseContext;
-                                partialTypeNode.MergePartialType((CustomTypeNode)userTypeNode);
-
-                                // Merge interesting bits of information onto the primary type symbol as well
-                                // representing this partial class
-                                BuildType(partialTypeSymbol, userTypeNode);
-                            }
-                        }
-
-                        TypeSymbol typeSymbol = BuildType(userTypeNode, namespaceSymbol);
-
-                        if (typeSymbol != null)
-                        {
-                            typeSymbol.SetParseContext(userTypeNode);
-                            typeSymbol.SetParentSymbolTable(symbols);
-
-                            if (imports != null)
-                            {
-                                typeSymbol.SetImports(imports);
-                            }
-
-                            if (aliases != null)
-                            {
-                                typeSymbol.SetAliases(aliases);
-                            }
-
-                            if (isPartial == false)
-                            {
-                                namespaceSymbol.AddType(typeSymbol);
-                            }
-                            else
-                            {
-                                // Partial types don't get added to the namespace, so we don't have
-                                // duplicated named items. However, they still do get instantiated
-                                // and processed as usual.
-                                //
-                                // The members within partial classes refer to the partial type as their parent,
-                                // and hence derive context such as the list of imports scoped to the
-                                // particular type.
-                                // However, the members will get added to the primary partial type's list of
-                                // members so they can be found.
-                                // Effectively the partial class here gets created just to hold
-                                // context of type-symbol level bits of information such as the list of
-                                // imports, that are consumed when generating code for the members defined
-                                // within a specific partial class.
-                                ((ClassSymbol)typeSymbol).SetPrimaryPartialClass(partialTypeSymbol);
-                            }
-
-                            types.Add(typeSymbol);
-                        }
-                    }
-                }
-
-            // Build inheritance chains
-            foreach (TypeSymbol typeSymbol in types)
-                if (typeSymbol.Type == SymbolType.Class)
-                {
-                    BuildTypeInheritance((ClassSymbol)typeSymbol);
-                }
-                else if (typeSymbol.Type == SymbolType.Interface)
-                {
-                    BuildTypeInheritance((InterfaceSymbol)typeSymbol);
-                }
-
-            // Import members
-            foreach (TypeSymbol typeSymbol in types) BuildMembers(typeSymbol);
-
-            // Associate interface members with interface member symbols
-            foreach (TypeSymbol typeSymbol in types)
-                if (typeSymbol.Type == SymbolType.Class)
-                {
-                    BuildInterfaceAssociations((ClassSymbol)typeSymbol);
-                }
-
-            // Load resource values
-            if (this.symbols.HasResources)
-            {
-                foreach (TypeSymbol typeSymbol in types)
-                    if (typeSymbol.Type == SymbolType.Resources)
-                    {
-                        BuildResources((ResourcesSymbol)typeSymbol);
-                    }
-            }
-
-            // Load documentation
-            if (this.options.EnableDocComments)
-            {
-                Stream docCommentsStream = options.DocCommentFile.GetStream();
-
-                if (docCommentsStream != null)
-                {
-                    try
-                    {
-                        XmlDocument docComments = new XmlDocument();
-                        docComments.Load(docCommentsStream);
-
-                        symbols.SetComments(docComments);
-                    }
-                    finally
-                    {
-                        options.DocCommentFile.CloseStream(docCommentsStream);
-                    }
-                }
-            }
-
-            return types;
         }
 
         private MethodSymbol BuildMethod(MethodDeclarationNode methodNode, TypeSymbol typeSymbol)

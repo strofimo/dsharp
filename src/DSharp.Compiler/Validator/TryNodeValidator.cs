@@ -1,10 +1,6 @@
-// TryNodeValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using DSharp.Compiler.CodeModel;
+﻿using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Statements;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -12,12 +8,11 @@ namespace DSharp.Compiler.Validator
     {
         bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
         {
-            TryNode tryNode = (TryNode) node;
+            TryNode tryNode = (TryNode)node;
 
             if (tryNode.CatchClauses != null && tryNode.CatchClauses.Count > 1)
             {
-                errorHandler.ReportError("Try/Catch statements are limited to a single catch clause.",
-                    tryNode.Token.Location);
+                errorHandler.ReportError(new NodeValidationError("Try/Catch statements are limited to a single catch clause.", tryNode));
 
                 return false;
             }

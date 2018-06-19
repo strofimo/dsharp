@@ -1,10 +1,6 @@
-// IndexerDeclarationNodeValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using DSharp.Compiler.CodeModel;
+﻿using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Members;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -12,20 +8,18 @@ namespace DSharp.Compiler.Validator
     {
         bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
         {
-            IndexerDeclarationNode indexerNode = (IndexerDeclarationNode) node;
+            IndexerDeclarationNode indexerNode = (IndexerDeclarationNode)node;
 
             if ((indexerNode.Modifiers & Modifiers.New) != 0)
             {
-                errorHandler.ReportError("The new modifier is not supported.",
-                    indexerNode.Token.Location);
+                errorHandler.ReportError(new NodeValidationError("The new modifier is not supported.", indexerNode));
 
                 return false;
             }
 
             if (indexerNode.GetAccessor == null)
             {
-                errorHandler.ReportError("Set-only properties are not supported. Use a set method instead.",
-                    indexerNode.Token.Location);
+                errorHandler.ReportError(new NodeValidationError("Set-only properties are not supported. Use a set method instead.", indexerNode));
 
                 return false;
             }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using DSharp.Compiler.Errors;
 using DSharp.Compiler.ScriptModel.Symbols;
 using Mono.Cecil;
 
@@ -911,9 +912,8 @@ namespace DSharp.Compiler.Importer
 
                 if (typeSymbol == null)
                 {
-                    errorHandler.ReportError("Unable to resolve referenced type '" + name +
-                                             "'. Make sure all needed assemblies have been explicitly referenced.",
-                        string.Empty);
+                    errorHandler.ReportError(new MissingReferenceError("Unable to resolve referenced type '" + name +
+                                             "'. Make sure all needed assemblies have been explicitly referenced."));
                     resolveError = true;
                 }
             }

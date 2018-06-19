@@ -53,6 +53,7 @@ namespace DSharp.Compiler.Importer
         {
             assemblyIdentifier = null;
 
+            //TODO: Replace with auto generated name from the assembly title or name attributes
             CustomAttribute scriptAssemblyAttribute = GetAttribute(attributeProvider, "System.ScriptAssemblyAttribute");
 
             if (scriptAssemblyAttribute != null)

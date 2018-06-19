@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Types;
 using DSharp.Compiler.Compiler;
+using DSharp.Compiler.Errors;
 using DSharp.Compiler.Generator;
 using DSharp.Compiler.Importer;
 using DSharp.Compiler.ScriptModel.Symbols;
@@ -44,31 +45,9 @@ namespace DSharp.Compiler
             this.errorHandler = errorHandler;
         }
 
-        #region Implementation of IErrorHandler
-
-        void IErrorHandler.ReportError(string errorMessage, string location)
-        {
-            hasErrors = true;
-
-            if (errorHandler != null)
-            {
-                errorHandler.ReportError(errorMessage, location);
-
-                return;
-            }
-
-            if (string.IsNullOrEmpty(location) == false)
-            {
-                Console.Error.Write(location);
-                Console.Error.Write(": ");
-            }
-
-            Console.Error.WriteLine(errorMessage);
-        }
-
         void IErrorHandler.ReportError(IError error)
         {
-            if(errorHandler != null)
+            if (errorHandler != null)
             {
                 errorHandler.ReportError(error);
                 return;
@@ -88,8 +67,6 @@ namespace DSharp.Compiler
 
             Console.Error.WriteLine(error.Message);
         }
-
-        #endregion
 
         private void BuildCodeModel()
         {
@@ -161,7 +138,7 @@ namespace DSharp.Compiler
                 }
 
                 if (appType.Type == SymbolType.Class &&
-                    ((ClassSymbol) appType).PrimaryPartialClass != appType)
+                    ((ClassSymbol)appType).PrimaryPartialClass != appType)
                 {
                     // Skip the check for partial types, since they should only be
                     // checked once.
@@ -178,7 +155,7 @@ namespace DSharp.Compiler
                 {
                     string error = "The type '" + appType.FullName + "' conflicts with with '" + types[name].FullName +
                                    "' as they have the same name.";
-                    ((IErrorHandler) this).ReportError(error, null);
+                    ((IErrorHandler)this).ReportError(new GeneralError(error));
                 }
                 else
                 {
@@ -266,8 +243,8 @@ namespace DSharp.Compiler
 
                 if (outputStream == null)
                 {
-                    ((IErrorHandler) this).ReportError("Unable to write to file " + options.ScriptFile.FullName,
-                        options.ScriptFile.FullName);
+                    string scriptName = options.ScriptFile.FullName;
+                    ((IErrorHandler)this).ReportError(new MissingStreamError($"Unable to write to file {scriptName}" , scriptName));
 
                     return;
                 }
@@ -405,7 +382,7 @@ namespace DSharp.Compiler
             Regex includePattern = new Regex("\\{include:([^\\}]+)\\}",
                 RegexOptions.Multiline | RegexOptions.CultureInvariant);
 
-            return includePattern.Replace(template, delegate(Match include)
+            return includePattern.Replace(template, delegate (Match include)
             {
                 string includedScript = string.Empty;
 

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using DSharp.Compiler;
+using DSharp.Compiler.Errors;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -233,13 +234,6 @@ namespace DSharp.Build.Tasks
             return sources;
         }
 
-        #region Implementation of IErrorHandler
-
-        void IErrorHandler.ReportError(string errorMessage, string location)
-        {
-            LogError(errorMessage, location);
-        }
-
         void IErrorHandler.ReportError(IError error)
         {
             LogError(error.Message, error.Location);
@@ -272,8 +266,6 @@ namespace DSharp.Build.Tasks
 
             Log.LogError(string.Empty, string.Empty, string.Empty, location, line, column, 0, 0, errorMessage);
         }
-
-        #endregion Implementation of IErrorHandler
 
         #region Implementation of IStreamSourceResolver
 

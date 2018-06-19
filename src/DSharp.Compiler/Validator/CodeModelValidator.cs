@@ -1,12 +1,8 @@
-// CodeModelValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -158,7 +154,7 @@ namespace DSharp.Compiler.Validator
 
         bool IParseNodeHandler.HandleNode(ParseNode node, object context)
         {
-            CompilerOptions options = (CompilerOptions) context;
+            CompilerOptions options = (CompilerOptions)context;
 
             Type validatorType = GetValidatorType(node.NodeType, options);
 
@@ -176,7 +172,7 @@ namespace DSharp.Compiler.Validator
             }
             else
             {
-                validator = (IParseNodeValidator) Activator.CreateInstance(validatorType);
+                validator = (IParseNodeValidator)Activator.CreateInstance(validatorType);
                 validatorTable[validatorType] = validator;
             }
 

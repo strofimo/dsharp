@@ -1,4 +1,4 @@
-// ExpressionBuilder.cs
+﻿// ExpressionBuilder.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -14,6 +14,7 @@ using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.Errors;
 using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Symbols;
 
@@ -36,7 +37,7 @@ namespace DSharp.Compiler.Compiler
             this.symbolTable = symbolTable;
             symbolContext = memberContext;
             this.memberContext = memberContext;
-            classContext = ((ClassSymbol) memberContext.Parent).PrimaryPartialClass;
+            classContext = ((ClassSymbol)memberContext.Parent).PrimaryPartialClass;
             symbolSet = memberContext.SymbolSet;
             this.errorHandler = errorHandler;
             this.options = options;
@@ -47,7 +48,7 @@ namespace DSharp.Compiler.Compiler
         {
             this.symbolTable = symbolTable;
             symbolContext = fieldContext;
-            classContext = ((ClassSymbol) fieldContext.Parent).PrimaryPartialClass;
+            classContext = ((ClassSymbol)fieldContext.Parent).PrimaryPartialClass;
             symbolSet = fieldContext.SymbolSet;
             this.errorHandler = errorHandler;
             this.options = options;
@@ -60,64 +61,64 @@ namespace DSharp.Compiler.Compiler
             switch (node.NodeType)
             {
                 case ParseNodeType.Literal:
-                    expression = ProcessLiteralNode((LiteralNode) node);
+                    expression = ProcessLiteralNode((LiteralNode)node);
 
                     break;
                 case ParseNodeType.Name:
                 case ParseNodeType.GenericName:
-                    expression = ProcessNameNode((NameNode) node);
+                    expression = ProcessNameNode((NameNode)node);
 
                     break;
                 case ParseNodeType.Typeof:
-                    expression = ProcessTypeofNode((TypeofNode) node);
+                    expression = ProcessTypeofNode((TypeofNode)node);
 
                     break;
                 case ParseNodeType.This:
-                    expression = ProcessThisNode((ThisNode) node);
+                    expression = ProcessThisNode((ThisNode)node);
 
                     break;
                 case ParseNodeType.Base:
-                    expression = ProcessBaseNode((BaseNode) node);
+                    expression = ProcessBaseNode((BaseNode)node);
 
                     break;
                 case ParseNodeType.UnaryExpression:
-                    expression = ProcessUnaryExpressionNode((UnaryExpressionNode) node);
+                    expression = ProcessUnaryExpressionNode((UnaryExpressionNode)node);
 
                     break;
                 case ParseNodeType.BinaryExpression:
-                    expression = ProcessBinaryExpressionNode((BinaryExpressionNode) node);
+                    expression = ProcessBinaryExpressionNode((BinaryExpressionNode)node);
 
                     break;
                 case ParseNodeType.Conditional:
-                    expression = ProcessConditionalNode((ConditionalNode) node);
+                    expression = ProcessConditionalNode((ConditionalNode)node);
 
                     break;
                 case ParseNodeType.New:
-                    expression = ProcessNewNode((NewNode) node);
+                    expression = ProcessNewNode((NewNode)node);
 
                     break;
                 case ParseNodeType.ArrayNew:
-                    expression = ProcessArrayNewNode((ArrayNewNode) node);
+                    expression = ProcessArrayNewNode((ArrayNewNode)node);
 
                     break;
                 case ParseNodeType.ArrayInitializer:
-                    expression = ProcessArrayInitializerNode((ArrayInitializerNode) node);
+                    expression = ProcessArrayInitializerNode((ArrayInitializerNode)node);
 
                     break;
                 case ParseNodeType.ArrayType:
-                    expression = ProcessArrayTypeNode((ArrayTypeNode) node);
+                    expression = ProcessArrayTypeNode((ArrayTypeNode)node);
 
                     break;
                 case ParseNodeType.PredefinedType:
-                    expression = ProcessIntrinsicType((IntrinsicTypeNode) node);
+                    expression = ProcessIntrinsicType((IntrinsicTypeNode)node);
 
                     break;
                 case ParseNodeType.Cast:
-                    expression = ProcessCastNode((CastNode) node);
+                    expression = ProcessCastNode((CastNode)node);
 
                     break;
                 case ParseNodeType.AnonymousMethod:
-                    expression = ProcessAnonymousMethodNode((AnonymousMethodNode) node);
+                    expression = ProcessAnonymousMethodNode((AnonymousMethodNode)node);
 
                     break;
                 default:
@@ -144,7 +145,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (itemExpr is MemberExpression)
                 {
-                    itemExpr = TransformMemberExpression((MemberExpression) itemExpr);
+                    itemExpr = TransformMemberExpression((MemberExpression)itemExpr);
                 }
 
                 expressions.Add(itemExpr);
@@ -226,7 +227,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (values[i] is MemberExpression)
                 {
-                    values[i] = TransformMemberExpression((MemberExpression) values[i]);
+                    values[i] = TransformMemberExpression((MemberExpression)values[i]);
                 }
 
                 i++;
@@ -250,14 +251,14 @@ namespace DSharp.Compiler.Compiler
                 }
 
                 Debug.Assert(node.ExpressionList.NodeType == ParseNodeType.ExpressionList);
-                ExpressionListNode argsList = (ExpressionListNode) node.ExpressionList;
+                ExpressionListNode argsList = (ExpressionListNode)node.ExpressionList;
 
                 Debug.Assert(argsList.Expressions.Count == 1);
                 Expression sizeExpression = BuildExpression(argsList.Expressions[0]);
 
                 if (sizeExpression is MemberExpression)
                 {
-                    sizeExpression = TransformMemberExpression((MemberExpression) sizeExpression);
+                    sizeExpression = TransformMemberExpression((MemberExpression)sizeExpression);
                 }
 
                 NewExpression newExpr = new NewExpression(arrayTypeSymbol);
@@ -266,7 +267,7 @@ namespace DSharp.Compiler.Compiler
                 return newExpr;
             }
 
-            ArrayInitializerNode initializerNode = (ArrayInitializerNode) node.InitializerExpression;
+            ArrayInitializerNode initializerNode = (ArrayInitializerNode)node.InitializerExpression;
             Expression[] values = new Expression[initializerNode.Values.Count];
 
             int i = 0;
@@ -277,7 +278,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (values[i] is MemberExpression)
                 {
-                    values[i] = TransformMemberExpression((MemberExpression) values[i]);
+                    values[i] = TransformMemberExpression((MemberExpression)values[i]);
                 }
 
                 i++;
@@ -312,7 +313,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (childExpression is MemberExpression)
                 {
-                    childExpression = TransformMemberExpression((MemberExpression) childExpression);
+                    childExpression = TransformMemberExpression((MemberExpression)childExpression);
                 }
 
                 return new UnaryExpression(
@@ -343,18 +344,18 @@ namespace DSharp.Compiler.Compiler
             {
                 if (rightExpression.Type == ExpressionType.Member)
                 {
-                    rightExpression = TransformMemberExpression((MemberExpression) rightExpression);
+                    rightExpression = TransformMemberExpression((MemberExpression)rightExpression);
                 }
 
                 if (rightExpression.Type == ExpressionType.Delegate ||
                     rightExpression.EvaluatedType.Type == SymbolType.Delegate)
                 {
                     Debug.Assert(leftExpression.Type == ExpressionType.Member);
-                    Debug.Assert(((MemberExpression) leftExpression).Member.Type == SymbolType.Event);
+                    Debug.Assert(((MemberExpression)leftExpression).Member.Type == SymbolType.Event);
 
                     bool add = node.Operator == TokenType.PlusEqual;
                     EventExpression eventExpression =
-                        (EventExpression) TransformMemberExpression((MemberExpression) leftExpression,
+                        (EventExpression)TransformMemberExpression((MemberExpression)leftExpression,
                             add, /* isEventAddOrRemove */ true);
 
                     eventExpression.SetHandler(rightExpression);
@@ -364,7 +365,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (leftExpression.Type == ExpressionType.Member)
                 {
-                    MemberExpression leftMemberExpression = (MemberExpression) leftExpression;
+                    MemberExpression leftMemberExpression = (MemberExpression)leftExpression;
 
                     if (leftMemberExpression.Member.Type == SymbolType.Property)
                     {
@@ -395,19 +396,19 @@ namespace DSharp.Compiler.Compiler
 
             if (leftExpression.Type == ExpressionType.Member)
             {
-                leftExpression = TransformMemberExpression((MemberExpression) leftExpression,
+                leftExpression = TransformMemberExpression((MemberExpression)leftExpression,
                     /* getOrAdd */ node.Operator != TokenType.Equal);
             }
 
             if (rightExpression.Type == ExpressionType.Member)
             {
-                rightExpression = TransformMemberExpression((MemberExpression) rightExpression);
+                rightExpression = TransformMemberExpression((MemberExpression)rightExpression);
             }
 
             if (node.Operator == TokenType.Coalesce)
             {
                 TypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
-                MethodSymbol valueMethod = (MethodSymbol) scriptType.GetMember("Value");
+                MethodSymbol valueMethod = (MethodSymbol)scriptType.GetMember("Value");
 
                 TypeExpression scriptExpression =
                     new TypeExpression(scriptType, SymbolFilter.Public | SymbolFilter.StaticMembers);
@@ -544,7 +545,7 @@ namespace DSharp.Compiler.Compiler
                         TypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
                         Debug.Assert(scriptType != null);
 
-                        MethodSymbol compareMethod = (MethodSymbol) scriptType.GetMember("CompareDates");
+                        MethodSymbol compareMethod = (MethodSymbol)scriptType.GetMember("CompareDates");
                         Debug.Assert(compareMethod != null);
 
                         MethodExpression compareExpression =
@@ -575,10 +576,10 @@ namespace DSharp.Compiler.Compiler
                     {
                         // Switch to unsigned shift operator for unsigned types (which happens
                         // to be set up to follow the signed operator in the enumeration offset by 1)
-                        Debug.Assert((int) Operator.UnsignedShiftRight - (int) Operator.ShiftRight == 2);
-                        Debug.Assert((int) Operator.UnsignedShiftRightEquals - (int) Operator.ShiftRightEquals == 2);
+                        Debug.Assert((int)Operator.UnsignedShiftRight - (int)Operator.ShiftRight == 2);
+                        Debug.Assert((int)Operator.UnsignedShiftRightEquals - (int)Operator.ShiftRightEquals == 2);
 
-                        operatorType = (Operator) ((int) operatorType + 2);
+                        operatorType = (Operator)((int)operatorType + 2);
                     }
                 }
 
@@ -599,7 +600,7 @@ namespace DSharp.Compiler.Compiler
 
             if (childExpression.Type == ExpressionType.Member)
             {
-                childExpression = TransformMemberExpression((MemberExpression) childExpression);
+                childExpression = TransformMemberExpression((MemberExpression)childExpression);
             }
 
             TypeSymbol typeSymbol = symbolSet.ResolveType(node.TypeReference, symbolTable, symbolContext);
@@ -615,11 +616,11 @@ namespace DSharp.Compiler.Compiler
                     // to preserve that behavior.
 
                     TypeSymbol mathType =
-                        (TypeSymbol) ((ISymbolTable) symbolSet.SystemNamespace).FindSymbol("Math", null,
+                        (TypeSymbol)((ISymbolTable)symbolSet.SystemNamespace).FindSymbol("Math", null,
                             SymbolFilter.Types);
                     Debug.Assert(mathType != null);
 
-                    MethodSymbol truncateMethod = (MethodSymbol) mathType.GetMember("Truncate");
+                    MethodSymbol truncateMethod = (MethodSymbol)mathType.GetMember("Truncate");
                     Debug.Assert(truncateMethod != null);
 
                     MethodExpression truncateExpression =
@@ -643,17 +644,17 @@ namespace DSharp.Compiler.Compiler
 
             if (conditionExpression.Type == ExpressionType.Member)
             {
-                conditionExpression = TransformMemberExpression((MemberExpression) conditionExpression);
+                conditionExpression = TransformMemberExpression((MemberExpression)conditionExpression);
             }
 
             if (trueExpression.Type == ExpressionType.Member)
             {
-                trueExpression = TransformMemberExpression((MemberExpression) trueExpression);
+                trueExpression = TransformMemberExpression((MemberExpression)trueExpression);
             }
 
             if (falseExpression.Type == ExpressionType.Member)
             {
-                falseExpression = TransformMemberExpression((MemberExpression) falseExpression);
+                falseExpression = TransformMemberExpression((MemberExpression)falseExpression);
             }
 
             return new ConditionalExpression(conditionExpression, trueExpression, falseExpression);
@@ -668,7 +669,7 @@ namespace DSharp.Compiler.Compiler
 
             if (node.LeftChild.NodeType == ParseNodeType.Name || node.LeftChild.NodeType == ParseNodeType.GenericName)
             {
-                objectExpression = ProcessNameNode((NameNode) node.LeftChild, filter);
+                objectExpression = ProcessNameNode((NameNode)node.LeftChild, filter);
             }
             else
             {
@@ -677,7 +678,7 @@ namespace DSharp.Compiler.Compiler
 
             if (objectExpression is MemberExpression)
             {
-                objectExpression = TransformMemberExpression((MemberExpression) objectExpression);
+                objectExpression = TransformMemberExpression((MemberExpression)objectExpression);
             }
 
             if (objectExpression is LiteralExpression)
@@ -688,9 +689,9 @@ namespace DSharp.Compiler.Compiler
             Debug.Assert(objectExpression.EvaluatedType is ISymbolTable table);
 
             ISymbolTable typeSymbolTable = objectExpression.EvaluatedType;
-            string memberName = ((NameNode) node.RightChild).Name;
+            string memberName = ((NameNode)node.RightChild).Name;
 
-            memberSymbol = (MemberSymbol) typeSymbolTable.FindSymbol(memberName,
+            memberSymbol = (MemberSymbol)typeSymbolTable.FindSymbol(memberName,
                 symbolContext,
                 objectExpression.MemberMask);
 
@@ -698,12 +699,12 @@ namespace DSharp.Compiler.Compiler
             {
                 if (node.RightChild.NodeType == ParseNodeType.GenericName)
                 {
-                    int genericArgIndex = ((GenericParameterSymbol) memberSymbol.AssociatedType).Index;
+                    int genericArgIndex = ((GenericParameterSymbol)memberSymbol.AssociatedType).Index;
 
                     Debug.Assert(node.RightChild.NodeType == ParseNodeType.GenericName);
-                    Debug.Assert(((GenericNameNode) node.RightChild).TypeArguments != null);
+                    Debug.Assert(((GenericNameNode)node.RightChild).TypeArguments != null);
 
-                    ParseNode typeArgNode = ((GenericNameNode) node.RightChild).TypeArguments[genericArgIndex];
+                    ParseNode typeArgNode = ((GenericNameNode)node.RightChild).TypeArguments[genericArgIndex];
                     TypeSymbol returnType = symbolSet.ResolveType(typeArgNode, symbolTable, symbolContext);
 
                     if (returnType != null)
@@ -761,12 +762,12 @@ namespace DSharp.Compiler.Compiler
 
                     if (string.CompareOrdinal(memberSymbol.Name, "Count") == 0)
                     {
-                        methodSymbol = (MethodSymbol) dictionaryType.GetMember("GetKeyCount");
+                        methodSymbol = (MethodSymbol)dictionaryType.GetMember("GetKeyCount");
                         Debug.Assert(methodSymbol != null);
                     }
                     else if (string.CompareOrdinal(memberSymbol.Name, "Keys") == 0)
                     {
-                        methodSymbol = (MethodSymbol) dictionaryType.GetMember("GetKeys");
+                        methodSymbol = (MethodSymbol)dictionaryType.GetMember("GetKeys");
                         Debug.Assert(methodSymbol != null);
                     }
 
@@ -798,7 +799,7 @@ namespace DSharp.Compiler.Compiler
                         // Nullable<T>.Value becomes Script.IsValue(Nullable<T>)
 
                         TypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
-                        MethodSymbol isValueMethod = (MethodSymbol) scriptType.GetMember("IsValue");
+                        MethodSymbol isValueMethod = (MethodSymbol)scriptType.GetMember("IsValue");
 
                         MethodExpression methodExpression
                             = new MethodExpression(
@@ -816,7 +817,7 @@ namespace DSharp.Compiler.Compiler
                         // type.Name becomes ss.typeName(type)
 
                         TypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
-                        MethodSymbol typeNameMethod = (MethodSymbol) scriptType.GetMember("GetTypeName");
+                        MethodSymbol typeNameMethod = (MethodSymbol)scriptType.GetMember("GetTypeName");
 
                         MethodExpression methodExpression
                             = new MethodExpression(
@@ -859,7 +860,7 @@ namespace DSharp.Compiler.Compiler
                 }
             }
 
-            ScriptReference dependency = ((TypeSymbol) memberSymbol.Parent).Dependency;
+            ScriptReference dependency = ((TypeSymbol)memberSymbol.Parent).Dependency;
 
             if (dependency != null)
             {
@@ -872,19 +873,19 @@ namespace DSharp.Compiler.Compiler
                 memberSymbol.AssociatedType.IsGeneric && memberSymbol.AssociatedType.GenericArguments == null)
             {
                 Debug.Assert(node.RightChild.NodeType == ParseNodeType.GenericName);
-                Debug.Assert(((GenericNameNode) node.RightChild).TypeArguments != null);
+                Debug.Assert(((GenericNameNode)node.RightChild).TypeArguments != null);
 
                 List<TypeSymbol> typeArgs = new List<TypeSymbol>();
-                foreach (ParseNode typeArgNode in ((GenericNameNode) node.RightChild).TypeArguments)
+                foreach (ParseNode typeArgNode in ((GenericNameNode)node.RightChild).TypeArguments)
                     typeArgs.Add(symbolSet.ResolveType(typeArgNode, symbolTable, symbolContext));
 
                 TypeSymbol returnType = symbolSet.CreateGenericTypeSymbol(memberSymbol.AssociatedType, typeArgs);
 
                 if (returnType != null)
                 {
-                    MethodSymbol genericMethod = (MethodSymbol) memberSymbol;
+                    MethodSymbol genericMethod = (MethodSymbol)memberSymbol;
                     MethodSymbol instanceMethod =
-                        new MethodSymbol(genericMethod.Name, (TypeSymbol) genericMethod.Parent, returnType);
+                        new MethodSymbol(genericMethod.Name, (TypeSymbol)genericMethod.Parent, returnType);
 
                     if (genericMethod.IsTransformed)
                     {
@@ -910,7 +911,7 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessLiteralNode(LiteralNode node)
         {
-            LiteralToken token = (LiteralToken) node.Token;
+            LiteralToken token = (LiteralToken)node.Token;
 
             string systemTypeName = null;
 
@@ -969,7 +970,7 @@ namespace DSharp.Compiler.Compiler
             if (systemTypeName != null)
             {
                 TypeSymbol typeSymbol =
-                    (TypeSymbol) ((ISymbolTable) symbolSet.SystemNamespace).FindSymbol(systemTypeName, null,
+                    (TypeSymbol)((ISymbolTable)symbolSet.SystemNamespace).FindSymbol(systemTypeName, null,
                         SymbolFilter.Types);
                 Debug.Assert(typeSymbol != null);
 
@@ -990,7 +991,7 @@ namespace DSharp.Compiler.Compiler
 
             if (node.NodeType == ParseNodeType.GenericName)
             {
-                name = name + "`" + ((GenericNameNode) node).TypeArguments.Count;
+                name = name + "`" + ((GenericNameNode)node).TypeArguments.Count;
             }
 
             // TODO: When inside a static method, we should only lookup static members
@@ -1017,7 +1018,7 @@ namespace DSharp.Compiler.Compiler
 
                 if ((memberSymbol.Visibility & MemberVisibility.Static) != 0)
                 {
-                    return new MemberExpression(new TypeExpression((TypeSymbol) memberSymbol.Parent,
+                    return new MemberExpression(new TypeExpression((TypeSymbol)memberSymbol.Parent,
                             SymbolFilter.Public | SymbolFilter.StaticMembers),
                         memberSymbol);
                 }
@@ -1047,9 +1048,9 @@ namespace DSharp.Compiler.Compiler
                 // is instantiated.
 
                 Debug.Assert(node.Arguments is ExpressionListNode);
-                Debug.Assert(((ExpressionListNode) node.Arguments).Expressions.Count == 1);
+                Debug.Assert(((ExpressionListNode)node.Arguments).Expressions.Count == 1);
 
-                Expression subExpression = BuildExpression(((ExpressionListNode) node.Arguments).Expressions[0]);
+                Expression subExpression = BuildExpression(((ExpressionListNode)node.Arguments).Expressions[0]);
 
                 // We need parenthesis if we are declaring an inline function, ie
                 // Callback c = new Callback(delegate {}); --> var c = (function () {});
@@ -1059,7 +1060,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (subExpression is MemberExpression)
                 {
-                    subExpression = TransformMemberExpression((MemberExpression) subExpression);
+                    subExpression = TransformMemberExpression((MemberExpression)subExpression);
                 }
 
                 NewDelegateExpression expr = new NewDelegateExpression(subExpression, type);
@@ -1077,7 +1078,7 @@ namespace DSharp.Compiler.Compiler
             if (node.Arguments != null)
             {
                 Debug.Assert(node.Arguments is ExpressionListNode);
-                List<Expression> args = BuildExpressionList((ExpressionListNode) node.Arguments);
+                List<Expression> args = BuildExpressionList((ExpressionListNode)node.Arguments);
 
                 if (type == symbolSet.ResolveIntrinsicType(IntrinsicType.Function) &&
                     args.Count > 1)
@@ -1136,7 +1137,7 @@ namespace DSharp.Compiler.Compiler
 
             if (leftExpression is MemberExpression)
             {
-                leftExpression = TransformMemberExpression((MemberExpression) leftExpression);
+                leftExpression = TransformMemberExpression((MemberExpression)leftExpression);
             }
 
             Debug.Assert(leftExpression.EvaluatedType.Type == SymbolType.Class ||
@@ -1147,11 +1148,11 @@ namespace DSharp.Compiler.Compiler
 
             if (leftExpression.EvaluatedType.Type != SymbolType.Interface)
             {
-                indexer = ((ClassSymbol) leftExpression.EvaluatedType).GetIndexer();
+                indexer = ((ClassSymbol)leftExpression.EvaluatedType).GetIndexer();
             }
             else
             {
-                indexer = GetInterfaceIndexer((InterfaceSymbol) leftExpression.EvaluatedType);
+                indexer = GetInterfaceIndexer((InterfaceSymbol)leftExpression.EvaluatedType);
             }
 
             Debug.Assert(indexer != null);
@@ -1160,7 +1161,7 @@ namespace DSharp.Compiler.Compiler
             IndexerExpression indexerExpression = new IndexerExpression(leftExpression, indexer);
 
             Debug.Assert(node.RightChild is ExpressionListNode);
-            ICollection<Expression> args = BuildExpressionList((ExpressionListNode) node.RightChild);
+            ICollection<Expression> args = BuildExpressionList((ExpressionListNode)node.RightChild);
 
             foreach (Expression paramExpr in args) indexerExpression.AddIndexParameterValue(paramExpr);
 
@@ -1221,7 +1222,7 @@ namespace DSharp.Compiler.Compiler
                 return leftExpression;
             }
 
-            MemberExpression memberExpression = (MemberExpression) leftExpression;
+            MemberExpression memberExpression = (MemberExpression)leftExpression;
 
             ExpressionListNode argNodes = null;
             List<Expression> args = null;
@@ -1230,7 +1231,7 @@ namespace DSharp.Compiler.Compiler
             {
                 Debug.Assert(node.RightChild is ExpressionListNode);
 
-                argNodes = (ExpressionListNode) node.RightChild;
+                argNodes = (ExpressionListNode)node.RightChild;
                 args = BuildExpressionList(argNodes);
             }
 
@@ -1257,7 +1258,7 @@ namespace DSharp.Compiler.Compiler
                 Expression instanceExpression = TransformMemberExpression(memberExpression);
 
                 MethodSymbol invokeMethod =
-                    (MethodSymbol) memberExpression.EvaluatedType.GetMember("Invoke");
+                    (MethodSymbol)memberExpression.EvaluatedType.GetMember("Invoke");
                 Debug.Assert(invokeMethod != null);
 
                 methodExpression = new MethodExpression(instanceExpression, invokeMethod);
@@ -1267,7 +1268,7 @@ namespace DSharp.Compiler.Compiler
             {
                 // The member being accessed is a method...
 
-                MethodSymbol method = (MethodSymbol) memberExpression.Member;
+                MethodSymbol method = (MethodSymbol)memberExpression.Member;
 
                 if (!method.MatchesConditions(options.Defines))
                 {
@@ -1281,7 +1282,7 @@ namespace DSharp.Compiler.Compiler
                     // can perform a foreach on any type that has a GetEnumerator method, rather
                     // than only types that implement IEnumerable.
 
-                    MethodSymbol enumerateMethod = (MethodSymbol) scriptType.GetMember("Enumerate");
+                    MethodSymbol enumerateMethod = (MethodSymbol)scriptType.GetMember("Enumerate");
                     Debug.Assert(enumerateMethod != null);
 
                     methodExpression = new MethodExpression(
@@ -1307,7 +1308,7 @@ namespace DSharp.Compiler.Compiler
                     if (memberExpression.ObjectReference.EvaluatedType.Type == SymbolType.Enumeration)
                     {
                         EnumerationSymbol enumSymbol =
-                            (EnumerationSymbol) memberExpression.ObjectReference.EvaluatedType;
+                            (EnumerationSymbol)memberExpression.ObjectReference.EvaluatedType;
 
                         if (enumSymbol.UseNamedValues)
                         {
@@ -1338,7 +1339,7 @@ namespace DSharp.Compiler.Compiler
                         // However we'll re-evaluate the argument to be of dictionary type
                         // so that subsequent use of this expression sees it as a dictionary.
                         Debug.Assert(args.Count == 1);
-                        args[0].Reevaluate((TypeSymbol) method.Parent);
+                        args[0].Reevaluate((TypeSymbol)method.Parent);
 
                         return args[0];
                     }
@@ -1356,18 +1357,18 @@ namespace DSharp.Compiler.Compiler
                         {
                             Debug.Assert(args[0].EvaluatedType == stringType);
 
-                            FieldSymbol field = ((FieldExpression) args[0]).Field;
+                            FieldSymbol field = ((FieldExpression)args[0]).Field;
 
                             if (field.IsConstant)
                             {
                                 Debug.Assert(field.Value is string);
-                                script = (string) field.Value;
+                                script = (string)field.Value;
                             }
                         }
                         else if (args[0].Type == ExpressionType.Literal)
                         {
-                            Debug.Assert(((LiteralExpression) args[0]).Value is string);
-                            script = (string) ((LiteralExpression) args[0]).Value;
+                            Debug.Assert(((LiteralExpression)args[0]).Value is string);
+                            script = (string)((LiteralExpression)args[0]).Value;
                         }
 
                         if (script == null)
@@ -1376,8 +1377,7 @@ namespace DSharp.Compiler.Compiler
                             //       level, we should return an ErrorExpression instead of a dummy expression.
                             Token argToken = argNodes.Expressions[0].Token;
 
-                            errorHandler.ReportError("The argument to Script.Literal must be a constant string.",
-                                argToken.Location);
+                            errorHandler.ReportError(new ExpressionError("The argument to Script.Literal must be a constant string.", argToken.Location));
 
                             return new InlineScriptExpression("", objectType);
                         }
@@ -1392,9 +1392,9 @@ namespace DSharp.Compiler.Compiler
                             }
                             catch
                             {
-                                errorHandler.ReportError(
+                                errorHandler.ReportError(new ExpressionError(
                                     "The argument to Script.Literal must be a valid String.Format string.",
-                                    argNodes.Expressions[0].Token.Location);
+                                    argNodes.Expressions[0].Token.Location));
 
                                 return new InlineScriptExpression("", objectType);
                             }
@@ -1483,7 +1483,7 @@ namespace DSharp.Compiler.Compiler
                     {
                         Debug.Assert(args.Count == 1);
 
-                        MethodSymbol isValueMethod = (MethodSymbol) scriptType.GetMember("IsValue");
+                        MethodSymbol isValueMethod = (MethodSymbol)scriptType.GetMember("IsValue");
                         Debug.Assert(isValueMethod != null);
 
                         methodExpression = new MethodExpression(
@@ -1569,7 +1569,7 @@ namespace DSharp.Compiler.Compiler
                                 if (lateBoundOperation == LateBoundOperation.InvokeMethod)
                                 {
                                     if (instanceExpression.Type == ExpressionType.Literal &&
-                                        ((LiteralExpression) instanceExpression).Value == null)
+                                        ((LiteralExpression)instanceExpression).Value == null)
                                     {
                                         objectExpression = null;
 
@@ -1577,15 +1577,15 @@ namespace DSharp.Compiler.Compiler
 
                                         if (literalExpression == null)
                                         {
-                                            errorHandler.ReportError(
+                                            errorHandler.ReportError(new ExpressionError(
                                                 "The name of a global method must be a constant string known at compile time.",
-                                                argNodes.Expressions[0].Token.Location);
+                                                argNodes.Expressions[0].Token.Location));
                                         }
-                                        else if (!Utility.IsValidIdentifier((string) literalExpression.Value))
+                                        else if (!Utility.IsValidIdentifier((string)literalExpression.Value))
                                         {
-                                            errorHandler.ReportError(
+                                            errorHandler.ReportError(new ExpressionError(
                                                 "The name of a global method must be a valid identifer.",
-                                                argNodes.Expressions[0].Token.Location);
+                                                argNodes.Expressions[0].Token.Location));
                                         }
                                     }
                                 }
@@ -1613,7 +1613,7 @@ namespace DSharp.Compiler.Compiler
 
                         IndexerExpression indexExpression =
                             new IndexerExpression(new LiteralExpression(typeType, method.Parent),
-                                ((ClassSymbol) method.Parent).GetIndexer());
+                                ((ClassSymbol)method.Parent).GetIndexer());
                         indexExpression.AddIndexParameterValue(args[0]);
 
                         return indexExpression;
@@ -1624,7 +1624,7 @@ namespace DSharp.Compiler.Compiler
                         // Switch Arguments.ToArray into Array.ToArray(arguments)
 
                         TypeSymbol arrayType = symbolSet.ResolveIntrinsicType(IntrinsicType.Array);
-                        MethodSymbol toArrayMethod = (MethodSymbol) arrayType.GetMember("ToArray");
+                        MethodSymbol toArrayMethod = (MethodSymbol)arrayType.GetMember("ToArray");
 
                         InlineScriptExpression argsExpression =
                             new InlineScriptExpression("arguments", objectType, /* parenthesize */ false);
@@ -1637,9 +1637,9 @@ namespace DSharp.Compiler.Compiler
                         return toArrayExpression;
                     }
                 }
-                else if (method.Parent.Type == SymbolType.Class && ((ClassSymbol) method.Parent).IsArray)
+                else if (method.Parent.Type == SymbolType.Class && ((ClassSymbol)method.Parent).IsArray)
                 {
-                    ClassSymbol arraySymbol = (ClassSymbol) method.Parent;
+                    ClassSymbol arraySymbol = (ClassSymbol)method.Parent;
 
                     if (method.Name.Equals("Clear", StringComparison.Ordinal))
                     {
@@ -1671,7 +1671,7 @@ namespace DSharp.Compiler.Compiler
                         Debug.Assert(indexOfSymbol != null && indexOfSymbol.Type == SymbolType.Method);
 
                         MethodExpression indexOfExpression =
-                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol) indexOfSymbol);
+                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol)indexOfSymbol);
                         indexOfExpression.AddParameterValue(args[0]);
 
                         BinaryExpression compareExpression =
@@ -1693,7 +1693,7 @@ namespace DSharp.Compiler.Compiler
                         Debug.Assert(spliceSymbol != null && spliceSymbol.Type == SymbolType.Method);
 
                         MethodExpression spliceExpression =
-                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol) spliceSymbol);
+                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol)spliceSymbol);
                         spliceExpression.AddParameterValue(args[0]);
                         spliceExpression.AddParameterValue(new LiteralExpression(intType, 0));
 
@@ -1714,7 +1714,7 @@ namespace DSharp.Compiler.Compiler
                         Debug.Assert(spliceSymbol != null && spliceSymbol.Type == SymbolType.Method);
 
                         MethodExpression spliceExpression =
-                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol) spliceSymbol);
+                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol)spliceSymbol);
                         spliceExpression.AddParameterValue(args[0]);
 
                         if (args.Count == 1)
@@ -1739,14 +1739,14 @@ namespace DSharp.Compiler.Compiler
                         Debug.Assert(sliceSymbol != null && sliceSymbol.Type == SymbolType.Method);
 
                         MethodExpression sliceExpression =
-                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol) sliceSymbol);
+                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol)sliceSymbol);
                         sliceExpression.AddParameterValue(args[0]);
 
                         if (args[0].Type == ExpressionType.Literal &&
                             args[1].Type == ExpressionType.Literal)
                         {
-                            int endValue = (int) ((LiteralExpression) args[0]).Value +
-                                           (int) ((LiteralExpression) args[1]).Value;
+                            int endValue = (int)((LiteralExpression)args[0]).Value +
+                                           (int)((LiteralExpression)args[1]).Value;
                             sliceExpression.AddParameterValue(new LiteralExpression(intType, endValue));
                         }
                         else
@@ -1844,7 +1844,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (childExpression is MemberExpression)
                 {
-                    childExpression = TransformMemberExpression((MemberExpression) childExpression);
+                    childExpression = TransformMemberExpression((MemberExpression)childExpression);
                 }
 
                 if (operatorType == Operator.Plus)
@@ -1924,34 +1924,34 @@ namespace DSharp.Compiler.Compiler
             {
                 case SymbolType.EnumerationField:
 
-                    if (((EnumerationSymbol) expression.Member.Parent).UseNamedValues)
+                    if (((EnumerationSymbol)expression.Member.Parent).UseNamedValues)
                     {
-                        EnumerationFieldSymbol field = (EnumerationFieldSymbol) expression.Member;
-                        string fieldName = ((EnumerationSymbol) expression.Member.Parent).CreateNamedValue(field);
+                        EnumerationFieldSymbol field = (EnumerationFieldSymbol)expression.Member;
+                        string fieldName = ((EnumerationSymbol)expression.Member.Parent).CreateNamedValue(field);
 
                         return new LiteralExpression(symbolSet.ResolveIntrinsicType(IntrinsicType.String),
                             fieldName);
                     }
-                    else if (((TypeSymbol) expression.Member.Parent).IsApplicationType ||
-                             ((EnumerationSymbol) expression.Member.Parent).UseNumericValues)
+                    else if (((TypeSymbol)expression.Member.Parent).IsApplicationType ||
+                             ((EnumerationSymbol)expression.Member.Parent).UseNumericValues)
                     {
                         // For enum types defined within the same assembly, simply use the literal value.
                         // Same goes for any enums marked as numeric values
                         return new LiteralExpression(symbolSet.ResolveIntrinsicType(IntrinsicType.Integer),
-                            ((EnumerationFieldSymbol) expression.Member).Value);
+                            ((EnumerationFieldSymbol)expression.Member).Value);
                     }
                     else
                     {
                         // For enum types imported for another assembly
                         return new EnumerationFieldExpression(expression.ObjectReference,
-                            (EnumerationFieldSymbol) expression.Member);
+                            (EnumerationFieldSymbol)expression.Member);
                     }
                 case SymbolType.Field:
 
-                    if (((FieldSymbol) expression.Member).IsConstant)
+                    if (((FieldSymbol)expression.Member).IsConstant)
                     {
                         return new LiteralExpression(expression.Member.AssociatedType,
-                            ((FieldSymbol) expression.Member).Value);
+                            ((FieldSymbol)expression.Member).Value);
                     }
 
                     if (expression.ObjectReference is BaseExpression)
@@ -1959,7 +1959,7 @@ namespace DSharp.Compiler.Compiler
                         // Create a this expression, because "this" works just as well as base.
                         // It is explicit, because the base was explicit.
                         return new FieldExpression(new ThisExpression(classContext, /* explicitReference */ true),
-                            (FieldSymbol) expression.Member);
+                            (FieldSymbol)expression.Member);
                     }
 
                     if ((expression.Member.Visibility & MemberVisibility.Static) != 0 &&
@@ -1968,8 +1968,8 @@ namespace DSharp.Compiler.Compiler
                         // Create a new type expression because a static member
                         // of the base type is being used.
                         return new FieldExpression(
-                            new TypeExpression((ClassSymbol) expression.Member.Parent, expression.MemberMask),
-                            (FieldSymbol) expression.Member);
+                            new TypeExpression((ClassSymbol)expression.Member.Parent, expression.MemberMask),
+                            (FieldSymbol)expression.Member);
                     }
 
                     if (symbolContext.Parent.Type == SymbolType.Record &&
@@ -1979,7 +1979,7 @@ namespace DSharp.Compiler.Compiler
                         VariableSymbol objectVariable = new VariableSymbol("$o", memberContext, classContext);
 
                         return new FieldExpression(new LocalExpression(objectVariable),
-                            (FieldSymbol) expression.Member);
+                            (FieldSymbol)expression.Member);
                     }
 
                     if ((expression.Member.Visibility & MemberVisibility.Static) != 0 &&
@@ -1991,26 +1991,26 @@ namespace DSharp.Compiler.Compiler
                     }
 
                     return new FieldExpression(expression.ObjectReference,
-                        (FieldSymbol) expression.Member);
+                        (FieldSymbol)expression.Member);
                 case SymbolType.Property:
 
                     return new PropertyExpression(expression.ObjectReference,
-                        (PropertySymbol) expression.Member, getOrAdd);
+                        (PropertySymbol)expression.Member, getOrAdd);
                 case SymbolType.Method:
                     Debug.Assert(getOrAdd);
 
                     return new DelegateExpression(expression.ObjectReference,
-                        (MethodSymbol) expression.Member);
+                        (MethodSymbol)expression.Member);
                 case SymbolType.Event:
 
                     if (isEventAddRemove)
                     {
                         return new EventExpression(expression.ObjectReference,
-                            (EventSymbol) expression.Member, getOrAdd);
+                            (EventSymbol)expression.Member, getOrAdd);
                     }
                     else
                     {
-                        Debug.Assert(((EventSymbol) expression.Member).DefaultImplementation);
+                        Debug.Assert(((EventSymbol)expression.Member).DefaultImplementation);
 
                         // When the field corresponding to an event whose accessors are auto-generated is
                         // referenced, we need to hunt for a special generated field name (this is the
@@ -2018,7 +2018,7 @@ namespace DSharp.Compiler.Compiler
 
                         string fieldName = "__" + Utility.CreateCamelCaseName(expression.Member.Name);
                         FieldSymbol fieldSymbol =
-                            (FieldSymbol) expression.ObjectReference.EvaluatedType.GetMember(fieldName);
+                            (FieldSymbol)expression.ObjectReference.EvaluatedType.GetMember(fieldName);
                         Debug.Assert(fieldSymbol != null);
 
                         if (expression.ObjectReference is BaseExpression)

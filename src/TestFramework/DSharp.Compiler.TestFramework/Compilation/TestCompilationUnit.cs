@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.TestFramework.Compilation
 {
@@ -35,15 +36,6 @@ namespace DSharp.Compiler.TestFramework.Compilation
             }
 
             return CompilationUnitResult.CreateResult(outputStream.GeneratedOutput);
-        }
-
-        void IErrorHandler.ReportError(string errorMessage, string location)
-        {
-            compilationErrors.Add(new CompilationError
-            {
-                Message = errorMessage,
-                Location = location
-            });
         }
 
         void IErrorHandler.ReportError(IError error)

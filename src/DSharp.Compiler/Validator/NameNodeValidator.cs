@@ -1,10 +1,11 @@
-// NameNodeValidator.cs
+﻿// NameNodeValidator.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -12,12 +13,11 @@ namespace DSharp.Compiler.Validator
     {
         bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
         {
-            NameNode nameNode = (NameNode) node;
+            NameNode nameNode = (NameNode)node;
 
             if (Utility.IsKeyword(nameNode.Name))
             {
-                errorHandler.ReportError(nameNode.Name + " is a reserved word.",
-                    nameNode.Token.Location);
+                errorHandler.ReportError(new NodeValidationError(nameNode.Name + " is a reserved word.", nameNode));
             }
 
             return true;

@@ -1,10 +1,6 @@
-// EnumerationFieldNodeValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using DSharp.Compiler.CodeModel;
+﻿using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Members;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -18,16 +14,14 @@ namespace DSharp.Compiler.Validator
 
             if (fieldValue == null)
             {
-                errorHandler.ReportError("Enumeration fields must have an explicit constant value specified.",
-                    enumFieldNode.Token.Location);
+                errorHandler.ReportError(new NodeValidationError("Enumeration fields must have an explicit constant value specified.",enumFieldNode));
 
                 return false;
             }
 
             if (fieldValue is long || fieldValue is ulong)
             {
-                errorHandler.ReportError("Enumeration fields cannot have long or ulong underlying type.",
-                    enumFieldNode.Token.Location);
+                errorHandler.ReportError(new NodeValidationError("Enumeration fields cannot have long or ulong underlying type.",enumFieldNode));
             }
 
             return true;

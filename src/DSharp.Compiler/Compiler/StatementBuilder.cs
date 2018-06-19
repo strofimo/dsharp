@@ -9,6 +9,7 @@ using System.Diagnostics;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Expressions;
 using DSharp.Compiler.CodeModel.Statements;
+using DSharp.Compiler.Errors;
 using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Statements;
 using DSharp.Compiler.ScriptModel.Symbols;
@@ -47,14 +48,7 @@ namespace DSharp.Compiler.Compiler
             catch(Exception e)
             {
                 string location = statementNode.Token.Location;
-                string message =
-                    "Check that your C# source compiles and that you are not using an unsupported feature. " +
-                    "Common things to check for include use of fully-qualified names " +
-                    "(use a using statement to import namespaces instead) or " +
-                    "accessing private members of a type from a static member of the same type.";
-
-                statement = new ErrorStatement(message, location);
-                errorHandler.ReportError(message, location);
+                errorHandler.ReportError(new ExceptionError(e, location));
             }
 
             return statement;

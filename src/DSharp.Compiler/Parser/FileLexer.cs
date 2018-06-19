@@ -1,4 +1,4 @@
-// FileLexer.cs
+﻿// FileLexer.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -16,7 +16,6 @@ namespace DSharp.Compiler.Parser
     {
         private readonly Lexer lexer;
         private readonly PreprocessorLineParser parser;
-        private readonly string path;
         private IDictionary defines;
         private bool includeComments;
         private LineMap lineMap;
@@ -24,14 +23,16 @@ namespace DSharp.Compiler.Parser
         private TextBuffer text;
         private ArrayList tokens;
 
-        public FileLexer(NameTable nameTable, string path)
+        public string FilePath { get; }
+
+        public FileLexer(NameTable nameTable, string filePath)
         {
-            lexer = new Lexer(nameTable, path);
+            lexer = new Lexer(nameTable, filePath);
             lexer.OnError += ReportError;
             parser = new PreprocessorLineParser(nameTable);
             parser.OnError += ReportError;
 
-            this.path = path;
+            this.FilePath = filePath;
         }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace DSharp.Compiler.Parser
         private void LexFile()
         {
             tokens = new ArrayList(text.Length / 8);
-            tokens.Add(new Token(TokenType.Bof, path, text.Position));
+            tokens.Add(new Token(TokenType.Bof, FilePath, text.Position));
 
             PreprocessorLine line;
 
@@ -95,7 +96,7 @@ namespace DSharp.Compiler.Parser
 
             if (TokenType.Eof != ((Token) tokens[tokens.Count - 1]).Type)
             {
-                tokens.Add(new Token(TokenType.Eof, path, text.Position));
+                tokens.Add(new Token(TokenType.Eof, FilePath, text.Position));
             }
         }
 

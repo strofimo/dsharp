@@ -1,4 +1,4 @@
-// CodeModelBuilder.cs
+﻿// CodeModelBuilder.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -7,6 +7,7 @@ using System.Collections;
 using System.IO;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.Errors;
 using DSharp.Compiler.Parser;
 
 namespace DSharp.Compiler.CodeModel
@@ -35,7 +36,7 @@ namespace DSharp.Compiler.CodeModel
 
             if (buffer == null)
             {
-                errorHandler.ReportError("Unable to read from file " + filePath, filePath);
+                errorHandler.ReportError(new InputFileError(filePath));
 
                 return null;
             }
@@ -96,14 +97,13 @@ namespace DSharp.Compiler.CodeModel
             return buffer;
         }
 
-        private void OnError(object sender, FileErrorEventArgs e)
+        private void OnError(object sender, FileErrorEventArgs eventArgs)
         {
+            FileLexer fileLexer = sender as FileLexer;
+
             hasErrors = true;
 
-            string location = e.Position.ToString();
-            string message = string.Format(e.Error.Message, e.Args);
-
-            errorHandler.ReportError(message, location);
+            errorHandler.ReportError(new FileLexerError(fileLexer?.FilePath, eventArgs));
         }
     }
 }

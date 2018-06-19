@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using DSharp.Compiler;
+using DSharp.Compiler.Errors;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using ScriptCruncher = Microsoft.Ajax.Utilities.Minifier;
@@ -494,13 +495,6 @@ namespace DSharp.Build.Tasks
             scripts.Add(scriptItem);
         }
 
-        #region Implementation of IErrorHandler
-
-        void IErrorHandler.ReportError(string errorMessage, string location)
-        {
-            ReportError(errorMessage, location);
-        }
-
         void IErrorHandler.ReportError(IError error)
         {
             ReportError(error.Message, error.Location);
@@ -533,8 +527,6 @@ namespace DSharp.Build.Tasks
 
             Log.LogError(string.Empty, string.Empty, string.Empty, location, line, column, 0, 0, errorMessage);
         }
-
-        #endregion
 
         #region Implementation of IStreamSourceResolver
 

@@ -1,11 +1,7 @@
-// ArrayNewNodeValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Expressions;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -22,8 +18,7 @@ namespace DSharp.Compiler.Validator
 
                 if (argsList.Expressions.Count != 1)
                 {
-                    errorHandler.ReportError("Only single dimensional arrays are supported.",
-                        newNode.ExpressionList.Token.Location);
+                    errorHandler.ReportError(new NodeValidationError("Only single dimensional arrays are supported.", newNode.ExpressionList));
                 }
             }
 

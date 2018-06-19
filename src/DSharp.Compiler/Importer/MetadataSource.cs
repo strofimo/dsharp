@@ -8,13 +8,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using DSharp.Compiler.Errors;
 using Mono.Cecil;
 
 namespace DSharp.Compiler.Importer
 {
     internal sealed class MetadataSource
     {
-        private static readonly string CoreAssemblyName = "DSharp.Mscorlib";
+        private static readonly string CoreAssemblyName = DSharpStringResources.DSHARP_MSCORLIB_ASSEMBLY_NAME;
 
         private Dictionary<string, AssemblyDefinition> assemblyMap;
 
@@ -43,8 +44,7 @@ namespace DSharp.Compiler.Importer
 
                 if (File.Exists(assemblyFilePath) == false)
                 {
-                    errorHandler.ReportError("The referenced assembly '" + referencePath + "' could not be located.",
-                        string.Empty);
+                    errorHandler.ReportError(new MissingReferenceError("The referenced assembly '" + referencePath + "' could not be located.", referencePath));
                     hasLoadErrors = true;
 
                     continue;
@@ -54,8 +54,7 @@ namespace DSharp.Compiler.Importer
 
                 if (assemblySet.IsReferenced(referenceName))
                 {
-                    errorHandler.ReportError(
-                        "The referenced assembly '" + referencePath + "' is a duplicate reference.", string.Empty);
+                    errorHandler.ReportError(new DuplicateAssemblyReferenceError(referenceName, referencePath));
                     hasLoadErrors = true;
 
                     continue;
@@ -67,9 +66,7 @@ namespace DSharp.Compiler.Importer
 
                     if (assembly == null)
                     {
-                        errorHandler.ReportError(
-                            "The referenced assembly '" + referencePath + "' could not be loaded as an assembly.",
-                            string.Empty);
+                        errorHandler.ReportError(new AssemblyLoadError(referenceName, referencePath));
                         hasLoadErrors = true;
 
                         continue;
@@ -79,8 +76,7 @@ namespace DSharp.Compiler.Importer
                     {
                         if (CoreAssemblyPath != null)
                         {
-                            errorHandler.ReportError(
-                                "The core runtime assembly, mscorlib.dll must be referenced only once.", string.Empty);
+                            errorHandler.ReportError(new DuplicateAssemblyReferenceError(referenceName, referencePath));
                             hasLoadErrors = true;
                         }
                         else
@@ -98,52 +94,21 @@ namespace DSharp.Compiler.Importer
                 {
                     Debug.Fail(e.ToString());
 
-                    errorHandler.ReportError(
-                        "The referenced assembly '" + referencePath + "' could not be loaded as an assembly.",
-                        string.Empty);
+                    errorHandler.ReportError(new AssemblyLoadError(referenceName, referencePath));
                     hasLoadErrors = true;
                 }
             }
 
             if (CoreAssemblyMetadata == null)
             {
-                errorHandler.ReportError("The 'mscorlib' assembly must be referenced.", string.Empty);
+                errorHandler.ReportError(new MissingMscorlibAssemblyReference());
                 hasLoadErrors = true;
             }
-            else
-            {
-                if (VerifyScriptAssembly(CoreAssemblyMetadata) == false)
-                {
-                    errorHandler.ReportError("The assembly '" + CoreAssemblyPath + "' is not a valid script assembly.",
-                        string.Empty);
-                    hasLoadErrors = true;
-                }
-            }
-
-            foreach (KeyValuePair<string, AssemblyDefinition> assemblyReference in assemblySet.Assemblies)
-                if (VerifyScriptAssembly(assemblyReference.Value) == false)
-                {
-                    errorHandler.ReportError(
-                        "The assembly '" + assemblyReference.Key + "' is not a valid script assembly.", string.Empty);
-                    hasLoadErrors = true;
-                }
 
             assemblyMap = assemblySet.Assemblies;
             assemblyPaths = assemblySet.GetAssemblyPaths();
 
             return hasLoadErrors;
-        }
-
-        private bool VerifyScriptAssembly(AssemblyDefinition assembly)
-        {
-            foreach (CustomAttribute attribute in assembly.CustomAttributes)
-                if (string.CompareOrdinal(attribute.Constructor.DeclaringType.FullName,
-                        "System.ScriptAssemblyAttribute") == 0)
-                {
-                    return true;
-                }
-
-            return false;
         }
 
         private sealed class AssemblySet

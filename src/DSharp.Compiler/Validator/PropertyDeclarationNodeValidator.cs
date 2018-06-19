@@ -1,10 +1,6 @@
-// PropertyDeclarationNodeValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using DSharp.Compiler.CodeModel;
+﻿using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Members;
+using DSharp.Compiler.Errors;
 
 namespace DSharp.Compiler.Validator
 {
@@ -12,13 +8,12 @@ namespace DSharp.Compiler.Validator
     {
         bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
         {
-            PropertyDeclarationNode propertyNode = (PropertyDeclarationNode) node;
+            PropertyDeclarationNode propertyNode = (PropertyDeclarationNode)node;
 
             if ((propertyNode.Modifiers & Modifiers.Static) == 0 &&
                 (propertyNode.Modifiers & Modifiers.New) != 0)
             {
-                errorHandler.ReportError("The new modifier is not supported on instance members.",
-                    propertyNode.Token.Location);
+                errorHandler.ReportError(new NodeValidationError("The new modifier is not supported on instance members.", propertyNode));
 
                 return false;
             }
