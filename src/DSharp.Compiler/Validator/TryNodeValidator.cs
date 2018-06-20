@@ -12,7 +12,7 @@ namespace DSharp.Compiler.Validator
 
             if (tryNode.CatchClauses != null && tryNode.CatchClauses.Count > 1)
             {
-                errorHandler.ReportError(new NodeValidationError("Try/Catch statements are limited to a single catch clause.", tryNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_NODE_VALIDATION_ERROR_TRY_CATCH, tryNode));
 
                 return false;
             }

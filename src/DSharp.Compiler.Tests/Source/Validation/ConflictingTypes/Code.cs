@@ -1,16 +1,19 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
 
-namespace ValidationTests {
-
-    public class App {
+namespace ValidationTests
+{
+    public class App
+    {
     }
 }
 
-namespace OtherTests {
+namespace SomeOtherNameSpace
+{ 
 
-    public class App {
+    public class App
+    {
     }
 }

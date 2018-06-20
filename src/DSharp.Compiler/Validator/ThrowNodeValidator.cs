@@ -12,7 +12,7 @@ namespace DSharp.Compiler.Validator
 
             if (throwNode.Value == null)
             {
-                errorHandler.ReportError(new NodeValidationError("Throw statements must specify an exception object.", throwNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_THROW_NODE_VALIDATION_ERROR, throwNode));
 
                 return false;
             }

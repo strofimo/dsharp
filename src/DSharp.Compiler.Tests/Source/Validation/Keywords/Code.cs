@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
@@ -9,7 +9,7 @@ namespace ValidationTests {
     public class App {
 
         public static void M1() {
-            int ss = 1;
+            int ds = 1;
         }
         
         public static void M2() {

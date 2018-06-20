@@ -8,20 +8,20 @@ namespace DSharp.Compiler.Validator
     {
         bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
         {
-            EnumerationFieldNode enumFieldNode = (EnumerationFieldNode) node;
+            EnumerationFieldNode enumFieldNode = (EnumerationFieldNode)node;
 
             object fieldValue = enumFieldNode.Value;
 
             if (fieldValue == null)
             {
-                errorHandler.ReportError(new NodeValidationError("Enumeration fields must have an explicit constant value specified.",enumFieldNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_ENUM_CONSTANT_VALUE_MISSING_ERROR, enumFieldNode));
 
                 return false;
             }
 
             if (fieldValue is long || fieldValue is ulong)
             {
-                errorHandler.ReportError(new NodeValidationError("Enumeration fields cannot have long or ulong underlying type.",enumFieldNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_ENUM_VALUE_TYPE_ERROR, enumFieldNode));
             }
 
             return true;

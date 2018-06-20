@@ -22,7 +22,7 @@ namespace DSharp.Compiler.TestFramework.Context
         public ITestContext GetContext(string category, string testName)
         {
             TestDefinition testData = testDataProvider.GetCategoryTest(category, testName);
-            if(testData == null)
+            if (testData == null)
             {
                 throw new InvalidOperationException($"Unable to execute test {testName} for {category} as there was no defined test data");
             }
@@ -51,6 +51,12 @@ namespace DSharp.Compiler.TestFramework.Context
                 Resources = resourceFiles.ToArray(),
                 CompilationOptions = testData.Options.Adapt<TestContextCompliationOptions>()
             };
+        }
+
+        public IList<string> GetTestSourceFiles(string category, string testName)
+        {
+            string testFilesPath = Path.Combine(rootDirectory, category, testName);
+            return Directory.GetFiles(testFilesPath, "*.cs", SearchOption.TopDirectoryOnly);
         }
 
         private static FileInfo GetCommentFile(TestDefinition testData, string testFilesPath)
@@ -106,10 +112,10 @@ namespace DSharp.Compiler.TestFramework.Context
             {
                 string assemblyFilePath = Path.Combine(testFilesPath, assemblyFileName);
 
-                if(!File.Exists(assemblyFilePath))
+                if (!File.Exists(assemblyFilePath))
                 {
                     assemblyFilePath = Path.Combine(Directory.GetCurrentDirectory(), assemblyFileName);
-                    if(!File.Exists(assemblyFilePath))
+                    if (!File.Exists(assemblyFilePath))
                     {
                         throw new FileNotFoundException($"Unable to find assembly file at either {Path.Combine(testFilesPath, assemblyFileName)} or {assemblyFilePath}");
                     }

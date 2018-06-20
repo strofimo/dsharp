@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Source\Validation\AllowSystemNamespace\**" />
+    <EmbeddedResource Remove="Source\Validation\AllowSystemNamespace\**" />
+    <None Remove="Source\Validation\AllowSystemNamespace\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Source\Basic\Conditionals\Code.cs" />
     <Compile Remove="Source\Basic\Dependencies\Code1.cs" />
     <Compile Remove="Source\Basic\Dependencies\Code2.cs" />
@@ -86,15 +92,12 @@
     <Compile Remove="Source\Type\Partials\Code2.cs" />
     <Compile Remove="Source\Type\Records\Code.cs" />
     <Compile Remove="Source\Type\UsingAlias\Code.cs" />
-    <Compile Remove="Source\Validation\AllowSystemNamespace\Code.Cs" />
     <Compile Remove="Source\Validation\ConflictingTypes\Code.cs" />
-    <Compile Remove="Source\Validation\CreateInstance\Code.cs" />
     <Compile Remove="Source\Validation\Exceptions\Code.cs" />
     <Compile Remove="Source\Validation\ImplicitEnums\Code.cs" />
     <Compile Remove="Source\Validation\InlineScript\Code.cs" />
     <Compile Remove="Source\Validation\Keywords\Code.cs" />
     <Compile Remove="Source\Validation\Modules\Code.cs" />
-    <Compile Remove="Source\Validation\Namespace\Code.Cs" />
     <Compile Remove="Source\Validation\NestedTypes\Code.cs" />
     <Compile Remove="Source\Validation\Overloads\Code.cs" />
     <Compile Remove="Source\Validation\Properties\Code.cs" />
@@ -698,13 +701,7 @@
     <Content Include="Source\Type\UsingAlias\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Source\Validation\AllowSystemNamespace\Code.Cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Source\Validation\ConflictingTypes\Code.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Source\Validation\CreateInstance\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Validation\Exceptions\Code.cs">
@@ -720,9 +717,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Validation\Modules\Code.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Source\Validation\Namespace\Code.Cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Validation\NestedTypes\Code.cs">

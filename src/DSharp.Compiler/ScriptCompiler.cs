@@ -47,6 +47,7 @@ namespace DSharp.Compiler
 
         void IErrorHandler.ReportError(IError error)
         {
+            hasErrors = true;
             if (errorHandler != null)
             {
                 errorHandler.ReportError(error);

@@ -33,6 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{9ECDD7B6-4D4A-4578-9157-B99214BEDE6F}"
 	ProjectSection(SolutionItems) = preProject
+		DSharp.snk = DSharp.snk
 		global.json = global.json
 		NuGet.Config = NuGet.Config
 		NuGetCommon.props = NuGetCommon.props

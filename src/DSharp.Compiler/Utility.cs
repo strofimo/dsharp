@@ -1,4 +1,4 @@
-// Utility.cs
+﻿// Utility.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -33,8 +33,8 @@ namespace DSharp.Compiler
             "import", "private", "synchronized", "char", "extends", "int",
             "protected", "throws", "class", "final", "interface", "public",
             "transient", "const", "float", "long", "short", "volatile",
-            // Script#-specific words
-            "ss", "global"
+            // Script specific words
+            DSharpStringResources.DSHARP_SCRIPT_NAME, "global"
         };
 
         private static Hashtable keywordTable;

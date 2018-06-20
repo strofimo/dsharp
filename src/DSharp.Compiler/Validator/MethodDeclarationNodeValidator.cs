@@ -51,7 +51,7 @@ namespace DSharp.Compiler.Validator
 
                 if (implMethodNode == null)
                 {
-                    errorHandler.ReportError(new NodeValidationError("Extern methods used to declare alternate signatures should have a corresponding non-extern implementation as well.", methodNode));
+                    errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_EXTERN_IMPLEMENTATION_FOUND_ERROR, methodNode));
 
                     return false;
                 }
@@ -59,7 +59,7 @@ namespace DSharp.Compiler.Validator
                 if ((methodNode.Modifiers & (Modifiers.Static | Modifiers.AccessMask)) !=
                     (implMethodNode.Modifiers & (Modifiers.Static | Modifiers.AccessMask)))
                 {
-                    errorHandler.ReportError(new NodeValidationError("The implemenation method and associated alternate signature methods should have the same access type.", methodNode));
+                    errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_EXTERN_STATIC_MEMBER_MISMATCH_ERROR, methodNode));
                 }
             }
 

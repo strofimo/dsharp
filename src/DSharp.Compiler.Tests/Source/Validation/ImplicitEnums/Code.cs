@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 
 namespace ValidationTests {
 
-    public enum Test {
+    public enum Test : long {
 
         A = 0,
-
-        B
+        B,
+        C = 9223372036854775807L
     }
 }
