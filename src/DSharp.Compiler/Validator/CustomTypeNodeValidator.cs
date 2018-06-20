@@ -85,12 +85,12 @@ namespace DSharp.Compiler.Validator
                 {
                     if ((typeNode.Modifiers & Modifiers.Sealed) == 0)
                     {
-                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_SCRIPT_OBJECT_ATTRIBUTE_ERROR, typeNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_OBJECT_ATTRIBUTE_ERROR, typeNode));
                     }
 
                     if (typeNode.BaseTypes.Count != 0)
                     {
-                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_SCRIPT_OBJECT_CLASS_INHERITENCE_ERROR, typeNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_OBJECT_CLASS_INHERITENCE_ERROR, typeNode));
                     }
 
                     recordRestrictions = true;
@@ -112,7 +112,7 @@ namespace DSharp.Compiler.Validator
                         !(((LiteralNode)extensionAttribute.Arguments[0]).Value is string) ||
                         string.IsNullOrEmpty((string)((LiteralNode)extensionAttribute.Arguments[0]).Value))
                     {
-                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_EXTENSION_ATTRIBUTE_ERROR, typeNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.EXTENSION_ATTRIBUTE_ERROR, typeNode));
                     }
                 }
 
@@ -125,7 +125,7 @@ namespace DSharp.Compiler.Validator
                     if ((typeNode.Modifiers & Modifiers.Static) == 0 ||
                         (typeNode.Modifiers & Modifiers.Internal) == 0)
                     {
-                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_SCRIPT_MODULE_NON_INTERNAL_CLASS_ERROR, typeNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_MODULE_NON_INTERNAL_CLASS_ERROR, typeNode));
                     }
                 }
             }
@@ -139,7 +139,7 @@ namespace DSharp.Compiler.Validator
                 {
                     if (!(genericMemberNode is MemberNode))
                     {
-                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_NESTED_TYPE_ERROR, node));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.NESTED_TYPE_ERROR, node));
 
                         continue;
                     }
@@ -154,12 +154,12 @@ namespace DSharp.Compiler.Validator
 
                     if (extensionRestrictions && memberNode.NodeType != ParseNodeType.MethodDeclaration)
                     {
-                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_SCRIPT_EXTENSION_MEMBER_VIOLATION_ERROR, memberNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_EXTENSION_MEMBER_VIOLATION_ERROR, memberNode));
                     }
 
                     if (moduleRestrictions && memberNode.NodeType != ParseNodeType.ConstructorDeclaration)
                     {
-                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_SCRIPT_MODULE_NON_STATIC_CONSTRUCTOR, memberNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_MODULE_NON_STATIC_CONSTRUCTOR, memberNode));
                     }
 
                     if (recordRestrictions &&
@@ -167,7 +167,7 @@ namespace DSharp.Compiler.Validator
                          memberNode.NodeType != ParseNodeType.ConstructorDeclaration &&
                          memberNode.NodeType != ParseNodeType.FieldDeclaration))
                     {
-                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_SCRIPT_OBJECT_MEMBER_VIOLATION_ERROR, memberNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_OBJECT_MEMBER_VIOLATION_ERROR, memberNode));
                     }
 
                     if (memberNode.NodeType == ParseNodeType.ConstructorDeclaration)

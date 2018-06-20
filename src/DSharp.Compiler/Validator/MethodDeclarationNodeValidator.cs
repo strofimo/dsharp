@@ -51,7 +51,7 @@ namespace DSharp.Compiler.Validator
 
                 if (implMethodNode == null)
                 {
-                    errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_EXTERN_IMPLEMENTATION_FOUND_ERROR, methodNode));
+                    errorHandler.ReportError(new NodeValidationError(DSharpStringResources.EXTERN_IMPLEMENTATION_FOUND_ERROR, methodNode));
 
                     return false;
                 }
@@ -59,7 +59,7 @@ namespace DSharp.Compiler.Validator
                 if ((methodNode.Modifiers & (Modifiers.Static | Modifiers.AccessMask)) !=
                     (implMethodNode.Modifiers & (Modifiers.Static | Modifiers.AccessMask)))
                 {
-                    errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_EXTERN_STATIC_MEMBER_MISMATCH_ERROR, methodNode));
+                    errorHandler.ReportError(new NodeValidationError(DSharpStringResources.EXTERN_STATIC_MEMBER_MISMATCH_ERROR, methodNode));
                 }
             }
 

@@ -27,40 +27,40 @@ namespace DSharp.Compiler.Tests
             {
                 ["ConflictingTypes"] = CreateContainsErrorsFunction(compilerErrorTypeComparer, new GeneralError(string.Empty)),
                 ["Exceptions"] = CreateContainsErrorMessagesFunction(
-                    DSharpStringResources.DSHARP_NODE_VALIDATION_ERROR_TRY_CATCH,
-                    DSharpStringResources.DSHARP_THROW_NODE_VALIDATION_ERROR),
+                    DSharpStringResources.NODE_VALIDATION_ERROR_TRY_CATCH,
+                    DSharpStringResources.THROW_NODE_VALIDATION_ERROR),
                 ["ImplicitEnums"] = CreateContainsErrorMessagesFunction(
-                    DSharpStringResources.DSHARP_ENUM_CONSTANT_VALUE_MISSING_ERROR,
-                    DSharpStringResources.DSHARP_ENUM_VALUE_TYPE_ERROR),
+                    DSharpStringResources.ENUM_CONSTANT_VALUE_MISSING_ERROR,
+                    DSharpStringResources.ENUM_VALUE_TYPE_ERROR),
                 ["InlineScript"] = CreateContainsErrorMessagesFunction(
-                    DSharpStringResources.DSHARP_SCRIPT_LITERAL_CONSTANT_ERROR,
-                    DSharpStringResources.DSHARP_SCRIPT_LITERAL_FORMAT_ERROR),
+                    DSharpStringResources.SCRIPT_LITERAL_CONSTANT_ERROR,
+                    DSharpStringResources.SCRIPT_LITERAL_FORMAT_ERROR),
                 ["Keywords"] = CreateContainsErrorMessagesFunction(
-                    string.Format(DSharpStringResources.DSHARP_RESERVED_KEYWORD_ERROR_FORMAT, DSharpStringResources.DSHARP_SCRIPT_NAME),
-                    string.Format(DSharpStringResources.DSHARP_RESERVED_KEYWORD_ERROR_FORMAT, "instanceof")
+                    string.Format(DSharpStringResources.RESERVED_KEYWORD_ERROR_FORMAT, DSharpStringResources.DSHARP_SCRIPT_NAME),
+                    string.Format(DSharpStringResources.RESERVED_KEYWORD_ERROR_FORMAT, "instanceof")
                     ),
                 ["Modules"] = CreateContainsErrorMessagesFunction(
-                    DSharpStringResources.DSHARP_SCRIPT_MODULE_NON_INTERNAL_CLASS_ERROR,
-                    DSharpStringResources.DSHARP_SCRIPT_MODULE_NON_STATIC_CONSTRUCTOR
+                    DSharpStringResources.SCRIPT_MODULE_NON_INTERNAL_CLASS_ERROR,
+                    DSharpStringResources.SCRIPT_MODULE_NON_STATIC_CONSTRUCTOR
                     ),
                 ["NestedTypes"] = CreateContainsErrorMessagesFunction(
-                    DSharpStringResources.DSHARP_NESTED_TYPE_ERROR,
-                    DSharpStringResources.DSHARP_NESTED_TYPE_ERROR
+                    DSharpStringResources.NESTED_TYPE_ERROR,
+                    DSharpStringResources.NESTED_TYPE_ERROR
                     ),
                 ["Overloads"] = CreateContainsErrorMessagesFunction(
-                    DSharpStringResources.DSHARP_EXTERN_IMPLEMENTATION_FOUND_ERROR,
-                    DSharpStringResources.DSHARP_EXTERN_STATIC_MEMBER_MISMATCH_ERROR,
-                    DSharpStringResources.DSHARP_EXTERN_STATIC_MEMBER_MISMATCH_ERROR
+                    DSharpStringResources.EXTERN_IMPLEMENTATION_FOUND_ERROR,
+                    DSharpStringResources.EXTERN_STATIC_MEMBER_MISMATCH_ERROR,
+                    DSharpStringResources.EXTERN_STATIC_MEMBER_MISMATCH_ERROR
                     ),
                 ["Records"] = CreateContainsErrorMessagesFunction(
-                    DSharpStringResources.DSHARP_SCRIPT_OBJECT_ATTRIBUTE_ERROR,
-                    DSharpStringResources.DSHARP_SCRIPT_OBJECT_CLASS_INHERITENCE_ERROR,
-                    DSharpStringResources.DSHARP_SCRIPT_OBJECT_MEMBER_VIOLATION_ERROR,
-                    DSharpStringResources.DSHARP_SCRIPT_OBJECT_MEMBER_VIOLATION_ERROR
+                    DSharpStringResources.SCRIPT_OBJECT_ATTRIBUTE_ERROR,
+                    DSharpStringResources.SCRIPT_OBJECT_CLASS_INHERITENCE_ERROR,
+                    DSharpStringResources.SCRIPT_OBJECT_MEMBER_VIOLATION_ERROR,
+                    DSharpStringResources.SCRIPT_OBJECT_MEMBER_VIOLATION_ERROR
                     ),
                 ["ScriptExtension"] = CreateContainsErrorMessagesFunction(
-                    DSharpStringResources.DSHARP_EXTENSION_ATTRIBUTE_ERROR,
-                    DSharpStringResources.DSHARP_SCRIPT_EXTENSION_MEMBER_VIOLATION_ERROR
+                    DSharpStringResources.EXTENSION_ATTRIBUTE_ERROR,
+                    DSharpStringResources.SCRIPT_EXTENSION_MEMBER_VIOLATION_ERROR
                     ),
             };
         }

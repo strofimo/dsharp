@@ -14,14 +14,14 @@ namespace DSharp.Compiler.Validator
 
             if (fieldValue == null)
             {
-                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_ENUM_CONSTANT_VALUE_MISSING_ERROR, enumFieldNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.ENUM_CONSTANT_VALUE_MISSING_ERROR, enumFieldNode));
 
                 return false;
             }
 
             if (fieldValue is long || fieldValue is ulong)
             {
-                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DSHARP_ENUM_VALUE_TYPE_ERROR, enumFieldNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.ENUM_VALUE_TYPE_ERROR, enumFieldNode));
             }
 
             return true;

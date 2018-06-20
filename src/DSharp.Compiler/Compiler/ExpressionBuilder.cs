@@ -1377,7 +1377,7 @@ namespace DSharp.Compiler.Compiler
                             //       level, we should return an ErrorExpression instead of a dummy expression.
                             Token argToken = argNodes.Expressions[0].Token;
 
-                            errorHandler.ReportError(new ExpressionError(DSharpStringResources.DSHARP_SCRIPT_LITERAL_CONSTANT_ERROR, argToken.Location));
+                            errorHandler.ReportError(new ExpressionError(DSharpStringResources.SCRIPT_LITERAL_CONSTANT_ERROR, argToken.Location));
 
                             return new InlineScriptExpression("", objectType);
                         }
@@ -1392,7 +1392,7 @@ namespace DSharp.Compiler.Compiler
                             }
                             catch
                             {
-                                errorHandler.ReportError(new ExpressionError(DSharpStringResources.DSHARP_SCRIPT_LITERAL_FORMAT_ERROR, argNodes.Expressions[0].Token.Location));
+                                errorHandler.ReportError(new ExpressionError(DSharpStringResources.SCRIPT_LITERAL_FORMAT_ERROR, argNodes.Expressions[0].Token.Location));
 
                                 return new InlineScriptExpression("", objectType);
                             }
