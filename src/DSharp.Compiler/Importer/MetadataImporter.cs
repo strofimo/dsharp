@@ -912,8 +912,7 @@ namespace DSharp.Compiler.Importer
 
                 if (typeSymbol == null)
                 {
-                    errorHandler.ReportError(new MissingReferenceError("Unable to resolve referenced type '" + name +
-                                             "'. Make sure all needed assemblies have been explicitly referenced."));
+                    errorHandler.ReportError(new MissingReferenceError(string.Format(DSharpStringResources.UNRESOLVED_TYPE_REFERENCE_FORMAT, name)));
                     resolveError = true;
                 }
             }

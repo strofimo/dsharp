@@ -70,6 +70,7 @@ namespace DSharp.Compiler.Tests
             this.compilerCompliationFixture = compilerCompliationFixture;
         }
 
+        //TODO: Need to add more specific tests to validate the message and the location of the error in the file.
         [Theory(DisplayName = "Compiler Error Validation")]
         [MemberData(nameof(TestCompilerErrorsData))]
         public void TestCompilerErrors(string testName)

@@ -13,7 +13,7 @@ namespace DSharp.Compiler.Validator
             if ((eventNode.Modifiers & Modifiers.Static) == 0 &&
                 (eventNode.Modifiers & Modifiers.New) != 0)
             {
-                errorHandler.ReportError(new NodeValidationError("The new modifier is not supported on instance members.", eventNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.STATIC_NEW_KEYWORD_UNSUPPORTED, eventNode));
 
                 return false;
             }

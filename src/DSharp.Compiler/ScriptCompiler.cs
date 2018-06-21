@@ -245,7 +245,7 @@ namespace DSharp.Compiler
                 if (outputStream == null)
                 {
                     string scriptName = options.ScriptFile.FullName;
-                    ((IErrorHandler)this).ReportError(new MissingStreamError($"Unable to write to file {scriptName}" , scriptName));
+                    ((IErrorHandler)this).ReportError(new MissingStreamError(string.Format(DSharpStringResources.MISSING_SCRIPT_OUTPUT_STREAM_FORMAT, scriptName), scriptName));
 
                     return;
                 }

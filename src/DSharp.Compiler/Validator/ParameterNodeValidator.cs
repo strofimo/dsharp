@@ -12,7 +12,7 @@ namespace DSharp.Compiler.Validator
 
             if (paramNode.Flags == ParameterFlags.Ref || paramNode.Flags == ParameterFlags.Out)
             {
-                errorHandler.ReportError(new NodeValidationError("Out and Ref style of parameters are not yet implemented.", paramNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.UNSUPPORTED_PARAMETER_TYPE, paramNode));
 
                 return false;
             }

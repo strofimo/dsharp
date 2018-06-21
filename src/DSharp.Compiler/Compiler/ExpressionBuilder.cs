@@ -1,9 +1,4 @@
-﻿// ExpressionBuilder.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -1576,13 +1571,13 @@ namespace DSharp.Compiler.Compiler
                                         if (literalExpression == null)
                                         {
                                             errorHandler.ReportError(new ExpressionError(
-                                                "The name of a global method must be a constant string known at compile time.",
+                                                DSharpStringResources.SCRIPT_LATE_BOUND_INVALID_METHOD_NAME,
                                                 argNodes.Expressions[0].Token.Location));
                                         }
                                         else if (!Utility.IsValidIdentifier((string)literalExpression.Value))
                                         {
                                             errorHandler.ReportError(new ExpressionError(
-                                                "The name of a global method must be a valid identifer.",
+                                                DSharpStringResources.SCRIPT_LATE_BOUND_INVALID_METHOD_IDENTIFIER,
                                                 argNodes.Expressions[0].Token.Location));
                                         }
                                     }

@@ -1,9 +1,4 @@
-﻿// CustomTypeNodeValidator.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Attributes;
 using DSharp.Compiler.CodeModel.Expressions;
@@ -27,7 +22,7 @@ namespace DSharp.Compiler.Validator
             bool hasCodeMembers = false;
             ParseNode codeMemberNode = null;
 
-            AttributeNode importedTypeAttribute = AttributeNode.FindAttribute(typeNode.Attributes, "ScriptImport");
+            AttributeNode importedTypeAttribute = AttributeNode.FindAttribute(typeNode.Attributes, DSharpStringResources.SCRIPT_IMPORT_ATTRIBUTE);
 
             if (importedTypeAttribute != null)
             {
@@ -41,45 +36,14 @@ namespace DSharp.Compiler.Validator
             if ((typeNode.Modifiers & Modifiers.Partial) != 0 &&
                 typeNode.Type != TokenType.Class)
             {
-                errorHandler.ReportError(new NodeValidationError("Partial types can only be classes, not enumerations or interfaces.", typeNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.UNSUPPORTED_PARTIAL_TYPE, typeNode));
 
                 return false;
             }
 
             if (typeNode.Type == TokenType.Class)
             {
-                if (typeNode.BaseTypes.Count != 0)
-                {
-                    NameNode baseTypeNameNode = typeNode.BaseTypes[0] as NameNode;
-
-                    if (baseTypeNameNode != null)
-                    {
-                        if (string.CompareOrdinal(baseTypeNameNode.Name, "TestClass") == 0)
-                        {
-                            if ((typeNode.Modifiers & Modifiers.Internal) == 0)
-                            {
-                                errorHandler.ReportError(new NodeValidationError("Classes derived from TestClass must be marked as internal.", typeNode));
-                            }
-
-                            if ((typeNode.Modifiers & Modifiers.Static) != 0)
-                            {
-                                errorHandler.ReportError(new NodeValidationError("Classes derived from TestClass must not be marked as static.", typeNode));
-                            }
-
-                            if ((typeNode.Modifiers & Modifiers.Sealed) == 0)
-                            {
-                                errorHandler.ReportError(new NodeValidationError("Classes derived from TestClass must be marked as sealed.", typeNode));
-                            }
-
-                            if (typeNode.BaseTypes.Count != 1)
-                            {
-                                errorHandler.ReportError(new NodeValidationError("Classes derived from TestClass cannot implement interfaces.", typeNode));
-                            }
-                        }
-                    }
-                }
-
-                AttributeNode objectAttribute = AttributeNode.FindAttribute(typeNode.Attributes, "ScriptObject");
+                AttributeNode objectAttribute = AttributeNode.FindAttribute(typeNode.Attributes, DSharpStringResources.SCRIPT_OBJECT_ATTRIBUTE);
 
                 if (objectAttribute != null)
                 {
@@ -96,7 +60,7 @@ namespace DSharp.Compiler.Validator
                     recordRestrictions = true;
                 }
 
-                AttributeNode extensionAttribute = AttributeNode.FindAttribute(typeNode.Attributes, "ScriptExtension");
+                AttributeNode extensionAttribute = AttributeNode.FindAttribute(typeNode.Attributes, DSharpStringResources.SCRIPT_EXTENSION_ATTRIBUTE);
 
                 if (extensionAttribute != null)
                 {
@@ -104,7 +68,7 @@ namespace DSharp.Compiler.Validator
 
                     if ((typeNode.Modifiers & Modifiers.Static) == 0)
                     {
-                        errorHandler.ReportError(new NodeValidationError("ScriptExtension attribute can only be set on static classes.", typeNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_EXTENSION_NON_STATIC_CLASS_VIOLATION, typeNode));
                     }
 
                     if (extensionAttribute.Arguments.Count != 1 ||
@@ -116,7 +80,7 @@ namespace DSharp.Compiler.Validator
                     }
                 }
 
-                AttributeNode moduleAttribute = AttributeNode.FindAttribute(typeNode.Attributes, "ScriptModule");
+                AttributeNode moduleAttribute = AttributeNode.FindAttribute(typeNode.Attributes, DSharpStringResources.SCRIPT_MODULE_ATTRIBUTE);
 
                 if (moduleAttribute != null)
                 {
@@ -176,7 +140,7 @@ namespace DSharp.Compiler.Validator
                         {
                             if (hasCtor)
                             {
-                                errorHandler.ReportError(new NodeValidationError("Constructor overloads are not supported.", memberNode));
+                                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.UNSUPPORTED_CONSTRUCTOR_OVERLOAD, memberNode));
                             }
 
                             hasCtor = true;
@@ -195,14 +159,14 @@ namespace DSharp.Compiler.Validator
 
                     if (memberNames.ContainsKey(name))
                     {
-                        errorHandler.ReportError(new NodeValidationError("Duplicate-named member. Method overloads are not supported.", memberNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.UNSUPPORTED_METHOD_OVERLOAD, memberNode));
                     }
 
                     memberNames[name] = null;
 
                     string nameToValidate = name;
                     bool preserveCase = false;
-                    AttributeNode nameAttribute = AttributeNode.FindAttribute(memberNode.Attributes, "ScriptName");
+                    AttributeNode nameAttribute = AttributeNode.FindAttribute(memberNode.Attributes, DSharpStringResources.SCRIPT_NAME_ATTRIBUTE);
 
                     if (nameAttribute != null && nameAttribute.Arguments.Count != 0)
                     {
@@ -224,7 +188,7 @@ namespace DSharp.Compiler.Validator
 
                     if (Utility.IsKeyword(nameToValidate, /* testCamelCase */ preserveCase == false))
                     {
-                        errorHandler.ReportError(new NodeValidationError("Invalid member name. Member names should not use keywords.", memberNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.RESERVED_KEYWORD_ON_MEMBER_ERROR, memberNode));
                     }
 
                     if (hasCodeMembers == false)

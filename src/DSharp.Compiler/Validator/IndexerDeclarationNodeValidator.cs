@@ -12,14 +12,14 @@ namespace DSharp.Compiler.Validator
 
             if ((indexerNode.Modifiers & Modifiers.New) != 0)
             {
-                errorHandler.ReportError(new NodeValidationError("The new modifier is not supported.", indexerNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.INDEXER_NEW_KEYWORD_NOT_SUPPORTED_ERROR, indexerNode));
 
                 return false;
             }
 
             if (indexerNode.GetAccessor == null)
             {
-                errorHandler.ReportError(new NodeValidationError("Set-only properties are not supported. Use a set method instead.", indexerNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.INDEXER_SET_ONLY_NOT_SUPPORTED , indexerNode));
 
                 return false;
             }

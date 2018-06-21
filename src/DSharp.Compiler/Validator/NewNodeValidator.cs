@@ -31,7 +31,7 @@ namespace DSharp.Compiler.Validator
                     {
                         if (arguments.Count % 2 != 0)
                         {
-                            errorHandler.ReportError(new NodeValidationError("Missing value parameter for the last name parameter in Dictionary instantiation.", newNode));
+                            errorHandler.ReportError(new NodeValidationError(DSharpStringResources.INVALID_DICTIONARY_INTIALIZATION_PARAMETER_VALUE, newNode));
                         }
 
                         for (int i = 0; i < arguments.Count; i += 2)
@@ -41,7 +41,7 @@ namespace DSharp.Compiler.Validator
                             if (nameArgumentNode.NodeType != ParseNodeType.Literal ||
                                 ((LiteralNode)nameArgumentNode).Literal.LiteralType != LiteralTokenType.String)
                             {
-                                errorHandler.ReportError(new NodeValidationError("Name parameters in Dictionary instantiation must be string literals.", nameArgumentNode));
+                                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.INVALID_DICTIONARY_PARAMETER_TYPE, nameArgumentNode));
                             }
                         }
                     }

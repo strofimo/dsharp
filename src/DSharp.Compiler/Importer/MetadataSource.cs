@@ -44,7 +44,7 @@ namespace DSharp.Compiler.Importer
 
                 if (File.Exists(assemblyFilePath) == false)
                 {
-                    errorHandler.ReportError(new MissingReferenceError("The referenced assembly '" + referencePath + "' could not be located.", referencePath));
+                    errorHandler.ReportError(new MissingReferenceError(string.Format(DSharpStringResources.MISSING_ASSEMBLY_REFERENCE_FORMAT, referencePath), referencePath));
                     hasLoadErrors = true;
 
                     continue;

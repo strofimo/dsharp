@@ -8,11 +8,11 @@ namespace DSharp.Compiler.Validator
     {
         bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
         {
-            ArrayTypeNode typeNode = (ArrayTypeNode) node;
+            ArrayTypeNode typeNode = (ArrayTypeNode)node;
 
             if (typeNode.Rank != 1)
             {
-                errorHandler.ReportError(new NodeValidationError("Only single dimensional arrays are supported.",typeNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.UNSUPPORTED_MULTIPLE_DIMENSIONAL_ARRAYS, typeNode));
             }
 
             return true;

@@ -13,7 +13,7 @@ namespace DSharp.Compiler.Validator
             if ((propertyNode.Modifiers & Modifiers.Static) == 0 &&
                 (propertyNode.Modifiers & Modifiers.New) != 0)
             {
-                errorHandler.ReportError(new NodeValidationError("The new modifier is not supported on instance members.", propertyNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.STATIC_NEW_KEYWORD_UNSUPPORTED, propertyNode));
 
                 return false;
             }

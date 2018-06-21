@@ -12,7 +12,7 @@ namespace DSharp.Compiler.Validator
 
             if (fieldNode.Initializers.Count > 1)
             {
-                errorHandler.ReportError(new NodeValidationError("Field declarations are limited to a single field per declaration.", fieldNode));
+                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DUPLICATE_FIELD_DECLARATION, fieldNode));
 
                 return false;
             }

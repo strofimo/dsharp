@@ -15,7 +15,7 @@ namespace DSharp.Compiler.Validator
             foreach (AttributeBlockNode attribBlock in compilationUnitNode.Attributes)
             {
                 AttributeNode scriptNamespaceNode =
-                    AttributeNode.FindAttribute(attribBlock.Attributes, "ScriptNamespace");
+                    AttributeNode.FindAttribute(attribBlock.Attributes, DSharpStringResources.SCRIPT_NAMESPACE_ATTRIBUTE);
 
                 if (scriptNamespaceNode != null)
                 {
@@ -23,7 +23,7 @@ namespace DSharp.Compiler.Validator
 
                     if (Utility.IsValidScriptNamespace(scriptNamespace) == false)
                     {
-                        errorHandler.ReportError(new NodeValidationError("A script namespace must be a valid script identifier.", scriptNamespaceNode));
+                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_NAMESPACE_VIOLATION , scriptNamespaceNode));
                     }
                 }
             }
@@ -31,7 +31,7 @@ namespace DSharp.Compiler.Validator
             foreach (ParseNode childNode in compilationUnitNode.Members)
                 if (!(childNode is NamespaceNode))
                 {
-                    errorHandler.ReportError(new NodeValidationError("Non-namespaced types are not supported.", childNode));
+                    errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_NAMESPACE_TYPE_VIOLATION, childNode));
 
                     return false;
                 }

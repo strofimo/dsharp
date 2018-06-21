@@ -1,9 +1,4 @@
-﻿// MetadataBuilder.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -265,18 +260,16 @@ namespace DSharp.Compiler.Compiler
 
             if (string.IsNullOrEmpty(scriptName))
             {
-                errorHandler.ReportError(new AssemblyError(string.Empty, "You must declare a ScriptAssembly attribute."));
+                errorHandler.ReportError(new AssemblyError(scriptName, DSharpStringResources.ASSEMBLY_SCRIPT_ATTRIBUTE_MISSING));
             }
-            else if (Utility.IsValidScriptName(scriptName) == false)
+            else if (!Utility.IsValidScriptName(scriptName))
             {
-                string errorMessage =
-                    $"The ScriptAssembly attribute referenced an invalid name '{scriptName}'. Script names must only contain letters, numbers, dots or underscores.";
-                errorHandler.ReportError(new AssemblyError(string.Empty, errorMessage));
+                errorHandler.ReportError(new AssemblyError(scriptName, string.Format(DSharpStringResources.INVALID_SCRIPT_NAME_FORMAT, scriptName)));
             }
 
             symbols.ScriptName = scriptName;
 
-            List<AttributeNode> referenceAttributes = GetAttributes(compilationUnits, "ScriptReference");
+            List<AttributeNode> referenceAttributes = GetAttributes(compilationUnits, DSharpStringResources.SCRIPT_REFERENCE_ATTRIBUTE);
 
             foreach (AttributeNode attribNode in referenceAttributes)
             {
