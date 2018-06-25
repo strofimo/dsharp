@@ -17,10 +17,12 @@ namespace ListTests
             List<string> list = new List<string>();
             list.Add("one");
             list.AddRange("two", "three");
-            //Assert.Equals(3, list.Count);
 
             string[] array = list.ToArray();
-            //Assert.Equals(array, list);
+
+            int[] integersSource = { 1, 2, 3 };
+            List<int> listOfIntegers = new List<int>(integersSource);
+            listOfIntegers.Add(4);
         }
     }
 }

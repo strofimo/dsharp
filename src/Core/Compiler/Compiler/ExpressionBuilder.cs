@@ -910,6 +910,18 @@ namespace ScriptSharp.Compiler {
                     }
                     return new InlineScriptExpression("undefined", type);
                 }
+                else if (type.GenericType == _symbolSet.ResolveIntrinsicType(IntrinsicType.GenericList))
+                {
+                    if (args.Count == 1)
+                    {
+                        Expression paramExpresion = args[0];
+
+                        if (paramExpresion.EvaluatedType.Name == _symbolSet.ResolveIntrinsicType(IntrinsicType.Array).Name)
+                        {
+                            return paramExpresion;
+                        }    
+                    }
+                }
                 else {
                     foreach (Expression paramExpr in args) {
                         newExpression.AddParameterValue(paramExpr);

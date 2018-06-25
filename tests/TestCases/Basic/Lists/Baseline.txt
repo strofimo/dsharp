@@ -10,6 +10,9 @@ define('test', ['ss'], function(ss) {
     list.push('one');
     list.push('two', 'three');
     var array = list;
+    var integersSource = [ 1, 2, 3 ];
+    var listOfIntegers = integersSource;
+    listOfIntegers.push(4);
   }
   var PublicClass$ = {
 
