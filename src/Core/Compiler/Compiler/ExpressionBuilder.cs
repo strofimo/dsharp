@@ -919,7 +919,11 @@ namespace ScriptSharp.Compiler {
                         if (paramExpresion.EvaluatedType.Name == _symbolSet.ResolveIntrinsicType(IntrinsicType.Array).Name)
                         {
                             return paramExpresion;
-                        }    
+                        }
+                        else
+                        {
+                            return new InlineScriptExpression("undefined", type);
+                        }
                     }
                 }
                 else {

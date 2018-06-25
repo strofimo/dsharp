@@ -23,6 +23,8 @@ namespace ListTests
             int[] integersSource = { 1, 2, 3 };
             List<int> listOfIntegers = new List<int>(integersSource);
             listOfIntegers.Add(4);
+
+            List<int> other = new List<int>(5);
         }
     }
 }

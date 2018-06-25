@@ -13,6 +13,7 @@ define('test', ['ss'], function(ss) {
     var integersSource = [ 1, 2, 3 ];
     var listOfIntegers = integersSource;
     listOfIntegers.push(4);
+    var other = undefined;
   }
   var PublicClass$ = {
 
