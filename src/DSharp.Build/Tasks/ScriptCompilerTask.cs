@@ -493,7 +493,7 @@ namespace DSharp.Build.Tasks
         {
             Log.LogError(
                 subcategory: string.Empty,
-                errorCode: $"DS{error.ErrorCode}",
+                errorCode: error.FormattedErrorCode,
                 helpKeyword: string.Empty,
                 file: error.File,
                 lineNumber: error.LineNumber.GetValueOrDefault(),

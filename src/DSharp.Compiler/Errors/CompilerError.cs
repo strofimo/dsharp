@@ -33,6 +33,11 @@ namespace DSharp.Compiler.Errors
 
         public int? ColumnNumber { get; }
 
+        public string FormattedErrorCode
+        {
+            get { return $"DS{ErrorCode.ToString("D4")}"; }
+        }
+
         public bool Equals(CompilerError other)
         {
             return ErrorCode == other.ErrorCode
