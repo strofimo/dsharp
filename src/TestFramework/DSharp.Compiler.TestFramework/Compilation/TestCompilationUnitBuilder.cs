@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DSharp.Compiler.TestFramework.Compilation
 {
@@ -9,7 +10,8 @@ namespace DSharp.Compiler.TestFramework.Compilation
             Defines = new HashSet<string>(),
             Sources = new HashSet<IStreamSource>(),
             Resources = new HashSet<IStreamSource>(),
-            References = new HashSet<string>()
+            References = new HashSet<string>(),
+            AssemblyName = $"Test_{Guid.NewGuid()}"
         };
 
         public ICompilationUnit Build()

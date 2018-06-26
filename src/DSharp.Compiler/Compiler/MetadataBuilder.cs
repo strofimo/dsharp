@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Xml;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Attributes;
@@ -1273,17 +1274,17 @@ namespace DSharp.Compiler.Compiler
                 {
                     if (description == null)
                     {
-                        description = attribBlock.Attributes.GetAttributeValue("AssemblyDescription");
+                        description = attribBlock.Attributes.GetAttributeValue(nameof(AssemblyDescriptionAttribute));
                     }
 
                     if (copyright == null)
                     {
-                        copyright = attribBlock.Attributes.GetAttributeValue("AssemblyCopyright");
+                        copyright = attribBlock.Attributes.GetAttributeValue(nameof(AssemblyCopyrightAttribute));
                     }
 
                     if (version == null)
                     {
-                        version = attribBlock.Attributes.GetAttributeValue("AssemblyFileVersion");
+                        version = attribBlock.Attributes.GetAttributeValue(nameof(AssemblyFileVersionAttribute));
                     }
                 }
         }
@@ -1301,7 +1302,7 @@ namespace DSharp.Compiler.Compiler
                     }
                 }
 
-            return null;
+            return options.AssemblyName;
         }
 
         private List<AttributeNode> GetAttributes(ParseNodeList compilationUnits, string attributeName)

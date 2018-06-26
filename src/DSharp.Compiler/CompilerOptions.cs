@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DSharp.Compiler
 {
@@ -24,6 +24,8 @@ namespace DSharp.Compiler
         public IStreamSource ScriptFile { get; set; }
 
         public ICollection<IStreamSource> Sources { get; set; }
+
+        public string AssemblyName { get; set; }
 
         public ScriptInfo ScriptInfo { get; }
 

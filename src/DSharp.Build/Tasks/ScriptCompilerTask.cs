@@ -1,9 +1,4 @@
-﻿// ScriptCompilerTask.cs
-// Script#/Core/Build
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -17,10 +12,6 @@ using ScriptCruncherSettings = Microsoft.Ajax.Utilities.CodeSettings;
 
 namespace DSharp.Build.Tasks
 {
-
-    /// <summary>
-    /// The Script# MSBuild task.
-    /// </summary>
     public sealed class ScriptCompilerTask : Task, IErrorHandler, IStreamSourceResolver
     {
         private string defines;
@@ -39,6 +30,8 @@ namespace DSharp.Build.Tasks
         public ITaskItem Assembly { get; set; }
 
         public bool CopyReferences { get; set; }
+
+        public string AssemblyName { get; set; }
 
         public string CopyReferencesPath
         {
@@ -175,6 +168,7 @@ namespace DSharp.Build.Tasks
             options.Sources = GetSources(sourceItems);
             options.Resources = GetResources(resourceItems, locale);
             options.IncludeResolver = this;
+            options.AssemblyName = AssemblyName;
 
             string scriptFilePath = GetScriptFilePath(locale, minimize);
             outputScriptItem = new TaskItem(scriptFilePath);
@@ -507,6 +501,7 @@ namespace DSharp.Build.Tasks
                 columnNumber: error.ColumnNumber.GetValueOrDefault(),
                 endColumnNumber: error.ColumnNumber.GetValueOrDefault(),
                 message: error.Description);
+            hasErrors = true;
         }
 
         #region Implementation of IStreamSourceResolver

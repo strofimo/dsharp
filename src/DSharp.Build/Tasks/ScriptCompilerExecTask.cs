@@ -1,9 +1,4 @@
-﻿// ScriptCompilerExecTask.cs
-// Script#/Core/Build
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -14,10 +9,6 @@ using Microsoft.Build.Utilities;
 
 namespace DSharp.Build.Tasks
 {
-    /// <summary>
-    /// The Script# MSBuild task corresponding exactly to functionality exposed
-    /// by the command-line tool.
-    /// </summary>
     public sealed class ScriptCompilerExecTask : Task, IErrorHandler, IStreamSourceResolver
     {
         private readonly bool tests;
@@ -61,6 +52,8 @@ namespace DSharp.Build.Tasks
 
         public bool Minimize { get; set; }
 
+        public string AssemblyName { get; set; }
+
         [Required]
         public string OutputPath
         {
@@ -100,6 +93,7 @@ namespace DSharp.Build.Tasks
             options.Sources = GetSources(Sources);
             options.Resources = GetResources(Resources);
             options.IncludeResolver = this;
+            options.AssemblyName = AssemblyName;
 
             ITaskItem scriptTaskItem = new TaskItem(OutputPath);
             options.ScriptFile = new TaskItemOutputStreamSource(scriptTaskItem);
@@ -246,6 +240,7 @@ namespace DSharp.Build.Tasks
                 columnNumber: error.ColumnNumber.GetValueOrDefault(),
                 endColumnNumber: error.ColumnNumber.GetValueOrDefault(),
                 message: error.Description);
+            hasErrors = true;
         }
 
         #region Implementation of IStreamSourceResolver
