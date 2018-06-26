@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // MemberTests.ITest
@@ -24,7 +24,7 @@ define('test', ['ds'], function(ds) {
     this.IsFoo = true;
     this.ISet = 'set me';
   }
-  ds.createPropertyGet(Test, 'StaticProp', function() {
+  DSharp.createPropertyGet(Test, 'StaticProp', function() {
     return 2006;
   });
   var Test$ = {
@@ -57,8 +57,8 @@ define('test', ['ds'], function(ds) {
 
   function Test2() {
     Test.call(this);
-    var n = ds.baseProperty(Test2, 'XYZ').get.call(this);
-    ds.baseProperty(Test2, 'XYZ').set.call(this, 6);
+    var n = DSharp.baseProperty(Test2, 'XYZ').get.call(this);
+    DSharp.baseProperty(Test2, 'XYZ').set.call(this, 6);
     if (n === this.XYZ) {
     }
     if (this.XYZ === n) {
@@ -70,11 +70,11 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      ITest: ds.defineInterface(ITest),
-      Test: ds.defineClass(Test, Test$, [], null),
-      Test2: ds.defineClass(Test2, Test2$, [], Test)
+      ITest: DSharp.defineInterface(ITest),
+      Test: DSharp.defineClass(Test, Test$, [], null),
+      Test2: DSharp.defineClass(Test2, Test2$, [], Test)
     });
 
 

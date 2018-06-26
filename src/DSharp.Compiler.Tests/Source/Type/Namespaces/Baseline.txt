@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // TypeTests.Sub1.Sub2.MyClass
@@ -82,16 +82,16 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      MyClass: ds.defineClass(MyClass, MyClass$, [], null),
-      YourClass: ds.defineClass(YourClass, YourClass$, [], null),
-      YourClass1: ds.defineClass(YourClass1, YourClass1$, [], null),
-      MyClassF: ds.defineClass(MyClassF, MyClassF$, [], null),
-      Test: ds.defineClass(Test, Test$, [], null),
-      Utility: ds.defineClass(Utility, Utility$, [], null),
-      UtilityP: ds.defineClass(UtilityP, UtilityP$, [], null),
-      Component: ds.defineClass(Component, Component$, [], null)
+      MyClass: DSharp.defineClass(MyClass, MyClass$, [], null),
+      YourClass: DSharp.defineClass(YourClass, YourClass$, [], null),
+      YourClass1: DSharp.defineClass(YourClass1, YourClass1$, [], null),
+      MyClassF: DSharp.defineClass(MyClassF, MyClassF$, [], null),
+      Test: DSharp.defineClass(Test, Test$, [], null),
+      Utility: DSharp.defineClass(Utility, Utility$, [], null),
+      UtilityP: DSharp.defineClass(UtilityP, UtilityP$, [], null),
+      Component: DSharp.defineClass(Component, Component$, [], null)
     });
 
 

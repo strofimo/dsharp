@@ -13,9 +13,9 @@
   };
 
 
-  var $exports = ds.module('basic', null,
+  var $exports = DSharp.module('basic', null,
     {
-      App: ds.defineClass(App, App$, [], null)
+      App: DSharp.defineClass(App, App$, [], null)
     });
 
 

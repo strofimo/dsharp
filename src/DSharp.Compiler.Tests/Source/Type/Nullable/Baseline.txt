@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // TypeTests.App
@@ -17,9 +17,9 @@ define('test', ['ds'], function(ds) {
       var num3 = 100;
       var xyz = false;
       var ch;
-      var hasValue = ds.isValue(xyz) || ds.isValue(num3);
+      var hasValue = DSharp.isValue(xyz) || DSharp.isValue(num3);
       var num3_ = num3;
-      var f = (ds.isValue(flag)) ? flag : true;
+      var f = (DSharp.isValue(flag)) ? flag : true;
       xyz = true;
       num2 = 10;
       num = 1;
@@ -30,9 +30,9 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      App: ds.defineClass(App, App$, [], null)
+      App: DSharp.defineClass(App, App$, [], null)
     });
 
 

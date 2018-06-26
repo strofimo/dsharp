@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // Resources.Strings1
@@ -30,13 +30,13 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test',
+  var $exports = DSharp.module('test',
     {
       Strings1: Strings1
     },
     {
       Strings2: Strings2,
-      App: ds.defineClass(App, App$, [], null)
+      App: DSharp.defineClass(App, App$, [], null)
     });
 
 

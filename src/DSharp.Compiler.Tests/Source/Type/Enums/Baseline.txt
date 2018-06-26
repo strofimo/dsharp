@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // TypeTests.Colors
@@ -93,7 +93,7 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
       Colors: Colors,
       Sequence: Sequence,
@@ -101,8 +101,8 @@ define('test', ['ds'], function(ds) {
       UInt32Mask: UInt32Mask,
       ShortMask: ShortMask,
       Errors: Errors,
-      App: ds.defineClass(App, App$, [], null),
-      App2: ds.defineClass(App2, App2$, [], null)
+      App: DSharp.defineClass(App, App$, [], null),
+      App2: DSharp.defineClass(App2, App2$, [], null)
     });
 
 

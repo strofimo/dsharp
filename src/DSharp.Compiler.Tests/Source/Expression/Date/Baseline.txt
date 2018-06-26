@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // ExpressionTests.App
@@ -11,13 +11,13 @@ define('test', ['ds'], function(ds) {
     equality: function() {
       var d1 = null;
       var d2 = null;
-      if (ds.compareDates(d1, d2)) {
+      if (DSharp.compareDates(d1, d2)) {
       }
-      if (!ds.compareDates(d1, d2)) {
+      if (!DSharp.compareDates(d1, d2)) {
       }
-      if (ds.compareDates(d1, ds.now())) {
+      if (DSharp.compareDates(d1, DSharp.now())) {
       }
-      if (!ds.compareDates(d1, new Date())) {
+      if (!DSharp.compareDates(d1, new Date())) {
       }
       var o;
       if (d1 === o) {
@@ -28,9 +28,9 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      App: ds.defineClass(App, App$, [], null)
+      App: DSharp.defineClass(App, App$, [], null)
     });
 
 

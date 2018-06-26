@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // TypeTests.Foo
@@ -60,23 +60,23 @@ define('test', ['ds'], function(ds) {
 
   function MyClass4(foo, bar, disposable) {
     MyClass.call(this);
-    var f = ds.createInstance();
-    var b = ds.createInstance(BarBaz, f);
+    var f = DSharp.createInstance();
+    var b = DSharp.createInstance(BarBaz, f);
   }
   var MyClass4$ = {
 
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      FooBaz: ds.defineClass(FooBaz, FooBaz$, [], null),
-      BarBaz: ds.defineClass(BarBaz, BarBaz$, [FooBaz], null),
-      MyClass: ds.defineClass(MyClass, MyClass$, [], null),
-      MyClass3: ds.defineClass(MyClass3, MyClass3$, [], null, [ds.IDisposable]),
-      StaticClass: ds.defineClass(StaticClass, null, [], null),
-      MyClass2: ds.defineClass(MyClass2, MyClass2$, [], MyClass),
-      MyClass4: ds.defineClass(MyClass4, MyClass4$, [FooBaz, BarBaz, ds.IDisposable], MyClass, [ds.IDisposable])
+      FooBaz: DSharp.defineClass(FooBaz, FooBaz$, [], null),
+      BarBaz: DSharp.defineClass(BarBaz, BarBaz$, [FooBaz], null),
+      MyClass: DSharp.defineClass(MyClass, MyClass$, [], null),
+      MyClass3: DSharp.defineClass(MyClass3, MyClass3$, [], null, [DSharp.IDisposable]),
+      StaticClass: DSharp.defineClass(StaticClass, null, [], null),
+      MyClass2: DSharp.defineClass(MyClass2, MyClass2$, [], MyClass),
+      MyClass4: DSharp.defineClass(MyClass4, MyClass4$, [FooBaz, BarBaz, DSharp.IDisposable], MyClass, [DSharp.IDisposable])
     });
 
 

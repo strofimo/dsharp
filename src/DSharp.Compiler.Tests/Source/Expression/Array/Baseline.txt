@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // ExpressionTests.App
@@ -18,7 +18,7 @@ define('test', ['ds'], function(ds) {
       items.splice(1, 0, 0, 5);
       items.splice(4, 1);
       items.splice(4, 3);
-      ds.remove(items, 1);
+      DSharp.remove(items, 1);
       var newItems = items.slice(5, 7);
       var newItems2 = items.slice(5, 5 + arg);
       var numbers = [];
@@ -42,9 +42,9 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      App: ds.defineClass(App, App$, [], null)
+      App: DSharp.defineClass(App, App$, [], null)
     });
 
 

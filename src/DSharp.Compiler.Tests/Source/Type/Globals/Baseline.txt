@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // MyEnum
@@ -65,21 +65,21 @@ define('test', ['ds'], function(ds) {
     someMethod: function() {
       var xyz = null;
       var c2 = new MyClass2();
-      xyz = ds.safeCast(c2, IXyzInterface);
+      xyz = DSharp.safeCast(c2, IXyzInterface);
     }
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
       MyEnum: MyEnum,
-      IXyzInterface: ds.defineInterface(IXyzInterface),
+      IXyzInterface: DSharp.defineInterface(IXyzInterface),
       MyRecord: MyRecord,
-      MyClass: ds.defineClass(MyClass, MyClass$, [], null),
-      MyClass3: ds.defineClass(MyClass3, MyClass3$, [], null, [ds.IDisposable]),
-      MyClassF: ds.defineClass(MyClassF, MyClassF$, [], null),
-      MyClass2: ds.defineClass(MyClass2, MyClass2$, [], MyClass),
-      MyClass4: ds.defineClass(MyClass4, MyClass4$, [], MyClass, [ds.IDisposable])
+      MyClass: DSharp.defineClass(MyClass, MyClass$, [], null),
+      MyClass3: DSharp.defineClass(MyClass3, MyClass3$, [], null, [DSharp.IDisposable]),
+      MyClassF: DSharp.defineClass(MyClassF, MyClassF$, [], null),
+      MyClass2: DSharp.defineClass(MyClass2, MyClass2$, [], MyClass),
+      MyClass4: DSharp.defineClass(MyClass4, MyClass4$, [], MyClass, [DSharp.IDisposable])
     });
 
 

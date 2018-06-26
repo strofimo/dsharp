@@ -9,7 +9,7 @@ namespace ValidationTests {
     public class App {
 
         public static void M1() {
-            int ds = 1;
+            int DSharp = 1;
         }
         
         public static void M2() {

@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // MemberTests.EventArgs
@@ -17,28 +17,28 @@ define('test', ['ds'], function(ds) {
   function Button() {
   }
   Button.add_test = function(value) {
-    Button.__test = ds.bindAdd(Button.__test, value);
+    Button.__test = DSharp.bindAdd(Button.__test, value);
   };
   Button.remove_test = function(value) {
-    Button.__test = ds.bindSub(Button.__test, value);
+    Button.__test = DSharp.bindSub(Button.__test, value);
   };
   var Button$ = {
     add_click: function(value) {
-      this.__click = ds.bindAdd(this.__click, value);
+      this.__click = DSharp.bindAdd(this.__click, value);
     },
     remove_click: function(value) {
-      this.__click = ds.bindSub(this.__click, value);
+      this.__click = DSharp.bindSub(this.__click, value);
     },
     add_aaa: function(value) {
       if (this._aaa == null) {
         this._aaa = value;
       }
       else {
-        this._aaa = ds.bindAdd(this._aaa, value);
+        this._aaa = DSharp.bindAdd(this._aaa, value);
       }
     },
     remove_aaa: function(value) {
-      this._aaa = ds.bindSub(this._aaa, value);
+      this._aaa = DSharp.bindSub(this._aaa, value);
     },
     performClick: function() {
       if (this.__click != null) {
@@ -48,10 +48,10 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      EventArgs: ds.defineClass(EventArgs, EventArgs$, [], null),
-      Button: ds.defineClass(Button, Button$, [], null)
+      EventArgs: DSharp.defineClass(EventArgs, EventArgs$, [], null),
+      Button: DSharp.defineClass(Button, Button$, [], null)
     });
 
 

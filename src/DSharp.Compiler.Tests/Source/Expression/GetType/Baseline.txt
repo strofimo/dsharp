@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // ExpressionTests.App
@@ -12,26 +12,26 @@ define('test', ['ds'], function(ds) {
       return 0;
     },
     test: function(x) {
-      var t = ds.typeOf(x);
-      var t2 = ds.typeOf(x.toString());
-      var t3 = ds.typeOf(this.Foo);
-      var t4 = ds.type('String');
-      var t5 = ds.type('test.Foo');
-      var b1 = ds.canAssign((Object), App);
-      var b2 = ds.canAssign((ds.IDisposable), App);
-      var b3 = ds.canAssign(t, App);
-      var b4 = ds.instanceOf((App), new App());
-      var b5 = ds.instanceOf((ds.IDisposable), new App());
-      var b6 = ds.instanceOf(t, new App());
-      var b7 = ds.isInterface(t) || ds.isClass(t);
-      var n = ds.typeName(t);
+      var t = DSharp.typeOf(x);
+      var t2 = DSharp.typeOf(x.toString());
+      var t3 = DSharp.typeOf(this.Foo);
+      var t4 = DSharp.type('String');
+      var t5 = DSharp.type('test.Foo');
+      var b1 = DSharp.canAssign((Object), App);
+      var b2 = DSharp.canAssign((DSharp.IDisposable), App);
+      var b3 = DSharp.canAssign(t, App);
+      var b4 = DSharp.instanceOf((App), new App());
+      var b5 = DSharp.instanceOf((DSharp.IDisposable), new App());
+      var b6 = DSharp.instanceOf(t, new App());
+      var b7 = DSharp.isInterface(t) || DSharp.isClass(t);
+      var n = DSharp.typeName(t);
     }
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      App: ds.defineClass(App, App$, [], null)
+      App: DSharp.defineClass(App, App$, [], null)
     });
 
 

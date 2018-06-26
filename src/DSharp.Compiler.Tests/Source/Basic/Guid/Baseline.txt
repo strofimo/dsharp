@@ -1,21 +1,21 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // GuidTests.PublicClass
 
   function PublicClass() {
-    var guid = ds.Guid.NewGuid();
+    var guid = DSharp.Guid.NewGuid();
   }
   var PublicClass$ = {
 
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      PublicClass: ds.defineClass(PublicClass, PublicClass$, [], null)
+      PublicClass: DSharp.defineClass(PublicClass, PublicClass$, [], null)
     });
 
 

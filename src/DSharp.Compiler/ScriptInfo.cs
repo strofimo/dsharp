@@ -1,12 +1,8 @@
-// ScriptInfo.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-namespace DSharp.Compiler
+﻿namespace DSharp.Compiler
 {
     public sealed class ScriptInfo
     {
+        //TODO: Replace with new loader code
         private static readonly string DefaultScriptTemplate = @"
 ""use strict"";
 

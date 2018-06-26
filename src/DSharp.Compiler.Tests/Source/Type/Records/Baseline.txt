@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // TypeTests.Point
@@ -18,7 +18,7 @@ define('test', ['ds'], function(ds) {
   function Pair() { return {}; }
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
       Point: Point,
       Pair: Pair

@@ -12,6 +12,7 @@ using System.Text;
 
 namespace DSharp.Compiler
 {
+    //TODO: Break apart into smaller pieces and move into a Container
     internal static class Utility
     {
         private static readonly string Base64Alphabet =

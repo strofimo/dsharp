@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // MemberTests.IIndexable
@@ -188,21 +188,21 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      IIndexable: ds.defineInterface(IIndexable),
-      Normal: ds.defineClass(Normal, Normal$, [], null),
-      GetterOnly: ds.defineClass(GetterOnly, GetterOnly$, [], null),
-      VirtualIndexer: ds.defineClass(VirtualIndexer, VirtualIndexer$, [], null),
-      AbstractIndexer: ds.defineClass(AbstractIndexer, AbstractIndexer$, [], null),
-      MultipleArgs: ds.defineClass(MultipleArgs, MultipleArgs$, [], null),
-      ImplementedIndexer2: ds.defineClass(ImplementedIndexer2, ImplementedIndexer2$, [], null, [IIndexable]),
-      Test: ds.defineClass(Test, Test$, [], null),
-      A: ds.defineClass(A, A$, [], null),
-      OverriddenIndexer: ds.defineClass(OverriddenIndexer, OverriddenIndexer$, [], VirtualIndexer),
-      ImplementedIndexer: ds.defineClass(ImplementedIndexer, ImplementedIndexer$, [], AbstractIndexer),
-      B: ds.defineClass(B, B$, [], A),
-      C: ds.defineClass(C, C$, [], B)
+      IIndexable: DSharp.defineInterface(IIndexable),
+      Normal: DSharp.defineClass(Normal, Normal$, [], null),
+      GetterOnly: DSharp.defineClass(GetterOnly, GetterOnly$, [], null),
+      VirtualIndexer: DSharp.defineClass(VirtualIndexer, VirtualIndexer$, [], null),
+      AbstractIndexer: DSharp.defineClass(AbstractIndexer, AbstractIndexer$, [], null),
+      MultipleArgs: DSharp.defineClass(MultipleArgs, MultipleArgs$, [], null),
+      ImplementedIndexer2: DSharp.defineClass(ImplementedIndexer2, ImplementedIndexer2$, [], null, [IIndexable]),
+      Test: DSharp.defineClass(Test, Test$, [], null),
+      A: DSharp.defineClass(A, A$, [], null),
+      OverriddenIndexer: DSharp.defineClass(OverriddenIndexer, OverriddenIndexer$, [], VirtualIndexer),
+      ImplementedIndexer: DSharp.defineClass(ImplementedIndexer, ImplementedIndexer$, [], AbstractIndexer),
+      B: DSharp.defineClass(B, B$, [], A),
+      C: DSharp.defineClass(C, C$, [], B)
     });
 
 

@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // ExpressionTests.Point
@@ -52,10 +52,10 @@ define('test', ['ds'], function(ds) {
     var p = Point(0, 0);
     var cd = {};
     var cd2 = { abc: 123, def: true };
-    var o1 = ds.createInstance(Test);
+    var o1 = DSharp.createInstance(Test);
     var type1 = Foo;
-    var o2 = ds.createInstance(type1, 1, 2);
-    var o3 = ds.createInstance(Bar, 1, 2, o2);
+    var o2 = DSharp.createInstance(type1, 1, 2);
+    var o3 = DSharp.createInstance(Bar, 1, 2, o2);
     var f1 = new Function("alert('hello');");
     var f2 = new Function('s', 'alert(s);');
     var f3 = new Function('greeting', 'name', "alert(greeting + ' ' + name + '!');");
@@ -65,12 +65,12 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
       Point: Point,
-      Foo: ds.defineClass(Foo, Foo$, [Number, Number], null),
-      Bar: ds.defineClass(Bar, Bar$, [Number, Number, Foo], null),
-      Test: ds.defineClass(Test, Test$, [], null)
+      Foo: DSharp.defineClass(Foo, Foo$, [Number, Number], null),
+      Bar: DSharp.defineClass(Bar, Bar$, [Number, Number, Foo], null),
+      Test: DSharp.defineClass(Test, Test$, [], null)
     });
 
 

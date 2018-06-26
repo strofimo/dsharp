@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // ExpressionTests.App
@@ -19,10 +19,10 @@ define('test', ['ds'], function(ds) {
       };
       var cookie = setInterval(tick, 500);
       clearInterval(cookie);
-      var isNotSet = !ds.isValue(i);
+      var isNotSet = !DSharp.isValue(i);
       b = (i === null);
       b = (i === undefined);
-      b = ds.isValue(i);
+      b = DSharp.isValue(i);
       b = isNaN(0);
       b = isFinite(3);
       b = !!(0);
@@ -35,14 +35,14 @@ define('test', ['ds'], function(ds) {
       addition = 2 + 3;
       var g = $global;
       var u = undefined;
-      var coreModule = ds.modules['ds'];
+      var coreModule = DSharp.modules['DSharp'];
     }
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      App: ds.defineClass(App, App$, [], null)
+      App: DSharp.defineClass(App, App$, [], null)
     });
 
 

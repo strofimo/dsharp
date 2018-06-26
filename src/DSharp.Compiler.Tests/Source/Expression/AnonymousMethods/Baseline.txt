@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // ExpressionTests.SomeClass
@@ -70,11 +70,11 @@ define('test', ['ds'], function(ds) {
       })();
       (function(i, s, b) {
         i++;
-        b = ds.emptyString(s);
+        b = DSharp.emptyString(s);
       })(j, 'foo', false);
       (function(i, s, b) {
         i++;
-        b = ds.emptyString(s);
+        b = DSharp.emptyString(s);
       })(j, 'foo', false);
       j = (function(k) {
         return k + 1;
@@ -102,10 +102,10 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      SomeClass: ds.defineClass(SomeClass, SomeClass$, [Function], null),
-      Test: ds.defineClass(Test, Test$, [], null)
+      SomeClass: DSharp.defineClass(SomeClass, SomeClass$, [Function], null),
+      Test: DSharp.defineClass(Test, Test$, [], null)
     });
 
 

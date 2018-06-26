@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ds'], function(ds) {
+define('test', ['DSharp'], function(DSharp) {
   var $global = this;
 
   // ExpressionTests.EventArgs
@@ -24,11 +24,11 @@ define('test', ['ds'], function(ds) {
   // ExpressionTests.Test
 
   function Test() {
-    this._handler = ds.bind('onEvent', this);
-    this._handler = ds.bind('onEvent', this);
-    this._handler = ds.bind('onEvent', this);
+    this._handler = DSharp.bind('onEvent', this);
+    this._handler = DSharp.bind('onEvent', this);
+    this._handler = DSharp.bind('onEvent', this);
     this._handler = Test2.onGlobalEvent;
-    var s1 = new SomeClass(ds.bind('onEvent', this));
+    var s1 = new SomeClass(DSharp.bind('onEvent', this));
     var s2 = new SomeClass(this._handler);
   }
   var Test$ = {
@@ -53,12 +53,12 @@ define('test', ['ds'], function(ds) {
   };
 
 
-  var $exports = ds.module('test', null,
+  var $exports = DSharp.module('test', null,
     {
-      EventArgs: ds.defineClass(EventArgs, EventArgs$, [], null),
-      SomeClass: ds.defineClass(SomeClass, SomeClass$, [Function], null),
-      Test: ds.defineClass(Test, Test$, [], null),
-      Test2: ds.defineClass(Test2, Test2$, [], null)
+      EventArgs: DSharp.defineClass(EventArgs, EventArgs$, [], null),
+      SomeClass: DSharp.defineClass(SomeClass, SomeClass$, [Function], null),
+      Test: DSharp.defineClass(Test, Test$, [], null),
+      Test2: DSharp.defineClass(Test2, Test2$, [], null)
     });
 
 
