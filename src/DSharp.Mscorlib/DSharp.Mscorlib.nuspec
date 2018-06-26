@@ -10,6 +10,7 @@
     <developmentDependency>true</developmentDependency>
   </metadata>
   <files>
-    <file src="bin\$configuration$\net461\DSharp.Mscorlib.dll" target="lib\net461" />
+    <file src="bin\$configuration$\net461\**" target="lib\net461" />
+    <file src="bin\$configuration$\netstandard2.0\**" target="lib\netstandard2.0" />
   </files>
 </package>

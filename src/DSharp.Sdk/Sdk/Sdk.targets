@@ -2,7 +2,7 @@
   
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <ToolsPath>$(MSBuildThisFileDirectory)..\tools\</ToolsPath>
+    <ToolsPath>$(MSBuildThisFileDirectory)..\tools\$(TargetFramework)\</ToolsPath>
     <DSharpBuildAssembly>$(ToolsPath)DSharp.Build.dll</DSharpBuildAssembly>
   </PropertyGroup>
   

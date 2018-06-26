@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <AssemblyName>DSharp.Build</AssemblyName>
     <RootNamespace>DSharp.Build</RootNamespace>
   </PropertyGroup>
@@ -24,8 +24,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="AjaxMin" Version="5.14.5506.26202" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.6.85" />
+    <PackageReference Include="NUglify" Version="1.5.11" />
   </ItemGroup>
   
   <ItemGroup>

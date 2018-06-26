@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using DSharp.Compiler;
 using DSharp.Compiler.Errors;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using ScriptCruncher = Microsoft.Ajax.Utilities.Minifier;
-using ScriptCruncherSettings = Microsoft.Ajax.Utilities.CodeSettings;
+using NUglify;
+using NUglify.JavaScript;
 
 namespace DSharp.Build.Tasks
 {
@@ -224,22 +223,29 @@ namespace DSharp.Build.Tasks
         {
             string script = File.ReadAllText(scriptItem.ItemSpec);
 
-            ScriptCruncher cruncher = new ScriptCruncher();
-            ScriptCruncherSettings cruncherSettings = new ScriptCruncherSettings()
+            CodeSettings codeSettings = new CodeSettings
             {
                 StripDebugStatements = false,
-                OutputMode = Microsoft.Ajax.Utilities.OutputMode.SingleLine,
+                OutputMode = OutputMode.SingleLine,
                 IgnorePreprocessorDefines = true,
                 IgnoreConditionalCompilation = true,
                 TermSemicolons = true,
-
+                NoAutoRenameList = "$"
             };
-            cruncherSettings.AddNoAutoRename("$");
-            cruncherSettings.SetDebugNamespaces(null);
 
-            string crunchedScript = cruncher.MinifyJavaScript(script, cruncherSettings);
+            UglifyResult result = Uglify.Js(script, codeSettings);
 
-            File.WriteAllText(scriptItem.ItemSpec, crunchedScript);
+            if(result.HasErrors)
+            {
+                foreach (UglifyError error in result.Errors)
+                {
+                    Log.LogError(error.Subcategory, error.ErrorCode, error.HelpKeyword, error.File, error.StartLine, error.StartColumn, error.EndLine, error.EndColumn, error.Message);
+                }
+
+                return;
+            }
+
+            File.WriteAllText(scriptItem.ItemSpec, result.Code);
         }
 
         private void GenerateDeploymentFile()

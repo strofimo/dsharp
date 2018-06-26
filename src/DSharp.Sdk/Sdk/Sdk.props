@@ -4,7 +4,7 @@
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">.netstandard2.0</TargetFramework>
     <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
     <AdditionalExplicitAssemblyReferences />
@@ -18,6 +18,6 @@
     <LangVersion Condition="'$(GenerateScript)' == 'True'">ISO-2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DSharp.Mscorlib" Version="1.0.0" IsImplicitlyDefined="true" />
+    <PackageReference Include="DSharp.Mscorlib" Version="1.0.0" IsImplicitlyDefined="true" PrivateAssets="All" />
   </ItemGroup>
 </Project>
