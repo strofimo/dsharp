@@ -31,7 +31,7 @@ namespace DSharp.Compiler.Validator
                     {
                         if (arguments.Count % 2 != 0)
                         {
-                            errorHandler.ReportError(new NodeValidationError(DSharpStringResources.INVALID_DICTIONARY_INTIALIZATION_PARAMETER_VALUE, newNode));
+                            errorHandler.ReportNodeValidationError(DSharpStringResources.INVALID_DICTIONARY_INTIALIZATION_PARAMETER_VALUE, newNode);
                         }
 
                         for (int i = 0; i < arguments.Count; i += 2)
@@ -41,7 +41,7 @@ namespace DSharp.Compiler.Validator
                             if (nameArgumentNode.NodeType != ParseNodeType.Literal ||
                                 ((LiteralNode)nameArgumentNode).Literal.LiteralType != LiteralTokenType.String)
                             {
-                                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.INVALID_DICTIONARY_PARAMETER_TYPE, nameArgumentNode));
+                                errorHandler.ReportNodeValidationError(DSharpStringResources.INVALID_DICTIONARY_PARAMETER_TYPE, nameArgumentNode);
                             }
                         }
                     }

@@ -260,11 +260,11 @@ namespace DSharp.Compiler.Compiler
 
             if (string.IsNullOrEmpty(scriptName))
             {
-                errorHandler.ReportError(new AssemblyError(scriptName, DSharpStringResources.ASSEMBLY_SCRIPT_ATTRIBUTE_MISSING));
+                errorHandler.ReportAssemblyError(scriptName, DSharpStringResources.ASSEMBLY_SCRIPT_ATTRIBUTE_MISSING);
             }
             else if (!Utility.IsValidScriptName(scriptName))
             {
-                errorHandler.ReportError(new AssemblyError(scriptName, string.Format(DSharpStringResources.INVALID_SCRIPT_NAME_FORMAT, scriptName)));
+                errorHandler.ReportAssemblyError(scriptName, string.Format(DSharpStringResources.INVALID_SCRIPT_NAME_FORMAT, scriptName));
             }
 
             symbols.ScriptName = scriptName;

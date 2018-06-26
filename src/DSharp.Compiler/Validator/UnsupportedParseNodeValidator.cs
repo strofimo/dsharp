@@ -15,103 +15,93 @@ namespace DSharp.Compiler.Validator
     {
         bool IParseNodeValidator.Validate(ParseNode node, CompilerOptions options, IErrorHandler errorHandler)
         {
-            string message = string.Empty;
-            bool notYetImplemented = false;
+            string featureName = string.Empty;
 
             switch (node.NodeType)
             {
                 case ParseNodeType.PointerType:
-                    message = "Pointer types";
+                    featureName = "Pointer types";
 
                     break;
                 case ParseNodeType.OperatorDeclaration:
-                    message = "Operator overloads";
+                    featureName = "Operator overloads";
 
                     break;
                 case ParseNodeType.DestructorDeclaration:
-                    message = "Type destructors";
+                    featureName = "Type destructors";
 
                     break;
                 case ParseNodeType.Goto:
-                    message = "Goto statements";
+                    featureName = "Goto statements";
 
                     break;
                 case ParseNodeType.Lock:
-                    message = "Lock statements";
+                    featureName = "Lock statements";
 
                     break;
                 case ParseNodeType.UnsafeStatement:
-                    message = "Unsafe statements";
+                    featureName = "Unsafe statements";
 
                     break;
                 case ParseNodeType.LabeledStatement:
-                    message = "Labeled statements";
+                    featureName = "Labeled statements";
 
                     break;
                 case ParseNodeType.YieldReturn:
-                    message = "Yield return statements";
+                    featureName = "Yield return statements";
 
                     break;
                 case ParseNodeType.YieldBreak:
-                    message = "Yield break statements";
+                    featureName = "Yield break statements";
 
                     break;
                 case ParseNodeType.Checked:
-                    message = "Checked expressions";
+                    featureName = "Checked expressions";
 
                     break;
                 case ParseNodeType.Unchecked:
-                    message = "Unchecked expressions";
+                    featureName = "Unchecked expressions";
 
                     break;
                 case ParseNodeType.Sizeof:
-                    message = "Sizeof expressions";
+                    featureName = "Sizeof expressions";
 
                     break;
                 case ParseNodeType.Fixed:
-                    message = "Fixed expressions";
+                    featureName = "Fixed expressions";
 
                     break;
                 case ParseNodeType.StackAlloc:
-                    message = "Stackalloc expressions";
+                    featureName = "Stackalloc expressions";
 
                     break;
                 case ParseNodeType.DefaultValueExpression:
-                    message = "Default value expressions";
+                    featureName = "Default value expressions";
 
                     break;
                 case ParseNodeType.ExternAlias:
-                    message = "Extern aliases";
+                    featureName = "Extern aliases";
 
                     break;
                 case ParseNodeType.AliasQualifiedName:
-                    message = "Alias-qualified identifiers";
+                    featureName = "Alias-qualified identifiers";
 
                     break;
                 case ParseNodeType.TypeParameter:
-                    message = "Generic type parameters";
+                    featureName = "Generic type parameters";
 
                     break;
                 case ParseNodeType.ConstraintClause:
-                    message = "Generic type constraints";
+                    featureName = "Generic type constraints";
 
                     break;
                 case ParseNodeType.GenericName:
-                    message = "Generic types";
+                    featureName = "Generic types";
 
                     break;
             }
 
-            if (notYetImplemented)
-            {
-                message += " are not yet implemented.";
-            }
-            else
-            {
-                message = message + " are not supported.";
-            }
-
-            errorHandler.ReportError(new UnsupportedParseNode(message, node.Token.Location));
+            errorHandler.ReportUnsupportedFeatureError(featureName, node);
 
             return false;
         }

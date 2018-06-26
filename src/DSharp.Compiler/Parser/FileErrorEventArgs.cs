@@ -5,16 +5,16 @@
 
 namespace DSharp.Compiler.Parser
 {
-    internal sealed class FileErrorEventArgs
+    internal sealed class FileLexerErrorEventArgs
     {
-        internal FileErrorEventArgs(Error error, FilePosition position, params object[] args)
+        internal FileLexerErrorEventArgs(Error error, FilePosition position, params object[] args)
         {
             Error = error;
             Position = position;
             Args = args;
         }
 
-        internal FileErrorEventArgs(ErrorEventArgs e, LineMap lineMap)
+        internal FileLexerErrorEventArgs(ErrorEventArgs e, LineMap lineMap)
             : this(e.Error, lineMap.Map(e.Position), e.Args)
         {
         }

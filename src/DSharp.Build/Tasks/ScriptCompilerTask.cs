@@ -495,37 +495,18 @@ namespace DSharp.Build.Tasks
             scripts.Add(scriptItem);
         }
 
-        void IErrorHandler.ReportError(IError error)
+        void IErrorHandler.ReportError(CompilerError error)
         {
-            ReportError(error.Message, error.Location);
-        }
-
-        private void ReportError(string errorMessage, string location)
-        {
-            hasErrors = true;
-
-            int line = 0;
-            int column = 0;
-
-            if (!string.IsNullOrEmpty(location))
-            {
-                if (location.EndsWith(")", StringComparison.Ordinal))
-                {
-                    int index = location.LastIndexOf("(", StringComparison.Ordinal);
-                    Debug.Assert(index > 0);
-
-                    string position = location.Substring(index + 1, location.Length - index - 2);
-                    string[] positionParts = position.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    Debug.Assert(positionParts.Length == 2);
-
-                    int.TryParse(positionParts[0], out line);
-                    int.TryParse(positionParts[1], out column);
-
-                    location = location.Substring(0, index);
-                }
-            }
-
-            Log.LogError(string.Empty, string.Empty, string.Empty, location, line, column, 0, 0, errorMessage);
+            Log.LogError(
+                subcategory: string.Empty,
+                errorCode: $"DS{error.ErrorCode}",
+                helpKeyword: string.Empty,
+                file: error.File,
+                lineNumber: error.LineNumber.GetValueOrDefault(),
+                endLineNumber: error.LineNumber.GetValueOrDefault(),
+                columnNumber: error.ColumnNumber.GetValueOrDefault(),
+                endColumnNumber: error.ColumnNumber.GetValueOrDefault(),
+                message: error.Description);
         }
 
         #region Implementation of IStreamSourceResolver

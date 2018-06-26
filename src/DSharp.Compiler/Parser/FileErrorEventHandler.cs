@@ -5,5 +5,5 @@
 
 namespace DSharp.Compiler.Parser
 {
-    internal delegate void FileErrorEventHandler(object sender, FileErrorEventArgs e);
+    internal delegate void FileErrorEventHandler(object sender, FileLexerErrorEventArgs e);
 }

@@ -36,7 +36,7 @@ namespace DSharp.Compiler.CodeModel
 
             if (buffer == null)
             {
-                errorHandler.ReportError(new InputFileError(filePath));
+                errorHandler.ReportInputError(filePath);
 
                 return null;
             }
@@ -97,13 +97,13 @@ namespace DSharp.Compiler.CodeModel
             return buffer;
         }
 
-        private void OnError(object sender, FileErrorEventArgs eventArgs)
+        private void OnError(object sender, FileLexerErrorEventArgs eventArgs)
         {
             FileLexer fileLexer = sender as FileLexer;
 
             hasErrors = true;
 
-            errorHandler.ReportError(new FileLexerError(fileLexer?.FilePath, eventArgs));
+            errorHandler.ReportFileLexerError(fileLexer?.FilePath, eventArgs);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace DSharp.Compiler.Compiler
             catch(Exception e)
             {
                 string location = statementNode.Token.Location;
-                errorHandler.ReportError(new ExceptionError(e, location));
+                errorHandler.ReportGeneralError(e);
             }
 
             return statement;

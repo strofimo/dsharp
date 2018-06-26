@@ -34,6 +34,7 @@
         public static readonly string SCRIPT_OBJECT_MEMBER_VIOLATION_ERROR = "Classes marked with ScriptObject attribute should only have a constructor and field members.";
         public static readonly string EXTENSION_ATTRIBUTE_ERROR = "ScriptExtension attribute declaration must specify the object being extended.";
         public static readonly string SCRIPT_EXTENSION_MEMBER_VIOLATION_ERROR = "Classes marked with ScriptExtension attribute should only have methods.";
+        public static readonly string CONFLICTING_TYPE_NAME_ERROR_FORMAT = "The type '{0}' conflicts with with '{1}' as they have the same name.";
         //TODO: None of these error messages are tested
         public static readonly string SCRIPT_NAMESPACE_VIOLATION = "A script namespace must be a valid script identifier.";
         public static readonly string SCRIPT_NAMESPACE_TYPE_VIOLATION = "Non-namespaced types are not supported.";

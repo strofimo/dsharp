@@ -23,7 +23,7 @@ namespace DSharp.Compiler.Validator
 
                     if (Utility.IsValidScriptNamespace(scriptNamespace) == false)
                     {
-                        errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_NAMESPACE_VIOLATION , scriptNamespaceNode));
+                        errorHandler.ReportNodeValidationError(DSharpStringResources.SCRIPT_NAMESPACE_VIOLATION , scriptNamespaceNode);
                     }
                 }
             }
@@ -31,7 +31,7 @@ namespace DSharp.Compiler.Validator
             foreach (ParseNode childNode in compilationUnitNode.Members)
                 if (!(childNode is NamespaceNode))
                 {
-                    errorHandler.ReportError(new NodeValidationError(DSharpStringResources.SCRIPT_NAMESPACE_TYPE_VIOLATION, childNode));
+                    errorHandler.ReportNodeValidationError(DSharpStringResources.SCRIPT_NAMESPACE_TYPE_VIOLATION, childNode);
 
                     return false;
                 }

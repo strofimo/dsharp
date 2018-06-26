@@ -1,9 +1,4 @@
-﻿// ScriptCompiler.cs
-// Script#/Core/Compiler
-// This source code is subject to terms and conditions of the Apache License, Version 2.0.
-//
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -20,9 +15,6 @@ using DSharp.Compiler.Validator;
 
 namespace DSharp.Compiler
 {
-    /// <summary>
-    ///     The Script# compiler.
-    /// </summary>
     public sealed class ScriptCompiler : IErrorHandler
     {
         private readonly IErrorHandler errorHandler;
@@ -45,7 +37,7 @@ namespace DSharp.Compiler
             this.errorHandler = errorHandler;
         }
 
-        void IErrorHandler.ReportError(IError error)
+        void IErrorHandler.ReportError(CompilerError error)
         {
             hasErrors = true;
             if (errorHandler != null)
@@ -58,15 +50,14 @@ namespace DSharp.Compiler
             LogError(error);
         }
 
-        private void LogError(IError error)
+        private void LogError(CompilerError error)
         {
-            if (!string.IsNullOrEmpty(error.Location))
+            if (error.ColumnNumber != null || error.LineNumber != null)
             {
-                Console.Error.Write(error.Location);
-                Console.Error.Write(": ");
+                Console.Error.WriteLine($"{error.File}({error.LineNumber.GetValueOrDefault()},{error.ColumnNumber.GetValueOrDefault()})");
             }
 
-            Console.Error.WriteLine(error.Message);
+            Console.Error.WriteLine(error.Description);
         }
 
         private void BuildCodeModel()
@@ -154,9 +145,7 @@ namespace DSharp.Compiler
 
                 if (types.ContainsKey(name))
                 {
-                    string error = "The type '" + appType.FullName + "' conflicts with with '" + types[name].FullName +
-                                   "' as they have the same name.";
-                    ((IErrorHandler)this).ReportError(new GeneralError(error));
+                    ((IErrorHandler)this).ReportGeneralError(string.Format(DSharpStringResources.CONFLICTING_TYPE_NAME_ERROR_FORMAT, appType.FullName, types[name].FullName));
                 }
                 else
                 {
@@ -245,7 +234,7 @@ namespace DSharp.Compiler
                 if (outputStream == null)
                 {
                     string scriptName = options.ScriptFile.FullName;
-                    ((IErrorHandler)this).ReportError(new MissingStreamError(string.Format(DSharpStringResources.MISSING_SCRIPT_OUTPUT_STREAM_FORMAT, scriptName), scriptName));
+                    ((IErrorHandler)this).ReportMissingStreamError(scriptName);
 
                     return;
                 }

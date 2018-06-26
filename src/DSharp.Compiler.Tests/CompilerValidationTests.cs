@@ -11,8 +11,7 @@ namespace DSharp.Compiler.Tests
 {
     public class CompilerValidationTests : IClassFixture<TestContextFixture>
     {
-        private static readonly IEqualityComparer<IError> compilerErrorTypeComparer;
-        private static readonly IDictionary<string, Action<IEnumerable<IError>>> compilerErrorTestFunctions;
+        private static readonly IDictionary<string, Action<IEnumerable<CompilerError>>> compilerErrorTestFunctions;
 
         private readonly TestContextFixture compilerCompliationFixture;
 
@@ -22,10 +21,12 @@ namespace DSharp.Compiler.Tests
 
         static CompilerValidationTests()
         {
-            compilerErrorTypeComparer = new CompilerErrorTypeEqualityComparer();
-            compilerErrorTestFunctions = new Dictionary<string, Action<IEnumerable<IError>>>()
+            compilerErrorTestFunctions = new Dictionary<string, Action<IEnumerable<CompilerError>>>()
             {
-                ["ConflictingTypes"] = CreateContainsErrorsFunction(compilerErrorTypeComparer, new GeneralError(string.Empty)),
+                ["ConflictingTypes"] = CreateContainsErrorsFunction(
+                    new CompilerError(
+                        (ushort)CompilerErrorCode.GeneralError, 
+                        string.Format(DSharpStringResources.CONFLICTING_TYPE_NAME_ERROR_FORMAT, "SomeOtherNameSpace.App", "ValidationTests.App"))),
                 ["Exceptions"] = CreateContainsErrorMessagesFunction(
                     DSharpStringResources.NODE_VALIDATION_ERROR_TRY_CATCH,
                     DSharpStringResources.THROW_NODE_VALIDATION_ERROR),
@@ -83,7 +84,7 @@ namespace DSharp.Compiler.Tests
             bool compilationSuccess = compilationUnit.Compile(out ICompilationUnitResult compilationUnitResult);
             Assert.False(compilationSuccess, "Expected compilation to fail");
 
-            compilerErrorTestFunctions.TryGetValue(testName, out Action<IEnumerable<IError>> compilerErrorResultValidator);
+            compilerErrorTestFunctions.TryGetValue(testName, out Action<IEnumerable<CompilerError>> compilerErrorResultValidator);
 
             compilerErrorResultValidator.Invoke(compilationUnitResult.Errors);
         }
@@ -92,24 +93,24 @@ namespace DSharp.Compiler.Tests
             get { return compilerErrorTestFunctions.Keys.Select(key => new object[] { key }); }
         }
 
-        private static Action<IEnumerable<IError>> CreateContainsErrorsFunction(IEqualityComparer<IError> equalityComparer = null, params IError[] expectedErrors)
+        private static Action<IEnumerable<CompilerError>> CreateContainsErrorsFunction(params CompilerError[] expectedErrors)
         {
-            return new Action<IEnumerable<IError>>((errors) =>
+            return new Action<IEnumerable<CompilerError>>((errors) =>
             {
                 Assert.Equal(expectedErrors.Length, errors.Count());
 
-                foreach (IError expectedError in expectedErrors)
+                foreach (CompilerError expectedError in expectedErrors)
                 {
-                    Assert.Contains(expectedError, errors, equalityComparer ?? EqualityComparer<IError>.Default);
+                    Assert.Contains(expectedError, errors);
                 }
             });
         }
 
-        private static Action<IEnumerable<IError>> CreateContainsErrorMessagesFunction(params string[] expectedErrorMessages)
+        private static Action<IEnumerable<CompilerError>> CreateContainsErrorMessagesFunction(params string[] expectedErrorMessages)
         {
-            return new Action<IEnumerable<IError>>((errors) =>
+            return new Action<IEnumerable<CompilerError>>((errors) =>
             {
-                IList<string> errorMessages = errors.Select(error => error.Message).ToList();
+                IList<string> errorMessages = errors.Select(error => error.Description).ToList();
 
                 Assert.Equal(expectedErrorMessages.Length, errorMessages.Count);
 

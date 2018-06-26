@@ -6,6 +6,6 @@ namespace DSharp.Compiler.TestFramework.Compilation
     {
         string Output { get; }
 
-        IError[] Errors { get; }
+        CompilerError[] Errors { get; }
     }
 }

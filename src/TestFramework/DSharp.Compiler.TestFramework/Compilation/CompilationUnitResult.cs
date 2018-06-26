@@ -9,9 +9,9 @@ namespace DSharp.Compiler.TestFramework.Compilation
     {
         public string Output { get; }
 
-        public IError[] Errors { get; }
+        public CompilerError[] Errors { get; }
 
-        private CompilationUnitResult(IError[] errors)
+        private CompilationUnitResult(CompilerError[] errors)
         {
             Errors = errors;
         }
@@ -19,10 +19,10 @@ namespace DSharp.Compiler.TestFramework.Compilation
         private CompilationUnitResult(string output)
         {
             Output = output;
-            Errors = Array.Empty<IError>();
+            Errors = Array.Empty<CompilerError>();
         }
 
-        public static ICompilationUnitResult CreateErrorResult(IEnumerable<IError> errors)
+        public static ICompilationUnitResult CreateErrorResult(IEnumerable<CompilerError> errors)
         {
             return new CompilationUnitResult(errors.ToArray());
         }

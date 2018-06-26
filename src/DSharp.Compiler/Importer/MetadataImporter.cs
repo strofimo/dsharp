@@ -912,7 +912,7 @@ namespace DSharp.Compiler.Importer
 
                 if (typeSymbol == null)
                 {
-                    errorHandler.ReportError(new MissingReferenceError(string.Format(DSharpStringResources.UNRESOLVED_TYPE_REFERENCE_FORMAT, name)));
+                    errorHandler.ReportMissingReferenceError(name);
                     resolveError = true;
                 }
             }

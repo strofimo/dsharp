@@ -12,7 +12,7 @@ namespace DSharp.Compiler.Validator
 
             if (tryNode.CatchClauses != null && tryNode.CatchClauses.Count > 1)
             {
-                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.NODE_VALIDATION_ERROR_TRY_CATCH, tryNode));
+                errorHandler.ReportNodeValidationError(DSharpStringResources.NODE_VALIDATION_ERROR_TRY_CATCH, tryNode);
 
                 return false;
             }

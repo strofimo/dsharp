@@ -1,0 +1,7 @@
+﻿<Project Sdk="DSharp.Sdk/1.0.0">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+
+</Project>

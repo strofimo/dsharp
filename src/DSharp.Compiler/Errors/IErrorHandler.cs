@@ -2,6 +2,6 @@
 {
     public interface IErrorHandler
     {
-        void ReportError(IError error);
+        void ReportError(CompilerError error);
     }
 }

@@ -1370,9 +1370,9 @@ namespace DSharp.Compiler.Compiler
                         {
                             // TODO: When we start raising errors at the expression level instead of the statement
                             //       level, we should return an ErrorExpression instead of a dummy expression.
-                            Token argToken = argNodes.Expressions[0].Token;
+                            ParseNode expressionNode = argNodes.Expressions[0];
 
-                            errorHandler.ReportError(new ExpressionError(DSharpStringResources.SCRIPT_LITERAL_CONSTANT_ERROR, argToken.Location));
+                            errorHandler.ReportExpressionError(DSharpStringResources.SCRIPT_LITERAL_CONSTANT_ERROR, expressionNode);
 
                             return new InlineScriptExpression("", objectType);
                         }
@@ -1387,7 +1387,7 @@ namespace DSharp.Compiler.Compiler
                             }
                             catch
                             {
-                                errorHandler.ReportError(new ExpressionError(DSharpStringResources.SCRIPT_LITERAL_FORMAT_ERROR, argNodes.Expressions[0].Token.Location));
+                                errorHandler.ReportExpressionError(DSharpStringResources.SCRIPT_LITERAL_FORMAT_ERROR, argNodes.Expressions[0]);
 
                                 return new InlineScriptExpression("", objectType);
                             }
@@ -1570,15 +1570,11 @@ namespace DSharp.Compiler.Compiler
 
                                         if (literalExpression == null)
                                         {
-                                            errorHandler.ReportError(new ExpressionError(
-                                                DSharpStringResources.SCRIPT_LATE_BOUND_INVALID_METHOD_NAME,
-                                                argNodes.Expressions[0].Token.Location));
+                                            errorHandler.ReportExpressionError(DSharpStringResources.SCRIPT_LATE_BOUND_INVALID_METHOD_NAME, argNodes.Expressions[0]);
                                         }
                                         else if (!Utility.IsValidIdentifier((string)literalExpression.Value))
                                         {
-                                            errorHandler.ReportError(new ExpressionError(
-                                                DSharpStringResources.SCRIPT_LATE_BOUND_INVALID_METHOD_IDENTIFIER,
-                                                argNodes.Expressions[0].Token.Location));
+                                            errorHandler.ReportExpressionError(DSharpStringResources.SCRIPT_LATE_BOUND_INVALID_METHOD_IDENTIFIER, argNodes.Expressions[0]);
                                         }
                                     }
                                 }

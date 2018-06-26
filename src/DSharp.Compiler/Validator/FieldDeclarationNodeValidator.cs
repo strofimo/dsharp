@@ -12,7 +12,7 @@ namespace DSharp.Compiler.Validator
 
             if (fieldNode.Initializers.Count > 1)
             {
-                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.DUPLICATE_FIELD_DECLARATION, fieldNode));
+                errorHandler.ReportNodeValidationError(DSharpStringResources.DUPLICATE_FIELD_DECLARATION, fieldNode);
 
                 return false;
             }

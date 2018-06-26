@@ -37,7 +37,7 @@ namespace DSharp.Compiler.Parser
         {
             if (OnError != null)
             {
-                OnError(this, new FileErrorEventArgs(e, lineMap));
+                OnError(this, new FileLexerErrorEventArgs(e, lineMap));
             }
         }
 

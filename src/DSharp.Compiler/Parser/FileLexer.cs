@@ -452,7 +452,7 @@ namespace DSharp.Compiler.Parser
         {
             if (OnError != null)
             {
-                OnError(this, new FileErrorEventArgs(error, lineMap.Map(position), args));
+                OnError(this, new FileLexerErrorEventArgs(error, lineMap.Map(position), args));
             }
         }
 
@@ -460,7 +460,7 @@ namespace DSharp.Compiler.Parser
         {
             if (OnError != null)
             {
-                OnError(this, new FileErrorEventArgs(e, lineMap));
+                OnError(this, new FileLexerErrorEventArgs(e, lineMap));
             }
         }
     }

@@ -12,7 +12,7 @@ namespace DSharp.Compiler.Validator
 
             if (typeNode.Rank != 1)
             {
-                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.UNSUPPORTED_MULTIPLE_DIMENSIONAL_ARRAYS, typeNode));
+                errorHandler.ReportNodeValidationError(DSharpStringResources.UNSUPPORTED_MULTIPLE_DIMENSIONAL_ARRAYS, typeNode);
             }
 
             return true;

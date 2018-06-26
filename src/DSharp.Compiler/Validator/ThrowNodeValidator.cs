@@ -12,7 +12,7 @@ namespace DSharp.Compiler.Validator
 
             if (throwNode.Value == null)
             {
-                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.THROW_NODE_VALIDATION_ERROR, throwNode));
+                errorHandler.ReportNodeValidationError(DSharpStringResources.THROW_NODE_VALIDATION_ERROR, throwNode);
 
                 return false;
             }

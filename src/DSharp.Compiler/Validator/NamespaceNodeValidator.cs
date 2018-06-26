@@ -15,7 +15,7 @@ namespace DSharp.Compiler.Validator
             foreach (ParseNode childNode in namespaceNode.Members)
                 if (childNode is NamespaceNode)
                 {
-                    errorHandler.ReportError(new NodeValidationError(DSharpStringResources.UNSUPPORTED_NESTED_NAMESPACE, childNode));
+                    errorHandler.ReportNodeValidationError(DSharpStringResources.UNSUPPORTED_NESTED_NAMESPACE, childNode);
                     valid = false;
                 }
 

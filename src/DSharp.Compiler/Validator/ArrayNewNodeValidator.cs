@@ -18,7 +18,7 @@ namespace DSharp.Compiler.Validator
 
                 if (argsList.Expressions.Count != 1)
                 {
-                    errorHandler.ReportError(new NodeValidationError(DSharpStringResources.UNSUPPORTED_MULTIPLE_DIMENSIONAL_ARRAYS, newNode.ExpressionList));
+                    errorHandler.ReportNodeValidationError(DSharpStringResources.UNSUPPORTED_MULTIPLE_DIMENSIONAL_ARRAYS, newNode.ExpressionList);
                 }
             }
 

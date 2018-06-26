@@ -12,7 +12,7 @@ namespace DSharp.Compiler.Validator
 
             if (paramNode.Flags == ParameterFlags.Ref || paramNode.Flags == ParameterFlags.Out)
             {
-                errorHandler.ReportError(new NodeValidationError(DSharpStringResources.UNSUPPORTED_PARAMETER_TYPE, paramNode));
+                errorHandler.ReportNodeValidationError(DSharpStringResources.UNSUPPORTED_PARAMETER_TYPE, paramNode);
 
                 return false;
             }

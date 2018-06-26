@@ -17,7 +17,7 @@ namespace DSharp.Compiler.Validator
 
             if (Utility.IsKeyword(nameNode.Name))
             {
-                errorHandler.ReportError(new NodeValidationError(string.Format(DSharpStringResources.RESERVED_KEYWORD_ERROR_FORMAT, nameNode.Name), nameNode));
+                errorHandler.ReportNodeValidationError(string.Format(DSharpStringResources.RESERVED_KEYWORD_ERROR_FORMAT, nameNode.Name), nameNode);
             }
 
             return true;

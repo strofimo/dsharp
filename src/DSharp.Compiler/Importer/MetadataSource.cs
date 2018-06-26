@@ -44,7 +44,7 @@ namespace DSharp.Compiler.Importer
 
                 if (File.Exists(assemblyFilePath) == false)
                 {
-                    errorHandler.ReportError(new MissingReferenceError(string.Format(DSharpStringResources.MISSING_ASSEMBLY_REFERENCE_FORMAT, referencePath), referencePath));
+                    errorHandler.ReportMissingAssemblyReferenceError(referencePath);
                     hasLoadErrors = true;
 
                     continue;
@@ -54,7 +54,7 @@ namespace DSharp.Compiler.Importer
 
                 if (assemblySet.IsReferenced(referenceName))
                 {
-                    errorHandler.ReportError(new DuplicateAssemblyReferenceError(referenceName, referencePath));
+                    errorHandler.ReportDuplicateAssemblyReferenceError(referenceName, referencePath);
                     hasLoadErrors = true;
 
                     continue;
@@ -66,7 +66,7 @@ namespace DSharp.Compiler.Importer
 
                     if (assembly == null)
                     {
-                        errorHandler.ReportError(new AssemblyLoadError(referenceName, referencePath));
+                        errorHandler.ReportAssemblyLoadError(referenceName, referencePath);
                         hasLoadErrors = true;
 
                         continue;
@@ -76,7 +76,7 @@ namespace DSharp.Compiler.Importer
                     {
                         if (CoreAssemblyPath != null)
                         {
-                            errorHandler.ReportError(new DuplicateAssemblyReferenceError(referenceName, referencePath));
+                            errorHandler.ReportDuplicateAssemblyReferenceError(referenceName, referencePath);
                             hasLoadErrors = true;
                         }
                         else
@@ -94,14 +94,14 @@ namespace DSharp.Compiler.Importer
                 {
                     Debug.Fail(e.ToString());
 
-                    errorHandler.ReportError(new AssemblyLoadError(referenceName, referencePath));
+                    errorHandler.ReportAssemblyLoadError(referenceName, referencePath);
                     hasLoadErrors = true;
                 }
             }
 
             if (CoreAssemblyMetadata == null)
             {
-                errorHandler.ReportError(new MissingMscorlibAssemblyReference());
+                errorHandler.ReportMissingAssemblyReferenceError(CoreAssemblyName);
                 hasLoadErrors = true;
             }
 

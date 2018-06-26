@@ -8,14 +8,14 @@ namespace DSharp.Compiler.TestFramework.Compilation
     {
         private readonly ScriptCompiler scriptCompiler;
         private readonly CompilerOptions compilerOptions;
-        private readonly List<IError> compilationErrors;
+        private readonly List<CompilerError> compilationErrors;
 
         public TestCompilationUnit(CompilerOptions compilerOptions)
         {
             this.compilerOptions = compilerOptions ?? throw new ArgumentNullException(nameof(compilerOptions));
             this.compilerOptions.ScriptFile = new InMemoryStream();
             scriptCompiler = new ScriptCompiler(this);
-            compilationErrors = new List<IError>();
+            compilationErrors = new List<CompilerError>();
         }
 
         public bool Compile(out ICompilationUnitResult compilationUnitResult)
@@ -38,7 +38,7 @@ namespace DSharp.Compiler.TestFramework.Compilation
             return CompilationUnitResult.CreateResult(outputStream.GeneratedOutput);
         }
 
-        void IErrorHandler.ReportError(IError error)
+        void IErrorHandler.ReportError(CompilerError error)
         {
             compilationErrors.Add(error);
         }
