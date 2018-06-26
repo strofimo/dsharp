@@ -910,20 +910,17 @@ namespace ScriptSharp.Compiler {
                     }
                     return new InlineScriptExpression("undefined", type);
                 }
-                else if (type.GenericType == _symbolSet.ResolveIntrinsicType(IntrinsicType.GenericList))
-                {
+                else if (type.GenericType == _symbolSet.ResolveIntrinsicType(IntrinsicType.GenericList)){
                     if (args.Count == 1)
                     {
                         Expression paramExpresion = args[0];
 
-                        if (paramExpresion.EvaluatedType.Name == _symbolSet.ResolveIntrinsicType(IntrinsicType.Array).Name)
-                        {
-                            return paramExpresion;
-                        }
-                        else
-                        {
-                            return new InlineScriptExpression("undefined", type);
-                        }
+                        if (paramExpresion.EvaluatedType.Name.Equals("Array", StringComparison.Ordinal)){
+                            TypeSymbol objectType = _symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
+                            TypeSymbol scriptType = _symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+                            MethodSymbol sliceMethod = new MethodSymbol("slice", scriptType, objectType);                            
+                            return new MethodExpression(paramExpresion, sliceMethod);                           
+                        }                        
                     }
                 }
                 else {
