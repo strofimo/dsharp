@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project>
+  <Import Project="$(SolutionDir)DSharp.Sdk\Sdk\Sdk.props" Condition="Exists('$(SolutionDir)DSharp.Sdk\Sdk\Sdk.props')" />
   <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
 
   <PropertyGroup>
@@ -9,17 +10,9 @@
     <DelaySign>false</DelaySign>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
-  
-  <!-- These should come from the DSharp.Sdk once its completed and on nuget-->
-  <PropertyGroup>
-    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
-    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-    <AdditionalExplicitAssemblyReferences />
-    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
-    <NoStdLib>true</NoStdLib>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ToolsPath>$(SolutionDir)DSharp.Sdk\bin\$(Configuration)\$(TargetFramework)\</ToolsPath>
+    <IsImportLibrary>true</IsImportLibrary>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -29,4 +22,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DSharp.Mscorlib\DSharp.Mscorlib.csproj" />
   </ItemGroup>
+
+  <Import Project="$(SolutionDir)DSharp.Sdk\Sdk\Sdk.targets" Condition="Exists('$(SolutionDir)DSharp.Sdk\Sdk\Sdk.targets')" />
 </Project>

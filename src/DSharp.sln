@@ -18,6 +18,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Shell", "DSharp.Shell\DSharp.Shell.csproj", "{0C545112-DD6A-4270-B95C-CC488501EF5F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Web", "DSharp.Web\DSharp.Web.csproj", "{3681A9A8-FC40-4125-B842-7775713C8DCE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46} = {DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Compiler.TestFramework", "TestFramework\DSharp.Compiler.TestFramework\DSharp.Compiler.TestFramework.csproj", "{F04779C4-5ECB-4C23-B751-2E9EE4B550F5}"
 EndProject

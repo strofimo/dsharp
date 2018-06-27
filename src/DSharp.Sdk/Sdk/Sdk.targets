@@ -2,14 +2,14 @@
   
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <ToolsPath>$(MSBuildThisFileDirectory)..\tools\$(TargetFramework)\</ToolsPath>
-    <DSharpBuildAssembly>$(ToolsPath)DSharp.Build.dll</DSharpBuildAssembly>
+    <ToolsPath Condition="'$(ToolsPath)' == ''">$(MSBuildThisFileDirectory)..\tools\$(TargetFramework)\</ToolsPath>
+    <DSharpBuildAssembly Condition="'$(DSharpBuildAssembly)' == ''">$(ToolsPath)DSharp.Build.dll</DSharpBuildAssembly>
   </PropertyGroup>
   
   <UsingTask TaskName="ScriptCompilerTask" AssemblyFile="$(DSharpBuildAssembly)" />
   <UsingTask TaskName="ResXCodeGeneratorTask" AssemblyFile="$(DSharpBuildAssembly)" />
 
-  <Target Name="BuildScript" Returns="@(Scripts)" AfterTargets="Build">
+  <Target Name="BuildScript" Returns="@(Scripts)" AfterTargets="Build" Condition="'$(IsImportLibrary)' == 'false'">
     <ScriptCompilerTask
       Sources="@(Compile)"
       Resources="@(EmbeddedResource)"
