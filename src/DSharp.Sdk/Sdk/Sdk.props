@@ -17,6 +17,7 @@
     <GenerateScript Condition="'$(GenerateScript)' == ''">true</GenerateScript>
     <LangVersion Condition="'$(GenerateScript)' == 'True'">ISO-2</LangVersion>
     <IsImportLibrary Condition="'$(IsImportLibrary)' == ''">false</IsImportLibrary>
+    <ExcludeCoreLib Condition="'$(ExcludeCoreLib)' == ''">false</ExcludeCoreLib>
   </PropertyGroup>
   <ItemGroup Condition="'$(ExcludeCoreLib)' == 'false'">
     <PackageReference Include="DSharp.Mscorlib" Version="1.0.0" IsImplicitlyDefined="true" PrivateAssets="All" />
