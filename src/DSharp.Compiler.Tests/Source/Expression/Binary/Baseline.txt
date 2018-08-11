@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // ExpressionTests.Data
@@ -70,8 +70,8 @@ define('test', ['DSharp'], function(DSharp) {
       var b = (f < 10);
       sum = arg1 + (arg2 + 1) * 10;
       sum = arg1 + (arg2 + ~arg1) * (arg1 - 10);
-      var b2 = DSharp.canCast(sum, Number);
-      var o = DSharp.safeCast(b, DSharp.IDisposable);
+      var b2 = ss.canCast(sum, Number);
+      var o = ss.safeCast(b, ss.IDisposable);
       this.Foo = this.Foo + 10;
       this.Foo = this.Foo - this.Bar;
       sum = sum << 1;
@@ -85,7 +85,7 @@ define('test', ['DSharp'], function(DSharp) {
       var d = new Data();
       d.Value = d.Value + 5;
       d.Flag = (d.Flag | true) === 1;
-      var o1 = DSharp.value(null, {});
+      var o1 = ss.value(null, {});
       var s2 = (10).toString();
       s2 = (100).toString();
       s2 = true.toString();
@@ -108,10 +108,10 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test', null,
+  var $exports = ss.module('test', null,
     {
-      Data: DSharp.defineClass(Data, Data$, [], null),
-      App: DSharp.defineClass(App, App$, [], null)
+      Data: ss.defineClass(Data, Data$, [], null),
+      App: ss.defineClass(App, App$, [], null)
     });
 
   Data.staticFlag = false;

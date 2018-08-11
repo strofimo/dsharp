@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using DSharp;
 
 namespace System.Globalization
 {
@@ -17,7 +18,7 @@ namespace System.Globalization
         public extern string PMDesignator { get; }
 
         [ScriptField]
-        [ScriptName("ds")]
+        [ScriptName(DSharpStringResources.ASSEMBLY_NAME)]
         public extern string DateSeparator { get; }
 
         [ScriptField]

@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // BasicTests.Suit
@@ -58,7 +58,7 @@ define('test', ['DSharp'], function(DSharp) {
     this.instanceField = 0;
     this._domElement = domElement;
   }
-  DSharp.createPropertyGet(BaseClass, 'TotalCount', function() {
+  ss.createPropertyGet(BaseClass, 'TotalCount', function() {
     /// <summary>
     /// Gets the total count.
     /// </summary>
@@ -121,14 +121,14 @@ define('test', ['DSharp'], function(DSharp) {
       /// Adds or removes a delegate for the Initialized event.
       /// </summary>
       /// <param name="value" type="Function" />
-      this.__initialized = DSharp.bindAdd(this.__initialized, value);
+      this.__initialized = ss.bindAdd(this.__initialized, value);
     },
     remove_initialized: function(value) {
       /// <summary>
       /// Adds or removes a delegate for the Initialized event.
       /// </summary>
       /// <param name="value" type="Function" />
-      this.__initialized = DSharp.bindSub(this.__initialized, value);
+      this.__initialized = ss.bindSub(this.__initialized, value);
     },
     method1: function() {
       /// <summary>
@@ -246,17 +246,17 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test',
+  var $exports = ss.module('test',
     {
-      InternalClass: DSharp.defineClass(InternalClass, InternalClass$, [], null),
-      InternalClassWithNoComments: DSharp.defineClass(InternalClassWithNoComments, InternalClassWithNoComments$, [], null)
+      InternalClass: ss.defineClass(InternalClass, InternalClass$, [], null),
+      InternalClassWithNoComments: ss.defineClass(InternalClassWithNoComments, InternalClassWithNoComments$, [], null)
     },
     {
       Suit: Suit,
-      IInterface: DSharp.defineInterface(IInterface),
+      IInterface: ss.defineInterface(IInterface),
       RecordClass: RecordClass,
-      BaseClass: DSharp.defineClass(BaseClass, BaseClass$, [Element, String, Number], null),
-      DerivedClass: DSharp.defineClass(DerivedClass, DerivedClass$, [], BaseClass)
+      BaseClass: ss.defineClass(BaseClass, BaseClass$, [Element, String, Number], null),
+      DerivedClass: ss.defineClass(DerivedClass, DerivedClass$, [], BaseClass)
     });
 
   BaseClass.constantField = 3;

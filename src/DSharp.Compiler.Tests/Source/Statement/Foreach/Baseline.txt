@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // StatementTests.Set
@@ -9,7 +9,7 @@ define('test', ['DSharp'], function(DSharp) {
   }
   var Set$ = {
     getEnumerator: function() {
-      return DSharp.enumerate(this._items);
+      return ss.enumerate(this._items);
     }
   };
 
@@ -22,7 +22,7 @@ define('test', ['DSharp'], function(DSharp) {
     test: function(arg) {
       var items = [ 1, 2, 3 ];
       var sum = 0;
-      var $enum1 = DSharp.enumerate(items);
+      var $enum1 = ss.enumerate(items);
       while ($enum1.moveNext()) {
         var i = $enum1.current;
         sum += i;
@@ -33,7 +33,7 @@ define('test', ['DSharp'], function(DSharp) {
         var s = entry.key + ' = ' + entry.value;
       }
       var s = new Set();
-      var $enum3 = DSharp.enumerate(s);
+      var $enum3 = ss.enumerate(s);
       while ($enum3.moveNext()) {
         var o = $enum3.current;
         this._doStuff(o);
@@ -55,10 +55,10 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test', null,
+  var $exports = ss.module('test', null,
     {
-      Set: DSharp.defineClass(Set, Set$, [], null, [DSharp.IEnumerable]),
-      App: DSharp.defineClass(App, App$, [], null)
+      Set: ss.defineClass(Set, Set$, [], null, [ss.IEnumerable]),
+      App: ss.defineClass(App, App$, [], null)
     });
 
 

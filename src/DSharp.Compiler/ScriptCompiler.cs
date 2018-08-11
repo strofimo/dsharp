@@ -322,13 +322,13 @@ namespace DSharp.Compiler
 
                 string name = dependency.Name;
 
-                if (name == "ss")
+                if (name == DSharpStringResources.DSHARP_SCRIPT_NAME)
                 {
                     // TODO: This is a hack... to make generated node.js scripts
                     //       be able to reference the 'dsharp' node module.
                     //       Fix this in a better/1st class manner by allowing
                     //       script assemblies to declare such things.
-                    name = "dsharp";
+                    name = DSharpStringResources.DSHARP_SCRIPT_NAME;
                 }
 
                 requiresBuilder.Append("'" + dependency.Path + "'");

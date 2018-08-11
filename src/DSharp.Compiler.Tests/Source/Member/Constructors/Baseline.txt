@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // MemberTests.MyClass
@@ -42,12 +42,12 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test', null,
+  var $exports = ss.module('test', null,
     {
-      MyClass: DSharp.defineClass(MyClass, MyClass$, [], null),
-      MyClass2: DSharp.defineClass(MyClass2, MyClass2$, [], null),
-      MyClass3: DSharp.defineClass(MyClass3, MyClass3$, [Number, Number], null),
-      MyClass4: DSharp.defineClass(MyClass4, MyClass4$, [Number, Number, Number], MyClass3)
+      MyClass: ss.defineClass(MyClass, MyClass$, [], null),
+      MyClass2: ss.defineClass(MyClass2, MyClass2$, [], null),
+      MyClass3: ss.defineClass(MyClass3, MyClass3$, [Number, Number], null),
+      MyClass4: ss.defineClass(MyClass4, MyClass4$, [Number, Number, Number], MyClass3)
     });
 
   MyClass2._x = 'Hello';

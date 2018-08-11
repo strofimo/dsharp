@@ -2,6 +2,6 @@
 {
     internal static class DSharpStringResources
     {
-        internal const string ASSEMBLY_NAME = "DSharp";
+        internal const string ASSEMBLY_NAME = "ss";
     }
 }

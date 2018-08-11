@@ -26,6 +26,6 @@ buildify()
     .wrap('src/Loader.js', {
         version: 1.0
     })
-    .save('dist/ds.js')
+    .save('dist/ss.js')
     .uglify()
-    .save('dist/ds.min.js')
+    .save('dist/ss.min.js')

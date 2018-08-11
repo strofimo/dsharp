@@ -1,6 +1,6 @@
 "use strict";
 
-var ds = (function (global) {
+var ss = (function (global) {
   function _ss() {
     {{body}}
 

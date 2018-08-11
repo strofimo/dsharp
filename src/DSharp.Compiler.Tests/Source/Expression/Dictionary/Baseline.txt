@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // ExpressionTests.App
@@ -21,26 +21,26 @@ define('test', ['DSharp'], function(DSharp) {
     test2: function(arg) {
       var dictionary1 = { aaa: 123, xyz: true };
       var key = 'blah';
-      var c = DSharp.keyCount(dictionary1);
-      var c2 = DSharp.keyCount(this.getData());
-      var b = DSharp.keyExists(dictionary1, 'aaa');
+      var c = ss.keyCount(dictionary1);
+      var c2 = ss.keyCount(this.getData());
+      var b = ss.keyExists(dictionary1, 'aaa');
       delete dictionary1.aaa;
       delete dictionary1['Proxy-Connection'];
       delete dictionary1[key];
-      DSharp.clearKeys(dictionary1);
-      var keys = DSharp.keys(dictionary1);
+      ss.clearKeys(dictionary1);
+      var keys = ss.keys(dictionary1);
     },
     test3: function(arg) {
       var dictionary1 = { aaa: 123, xyz: true };
       var key = 'blah';
-      var c = DSharp.keyCount(dictionary1);
-      var c2 = DSharp.keyCount(this.getData2());
-      var b = DSharp.keyExists(dictionary1, 'aaa');
+      var c = ss.keyCount(dictionary1);
+      var c2 = ss.keyCount(this.getData2());
+      var b = ss.keyExists(dictionary1, 'aaa');
       delete dictionary1.aaa;
       delete dictionary1['Proxy-Connection'];
       delete dictionary1[key];
-      DSharp.clearKeys(dictionary1);
-      var keys = DSharp.keys(dictionary1);
+      ss.clearKeys(dictionary1);
+      var keys = ss.keys(dictionary1);
     },
     test4: function(arg) {
       var d1 = {};
@@ -51,9 +51,9 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test', null,
+  var $exports = ss.module('test', null,
     {
-      App: DSharp.defineClass(App, App$, [], null)
+      App: ss.defineClass(App, App$, [], null)
     });
 
 

@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // ExpressionTests.Button
@@ -8,39 +8,39 @@ define('test', ['DSharp'], function(DSharp) {
   function Button() {
   }
   Button.add_test = function(value) {
-    Button.__test = DSharp.bindAdd(Button.__test, value);
+    Button.__test = ss.bindAdd(Button.__test, value);
   };
   Button.remove_test = function(value) {
-    Button.__test = DSharp.bindSub(Button.__test, value);
+    Button.__test = ss.bindSub(Button.__test, value);
   };
   var Button$ = {
     add_click: function(value) {
-      this.__click = DSharp.bindAdd(this.__click, value);
+      this.__click = ss.bindAdd(this.__click, value);
     },
     remove_click: function(value) {
-      this.__click = DSharp.bindSub(this.__click, value);
+      this.__click = ss.bindSub(this.__click, value);
     },
     add_aaa: function(value) {
       if (this._aaa == null) {
         this._aaa = value;
       }
       else {
-        this._aaa = DSharp.bindAdd(this._aaa, value);
+        this._aaa = ss.bindAdd(this._aaa, value);
       }
     },
     remove_aaa: function(value) {
-      this._aaa = DSharp.bindSub(this._aaa, value);
+      this._aaa = ss.bindSub(this._aaa, value);
     },
     add_bbb: function(value) {
       if (this._bbb == null) {
         this._bbb = value;
       }
       else {
-        this._bbb = DSharp.bindAdd(this._bbb, value);
+        this._bbb = ss.bindAdd(this._bbb, value);
       }
     },
     remove_bbb: function(value) {
-      this._bbb = DSharp.bindSub(this._bbb, value);
+      this._bbb = ss.bindSub(this._bbb, value);
     }
   };
 
@@ -48,24 +48,24 @@ define('test', ['DSharp'], function(DSharp) {
   // ExpressionTests.App
 
   function App() {
-    this._btn.add_click(DSharp.bind('_onClickButton', this));
-    this._btn.add_click(DSharp.bind('_onClickButton', this));
-    this._btn.add_click(DSharp.bind('_onClickButton', this));
-    this._btn.remove_click(DSharp.bind('_onClickButton', this));
-    this._btn.remove_click(DSharp.bind('_onClickButton', this));
-    this._btn.remove_click(DSharp.bind('_onClickButton', this));
+    this._btn.add_click(ss.bind('_onClickButton', this));
+    this._btn.add_click(ss.bind('_onClickButton', this));
+    this._btn.add_click(ss.bind('_onClickButton', this));
+    this._btn.remove_click(ss.bind('_onClickButton', this));
+    this._btn.remove_click(ss.bind('_onClickButton', this));
+    this._btn.remove_click(ss.bind('_onClickButton', this));
     Button.add_test(App._onTestButton);
     Button.add_test(App._onTestButton);
     Button.add_test(App._onTestButton);
     Button.remove_test(App._onTestButton);
     Button.remove_test(App._onTestButton);
     Button.remove_test(App._onTestButton);
-    this._btn.add_aaa(DSharp.bind('_onAAAButton', this));
-    this._btn.add_aaa(DSharp.bind('_onAAAButton', this));
-    this._btn.add_aaa(DSharp.bind('_onAAAButton', this));
-    this._btn.remove_aaa(DSharp.bind('_onAAAButton', this));
-    this._btn.remove_aaa(DSharp.bind('_onAAAButton', this));
-    this._btn.remove_aaa(DSharp.bind('_onAAAButton', this));
+    this._btn.add_aaa(ss.bind('_onAAAButton', this));
+    this._btn.add_aaa(ss.bind('_onAAAButton', this));
+    this._btn.add_aaa(ss.bind('_onAAAButton', this));
+    this._btn.remove_aaa(ss.bind('_onAAAButton', this));
+    this._btn.remove_aaa(ss.bind('_onAAAButton', this));
+    this._btn.remove_aaa(ss.bind('_onAAAButton', this));
   }
   App._onTestButton = function(sender, e) {
   };
@@ -80,18 +80,18 @@ define('test', ['DSharp'], function(DSharp) {
   // ExpressionTests.FooEventArgs
 
   function FooEventArgs() {
-    DSharp.EventArgs.call(this);
+    ss.EventArgs.call(this);
   }
   var FooEventArgs$ = {
 
   };
 
 
-  var $exports = DSharp.module('test', null,
+  var $exports = ss.module('test', null,
     {
-      Button: DSharp.defineClass(Button, Button$, [], null),
-      App: DSharp.defineClass(App, App$, [], null),
-      FooEventArgs: DSharp.defineClass(FooEventArgs, FooEventArgs$, [], DSharp.EventArgs)
+      Button: ss.defineClass(Button, Button$, [], null),
+      App: ss.defineClass(App, App$, [], null),
+      FooEventArgs: ss.defineClass(FooEventArgs, FooEventArgs$, [], ss.EventArgs)
     });
 
 

@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // ExpressionTests.IFoo
@@ -67,10 +67,10 @@ define('test', ['DSharp'], function(DSharp) {
     test2: function() {
       var n = this.XYZ;
       n = this.XYZ;
-      n = DSharp.baseProperty(DApp, 'XYZ').get.call(this);
+      n = ss.baseProperty(DApp, 'XYZ').get.call(this);
       this.XYZ = n;
       this.XYZ = n;
-      DSharp.baseProperty(DApp, 'XYZ').set.call(this, n);
+      ss.baseProperty(DApp, 'XYZ').set.call(this, n);
       this._value2 = n;
       this._value2 = n;
       this._value2 = n;
@@ -95,12 +95,12 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test', null,
+  var $exports = ss.module('test', null,
     {
-      IFoo: DSharp.defineInterface(IFoo),
-      BApp: DSharp.defineClass(BApp, BApp$, [], null),
-      App: DSharp.defineClass(App, App$, [], BApp),
-      DApp: DSharp.defineClass(DApp, DApp$, [], App)
+      IFoo: ss.defineInterface(IFoo),
+      BApp: ss.defineClass(BApp, BApp$, [], null),
+      App: ss.defineClass(App, App$, [], BApp),
+      DApp: ss.defineClass(DApp, DApp$, [], App)
     });
 
   BApp.myConstant = 3;

@@ -39,7 +39,7 @@ Script
 
 "use strict";
 
-define('test', ['DSharp', 'lib'], function(DSharp, lib) {
+define('test', ['ss', 'lib'], function(ss, lib) {
   var $global = this;
 
   // BasicTests.AppFlags
@@ -305,10 +305,10 @@ define('test', ['DSharp', 'lib'], function(DSharp, lib) {
   }
   var FooBehavior$ = {
     add_c$4: function(value) {
-      this.c$5 = DSharp.bindAdd(this.c$5, value);
+      this.c$5 = ss.bindAdd(this.c$5, value);
     },
     remove_c$4: function(value) {
-      this.c$5 = DSharp.bindSub(this.c$5, value);
+      this.c$5 = ss.bindSub(this.c$5, value);
     },
     dispose: function() {
       this.c$0 = 0;
@@ -349,31 +349,31 @@ define('test', ['DSharp', 'lib'], function(DSharp, lib) {
   };
 
 
-  var $exports = DSharp.module('test',
+  var $exports = ss.module('test',
     {
-      IApp: DSharp.defineInterface(IApp),
+      IApp: ss.defineInterface(IApp),
       MyData: MyData,
-      AppHelper: DSharp.defineClass(AppHelper, AppHelper$, [], null),
-      InterfaceTest: DSharp.defineClass(InterfaceTest, InterfaceTest$, [], null, [IInterfaceTest4]),
-      Bar: DSharp.defineClass(Bar, Bar$, [], null),
-      BaseBaseClass: DSharp.defineClass(BaseBaseClass, BaseBaseClass$, [], null),
-      ABC: DSharp.defineClass(ABC, ABC$, [], null),
-      Bar2: DSharp.defineClass(Bar2, Bar2$, [], Bar),
-      BarCustom: DSharp.defineClass(BarCustom, BarCustom$, [], Bar),
-      BaseClass: DSharp.defineClass(BaseClass, BaseClass$, [], BaseBaseClass),
-      BarEx: DSharp.defineClass(BarEx, BarEx$, [], Bar2),
-      BarCustom2: DSharp.defineClass(BarCustom2, BarCustom2$, [], BarCustom),
-      DerivedClass: DSharp.defineClass(DerivedClass, DerivedClass$, [], BaseClass),
-      MaskTextBox: DSharp.defineClass(MaskTextBox, MaskTextBox$, [Element], lib.TextBox)
+      AppHelper: ss.defineClass(AppHelper, AppHelper$, [], null),
+      InterfaceTest: ss.defineClass(InterfaceTest, InterfaceTest$, [], null, [IInterfaceTest4]),
+      Bar: ss.defineClass(Bar, Bar$, [], null),
+      BaseBaseClass: ss.defineClass(BaseBaseClass, BaseBaseClass$, [], null),
+      ABC: ss.defineClass(ABC, ABC$, [], null),
+      Bar2: ss.defineClass(Bar2, Bar2$, [], Bar),
+      BarCustom: ss.defineClass(BarCustom, BarCustom$, [], Bar),
+      BaseClass: ss.defineClass(BaseClass, BaseClass$, [], BaseBaseClass),
+      BarEx: ss.defineClass(BarEx, BarEx$, [], Bar2),
+      BarCustom2: ss.defineClass(BarCustom2, BarCustom2$, [], BarCustom),
+      DerivedClass: ss.defineClass(DerivedClass, DerivedClass$, [], BaseClass),
+      MaskTextBox: ss.defineClass(MaskTextBox, MaskTextBox$, [Element], lib.TextBox)
     },
     {
       AppFlags: AppFlags,
-      IInterfaceTest1: DSharp.defineInterface(IInterfaceTest1),
-      IInterfaceTest2: DSharp.defineInterface(IInterfaceTest2, [IInterfaceTest1]),
-      IInterfaceTest3: DSharp.defineInterface(IInterfaceTest3),
-      IInterfaceTest4: DSharp.defineInterface(IInterfaceTest4, [IInterfaceTest2, IInterfaceTest3]),
-      App: DSharp.defineClass(App, App$, [], null),
-      FooBehavior: DSharp.defineClass(FooBehavior, FooBehavior$, [Element, Number], lib.Behavior)
+      IInterfaceTest1: ss.defineInterface(IInterfaceTest1),
+      IInterfaceTest2: ss.defineInterface(IInterfaceTest2, [IInterfaceTest1]),
+      IInterfaceTest3: ss.defineInterface(IInterfaceTest3),
+      IInterfaceTest4: ss.defineInterface(IInterfaceTest4, [IInterfaceTest2, IInterfaceTest3]),
+      App: ss.defineClass(App, App$, [], null),
+      FooBehavior: ss.defineClass(FooBehavior, FooBehavior$, [Element, Number], lib.Behavior)
     });
 
 

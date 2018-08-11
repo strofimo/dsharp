@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // MemberTests.Behavior
@@ -58,17 +58,17 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test', null,
+  var $exports = ss.module('test', null,
     {
-      Behavior: DSharp.defineClass(Behavior, Behavior$, [Element, String], null),
-      MyClass: DSharp.defineClass(MyClass, MyClass$, [Date], null),
-      MyClassEmpty: DSharp.defineClass(MyClassEmpty, MyClassEmpty$, [], null),
-      MyClassSimple: DSharp.defineClass(MyClassSimple, MyClassSimple$, [], null),
-      MyClassSimpleMulti: DSharp.defineClass(MyClassSimpleMulti, MyClassSimpleMulti$, [], null),
-      MyBehavior: DSharp.defineClass(MyBehavior, MyBehavior$, [Element], Behavior)
+      Behavior: ss.defineClass(Behavior, Behavior$, [Element, String], null),
+      MyClass: ss.defineClass(MyClass, MyClass$, [Date], null),
+      MyClassEmpty: ss.defineClass(MyClassEmpty, MyClassEmpty$, [], null),
+      MyClassSimple: ss.defineClass(MyClassSimple, MyClassSimple$, [], null),
+      MyClassSimpleMulti: ss.defineClass(MyClassSimpleMulti, MyClassSimpleMulti$, [], null),
+      MyBehavior: ss.defineClass(MyBehavior, MyBehavior$, [Element], Behavior)
     });
 
-  MyClass.instance = new MyClass(DSharp.now());
+  MyClass.instance = new MyClass(ss.now());
   alert('simple static ctor');
   alert('simple static ctor with multiple statements');
   document.getElementById('foo').innerHTML = '...';

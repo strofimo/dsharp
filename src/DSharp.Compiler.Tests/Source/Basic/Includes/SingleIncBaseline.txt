@@ -12,9 +12,9 @@ var App$ = {
 };
 
 
-var $exports = DSharp.module('basic', null,
+var $exports = ss.module('basic', null,
   {
-    App: DSharp.defineClass(App, App$, [], null)
+    App: ss.defineClass(App, App$, [], null)
   });
 
 

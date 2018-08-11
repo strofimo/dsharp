@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using DSharp;
 
 namespace System.Globalization
 {
@@ -93,7 +94,7 @@ namespace System.Globalization
         public extern int NumberDecimalDigits { get; }
 
         [ScriptField]
-        [ScriptName("ds")]
+        [ScriptName(DSharpStringResources.ASSEMBLY_NAME)]
         public extern string NumberDecimalSeparator { get; }
 
         [ScriptField]

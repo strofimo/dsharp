@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // TypeTests.IMyInterface
@@ -120,19 +120,19 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test',
+  var $exports = ss.module('test',
     {
-      SingleMemberClass: DSharp.defineClass(SingleMemberClass, SingleMemberClass$, [], null),
-      SomeClass: DSharp.defineClass(SomeClass, SomeClass$, [], null)
+      SingleMemberClass: ss.defineClass(SingleMemberClass, SingleMemberClass$, [], null),
+      SomeClass: ss.defineClass(SomeClass, SomeClass$, [], null)
     },
     {
-      IMyInterface: DSharp.defineInterface(IMyInterface),
-      EmptyClass: DSharp.defineClass(EmptyClass, EmptyClass$, [], null),
-      MergedMembersClass: DSharp.defineClass(MergedMembersClass, MergedMembersClass$, [], null),
-      MyClass: DSharp.defineClass(MyClass, MyClass$, [], null, [IMyInterface]),
-      App: DSharp.defineClass(App, App$, [], null),
-      DerivedMemberClass: DSharp.defineClass(DerivedMemberClass, DerivedMemberClass$, [], SingleMemberClass),
-      DerivedMergedMembersClass: DSharp.defineClass(DerivedMergedMembersClass, DerivedMergedMembersClass$, [], MergedMembersClass)
+      IMyInterface: ss.defineInterface(IMyInterface),
+      EmptyClass: ss.defineClass(EmptyClass, EmptyClass$, [], null),
+      MergedMembersClass: ss.defineClass(MergedMembersClass, MergedMembersClass$, [], null),
+      MyClass: ss.defineClass(MyClass, MyClass$, [], null, [IMyInterface]),
+      App: ss.defineClass(App, App$, [], null),
+      DerivedMemberClass: ss.defineClass(DerivedMemberClass, DerivedMemberClass$, [], SingleMemberClass),
+      DerivedMergedMembersClass: ss.defineClass(DerivedMergedMembersClass, DerivedMergedMembersClass$, [], MergedMembersClass)
     });
 
 

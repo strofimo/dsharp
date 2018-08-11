@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // TypeTests.EventArgs
@@ -12,9 +12,9 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test', null,
+  var $exports = ss.module('test', null,
     {
-      EventArgs: DSharp.defineClass(EventArgs, EventArgs$, [], null)
+      EventArgs: ss.defineClass(EventArgs, EventArgs$, [], null)
     });
 
 

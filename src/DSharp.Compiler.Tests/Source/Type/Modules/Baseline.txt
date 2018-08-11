@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // App.Dummy
@@ -12,9 +12,9 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test', null,
+  var $exports = ss.module('test', null,
     {
-      Dummy: DSharp.defineClass(Dummy, Dummy$, [], null)
+      Dummy: ss.defineClass(Dummy, Dummy$, [], null)
     });
 
   alert('Hello Startup');

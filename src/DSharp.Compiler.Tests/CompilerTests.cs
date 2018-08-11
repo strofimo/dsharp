@@ -4,7 +4,7 @@ using DSharp.Compiler.TestFramework.Data;
 using DSharp.Compiler.Tests.Fixtures;
 using Xunit;
 
-namespace DSharp.Compiler.Tests
+namespace ss.Compiler.Tests
 {
     public class CompilerTests : IClassFixture<TestContextFixture>
     {

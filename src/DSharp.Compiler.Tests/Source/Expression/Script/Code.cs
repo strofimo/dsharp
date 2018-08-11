@@ -41,7 +41,7 @@ namespace ExpressionTests {
             object g = Script.Global;
             object u = Script.Undefined;
 
-            object coreModule = Script.Modules["DSharp"];
+            object coreModule = Script.Modules["ss"];
         }
     }
 }

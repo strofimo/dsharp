@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['DSharp'], function(DSharp) {
+define('test', ['ss'], function(ss) {
   var $global = this;
 
   // TypeTests.IMarker
@@ -62,7 +62,7 @@ define('test', ['DSharp'], function(DSharp) {
     useInterfaces: function(runnable) {
       runnable.dispose();
       var s = [];
-      DSharp.enumerate(s);
+      ss.enumerate(s);
       var someValue = new Foo().get_item('someValuesKey');
     }
   };
@@ -82,15 +82,15 @@ define('test', ['DSharp'], function(DSharp) {
   };
 
 
-  var $exports = DSharp.module('test', null,
+  var $exports = ss.module('test', null,
     {
-      IMarker: DSharp.defineInterface(IMarker),
-      ISerializable: DSharp.defineInterface(ISerializable),
-      IRunnable: DSharp.defineInterface(IRunnable, [IMarker, DSharp.IDisposable]),
-      MyObject: DSharp.defineClass(MyObject, MyObject$, [], null, [DSharp.IDisposable]),
-      Foo: DSharp.defineClass(Foo, Foo$, [], null, [IMarker, ISerializable, IRunnable]),
-      Program: DSharp.defineClass(Program, Program$, [], null),
-      MyObject2: DSharp.defineClass(MyObject2, MyObject2$, [], MyObject, [IRunnable])
+      IMarker: ss.defineInterface(IMarker),
+      ISerializable: ss.defineInterface(ISerializable),
+      IRunnable: ss.defineInterface(IRunnable, [IMarker, ss.IDisposable]),
+      MyObject: ss.defineClass(MyObject, MyObject$, [], null, [ss.IDisposable]),
+      Foo: ss.defineClass(Foo, Foo$, [], null, [IMarker, ISerializable, IRunnable]),
+      Program: ss.defineClass(Program, Program$, [], null),
+      MyObject2: ss.defineClass(MyObject2, MyObject2$, [], MyObject, [IRunnable])
     });
 
 
