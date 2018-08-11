@@ -671,7 +671,7 @@ namespace DSharp.Compiler.Importer
             if (memberSet == PseudoClassMembers.Arguments)
             {
                 TypeSymbol objectType =
-                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol("Object", null,
+                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol(nameof(Object), null,
                         SymbolFilter.Types);
                 Debug.Assert(objectType != null);
 
@@ -686,11 +686,11 @@ namespace DSharp.Compiler.Importer
             if (memberSet == PseudoClassMembers.Dictionary)
             {
                 TypeSymbol intType =
-                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol("Int32", null, SymbolFilter.Types);
+                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol(nameof(Int32), null, SymbolFilter.Types);
                 Debug.Assert(intType != null);
 
                 TypeSymbol stringType =
-                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol("String", null,
+                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol(nameof(String), null,
                         SymbolFilter.Types);
                 Debug.Assert(stringType != null);
 
@@ -801,7 +801,7 @@ namespace DSharp.Compiler.Importer
                 if (MetadataHelpers.ShouldTreatAsRecordType(type))
                 {
                     typeSymbol = new RecordSymbol(name, namespaceSymbol);
-                    typeSymbol.SetTransformedName("Object");
+                    typeSymbol.SetTransformedName(nameof(Object));
                 }
                 else
                 {
@@ -812,7 +812,7 @@ namespace DSharp.Compiler.Importer
                         ((ClassSymbol) typeSymbol).SetExtenderClass(extendee);
                     }
 
-                    if (string.CompareOrdinal(scriptName, "Array") == 0)
+                    if (string.CompareOrdinal(scriptName, nameof(Array)) == 0)
                     {
                         typeSymbol.SetArray();
                     }
@@ -876,14 +876,13 @@ namespace DSharp.Compiler.Importer
         {
             int arrayDimensions = 0;
 
-            while (type is ArrayType)
+            while (type is ArrayType arrayType)
             {
                 arrayDimensions++;
-                type = ((ArrayType) type).ElementType;
+                type = arrayType.ElementType;
             }
 
             GenericInstanceType genericType = type as GenericInstanceType;
-
             if (genericType != null)
             {
                 type = genericType.ElementType;
@@ -891,7 +890,7 @@ namespace DSharp.Compiler.Importer
 
             string name = type.FullName;
 
-            if (string.CompareOrdinal(name, "System.ValueType") == 0)
+            if (string.CompareOrdinal(name, MscorlibTypeNames.System_ValueType) == 0)
             {
                 // Ignore this type - it is the base class for enums, and other primitive types
                 // but we don't import it since it is not useful in script
@@ -912,6 +911,7 @@ namespace DSharp.Compiler.Importer
 
                 if (typeSymbol == null)
                 {
+                    //TODO: Improve this error and provide context as to what type is missing from where
                     errorHandler.ReportMissingReferenceError(name);
                     resolveError = true;
                 }

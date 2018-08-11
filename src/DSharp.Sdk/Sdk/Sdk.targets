@@ -1,11 +1,11 @@
 <Project>
-  
+
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <ToolsPath Condition="'$(ToolsPath)' == ''">$(MSBuildThisFileDirectory)..\tools\$(TargetFramework)\</ToolsPath>
     <DSharpBuildAssembly Condition="'$(DSharpBuildAssembly)' == ''">$(ToolsPath)DSharp.Build.dll</DSharpBuildAssembly>
   </PropertyGroup>
-  
+
   <UsingTask TaskName="ScriptCompilerTask" AssemblyFile="$(DSharpBuildAssembly)" />
   <UsingTask TaskName="ResXCodeGeneratorTask" AssemblyFile="$(DSharpBuildAssembly)" />
 
