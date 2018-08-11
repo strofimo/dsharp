@@ -1,0 +1,98 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // TypeTests.IMarker
+
+  function IMarker() { }
+
+
+  // TypeTests.ISerializable
+
+  function ISerializable() { }
+
+
+  // TypeTests.IRunnable
+
+  function IRunnable() { }
+
+
+  // TypeTests.MyObject
+
+  function MyObject() {
+  }
+  var MyObject$ = {
+    dispose: function() {
+    }
+  };
+
+
+  // TypeTests.Foo
+
+  function Foo() {
+    this._someValues = {};
+  }
+  var Foo$ = {
+    $get_canRun: function() {
+      return true;
+    },
+    run: function() {
+    },
+    serialize: function() {
+      return null;
+    },
+    dispose: function() {
+    },
+    get_item: function(key) {
+      return this._someValues[key];
+    },
+    set_item: function(key, value) {
+      this._someValues[key] = value;
+      return value;
+    }
+  };
+
+
+  // TypeTests.Program
+
+  function Program() {
+  }
+  var Program$ = {
+    useInterfaces: function(runnable) {
+      runnable.dispose();
+      var s = [];
+      DSharp.enumerate(s);
+      var someValue = new Foo().get_item('someValuesKey');
+    }
+  };
+
+
+  // TypeTests.MyObject2
+
+  function MyObject2() {
+    MyObject.call(this);
+  }
+  var MyObject2$ = {
+    $get_canRun: function() {
+      return true;
+    },
+    run: function() {
+    }
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      IMarker: DSharp.defineInterface(IMarker),
+      ISerializable: DSharp.defineInterface(ISerializable),
+      IRunnable: DSharp.defineInterface(IRunnable, [IMarker, DSharp.IDisposable]),
+      MyObject: DSharp.defineClass(MyObject, MyObject$, [], null, [DSharp.IDisposable]),
+      Foo: DSharp.defineClass(Foo, Foo$, [], null, [IMarker, ISerializable, IRunnable]),
+      Program: DSharp.defineClass(Program, Program$, [], null),
+      MyObject2: DSharp.defineClass(MyObject2, MyObject2$, [], MyObject, [IRunnable])
+    });
+
+
+  return $exports;
+});

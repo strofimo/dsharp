@@ -1,0 +1,78 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // MemberTests.Mode
+
+  var Mode = {
+    a: 0, 
+    b: 1
+  };
+
+
+  // MemberTests.Point
+
+  function Point(x, y) {
+    var $o = {};
+    $o.x = x;
+    $o.y = y;
+    return $o;
+  }
+
+
+  // MemberTests.Test
+
+  function Test() {
+    this._value = 0;
+    this._uintValue = 0;
+    this._dblValue = 0;
+    this._enumValue = 0;
+    this._boolValue = false;
+    this._value = 2006;
+    this.s = 'aaa';
+    this.s = 'bbb';
+    this.s = 'aaa';
+  }
+  var Test$ = {
+
+  };
+
+
+  // MemberTests.App
+
+  function App() {
+    this._t = new Test();
+    this._i = 5;
+  }
+  var App$ = {
+    doTest: function() {
+      var t = new Test();
+      t.s = 'World';
+      var i = 1;
+      Test.done = true;
+      var p = Point(1, 10);
+      p.x = p.y;
+    }
+  };
+
+
+  var $exports = DSharp.module('test',
+    {
+      Point: Point
+    },
+    {
+      Mode: Mode,
+      Test: DSharp.defineClass(Test, Test$, [], null),
+      App: DSharp.defineClass(App, App$, [], null)
+    });
+
+  Test.greeting = 'Hello!';
+  Test.myNumber = 1;
+  Test.defaultValue = 'aaa';
+  Test.done = false;
+  Test.XYZ = 1;
+  Test._key = {};
+
+  return $exports;
+});

@@ -1,0 +1,45 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // ExpressionTests.App
+
+  function App() {
+  }
+  var App$ = {
+    test: function(arg) {
+      var f = arg / 2;
+      var d = 0.25;
+      var i = DSharp.truncate(f);
+      var j = DSharp.truncate(d);
+      var f2 = d;
+      var a = 1;
+      var b = 2;
+      var n1 = a / b;
+      var n2 = DSharp.truncate((a / b));
+      var d2 = a / b;
+      var action = function() {
+      };
+      var secondAction = DSharp.safeCast(action, Function);
+      if (DSharp.canCast(action, Function)) {
+      }
+      var cb = DSharp.safeCast(action, Function);
+      if (DSharp.canCast(action, Function)) {
+        cb = action;
+      }
+      var action2 = DSharp.safeCast(action, Function);
+      if (action2 != null) {
+      }
+    }
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      App: DSharp.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

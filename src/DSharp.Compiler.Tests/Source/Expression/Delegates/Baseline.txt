@@ -1,0 +1,66 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // ExpressionTests.EventArgs
+
+  function EventArgs() {
+  }
+  var EventArgs$ = {
+
+  };
+
+
+  // ExpressionTests.SomeClass
+
+  function SomeClass(handler) {
+  }
+  var SomeClass$ = {
+
+  };
+
+
+  // ExpressionTests.Test
+
+  function Test() {
+    this._handler = DSharp.bind('onEvent', this);
+    this._handler = DSharp.bind('onEvent', this);
+    this._handler = DSharp.bind('onEvent', this);
+    this._handler = Test2.onGlobalEvent;
+    var s1 = new SomeClass(DSharp.bind('onEvent', this));
+    var s2 = new SomeClass(this._handler);
+  }
+  var Test$ = {
+    doStuff: function() {
+      if (this._handler != null) {
+        this._handler(this, null);
+      }
+    },
+    onEvent: function(sender, e) {
+    }
+  };
+
+
+  // ExpressionTests.Test2
+
+  function Test2() {
+  }
+  Test2.onGlobalEvent = function(sender, e) {
+  };
+  var Test2$ = {
+
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      EventArgs: DSharp.defineClass(EventArgs, EventArgs$, [], null),
+      SomeClass: DSharp.defineClass(SomeClass, SomeClass$, [Function], null),
+      Test: DSharp.defineClass(Test, Test$, [], null),
+      Test2: DSharp.defineClass(Test2, Test2$, [], null)
+    });
+
+
+  return $exports;
+});

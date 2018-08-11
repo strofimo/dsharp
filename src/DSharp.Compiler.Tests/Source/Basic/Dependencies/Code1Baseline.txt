@@ -1,0 +1,24 @@
+"use strict";
+
+define('test', ['DSharp', 'lib1'], function(DSharp, lib1) {
+  var $global = this;
+
+  // BasicTests.App
+
+  function App() {
+    var c1 = new lib1.Component1();
+    var c2 = new Component2();
+  }
+  var App$ = {
+
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      App: DSharp.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

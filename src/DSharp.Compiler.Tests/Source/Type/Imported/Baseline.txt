@@ -1,0 +1,35 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // TypeTests.App
+
+  function App() {
+    var elem = document.getElementById('foo');
+    var s = elem.myString;
+    elem.do('foo');
+    elem.do('bar', 10);
+    elem['Smith'] = elem['Joe'];
+    var n = DSharp.truncate(5.5);
+    var parser = new DOMParser();
+    var doc = parser.parseFromString('<markup></markup>', 'text/xml');
+    var d = DSharp.date('1/1/2010');
+    var eventHandler = function() {
+    };
+    elem.addEventListener('click', eventHandler);
+    elem.removeEventListener('click', eventHandler);
+  }
+  var App$ = {
+
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      App: DSharp.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

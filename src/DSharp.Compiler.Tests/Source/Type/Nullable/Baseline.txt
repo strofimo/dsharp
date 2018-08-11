@@ -1,0 +1,40 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // TypeTests.App
+
+  function App() {
+  }
+  var App$ = {
+    method: function() {
+      var i = 10;
+      var b = true;
+      var flag;
+      var num;
+      var num2;
+      var num3 = 100;
+      var xyz = false;
+      var ch;
+      var hasValue = DSharp.isValue(xyz) || DSharp.isValue(num3);
+      var num3_ = num3;
+      var f = (DSharp.isValue(flag)) ? flag : true;
+      xyz = true;
+      num2 = 10;
+      num = 1;
+      var boolVal = (flag || false);
+      var textVal = (ch || '');
+      var numVal = (num3 || 0);
+    }
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      App: DSharp.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

@@ -1,0 +1,23 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // GuidTests.PublicClass
+
+  function PublicClass() {
+    var guid = DSharp.Guid.NewGuid();
+  }
+  var PublicClass$ = {
+
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      PublicClass: DSharp.defineClass(PublicClass, PublicClass$, [], null)
+    });
+
+
+  return $exports;
+});

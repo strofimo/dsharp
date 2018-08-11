@@ -1,0 +1,25 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // TypeTests.MyClass
+
+  function MyClass() {
+    var body = document.body;
+    var head = document.getElementsByTagName('head')[0];
+    head.appendChild(body);
+  }
+  var MyClass$ = {
+
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      MyClass: DSharp.defineClass(MyClass, MyClass$, [], null)
+    });
+
+
+  return $exports;
+});

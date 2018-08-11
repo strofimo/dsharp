@@ -1,0 +1,57 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // BasicTests.MyDebug
+
+  function MyDebug() {
+  }
+  MyDebug.showInfo = function() {
+  };
+  MyDebug.traceInfo = function() {
+  };
+  MyDebug.logInfo = function() {
+  };
+
+
+  // BasicTests.App
+
+  function App(i) {
+    console.assert(false);
+    MyDebug.showInfo();
+    while (true) {
+      console.assert(false);
+    }
+    switch (i) {
+      case 0:
+        console.assert(false);
+        break;
+    }
+    console.assert(!!i);
+    console.assert(!!i);
+    i++;
+    if (false) {
+      console.log('Debug spew');
+    }
+    while (false) {
+      console.log('.');
+    }
+    for (var i = 0; i < 10; i++) {
+      console.log('.');
+    }
+  }
+  var App$ = {
+
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      MyDebug: DSharp.defineClass(MyDebug, null, [], null),
+      App: DSharp.defineClass(App, App$, [Number], null)
+    });
+
+
+  return $exports;
+});

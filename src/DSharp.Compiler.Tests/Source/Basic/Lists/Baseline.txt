@@ -1,0 +1,26 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // ListTests.PublicClass
+
+  function PublicClass() {
+    var list = [];
+    list.push('one');
+    list.push('two', 'three');
+    var array = list;
+  }
+  var PublicClass$ = {
+
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      PublicClass: DSharp.defineClass(PublicClass, PublicClass$, [], null)
+    });
+
+
+  return $exports;
+});

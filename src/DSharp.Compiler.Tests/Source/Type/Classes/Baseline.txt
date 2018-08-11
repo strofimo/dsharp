@@ -1,0 +1,84 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // TypeTests.Foo
+
+  function FooBaz() {
+  }
+  var FooBaz$ = {
+
+  };
+
+
+  // TypeTests.Bar
+
+  function BarBaz(f) {
+  }
+  var BarBaz$ = {
+
+  };
+
+
+  // TypeTests.MyClass
+
+  function MyClass() {
+    var f = new FooBaz();
+  }
+  var MyClass$ = {
+
+  };
+
+
+  // TypeTests.MyClass3
+
+  function MyClass3() {
+  }
+  var MyClass3$ = {
+
+  };
+
+
+  // TypeTests.StaticClass
+
+  function StaticClass() {
+  }
+
+
+  // TypeTests.MyClass2
+
+  function MyClass2() {
+    MyClass.call(this);
+  }
+  var MyClass2$ = {
+
+  };
+
+
+  // TypeTests.MyClass4
+
+  function MyClass4(foo, bar, disposable) {
+    MyClass.call(this);
+    var f = DSharp.createInstance();
+    var b = DSharp.createInstance(BarBaz, f);
+  }
+  var MyClass4$ = {
+
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      FooBaz: DSharp.defineClass(FooBaz, FooBaz$, [], null),
+      BarBaz: DSharp.defineClass(BarBaz, BarBaz$, [FooBaz], null),
+      MyClass: DSharp.defineClass(MyClass, MyClass$, [], null),
+      MyClass3: DSharp.defineClass(MyClass3, MyClass3$, [], null, [DSharp.IDisposable]),
+      StaticClass: DSharp.defineClass(StaticClass, null, [], null),
+      MyClass2: DSharp.defineClass(MyClass2, MyClass2$, [], MyClass),
+      MyClass4: DSharp.defineClass(MyClass4, MyClass4$, [FooBaz, BarBaz, DSharp.IDisposable], MyClass, [DSharp.IDisposable])
+    });
+
+
+  return $exports;
+});

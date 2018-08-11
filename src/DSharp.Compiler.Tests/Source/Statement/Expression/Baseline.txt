@@ -1,0 +1,27 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // StatementTests.App
+
+  function App() {
+  }
+  var App$ = {
+    test: function(arg) {
+      var x;
+      arg = x.length;
+      arg++;
+      x = arg.toString();
+    }
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      App: DSharp.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

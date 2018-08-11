@@ -1,0 +1,140 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // TypeTests.IMyInterface
+
+  function IMyInterface() { }
+
+
+  // TypeTests.EmptyClass
+
+  function EmptyClass() {
+  }
+  var EmptyClass$ = {
+
+  };
+
+
+  // TypeTests.SingleMemberClass
+
+  function SingleMemberClass() {
+  }
+  var SingleMemberClass$ = {
+    run: function() {
+    }
+  };
+
+
+  // TypeTests.MergedMembersClass
+
+  function MergedMembersClass() {
+    this.foo = false;
+  }
+  var MergedMembersClass$ = {
+    testMethod: function() {
+      return null;
+    }
+  };
+
+
+  // TypeTests.MyClass
+
+  function MyClass() {
+  }
+  var MyClass$ = {
+    start: function() {
+    },
+    Stop: function() {
+    },
+    resume: function() {
+    }
+  };
+
+
+  // TypeTests.SomeClass
+
+  function SomeClass() {
+  }
+  var SomeClass$ = {
+    close: function() {
+    },
+    _cancel: function() {
+    },
+    run: function() {
+    }
+  };
+
+
+  // TypeTests.App
+
+  function App() {
+    var s;
+    s.run();
+    var d;
+    d.bar = d.name;
+    d.value = d.foo;
+    var mc;
+    mc.start();
+    mc.Stop();
+    mc.resume();
+  }
+  var App$ = {
+
+  };
+
+
+  // TypeTests.DerivedMemberClass
+
+  function DerivedMemberClass() {
+    SingleMemberClass.call(this);
+  }
+  var DerivedMemberClass$ = {
+
+  };
+
+
+  // TypeTests.DerivedMergedMembersClass
+
+  function DerivedMergedMembersClass() {
+    MergedMembersClass.call(this);
+    this.name = this.bar + this.bar + 'Name';
+  }
+  var DerivedMergedMembersClass$ = {
+    testMethod: function() {
+      return null;
+    },
+    testMethod2: function() {
+      return this.get_item('foo');
+    },
+    someMethod: function() {
+      var e1 = document.getElementById(this.bar);
+      var e2 = document.getElementById(this.name);
+      var e3 = document.getElementById(this.bar);
+      var s = this.testMethod() + MergedMembersClass.prototype.testMethod.call(this);
+    },
+    get_item: function(s) {
+      return s;
+    }
+  };
+
+
+  var $exports = DSharp.module('test',
+    {
+      SingleMemberClass: DSharp.defineClass(SingleMemberClass, SingleMemberClass$, [], null),
+      SomeClass: DSharp.defineClass(SomeClass, SomeClass$, [], null)
+    },
+    {
+      IMyInterface: DSharp.defineInterface(IMyInterface),
+      EmptyClass: DSharp.defineClass(EmptyClass, EmptyClass$, [], null),
+      MergedMembersClass: DSharp.defineClass(MergedMembersClass, MergedMembersClass$, [], null),
+      MyClass: DSharp.defineClass(MyClass, MyClass$, [], null, [IMyInterface]),
+      App: DSharp.defineClass(App, App$, [], null),
+      DerivedMemberClass: DSharp.defineClass(DerivedMemberClass, DerivedMemberClass$, [], SingleMemberClass),
+      DerivedMergedMembersClass: DSharp.defineClass(DerivedMergedMembersClass, DerivedMergedMembersClass$, [], MergedMembersClass)
+    });
+
+
+  return $exports;
+});

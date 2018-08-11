@@ -1,0 +1,37 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // StatementTests.App
+
+  function App() {
+  }
+  var App$ = {
+    test: function(arg) {
+      var i;
+      while (i < arg) {
+      }
+      while (i < arg) {
+        i++;
+      }
+      while (arg === i) {
+        break;
+      }
+      do {
+        i--;
+      } while (i > 0);
+      do {
+      } while (!!i);
+    }
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      App: DSharp.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

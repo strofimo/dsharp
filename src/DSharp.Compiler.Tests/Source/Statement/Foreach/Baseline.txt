@@ -1,0 +1,66 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // StatementTests.Set
+
+  function Set() {
+  }
+  var Set$ = {
+    getEnumerator: function() {
+      return DSharp.enumerate(this._items);
+    }
+  };
+
+
+  // StatementTests.App
+
+  function App() {
+  }
+  var App$ = {
+    test: function(arg) {
+      var items = [ 1, 2, 3 ];
+      var sum = 0;
+      var $enum1 = DSharp.enumerate(items);
+      while ($enum1.moveNext()) {
+        var i = $enum1.current;
+        sum += i;
+      }
+      var d = {};
+      for (var $key2 in d) {
+        var entry = { key: $key2, value: d[$key2] };
+        var s = entry.key + ' = ' + entry.value;
+      }
+      var s = new Set();
+      var $enum3 = DSharp.enumerate(s);
+      while ($enum3.moveNext()) {
+        var o = $enum3.current;
+        this._doStuff(o);
+      }
+      var $dict4 = this._getDictionary();
+      for (var $key5 in $dict4) {
+        var entry = { key: $key5, value: $dict4[$key5] };
+        var s = entry.key + ' = ' + entry.value;
+      }
+    },
+    _doStuff: function(o) {
+      for (var $key1 in o) {
+        var entry = { key: $key1, value: o[$key1] };
+      }
+    },
+    _getDictionary: function() {
+      return null;
+    }
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      Set: DSharp.defineClass(Set, Set$, [], null, [DSharp.IEnumerable]),
+      App: DSharp.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

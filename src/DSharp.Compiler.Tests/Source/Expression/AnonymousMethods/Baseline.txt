@@ -1,0 +1,113 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // ExpressionTests.SomeClass
+
+  function SomeClass(cb) {
+  }
+  var SomeClass$ = {
+
+  };
+
+
+  // ExpressionTests.Test
+
+  function Test() {
+    this._n = 0;
+  }
+  Test.main = function(args) {
+    var o = {};
+    var name;
+    Test.doStuffStatic(o, function(i, s, b) {
+      name = s;
+    });
+  };
+  Test.doStuffStatic = function(o, callback) {
+    var s = new SomeClass(function() {
+      var temp = o;
+    });
+  };
+  var Test$ = {
+    AAA: function() {
+      var $this = this;
+
+      var o = {};
+      this.doStuff(o, function(i, s, b) {
+        $this._n = i;
+      });
+      var s = new SomeClass(function() {
+      });
+      for (var i = 0; i < 10; i++) {
+        var foo;
+        this.doStuff(o, function(i, s, b) {
+          foo = i + s;
+        });
+        this.doStuff(o, function(i, s, b) {
+          $this._n += i;
+        });
+        Test.doStuffStatic(o, function() {
+        });
+        Test.doStuffStatic(o, function() {
+          $this._n++;
+        });
+      }
+      var s2 = new SomeClass(function() {
+        var numbers = [ $this._n ];
+      });
+      var s3 = new SomeClass(function() {
+        var s4 = new SomeClass(function() {
+          var numbers = [ $this._n * 2 ];
+        });
+      });
+      var j = 0;
+      (function() {
+        $this._n++;
+      })();
+      (function() {
+        j++;
+      })();
+      (function(i, s, b) {
+        i++;
+        b = DSharp.emptyString(s);
+      })(j, 'foo', false);
+      (function(i, s, b) {
+        i++;
+        b = DSharp.emptyString(s);
+      })(j, 'foo', false);
+      j = (function(k) {
+        return k + 1;
+      })(3);
+      j = (function(k) {
+        return k + 1;
+      })(3);
+    },
+    BBB: function(o) {
+      var s = new SomeClass(function() {
+        var temp = o;
+      });
+    },
+    CCC: function(o) {
+      var $this = this;
+
+      var s = new SomeClass(function() {
+        var s = new SomeClass(function() {
+          var numbers = [ $this._n * 2 ];
+        });
+      });
+    },
+    doStuff: function(o, callback) {
+    }
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      SomeClass: DSharp.defineClass(SomeClass, SomeClass$, [Function], null),
+      Test: DSharp.defineClass(Test, Test$, [], null)
+    });
+
+
+  return $exports;
+});

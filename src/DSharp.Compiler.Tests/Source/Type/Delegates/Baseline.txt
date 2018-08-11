@@ -1,0 +1,22 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // TypeTests.EventArgs
+
+  function EventArgs() {
+  }
+  var EventArgs$ = {
+
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      EventArgs: DSharp.defineClass(EventArgs, EventArgs$, [], null)
+    });
+
+
+  return $exports;
+});

@@ -1,0 +1,28 @@
+﻿<Project>
+  <Import Project="$(SolutionDir)DSharp.Sdk\Sdk\Sdk.props" Condition="Exists('$(SolutionDir)DSharp.Sdk\Sdk\Sdk.props')" />
+  <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
+
+  <PropertyGroup>
+    <RootNamespace>System</RootNamespace>
+    <AssemblyName>DSharp.Web</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)DSharp.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <ToolsPath>$(SolutionDir)DSharp.Sdk\bin\$(Configuration)\$(TargetFramework)\</ToolsPath>
+    <IsImportLibrary>true</IsImportLibrary>
+    <ExcludeCoreLib>true</ExcludeCoreLib>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1705;1591;0626</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DSharp.Mscorlib\DSharp.Mscorlib.csproj" />
+  </ItemGroup>
+
+  <Import Project="$(SolutionDir)DSharp.Sdk\Sdk\Sdk.targets" Condition="Exists('$(SolutionDir)DSharp.Sdk\Sdk\Sdk.targets')" />
+</Project>

@@ -1,0 +1,57 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // MemberTests.MyClass
+
+  function MyClass() {
+    this._value = 0;
+    this._value = 1;
+  }
+  var MyClass$ = {
+
+  };
+
+
+  // MemberTests.MyClass2
+
+  function MyClass2() {
+  }
+  var MyClass2$ = {
+
+  };
+
+
+  // MemberTests.MyClass3
+
+  function MyClass3(arg, arg2) {
+  }
+  var MyClass3$ = {
+
+  };
+
+
+  // MemberTests.MyClass4
+
+  function MyClass4(arg, arg2, arg3) {
+    MyClass3.call(this, arg, arg2);
+  }
+  var MyClass4$ = {
+
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      MyClass: DSharp.defineClass(MyClass, MyClass$, [], null),
+      MyClass2: DSharp.defineClass(MyClass2, MyClass2$, [], null),
+      MyClass3: DSharp.defineClass(MyClass3, MyClass3$, [Number, Number], null),
+      MyClass4: DSharp.defineClass(MyClass4, MyClass4$, [Number, Number, Number], MyClass3)
+    });
+
+  MyClass2._x = 'Hello';
+  MyClass3.c = new MyClass();
+
+  return $exports;
+});

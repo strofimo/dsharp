@@ -1,0 +1,82 @@
+"use strict";
+
+define('test', ['DSharp'], function(DSharp) {
+  var $global = this;
+
+  // MemberTests.Test
+
+  function Test() {
+  }
+  var Test$ = {
+    do1: function() {
+    },
+    do2: function() {
+      return 0;
+    },
+    do3: function(i, j) {
+      return i;
+    },
+    do4: DSharp.paramsGenerator(1, function(zero, stuff) {
+      return stuff.length;
+    }),
+    do5: DSharp.paramsGenerator(0, function(stuff) {
+    }),
+    run: function() {
+      this.do1();
+      var v = this.do2();
+      var s = DSharp.string('A', 3);
+      var i = s.indexOf('A');
+      i = s.indexOf('A', 1);
+      var ln = this.do4(0, 1, 2, 3, 'a', 'b', 'c', true, false);
+      this.do5();
+    },
+    toString: function() {
+      window.m1();
+      var x = new X();
+      $.fn.extend(x, 10);
+      return null;
+    }
+  };
+
+
+  // MemberTests.Foo
+
+  $global.doStuff = function() {
+  };
+
+
+  // MemberTests.Bar
+
+  window.m1 = function() {
+  };
+  window.m2 = function() {
+  };
+
+
+  // MemberTests.X
+
+  function X() {
+  }
+  var X$ = {
+    update: function(i) {
+    }
+  };
+
+
+  // MemberTests.Plugin
+
+  $.fn.extend = function(x, i) {
+    x.update(i);
+    return x;
+  };
+
+
+  var $exports = DSharp.module('test', null,
+    {
+      Test: DSharp.defineClass(Test, Test$, [], null),
+      X: DSharp.defineClass(X, X$, [], null)
+    });
+
+
+  return $exports;
+});
