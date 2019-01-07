@@ -1,5 +1,4 @@
 // Various Helpers/Utilities
-
 function _nop() {
 }
 

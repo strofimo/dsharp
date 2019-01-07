@@ -3,29 +3,32 @@ const fs = require('fs');
 
 const concatFilesDir = "./src/System";
 
-function getFiles(dir, files_) {
-    files_ = files_ || [];
-    var files = fs.readdirSync(dir);
-    for (var i in files) {
-        var name = dir + '/' + files[i];
+function getFiles(dir, files) {
+    files = files || [];
+    var foundFiles = fs.readdirSync(dir);
+    for (var i in foundFiles) {
+        var name = dir + '/' + foundFiles[i];
         if (fs.statSync(name).isDirectory()) {
-            getFiles(name, files_);
+            getFiles(name, files);
         } else {
-            files_.push(name);
+            files.push(name);
         }
     }
-    return files_;
+    return files;
 }
 
 getFiles(concatFilesDir).forEach(file => {
     console.log(file);
-})
+});
 
 buildify()
-    .concat(getFiles(concatFilesDir), '\r\n')
+    .concat(
+        getFiles(concatFilesDir, [
+            './src/TypeSystem.js'
+        ]), '\r\n')
     .wrap('src/Loader.js', {
         version: 1.0
     })
     .save('dist/ss.js')
     .uglify()
-    .save('dist/ss.min.js')
+    .save('dist/ss.min.js');

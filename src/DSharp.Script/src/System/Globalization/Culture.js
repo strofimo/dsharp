@@ -66,4 +66,8 @@ var neutralCulture = {
   }
 };
 
-var currentCulture = { name: 'en-us', dtf: neutralCulture.dtf, nf: neutralCulture.nf };
+var currentCulture = {
+    name: 'en-us',
+    dtf: neutralCulture.dtf,
+    nf: neutralCulture.nf
+};

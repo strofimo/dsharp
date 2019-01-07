@@ -1,60 +1,7 @@
 // Formatting Helpers
-
-function _commaFormatNumber(number, groups, decimal, comma) {
-    var decimalPart = null;
-    var decimalIndex = number.indexOf(decimal);
-    if (decimalIndex > 0) {
-        decimalPart = number.substr(decimalIndex);
-        number = number.substr(0, decimalIndex);
-    }
-
-    var negative = startsWith(number, '-');
-    if (negative) {
-        number = number.substr(1);
-    }
-
-    var groupIndex = 0;
-    var groupSize = groups[groupIndex];
-    if (number.length < groupSize) {
-        return decimalPart ? number + decimalPart : number;
-    }
-
-    var index = number.length;
-    var s = '';
-    var done = false;
-    while (!done) {
-        var length = groupSize;
-        var startIndex = index - length;
-        if (startIndex < 0) {
-            groupSize += startIndex;
-            length += startIndex;
-            startIndex = 0;
-            done = true;
-        }
-        if (!length) {
-            break;
-        }
-
-        var part = number.substr(startIndex, length);
-        if (s.length) {
-            s = part + comma + s;
-        }
-        else {
-            s = part;
-        }
-        index -= length;
-
-        if (groupIndex < groups.length - 1) {
-            groupIndex++;
-            groupSize = groups[groupIndex];
-        }
-    }
-
-    if (negative) {
-        s = '-' + s;
-    }
-    return decimalPart ? s + decimalPart : s;
-}
+var _dateFormatRE = /'.*?[^\\]'|dddd|ddd|dd|d|MMMM|MMM|MM|M|yyyy|yy|y|hh|h|HH|H|mm|m|ss|s|tt|t|fff|ff|f|zzz|zz|z/g;
+var _formatPlaceHolderRE = /(\{[^\}^\{]+\})/g;
+var _formatters = {};
 
 _formatters['Number'] = function (number, format, culture) {
     var nf = culture.nf;
@@ -147,10 +94,7 @@ _formatters['Number'] = function (number, format, culture) {
     }
 
     return s;
-}
-
-
-var _dateFormatRE = /'.*?[^\\]'|dddd|ddd|dd|d|MMMM|MMM|MM|M|yyyy|yy|y|hh|h|HH|H|mm|m|ss|s|tt|t|fff|ff|f|zzz|zz|z/g;
+};
 
 _formatters['Date'] = function (dt, format, culture) {
     if (format == 'iso') {
@@ -311,5 +255,94 @@ _formatters['Date'] = function (dt, format, culture) {
     }
 
     return sb.toString();
+};
+
+function _commaFormatNumber(number, groups, decimal, comma) {
+    var decimalPart = null;
+    var decimalIndex = number.indexOf(decimal);
+    if (decimalIndex > 0) {
+        decimalPart = number.substr(decimalIndex);
+        number = number.substr(0, decimalIndex);
+    }
+
+    var negative = startsWith(number, '-');
+    if (negative) {
+        number = number.substr(1);
+    }
+
+    var groupIndex = 0;
+    var groupSize = groups[groupIndex];
+    if (number.length < groupSize) {
+        return decimalPart ? number + decimalPart : number;
+    }
+
+    var index = number.length;
+    var s = '';
+    var done = false;
+    while (!done) {
+        var length = groupSize;
+        var startIndex = index - length;
+        if (startIndex < 0) {
+            groupSize += startIndex;
+            length += startIndex;
+            startIndex = 0;
+            done = true;
+        }
+        if (!length) {
+            break;
+        }
+
+        var part = number.substr(startIndex, length);
+        if (s.length) {
+            s = part + comma + s;
+        }
+        else {
+            s = part;
+        }
+        index -= length;
+
+        if (groupIndex < groups.length - 1) {
+            groupIndex++;
+            groupSize = groups[groupIndex];
+        }
+    }
+
+    if (negative) {
+        s = '-' + s;
+    }
+    return decimalPart ? s + decimalPart : s;
 }
 
+function format(cultureOrFormat) {
+    var culture = neutralCulture;
+    var format = cultureOrFormat;
+    var values = Array.prototype.slice.call(arguments, 1);
+
+    if (cultureOrFormat.constructor != String) {
+        culture = cultureOrFormat;
+        format = values[0];
+        values = values.slice(1);
+    }
+
+    return format.replace(_formatPlaceHolderRE,
+        function (str, match) {
+            var index = parseInt(match.substr(1), 10);
+            var value = values[index];
+            if (!isValue(value)) {
+                return '';
+            }
+
+            var formatter = _formatters[typeName(value)];
+            if (formatter) {
+                var formatSpec = '';
+                var formatIndex = match.indexOf(':');
+                if (formatIndex > 0) {
+                    formatSpec = match.substring(formatIndex + 1, match.length - 1);
+                }
+                if (formatSpec && (formatSpec != 'i')) {
+                    return formatter(value, formatSpec, culture);
+                }
+            }
+            return culture == neutralCulture ? value.toString() : value.toLocaleString();
+        });
+}

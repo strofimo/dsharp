@@ -1,6 +1,6 @@
 "use strict";
 
-var ss = (function (global) {
+(function (global) {
   function _ss() {
     {{body}}
 
@@ -54,7 +54,6 @@ var ss = (function (global) {
             bindAdd: bindAdd,
             bindSub: bindSub,
             bindExport: bindExport,
-            deferred: deferred,
             paramsGenerator: paramsGenerator,
             createPropertyGet: createPropertyGet,
             createPropertySet: createPropertySet,
