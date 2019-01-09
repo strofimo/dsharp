@@ -1,0 +1,29 @@
+<Project>
+  <PropertyGroup>
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(SolutionDir)Output\Packages</PackageOutputPath>
+    <NuspecFile Condition="'$(NuspecFile)' == ''">$(AssemblyName).nuspec</NuspecFile>
+  </PropertyGroup>
+
+  <Target Name="UpdateNuspecFileProperties" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <Authors>Derivco Ipswich</Authors>
+      <PackageVersion>1.0.0</PackageVersion>
+      <Copyright>Copyright (c) 2018, Derivco Ipswich</Copyright>
+      <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+      <NuspecProperties>
+        $(NuspecProperties);
+        version=$(PackageVersion);
+        copyright=$(Copyright);
+        authors=$(Authors);
+        configuration=$(Configuration);
+      </NuspecProperties>
+
+    </PropertyGroup>
+
+    <XmlPoke XmlInputPath="Sdk/Sdk.props" 
+             Query="//ItemGroup//PackageReference[@Include='DSharp.Mscorlib']/@Version" 
+             Value="$(PackageVersion)" 
+             Condition="Exists('Sdk/Sdk.props')"/>
+  </Target>
+</Project>
