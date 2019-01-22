@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(SolutionDir)FrameworkTargetting.props" Condition="Exists('$(SolutionDir)FrameworkTargetting.props')" />
   <PropertyGroup>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <RootNamespace>DSharp.Compiler</RootNamespace>
     <AssemblyName>DSharp.Compiler</AssemblyName>

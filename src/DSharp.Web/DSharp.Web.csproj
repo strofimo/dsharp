@@ -1,9 +1,9 @@
 ﻿<Project>
   <Import Project="$(SolutionDir)DSharp.Sdk\Sdk\Sdk.props" Condition="Exists('$(SolutionDir)DSharp.Sdk\Sdk\Sdk.props')" />
   <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
-  <Import Project="$(SolutionDir)FrameworkTargetting.props" Condition="Exists('$(SolutionDir)FrameworkTargetting.props')" />
 
   <PropertyGroup>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <RootNamespace>System</RootNamespace>
     <AssemblyName>DSharp.Web</AssemblyName>
     <SignAssembly>true</SignAssembly>
