@@ -41,7 +41,7 @@
     <PropertyGroup>
       <ScriptsPath>$(MSBuildThisFileDirectory)content\scripts\</ScriptsPath>
     </PropertyGroup>
-    <Copy SourceFiles="$(ScriptsPath)*.js" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(ScriptsPath)*.js" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
   </Target>
 
   <PropertyGroup>
