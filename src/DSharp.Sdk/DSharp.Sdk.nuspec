@@ -1,4 +1,5 @@
-﻿<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+﻿<?xml version="1.0"?>
+<package xmlns="https://raw.githubusercontent.com/MyGet/NuGetPackages/master/NuSpec/tools/nuspec.xsd">
   <metadata>
     <id>DSharp.Sdk</id>
     <title>DSharp Sdk</title>
@@ -17,6 +18,9 @@
     <file src="Sdk\**\*" target="Sdk" />
     <file src="bin\$configuration$\net461\**" target="tools\net461" />
     <file src="bin\$configuration$\netstandard2.0\**" target="tools\netstandard2.0" exclude="**\System.*" />
-    <file src="bin\$configuration$\scripts\**" target="content"/>
+    <file src="bin\$configuration$\scripts\**" target="content/scripts"/>
   </files>
+  <contentFiles>
+    <files include="*.js" buildAction="None" copyToOutput="true" />
+  </contentFiles>
 </package>
