@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
-
+  <Import Project="$(SolutionDir)FrameworkTargetting.props" Condition="Exists('$(SolutionDir)FrameworkTargetting.props')" />
   <PropertyGroup>
     <RootNamespace>System</RootNamespace>
     <AssemblyName>DSharp.Mscorlib</AssemblyName>
@@ -12,7 +12,6 @@
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
     <AdditionalExplicitAssemblyReferences />
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NuspecFile>DSharp.Mscorlib.nuspec</NuspecFile>

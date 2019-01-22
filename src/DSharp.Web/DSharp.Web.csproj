@@ -1,6 +1,7 @@
 ﻿<Project>
   <Import Project="$(SolutionDir)DSharp.Sdk\Sdk\Sdk.props" Condition="Exists('$(SolutionDir)DSharp.Sdk\Sdk\Sdk.props')" />
   <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
+  <Import Project="$(SolutionDir)FrameworkTargetting.props" Condition="Exists('$(SolutionDir)FrameworkTargetting.props')" />
 
   <PropertyGroup>
     <RootNamespace>System</RootNamespace>
@@ -10,7 +11,6 @@
     <DelaySign>false</DelaySign>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <ToolsPath>$(SolutionDir)DSharp.Sdk\bin\$(Configuration)\$(TargetFramework)\</ToolsPath>
     <IsImportLibrary>true</IsImportLibrary>
     <ExcludeCoreLib>true</ExcludeCoreLib>

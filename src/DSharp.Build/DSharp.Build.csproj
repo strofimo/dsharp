@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(SolutionDir)FrameworkTargetting.props" Condition="Exists('$(SolutionDir)FrameworkTargetting.props')" />
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <AssemblyName>DSharp.Build</AssemblyName>
     <RootNamespace>DSharp.Build</RootNamespace>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Compile Include="..\FileInputStreamSource.cs">
       <Link>FileInputStreamSource.cs</Link>
@@ -22,12 +22,12 @@
       <Link>ResXParser.cs</Link>
     </Compile>
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.6.85" />
     <PackageReference Include="NUglify" Version="1.5.11" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\DSharp.Compiler\DSharp.Compiler.csproj" />
   </ItemGroup>

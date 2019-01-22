@@ -39,6 +39,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{9ECDD7B6-4D4A-4578-9157-B99214BEDE6F}"
 	ProjectSection(SolutionItems) = preProject
 		DSharp.snk = DSharp.snk
+		FrameworkTargetting.props = FrameworkTargetting.props
 		global.json = global.json
 		NuGet.Config = NuGet.Config
 		NuGetCommon.props = NuGetCommon.props
@@ -47,6 +48,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sdk", "Sdk", "{33DE9F89-1472-4662-8780-22DD0B6E6138}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Sdk", "DSharp.Sdk\DSharp.Sdk.csproj", "{DFA0CF1C-2713-47C7-A6E2-E77E284D6A46}"
+	ProjectSection(ProjectDependencies) = postProject
+		{35E58E1C-E298-44D8-9CA5-FB427C16FD1C} = {35E58E1C-E298-44D8-9CA5-FB427C16FD1C}
+		{8780581F-7C26-4B64-9236-BA1C458DF36E} = {8780581F-7C26-4B64-9236-BA1C458DF36E}
+		{36D4B098-A21C-4725-ACD3-400922885F38} = {36D4B098-A21C-4725-ACD3-400922885F38}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

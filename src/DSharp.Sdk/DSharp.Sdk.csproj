@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
+  <Import Project="$(SolutionDir)FrameworkTargetting.props" Condition="Exists('$(SolutionDir)FrameworkTargetting.props')" />
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     
     <PackageId>DSharp.Sdk</PackageId>
@@ -23,4 +23,5 @@
     <ProjectReference Include="..\DSharp.Build\DSharp.Build.csproj" />
   </ItemGroup>
 
+  <Import Project="PackScripts.targets" Condition="Exists('PackScripts.targets')" />
 </Project>
