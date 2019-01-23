@@ -1,5 +1,4 @@
-﻿<Project>
-  <Import Project="$(SolutionDir)DSharp.Sdk\Sdk\Sdk.props" Condition="Exists('$(SolutionDir)DSharp.Sdk\Sdk\Sdk.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
 
   <PropertyGroup>
@@ -12,9 +11,13 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <ToolsPath>$(SolutionDir)DSharp.Sdk\bin\$(Configuration)\$(TargetFramework)\</ToolsPath>
-    <IsImportLibrary>true</IsImportLibrary>
-    <ExcludeCoreLib>true</ExcludeCoreLib>
-    <SkipScriptCopy>true</SkipScriptCopy>
+
+    <NoStdLib>True</NoStdLib>
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <AdditionalExplicitAssemblyReferences />
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,5 +28,4 @@
     <ProjectReference Include="..\DSharp.Mscorlib\DSharp.Mscorlib.csproj" />
   </ItemGroup>
 
-  <Import Project="$(SolutionDir)DSharp.Sdk\Sdk\Sdk.targets" Condition="Exists('$(SolutionDir)DSharp.Sdk\Sdk\Sdk.targets')" />
 </Project>
