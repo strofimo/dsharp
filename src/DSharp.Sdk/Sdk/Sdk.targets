@@ -37,11 +37,11 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="CopyScripts" AfterTargets="BuildScript" DependsOnTargets="BuildScript" Condition="'$(SkipScriptCopy)' == 'false'">
+  <Target Name="CopyScripts" AfterTargets="BuildScript" Condition="'$(SkipScriptCopy)' == 'false'">
     <PropertyGroup>
-      <ScriptsPath>$(MSBuildThisFileDirectory)content\scripts\</ScriptsPath>
+      <ScriptsPath>$(MSBuildThisFileDirectory)..\content\scripts\</ScriptsPath>
     </PropertyGroup>
-    <Copy SourceFiles="$(ScriptsPath)*.js" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(ScriptsPath)ss.js;$(ScriptsPath)ss.min.js" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
   </Target>
 
   <PropertyGroup>
