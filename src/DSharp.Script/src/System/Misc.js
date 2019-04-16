@@ -160,3 +160,14 @@ function paramsGenerator(n, f) {
         return f.apply(this, args);
     }
 }
+
+function coalesce(a, b) {
+    var l = typeof (a) == "function" ? a() : a;
+    if (isValue(l)) {
+        return l;
+    }
+    else {
+        var r = typeof (b) == "function" ? b() : b;
+        return r;
+    }
+}

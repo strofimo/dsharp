@@ -202,5 +202,18 @@ namespace System
         /// <returns>The first valid value.</returns>
         [DSharpScriptMemberName("value")]
         public extern static TValue Value<TValue>(TValue value, TValue alternateValue, params TValue[] alternateValues);
+
+        /// <summary> 
+        /// Coalesce arguments 
+        /// </summary> 
+        /// <param name="left">Object of function to be evaluated.</param> 
+        /// <param name="right">Object of function to be evaluated.</param> 
+        /// <returns> Returns the result of first argument if the argument is not null;  
+        ///  otherwise it returns the result of second argument</returns> 
+        ///  <remarks>If any argument is a function, then the result of the funcion will 
+        ///  be evaluated.</remarks> 
+        [ScriptAlias("ss.coalesce")]
+
+        public static extern TValue Coalesce<TValue>(TValue left, TValue right);
     }
 }

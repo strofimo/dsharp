@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
@@ -78,7 +78,8 @@ namespace ExpressionTests {
             d.Flag |= true;
 
             object o1 = null ?? new object();
-            
+            object o2 = SampleString() ?? string.Empty;
+
             string s2 = 10.ToString();
             s2 = CValue.ToString();
             s2 = true.ToString();
@@ -99,6 +100,11 @@ namespace ExpressionTests {
             d.Flag &= true;
             d.Flag |= true;
             d.Flag ^= true;
+        }
+
+        private string SampleString()
+        {
+            return null;
         }
     }
 }
