@@ -17,3 +17,5 @@ DSharp is a fork of the excellent Script#  project.
 ### License ###
 Copyright (c) 2015, DSharp Project.
 DSharp is licensed under the Apache 2.0 License.
+
+[![Build status](https://ci.appveyor.com/api/projects/status/57jvqrtyj1v3re45/branch/master?svg=true)](https://ci.appveyor.com/project/fred-perkins/dsharp/branch/master)
