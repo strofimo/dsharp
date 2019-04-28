@@ -1,8 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
-  var $global = this;
-
+var test = (function($global){
   // ListTests.PublicClass
 
   function PublicClass() {
@@ -11,9 +9,9 @@ define('test', ['ss'], function(ss) {
     list.push('two', 'three');
     var array = list;
     var integersSource = [ 1, 2, 3 ];
-    var listOfIntegers = integersSource.slice();
+    var listOfIntegers = [integersSource];
     listOfIntegers.push(4);
-    var other = [];
+    var other = new Array(5);
   }
   var PublicClass$ = {
 
@@ -27,4 +25,4 @@ define('test', ['ss'], function(ss) {
 
 
   return $exports;
-});
+})(self);
