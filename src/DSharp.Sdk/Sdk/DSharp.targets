@@ -7,6 +7,13 @@
   <UsingTask TaskName="ScriptCompilerTask" AssemblyFile="$(DSharpBuildAssembly)" />
   <UsingTask TaskName="ResXCodeGeneratorTask" AssemblyFile="$(DSharpBuildAssembly)" />
 
+  <Target Name="ValidateMinimumFrameworkVersion" BeforeTargets="Compile">
+    <Error Text="Invalid .NetFramework version specified. Please specify net471 or greater"
+           File="$(MSBuildProjectFullPath)"
+           Code="DS0011"
+      Condition="$([System.Version]::Parse('$(TargetFrameworkVersion.Substring(1))')) &lt; $([System.Version]::Parse('4.7.1'))" />
+  </Target>
+
   <Target Name="BuildScript" Returns="@(Scripts)" AfterTargets="Build" Condition="'$(IsImportLibrary)' == 'false'">
     <ScriptCompilerTask
       Sources="@(Compile)"
