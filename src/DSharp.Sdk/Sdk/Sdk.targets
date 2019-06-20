@@ -7,6 +7,6 @@
     <ToolsPath Condition="'$(ToolsPath)' == ''">$(MSBuildThisFileDirectory)..\tools\$(TaskFolder)\</ToolsPath>
   </PropertyGroup>
 
-  <Import Project="DSharp.targets" Condition="'$(IsDSharpBuild)' == 'true'"/>
+  <Import Project="DSharp.targets" Condition="$(IsDSharpBuild)"/>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk"/>
 </Project>

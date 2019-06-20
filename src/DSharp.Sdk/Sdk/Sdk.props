@@ -5,10 +5,10 @@
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
     <TargetFrameworks Condition="'$(TargetFrameworks)' == ''">net471;netstandard2.0</TargetFrameworks>
-    <IsDSharpBuild Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', 'net\d{2,3}'))">true</IsDSharpBuild>
+    <IsDSharpBuild>$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', 'net\d{2,3}'))</IsDSharpBuild>
     <BuildingProject>true</BuildingProject>
     <UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
   </PropertyGroup>
-  <Import Condition="$(IsDSharpBuild) == 'true'" Project="$(MSBuildThisFileDirectory)DSharp.props"/>
-  <Import Condition="'$(IsDSharpBuild)' != 'true'" Project="$(MSBuildThisFileDirectory)NetStandard.props" />
+  <Import Condition="$(IsDSharpBuild) " Project="$(MSBuildThisFileDirectory)DSharp.props"/>
+  <Import Condition="!$(IsDSharpBuild)" Project="$(MSBuildThisFileDirectory)NetStandard.props" />
 </Project>
