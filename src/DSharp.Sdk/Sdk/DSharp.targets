@@ -43,7 +43,7 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="CopyScripts" AfterTargets="BuildScript" Condition="'$(SkipScriptCopy)' == 'false'">
+  <Target Name="CopyScripts" AfterTargets="BuildScript" Condition="'$(SkipScriptCopy)' == 'false' AND '$(IsImportLibrary)' == 'false'">
     <PropertyGroup>
       <ScriptsPath>$(MSBuildThisFileDirectory)..\content\scripts\</ScriptsPath>
     </PropertyGroup>
