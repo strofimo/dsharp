@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <CoreLibDirectory>$(SolutionDir)DSharp.Mscorlib\bin\$(Configuration)\netstandard2.0\</CoreLibDirectory>
-    <WebLibDirectory>$(SolutionDir)DSharp.Web\bin\$(Configuration)\netstandard2.0\</WebLibDirectory>
+    <CoreLibDirectory>$(SolutionDir)DSharp.Mscorlib\bin\$(Configuration)\net471\</CoreLibDirectory>
+    <WebLibDirectory>$(SolutionDir)DSharp.Web\bin\$(Configuration)\net471\</WebLibDirectory>
   </PropertyGroup>
   
   <ItemGroup>
