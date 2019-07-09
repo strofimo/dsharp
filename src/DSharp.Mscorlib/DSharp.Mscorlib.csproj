@@ -19,6 +19,7 @@
     <Authors>Derivco Ipswich</Authors>
     <Company>Derivco</Company>
     <Description>DSharps Mscorlib implementation which provides all base types</Description>
+    <RuntimeMetadataVersion>v4.0.30319</RuntimeMetadataVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
