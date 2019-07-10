@@ -10,12 +10,18 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Build", "DSharp.Build\DSharp.Build.csproj", "{AFF55DAB-FF5C-41DC-9209-0C0B54EE1645}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Compiler", "DSharp.Compiler\DSharp.Compiler.csproj", "{35E58E1C-E298-44D8-9CA5-FB427C16FD1C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8780581F-7C26-4B64-9236-BA1C458DF36E} = {8780581F-7C26-4B64-9236-BA1C458DF36E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Mscorlib", "DSharp.Mscorlib\DSharp.Mscorlib.csproj", "{36D4B098-A21C-4725-ACD3-400922885F38}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Scripts", "DSharp.Script\DSharp.Scripts.csproj", "{8780581F-7C26-4B64-9236-BA1C458DF36E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Shell", "DSharp.Shell\DSharp.Shell.csproj", "{0C545112-DD6A-4270-B95C-CC488501EF5F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8780581F-7C26-4B64-9236-BA1C458DF36E} = {8780581F-7C26-4B64-9236-BA1C458DF36E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Web", "DSharp.Web\DSharp.Web.csproj", "{3681A9A8-FC40-4125-B842-7775713C8DCE}"
 EndProject
@@ -48,7 +54,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Sdk", "DSharp.Sdk\DS
 		{8780581F-7C26-4B64-9236-BA1C458DF36E} = {8780581F-7C26-4B64-9236-BA1C458DF36E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharp.Web.Sdk", "DSharp.Web.Sdk\DSharp.Web.Sdk.csproj", "{22A3E0ED-39CA-4929-A470-0FF8C057A316}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Web.Sdk", "DSharp.Web.Sdk\DSharp.Web.Sdk.csproj", "{22A3E0ED-39CA-4929-A470-0FF8C057A316}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
