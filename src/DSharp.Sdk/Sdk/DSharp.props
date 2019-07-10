@@ -7,7 +7,6 @@
     <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
     <DefineConstants>DSHARP;@(DefineConstants)</DefineConstants>
     <GenerateScriptAssemblyAttribute Condition="'$(GenerateScriptAssemblyAttributeCondition)' == ''">true</GenerateScriptAssemblyAttribute>
-    <ScriptAssembly Condition="'$(ScriptAssembly)' == ''">$(AssemblyName)</ScriptAssembly>
   </PropertyGroup>
   <PropertyGroup Label="DisableStdLib">
     <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
@@ -31,6 +30,6 @@
     </AssemblyAttribute>
   </ItemGroup>
   <ItemGroup Condition="'$(ExcludeCoreLib)' == 'false'">
-    <PackageReference Include="DSharp.Mscorlib" Version="1.0.0-dev.108" IsImplicitlyDefined="true" PrivateAssets="All" />
+    <PackageReference Include="DSharp.Mscorlib" Version="1.0.0-dev.113" IsImplicitlyDefined="true" PrivateAssets="All" />
   </ItemGroup>
 </Project>
