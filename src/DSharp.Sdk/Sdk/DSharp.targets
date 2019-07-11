@@ -3,7 +3,7 @@
   <PropertyGroup>
     <DSharpBuildAssembly Condition="'$(DSharpBuildAssembly)' == ''">$(ToolsPath)DSharp.Build.dll</DSharpBuildAssembly>
     <NoWarn>CS0626;$(NoWarn)</NoWarn>
-    <ScriptAssembly Condition="'$(ScriptAssembly)' == ''">$([System.Text.RegularExpressions.Regex]::Replace($(AssemblyName), `\.`, `_`))</ScriptAssembly>
+    <ScriptAssembly Condition="'$(ScriptAssembly)' == '' AND '$(IsImportLibrary)' != 'false'">$([System.Text.RegularExpressions.Regex]::Replace($(AssemblyName), `\.`, `_`))</ScriptAssembly>
   </PropertyGroup>
   
   <UsingTask TaskName="ScriptCompilerTask" AssemblyFile="$(DSharpBuildAssembly)" />
