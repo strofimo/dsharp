@@ -1,10 +1,11 @@
-// AttributeNode.cs
+﻿// AttributeNode.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DSharp.Compiler.CodeModel.Expressions;
 using DSharp.Compiler.CodeModel.Names;
 
@@ -41,13 +42,23 @@ namespace DSharp.Compiler.CodeModel.Attributes
             {
                 AttributeNode attrNode = parseNode as AttributeNode;
 
-                if (attrNode?.TypeName.Equals(attributeName, StringComparison.Ordinal) ?? false)
+                if (AttributeNameMatches(attributeName, attrNode))
                 {
                     return attrNode;
                 }
             }
 
             return null;
+        }
+
+        private static bool AttributeNameMatches(string attributeName, AttributeNode attrNode)
+        {
+            if(attributeName is null)
+            {
+                return false;
+            }
+
+            return Regex.IsMatch(attrNode.TypeName, $@"^(\w+?\.)*{attributeName.RemoveEnd("Attribute")}(Attribute)?$");
         }
 
         public static ParseNodeList GetAttributeList(ParseNodeList attributeBlocks)

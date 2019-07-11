@@ -21,8 +21,6 @@ namespace DSharp.Compiler.Extensions
 
         internal static string GetAttributeValue(this ParseNodeList parseNodeList, string attributeName)
         {
-            attributeName = attributeName.RemoveEnd("Attribute");
-
             AttributeNode node = AttributeNode.FindAttribute(parseNodeList, attributeName);
 
             if (node != null && node.Arguments.Count != 0 && node.Arguments[0].NodeType == ParseNodeType.Literal)
