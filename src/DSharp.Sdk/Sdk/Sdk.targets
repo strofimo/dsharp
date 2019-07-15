@@ -1,10 +1,10 @@
 <Project TreatAsLocalProperty="TaskFolder">
-  
   <PropertyGroup>
     <TaskFolder Condition=" '$(MSBuildRuntimeType)' == 'Core' ">netstandard2.0</TaskFolder>
     <TaskFolder Condition=" '$(MSBuildRuntimeType)' != 'Core' ">net461</TaskFolder>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <ToolsPath Condition="'$(ToolsPath)' == ''">$(MSBuildThisFileDirectory)..\tools\$(TaskFolder)\</ToolsPath>
+    <ImportedSdks>DSharp.Sdk.targets;$(ImportedSdks)</ImportedSdks>
   </PropertyGroup>
 
   <Import Project="DSharp.targets" Condition="$(IsDSharpBuild)"/>

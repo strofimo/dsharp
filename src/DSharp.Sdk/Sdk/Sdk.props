@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <DSharpSdk>true</DSharpSdk>
+    <ImportedSdks>DSharp.Sdk.props;$(ImportedSdks)</ImportedSdks>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
