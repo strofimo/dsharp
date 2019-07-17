@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Content Include="*\**\*.*" Pack="true" PackagePath="." Exclude="$(DefaultItemExcludes)" />
+    <None Remove="Sdk\Pack.targets" />
     <UpToDateCheckInput Include="@(Content)" />
   </ItemGroup>
 

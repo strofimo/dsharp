@@ -3,7 +3,6 @@
   <PropertyGroup>
     <DSharpBuildAssembly Condition="'$(DSharpBuildAssembly)' == ''">$(ToolsPath)DSharp.Build.dll</DSharpBuildAssembly>
     <NoWarn>CS0626;$(NoWarn)</NoWarn>
-    <ScriptName Condition="'$(ScriptName)' == '' AND '$(IsImportLibrary)' == 'false'">$([System.Text.RegularExpressions.Regex]::Replace($(AssemblyName), `\.`, `_`))</ScriptName>
   </PropertyGroup>
   
   <UsingTask TaskName="ScriptCompilerTask" AssemblyFile="$(DSharpBuildAssembly)" />
@@ -16,7 +15,7 @@
       Condition="$([System.Version]::Parse('$(TargetFrameworkVersion.Substring(1))')) &lt; $([System.Version]::Parse('$(MinimumFrameworkVersion)'))" />
   </Target>
 
-  <Target Name="BuildScript" Returns="@(Scripts)" AfterTargets="Build" Condition="'$(IsImportLibrary)' == 'false'">
+  <Target Name="BuildScript" Returns="@(Scripts)" AfterTargets="Build" Condition="'$(IsImportLibrary)' != 'true'">
     <ScriptCompilerTask
       Sources="@(Compile)"
       Resources="@(EmbeddedResource)"
@@ -45,7 +44,7 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="CopyScripts" AfterTargets="BuildScript" Condition="'$(SkipScriptCopy)' == 'false' AND '$(IsImportLibrary)' == 'false'">
+  <Target Name="CopyScripts" AfterTargets="BuildScript" Condition="'$(SkipScriptCopy)' == 'false' AND '$(IsImportLibrary)' != 'true'">
     <PropertyGroup>
       <ScriptsPath>$(MSBuildThisFileDirectory)..\content\scripts\</ScriptsPath>
     </PropertyGroup>

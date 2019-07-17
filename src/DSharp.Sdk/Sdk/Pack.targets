@@ -1,0 +1,58 @@
+<Project>
+  <PropertyGroup>
+    <GenerateNuspecDependsOn>PackScripts;$(GenerateNuspecDependsOn)</GenerateNuspecDependsOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvailableItemName Include="PackagedScript" />
+  </ItemGroup>
+
+  <Target Name="GetTfmOutputDirs">
+    <ItemGroup>
+      <_TargetFrameworks Include="$(TargetFrameworks)"/>
+    </ItemGroup>
+
+    <MSBuild
+      Projects="$(MSBuildProjectFullPath)"
+      Targets="_GetTfmOutputDirs"
+      Properties="TargetFramework=%(_TargetFrameworks.Identity);">
+
+      <Output
+          TaskParameter="TargetOutputs"
+          ItemName="TfmOutputDirs"/>
+    </MSBuild>
+  </Target>
+
+  <Target Name="GetScriptOutputPath" Condition="'$(IsImportLibrary)' != 'true'" DependsOnTargets="GetTfmOutputDirs">
+    <ItemGroup>
+      <ScriptOutput Include="%(TfmOutputDirs.Identity)$(ScriptName).js;%(Identity)$(ScriptName).min.js" Condition="%(IsDSharpBuild) == 'true'" >
+        <PackagePath>%(PackagePath)</PackagePath>
+      </ScriptOutput>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PackScripts" DependsOnTargets="GetTfmOutputDirs;GetScriptOutputPath">
+    <ItemGroup>
+      <None Include="@(PackagedScript)">
+        <Pack Condition="Exists(%(Identity))">true</Pack>
+        <PackagePath Condition="'$(TargetFrameworks)' != ''">$([System.Text.RegularExpressions.Regex]::Replace($(TargetFrameworks), '([\w.]+)', 'lib\$1'))</PackagePath>
+        <PackagePath Condition="'$(TargetFrameworks)' == ''">lib\$(TargetFramework)</PackagePath>
+      </None>
+      <None Include="@(ScriptOutput)">
+        <Pack Condition="Exists(%(Identity))">true</Pack>
+        <PackagePath>%(PackagePath)</PackagePath>
+      </None>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_GetTfmOutputDirs" Returns="@(TfmOutputDirs)" Label="inner build to determine tfm specific output paths">
+    <ItemGroup>
+      <TfmOutputDirs Include="$(OutputPath)">
+        <TargetFramework>$(TargetFramework)</TargetFramework>
+        <TargetFrameworkIdentifier>$(TargetFrameworkIdentifier)</TargetFrameworkIdentifier>
+        <PackagePath>lib\$(TargetFramework)\</PackagePath>
+        <IsDSharpBuild>$(IsDSharpBuild)</IsDSharpBuild>
+      </TfmOutputDirs>
+    </ItemGroup>
+  </Target>
+</Project>

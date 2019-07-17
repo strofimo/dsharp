@@ -2,7 +2,6 @@
   <PropertyGroup Label="SetDefaults">
     <GenerateScript Condition="'$(GenerateScript)' == ''">true</GenerateScript>
     <LangVersion Condition="'$(GenerateScript)' == 'True'">ISO-2</LangVersion>
-    <IsImportLibrary Condition="'$(IsImportLibrary)' == ''">false</IsImportLibrary>
     <ExcludeCoreLib Condition="'$(ExcludeCoreLib)' == ''">false</ExcludeCoreLib>
     <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
     <DefineConstants>DSHARP;@(DefineConstants)</DefineConstants>
@@ -30,6 +29,6 @@
     </AssemblyAttribute>
   </ItemGroup>
   <ItemGroup Condition="'$(ExcludeCoreLib)' == 'false'">
-    <PackageReference Include="DSharp.Mscorlib" Version="1.0.0-dev.117" IsImplicitlyDefined="true" PrivateAssets="All" />
+    <PackageReference Include="DSharp.Mscorlib" Version="1.0.0-dev.132" IsImplicitlyDefined="true" PrivateAssets="All" />
   </ItemGroup>
 </Project>
