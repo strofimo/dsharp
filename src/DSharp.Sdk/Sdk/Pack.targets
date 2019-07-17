@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <GenerateNuspecDependsOn>PackScripts;$(GenerateNuspecDependsOn)</GenerateNuspecDependsOn>
+    <GenerateNuspecDependsOn>PackPackagedScripts;PackScripts;$(GenerateNuspecDependsOn)</GenerateNuspecDependsOn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,13 +31,24 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="PackScripts" DependsOnTargets="GetTfmOutputDirs;GetScriptOutputPath">
+  <Target Name="PackPackagedScripts" DependsOnTargets="GetTfmOutputDirs" Inputs="%(TfmOutputDirs.Identity)" Outputs="batch">
+    <PropertyGroup>
+      <_tfmoutdir>%(TfmOutputDirs.Identity)</_tfmoutdir>
+    </PropertyGroup>
     <ItemGroup>
       <None Include="@(PackagedScript)">
-        <Pack Condition="Exists(%(Identity))">true</Pack>
-        <PackagePath Condition="'$(TargetFrameworks)' != ''">$([System.Text.RegularExpressions.Regex]::Replace($(TargetFrameworks), '([\w.]+)', 'lib\$1'))</PackagePath>
-        <PackagePath Condition="'$(TargetFrameworks)' == ''">lib\$(TargetFramework)</PackagePath>
+        <Pack Condition="%(TfmOutputDirs.IsDSharpBuild)">true</Pack>
+        <PackagePath>%(TfmOutputDirs.PackagePath)</PackagePath>
       </None>
+      <None Include="@(PackagedScript -> '$(_tfmoutdir)%(Filename).min.js')">
+        <Pack Condition="Exists('@(PackagedScript -> '$(_tfmoutdir)%(Filename).min.js')')">true</Pack>
+        <PackagePath>%(TfmOutputDirs.PackagePath)</PackagePath>
+      </None>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PackScripts" DependsOnTargets="GetTfmOutputDirs;GetScriptOutputPath">
+    <ItemGroup>
       <None Include="@(ScriptOutput)">
         <Pack Condition="Exists(%(Identity))">true</Pack>
         <PackagePath>%(PackagePath)</PackagePath>
