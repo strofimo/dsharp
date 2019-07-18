@@ -83,7 +83,7 @@ namespace DSharp.Compiler.Importer
 
                         ImportPseudoMembers(PseudoClassMembers.Object, (ClassSymbol) typeSymbol);
                     }
-                    else if (typeSymbol.Name.Equals("Dictionary", StringComparison.Ordinal))
+                    else if (typeSymbol.Name.Equals("Dictionary`2", StringComparison.Ordinal))
                     {
                         // The Dictionary class contains static methods at runtime, rather
                         // than instance methods.
@@ -706,6 +706,12 @@ namespace DSharp.Compiler.Importer
                     symbols.CreateArrayTypeSymbol(stringType), MemberVisibility.Public | MemberVisibility.Static);
                 getKeysMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keys"));
                 classSymbol.AddMember(getKeysMethod);
+
+                // Define Dictionary.Values
+                MethodSymbol getValuesMethod = new MethodSymbol("GetValues", classSymbol,
+                    symbols.CreateArrayTypeSymbol(stringType), MemberVisibility.Public | MemberVisibility.Static);
+                getValuesMethod.SetTransformName(DSharpStringResources.ScriptExportMember("values"));
+                classSymbol.AddMember(getValuesMethod);
 
                 // Define Dictionary.GetCount
                 MethodSymbol countMethod = new MethodSymbol("GetKeyCount", classSymbol, intType,

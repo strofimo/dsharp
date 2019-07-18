@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -9,43 +9,55 @@ namespace ExpressionTests {
 
     public class App {
 
-        public Dictionary GetData() {
+        public IDictionary GetData() {
             return null;
         }
 
-        public Dictionary<string, int> GetData2() {
+        public IDictionary<string, int> GetData2() {
             return null;
         }
 
         public void Test(int arg) {
-            Dictionary dictionary1 = new Dictionary();
-            Dictionary dictionary2 = new Dictionary("xyz", 1, "abc", new App(), "delete", 2, "test.", 3, "\t", 4);
+            Dictionary<string, object> dictionary1 = new Dictionary<string, object>();
         }
 
         public void Test2(int arg) {
-            Dictionary dictionary1 = new Dictionary("aaa", 123, "xyz", true);
+            Dictionary<string, object> dictionary1 = new Dictionary<string, object>();
             string key = "blah";
-            int c = dictionary1.Count;
+            int c = dictionary1.Keys.Count;
 
-            int c2 = GetData().Count;
-
-            bool b = dictionary1.ContainsKey("aaa");
+            int c2 = GetData().Keys.Count;
 
             dictionary1.Remove("aaa");
             dictionary1.Remove("Proxy-Connection");
             dictionary1.Remove(key);
 
             dictionary1.Clear();
-            
-            string[] keys = dictionary1.Keys;
+
+            dictionary1["asd"] = 3;
+            object val = dictionary1["asd"];
+
+            dictionary1.Add("hello", "bye");
+
+            dictionary1.ContainsKey("asd");
+            dictionary1.Contains("asd");
+
+            foreach (KeyValuePair<string, object> pair in dictionary1)
+            {
+                string myKey = pair.Key;
+                object myValue = pair.Value;
+            }
+
+            ICollection<string> keys = dictionary1.Keys;
+            ICollection<object> values = dictionary1.Values;
         }
 
         public void Test3(int arg) {
-            Dictionary<string, int> dictionary1 = new Dictionary<string, int>("aaa", 123, "xyz", true);
+            Dictionary<string, int> dictionary1 = new Dictionary<string, int>();
             string key = "blah";
-            int c = dictionary1.Count;
+            int c = dictionary1.Keys.Count;
 
-            int c2 = GetData2().Count;
+            int c2 = GetData2().Keys.Count;
 
             bool b = dictionary1.ContainsKey("aaa");
 

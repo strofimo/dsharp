@@ -8,24 +8,45 @@ namespace System.Collections.Generic
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Object")]
-    public sealed class Dictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
+    public sealed partial class Dictionary<TKey, TValue>
+        : IDictionary<TKey, TValue>
+        , IDictionary
+        , IReadOnlyDictionary<TKey, TValue>
     {
         public Dictionary() { }
 
-        public Dictionary(params object[] nameValuePairs) { }
+        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
+        public extern IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator();
 
-        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", /* error */ true)]
-        public extern Dictionary(int count);
+        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
+        extern IEnumerator IEnumerable.GetEnumerator();
 
-        public extern int Count { get; }
+        public extern ICollection<TKey> Keys { get; }
 
-        public extern IReadonlyCollection<TKey> Keys { get; }
+        extern ICollection IDictionary.Keys { get; }
+
+        extern IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys { get; }
+
+        public extern ICollection<TValue> Values { get; }
+
+        extern ICollection IDictionary.Values { get; }
+
+        extern IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values { get; }
 
         [ScriptField]
         public extern TValue this[TKey key] { get; set; }
 
-        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", /* error */ true)]
+        [ScriptField]
+        public extern object this[object key] { get; set; }
+
+        [DSharpScriptMemberName("addKeyValue")]
         public extern void Add(TKey key, TValue value);
+
+        [DSharpScriptMemberName("addKeyValue")]
+        public extern void Add(object key, object value);
+
+        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
+        public extern void Add(KeyValuePair<TKey, TValue> item);
 
         [DSharpScriptMemberName("clearKeys")]
         public extern void Clear();
@@ -33,19 +54,17 @@ namespace System.Collections.Generic
         [DSharpScriptMemberName("keyExists")]
         public extern bool ContainsKey(TKey key);
 
-        public extern static Dictionary<TKey, TValue> GetDictionary(object o);
+        [DSharpScriptMemberName("keyExists")]
+        public extern bool Contains(object key);
 
-        public extern IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator();
+        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
+        public extern bool Contains(KeyValuePair<TKey, TValue> item);
 
-        extern IEnumerator IEnumerable.GetEnumerator();
+        public extern bool Remove(TKey key);
 
-        public extern void Remove(TKey key);
+        public extern void Remove(object key);
 
-        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", /* error */ true)]
-        public extern bool TryGetValue(TKey key, out TValue value);
-
-        public extern static implicit operator Dictionary(Dictionary<TKey, TValue> dictionary);
-
-        public extern static implicit operator Dictionary<TKey, TValue>(Dictionary dictionary);
+        [Obsolete("This is only for use by the c# compiler, and cannot be used for generating script.", error: true)]
+        public extern bool Remove(KeyValuePair<TKey, TValue> item);
     }
 }

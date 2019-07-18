@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Expressions;
 using DSharp.Compiler.CodeModel.Members;
@@ -743,43 +744,51 @@ namespace DSharp.Compiler.Compiler
 
             Debug.Assert(objectExpression != null);
 
-            TypeSymbol dictionaryType = symbolSet.ResolveIntrinsicType(IntrinsicType.Dictionary);
-            TypeSymbol genericDictionaryType = symbolSet.ResolveIntrinsicType(IntrinsicType.GenericDictionary);
+            TypeSymbol[] dictionaryTypes = symbolSet.ResolveIntrinsicTypes(IntrinsicType.GenericDictionary, IntrinsicType.IDictionary, IntrinsicType.GenericIDictionary, IntrinsicType.GenericIReadOnlyDictionary);
             TypeSymbol nullableType = symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable);
             TypeSymbol typeType = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
+            TypeSymbol memberInfoType = symbolSet.ResolveIntrinsicType(IntrinsicType.MemberInfo);
 
-            if (memberSymbol.Type == SymbolType.Property)
+            TypeSymbol evaluatedDictionaryType = dictionaryTypes.SingleOrDefault(
+                t => t.FullName == objectExpression.EvaluatedType.FullName);
+
+            if (evaluatedDictionaryType != null)
             {
-                if (memberSymbol.Parent == dictionaryType ||
-                    memberSymbol.Parent == genericDictionaryType)
+                TypeSymbol dictionarySymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.GenericDictionary);
+                MethodSymbol methodSymbol = null;
+
+                if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Count)) == 0)
                 {
-                    MethodSymbol methodSymbol = null;
-
-                    if (string.CompareOrdinal(memberSymbol.Name, "Count") == 0)
-                    {
-                        methodSymbol = (MethodSymbol)dictionaryType.GetMember("GetKeyCount");
-                        Debug.Assert(methodSymbol != null);
-                    }
-                    else if (string.CompareOrdinal(memberSymbol.Name, "Keys") == 0)
-                    {
-                        methodSymbol = (MethodSymbol)dictionaryType.GetMember("GetKeys");
-                        Debug.Assert(methodSymbol != null);
-                    }
-
-                    if (methodSymbol != null)
-                    {
-                        MethodExpression methodExpression =
-                            new MethodExpression(
-                                new TypeExpression(dictionaryType, SymbolFilter.Public | SymbolFilter.StaticMembers),
-                                methodSymbol);
-                        methodExpression.AddParameterValue(objectExpression);
-
-                        return methodExpression;
-                    }
+                    methodSymbol = (MethodSymbol)dictionarySymbol.GetMember("GetKeyCount");
+                    Debug.Assert(methodSymbol != null);
                 }
-                else if (memberSymbol.Parent == nullableType)
+                else if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Keys)) == 0)
                 {
-                    if (string.CompareOrdinal(memberSymbol.Name, "Value") == 0)
+                    methodSymbol = (MethodSymbol)dictionarySymbol.GetMember("GetKeys");
+                    Debug.Assert(methodSymbol != null);
+                }
+                else if (string.CompareOrdinal(memberSymbol.Name, nameof(Dictionary<object, object>.Values)) == 0)
+                {
+                    methodSymbol = (MethodSymbol)dictionarySymbol.GetMember("GetValues");
+                    Debug.Assert(methodSymbol != null);
+                }
+
+                if (methodSymbol != null)
+                {
+                    MethodExpression methodExpression =
+                        new MethodExpression(
+                            new TypeExpression(evaluatedDictionaryType, SymbolFilter.Public | SymbolFilter.StaticMembers),
+                            methodSymbol);
+                    methodExpression.AddParameterValue(objectExpression);
+
+                    return methodExpression;
+                }
+            }
+            else if (memberSymbol.Type == SymbolType.Property)
+            {
+                if (memberSymbol.Parent == nullableType)
+                {
+                    if (string.CompareOrdinal(memberSymbol.Name, nameof(Nullable<int>.Value)) == 0)
                     {
                         // Nullable<T>.Value becomes Nullable<T>
 
@@ -789,7 +798,7 @@ namespace DSharp.Compiler.Compiler
                         return objectExpression;
                     }
 
-                    if (string.CompareOrdinal(memberSymbol.Name, "HasValue") == 0)
+                    if (string.CompareOrdinal(memberSymbol.Name, nameof(Nullable<int>.HasValue)) == 0)
                     {
                         // Nullable<T>.Value becomes Script.IsValue(Nullable<T>)
 
@@ -805,9 +814,9 @@ namespace DSharp.Compiler.Compiler
                         return methodExpression;
                     }
                 }
-                else if (memberSymbol.Parent == typeType)
+                else if (memberSymbol.Parent == memberInfoType || memberSymbol.Parent == typeType)
                 {
-                    if (string.CompareOrdinal(memberSymbol.Name, "Name") == 0)
+                    if (string.CompareOrdinal(memberSymbol.Name, nameof(MemberInfo.Name)) == 0)
                     {
                         // type.Name becomes ss.typeName(type)
 
@@ -1252,8 +1261,7 @@ namespace DSharp.Compiler.Compiler
 
             TypeSymbol objectType = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
             TypeSymbol typeType = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
-            TypeSymbol dictionaryType = symbolSet.ResolveIntrinsicType(IntrinsicType.Dictionary);
-            TypeSymbol genericDictionaryType = symbolSet.ResolveIntrinsicType(IntrinsicType.GenericDictionary);
+            TypeSymbol[] dictionaryTypes = symbolSet.ResolveIntrinsicTypes(IntrinsicType.GenericDictionary, IntrinsicType.IDictionary, IntrinsicType.GenericIDictionary);
             TypeSymbol intType = symbolSet.ResolveIntrinsicType(IntrinsicType.Integer);
             TypeSymbol stringType = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
             TypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
@@ -1331,9 +1339,9 @@ namespace DSharp.Compiler.Compiler
                         return new MethodExpression(memberExpression.ObjectReference, method);
                     }
                 }
-                else if (method.Parent == dictionaryType || method.Parent == genericDictionaryType)
+                else if (dictionaryTypes.Contains(method.Parent))
                 {
-                    if (method.Name.Equals("Remove", StringComparison.Ordinal))
+                    if (method.Name.Equals(nameof(Dictionary<object, object>.Remove), StringComparison.Ordinal))
                     {
                         // Switch the instance Remove method on Dictionary to
                         // calls to the delete operator.
@@ -1342,18 +1350,6 @@ namespace DSharp.Compiler.Compiler
                         return new LateBoundExpression(memberExpression.ObjectReference,
                             args[0], LateBoundOperation.DeleteField,
                             objectType);
-                    }
-
-                    if (method.Name.Equals("GetDictionary", StringComparison.Ordinal))
-                    {
-                        // Dictionary.GetDictionary is a no-op method; we're just interested
-                        // in the object being passed in.
-                        // However we'll re-evaluate the argument to be of dictionary type
-                        // so that subsequent use of this expression sees it as a dictionary.
-                        Debug.Assert(args.Count == 1);
-                        args[0].Reevaluate((TypeSymbol)method.Parent);
-
-                        return args[0];
                     }
                 }
                 else if (method.Parent == scriptType)

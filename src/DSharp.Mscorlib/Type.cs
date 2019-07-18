@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace System
@@ -9,17 +9,11 @@ namespace System
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public sealed class Type
+    public sealed partial class Type : MemberInfo
     {
         [ScriptName("$base")]
         [ScriptField]
         public extern Type BaseType { get; }
-
-        public extern string Name { get; }
-
-        //TODO: Look at moving out of this class
-        [ScriptField]
-        public extern Dictionary Prototype { get; }
 
         [DSharpScriptMemberName("type")]
         public extern static Type GetType(string typeName);

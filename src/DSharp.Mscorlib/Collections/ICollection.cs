@@ -9,8 +9,5 @@ namespace System.Collections
         [ScriptField]
         [ScriptName("length")]
         int Count { get; }
-
-        [ScriptField]
-        object this[int index] { get; set; }
     }
 }
