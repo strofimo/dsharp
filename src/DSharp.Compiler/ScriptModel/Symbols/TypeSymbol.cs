@@ -19,7 +19,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private object metadataReference;
 
         private ISymbolTable parentSymbolTable;
-        private bool testType;
 
         protected TypeSymbol(SymbolType type, string name, NamespaceSymbol parent)
             : base(type, name, parent)
@@ -273,11 +272,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Debug.Assert(symbolTable != null);
 
             parentSymbolTable = symbolTable;
-        }
-
-        public void SetTestType()
-        {
-            testType = true;
         }
 
         #region ISymbolTable Members

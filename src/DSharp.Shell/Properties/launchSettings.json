@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DSharp.Shell": {
+      "commandName": "Project",
+      "commandLineArgs": "/debug /nologo /ref:C:\\dev\\dsharp\\dsharp\\src\\DSharp.Mscorlib\\bin\\Debug\\net471\\DSharp.Mscorlib.dll /ref:C:\\Users\\Fredp\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\2.0.0\\lib\\netstandard2.0\\Microsoft.Extensions.DependencyInjection.Abstractions.dll /out:test.js src\\program.cs"
+    }
+  }
+}

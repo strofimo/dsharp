@@ -149,6 +149,14 @@ namespace DSharp.Compiler.Validator
                         continue;
                     }
 
+                    if (memberNode is MethodDeclarationNode methodDeclaration)
+                    {
+                        if(methodDeclaration.IsExensionMethod && (!methodDeclaration.Modifiers.HasFlag(Modifiers.Static) || !typeNode.Modifiers.HasFlag(Modifiers.Static)))
+                        {
+                            errorHandler.ReportNodeValidationError(DSharpStringResources.EXTENSION_TYPE_AND_METHOD_SHOULD_BE_STATIC, methodDeclaration);
+                        }
+                    }
+            
                     if (memberNode.NodeType == ParseNodeType.OperatorDeclaration)
                     {
                         // Operators don't have a name

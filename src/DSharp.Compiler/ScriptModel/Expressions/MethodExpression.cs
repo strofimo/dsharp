@@ -1,4 +1,4 @@
-// MethodExpression.cs
+﻿// MethodExpression.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -55,6 +55,8 @@ namespace DSharp.Compiler.ScriptModel.Expressions
                 return false;
             }
         }
+
+        public bool IsExtensionMethod { get; set; }
 
         public void AddParameterValue(Expression expression)
         {

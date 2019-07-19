@@ -128,6 +128,19 @@ namespace DSharp.Compiler.Importer
                 ImportMembers(typeSymbol);
             }
 
+            foreach (TypeSymbol typeSymbol in importedTypes)
+            {
+                if(typeSymbol is ClassSymbol classSymbol && classSymbol.IsPublic)
+                {
+                    foreach(var method in typeSymbol.Members.Where(member => member is MethodSymbol method && method.IsExensionMethod && method.IsPublic).Cast<MethodSymbol>())
+                    {
+                        var parameter = ((MethodDefinition)method.ParseContext).Parameters.First();
+                        string typeToExtend = parameter.ParameterType.FullName;
+                        symbols.AddExtensionType(typeToExtend, method.Name, method);
+                    }
+                }
+            }
+
             return importedTypes;
         }
 
@@ -454,7 +467,9 @@ namespace DSharp.Compiler.Importer
                     continue;
                 }
 
-                MethodSymbol methodSymbol = new MethodSymbol(methodName, typeSymbol, returnType);
+                bool isExtensionMethod = MetadataHelpers.IsExtensionMethod(method);
+                MethodSymbol methodSymbol = new MethodSymbol(methodName, typeSymbol, returnType, isExtensionMethod);
+                methodSymbol.SetParseContext(method);
                 ImportMemberDetails(methodSymbol, method, method);
 
                 if (method.HasGenericParameters)

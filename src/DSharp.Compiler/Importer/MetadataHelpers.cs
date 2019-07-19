@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Mono.Cecil;
 
 namespace DSharp.Compiler.Importer
@@ -125,6 +126,12 @@ namespace DSharp.Compiler.Importer
             }
 
             return null;
+        }
+
+        public static bool IsExtensionMethod(MethodDefinition method)
+        {
+            return GetAttribute(method, typeof(ExtensionAttribute).FullName)
+                != null;
         }
 
         public static string GetScriptName(ICustomAttributeProvider attributeProvider, out bool preserveName,

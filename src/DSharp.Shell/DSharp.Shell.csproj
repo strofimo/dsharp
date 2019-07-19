@@ -8,6 +8,9 @@
     <AssemblyOriginatorKeyFile>$(SolutionDir)DSharp.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="src\Program.cs" />
+  </ItemGroup>
   
   <ItemGroup>
     <Compile Include="..\FileInputStreamSource.cs">
@@ -16,6 +19,12 @@
     <Compile Include="..\FileOutputStreamSource.cs">
       <Link>FileOutputStreamSource.cs</Link>
     </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="src\Program.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   
   <ItemGroup>
