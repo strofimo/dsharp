@@ -4,7 +4,7 @@
     {
         public static int Main(string[] args)
         {
-            string value = "".PadRightC(10, 'F')
+            string value = args[0].PadRightC(10, 'F')
                 .PadRightC(10, 'F')
                 .PadRightC(10, 'F');
 

@@ -1871,7 +1871,7 @@ namespace DSharp.Compiler.Parser
                 do
                 {
                     lastParam = ParseFormalParameter(allowAttributes);
-                    if(list.Count >= 1 && lastParam.ContainsThis)
+                    if(list.Count >= 1 && lastParam.IsExtensionMethodTarget)
                     {
                         throw new System.InvalidOperationException("Only the first parameter of a method can be an extension parameter");
                     }

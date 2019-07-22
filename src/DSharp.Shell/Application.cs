@@ -125,7 +125,7 @@ Usage:
 
             if (commandLine.Options.Contains("out"))
             {
-                string scriptFilePath = (string) commandLine.Options["out"];
+                string scriptFilePath = (string)commandLine.Options["out"];
 
                 if (scriptFilePath.IndexOfAny(Path.GetInvalidPathChars()) < 0)
                 {
@@ -145,7 +145,7 @@ Usage:
 
             if (commandLine.Options.Contains("inc"))
             {
-                string basePath = (string) commandLine.Options["inc"];
+                string basePath = (string)commandLine.Options["inc"];
                 includeResolver = new IncludeResolver(basePath);
             }
 
@@ -160,7 +160,17 @@ Usage:
                 IncludeResolver = includeResolver,
             };
 
+            if (string.IsNullOrWhiteSpace(compilerOptions.AssemblyName))
+            {
+                compilerOptions.AssemblyName = CreateGeneratedAssemblyName();
+            }
+
             return compilerOptions;
+        }
+
+        private static string CreateGeneratedAssemblyName()
+        {
+            return "g_" + Guid.NewGuid().ToString().Replace("-", "");
         }
 
         private static bool Execute(string[] args)

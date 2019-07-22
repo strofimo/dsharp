@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DSharp.Compiler.Compiler
+namespace DSharp.Compiler
 {
     public sealed class ExpressionBuildException : Exception
     {

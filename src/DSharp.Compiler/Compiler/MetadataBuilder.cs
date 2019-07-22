@@ -277,13 +277,13 @@ namespace DSharp.Compiler.Compiler
         private static bool IsExtensionMethod(MemberSymbol memberSymbol)
         {
             return memberSymbol is MethodSymbol methodSymbol 
-                && methodSymbol.IsExensionMethod 
+                && methodSymbol.IsExtensionMethod 
                 && (memberSymbol.Visibility.HasFlag(MemberVisibility.Public) || memberSymbol.IsInternal);
         }
 
         private void BuildAssembly(ParseNodeList compilationUnits)
         {
-            string scriptName = GetAssemblyScriptName(compilationUnits) ?? "g_" + Guid.NewGuid().ToString().Replace("-", "");
+            string scriptName = GetAssemblyScriptName(compilationUnits);
 
             if (string.IsNullOrEmpty(scriptName))
             {
@@ -896,7 +896,7 @@ namespace DSharp.Compiler.Compiler
 
             if (parameterType != null)
             {
-                return new ParameterSymbol(parameterNode.Name, methodSymbol, parameterType, parameterMode, parameterNode.ContainsThis);
+                return new ParameterSymbol(parameterNode.Name, methodSymbol, parameterType, parameterMode, parameterNode.IsExtensionMethodTarget);
             }
 
             return null;

@@ -691,8 +691,6 @@ namespace DSharp.Compiler.Compiler
                 symbolContext,
                 objectExpression.MemberMask);
 
-
-
             if (memberSymbol != null && memberSymbol.AssociatedType.Type == SymbolType.GenericParameter)
             {
                 if (node.RightChild.NodeType == ParseNodeType.GenericName)
@@ -768,14 +766,7 @@ namespace DSharp.Compiler.Compiler
             {
                 if (node.LeftChild.Token is LiteralToken leftLiteralToken)
                 {
-                    string typeName = leftLiteralToken.LiteralType == LiteralTokenType.String
-                                ? (string)leftLiteralToken.LiteralValue
-                                : null;
-
-                    if (string.IsNullOrEmpty(typeName))
-                    {
-                        typeName = ResolveLiteralTypeName(leftLiteralToken);
-                    }
+                    string typeName = ResolveLiteralTypeName(leftLiteralToken);
 
                     TypeSymbol typeSymbol = ((ISymbolTable)symbolSet).FindSymbol<TypeSymbol>(typeName, symbolContext, SymbolFilter.AllTypes);
                     if (typeSymbol == null)

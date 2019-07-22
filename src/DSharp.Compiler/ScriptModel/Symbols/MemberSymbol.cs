@@ -74,7 +74,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public bool IsInternal => (Visibility & MemberVisibility.Internal) != 0;
+        public bool IsInternal => Visibility.HasFlag(MemberVisibility.Internal);
 
         public MemberVisibility Visibility { get; private set; }
 

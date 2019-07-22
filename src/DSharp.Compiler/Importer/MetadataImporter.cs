@@ -143,7 +143,7 @@ namespace DSharp.Compiler.Importer
 
         public IEnumerable<MethodSymbol> GetExtensionMethods(IEnumerable<MemberSymbol> memberSymbols)
         {
-            return memberSymbols.Where(member => member is MethodSymbol method && method.IsExensionMethod && method.IsPublic)
+            return memberSymbols.Where(member => member is MethodSymbol method && method.IsExtensionMethod && method.IsPublic)
                 .Cast<MethodSymbol>();
         }
 

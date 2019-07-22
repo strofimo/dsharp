@@ -19,12 +19,12 @@ namespace DSharp.Compiler.CodeModel.Members
             ParameterFlags flags, 
             ParseNode type, 
             AtomicNameNode name, 
-            bool containsThis = false)
+            bool isExtensionMethodTarget = false)
             : base(ParseNodeType.FormalParameter, token)
         {
             Attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
             Flags = flags;
-            ContainsThis = containsThis;
+            IsExtensionMethodTarget = isExtensionMethodTarget;
             Type = GetParentedNode(type);
             this.name = (AtomicNameNode)GetParentedNode(name);
         }
@@ -37,6 +37,6 @@ namespace DSharp.Compiler.CodeModel.Members
 
         public ParseNode Type { get; }
 
-        public bool ContainsThis { get; }
+        public bool IsExtensionMethodTarget { get; }
     }
 }
