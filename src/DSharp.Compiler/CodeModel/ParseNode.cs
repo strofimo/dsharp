@@ -46,5 +46,11 @@ namespace DSharp.Compiler.CodeModel
         {
             Parent = node;
         }
+
+        public T As<T>()
+            where T : ParseNode
+        {
+            return (T)this;
+        }
     }
 }

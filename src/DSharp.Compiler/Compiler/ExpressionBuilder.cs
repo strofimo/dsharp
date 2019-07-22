@@ -691,7 +691,7 @@ namespace DSharp.Compiler.Compiler
                 symbolContext,
                 objectExpression.MemberMask);
 
-            
+
 
             if (memberSymbol != null && memberSymbol.AssociatedType.Type == SymbolType.GenericParameter)
             {
@@ -744,37 +744,11 @@ namespace DSharp.Compiler.Compiler
                 objectExpression = ProcessDotExpressionNode(node, filter, out memberSymbol);
             }
 
-            if(objectExpression == null)
+            //If we are unable to parse the right hand child as a local member of the left hand expression,
+            //then we want to try and find out if the token is a Extension method usage.
+            if (objectExpression == null && node.LeftChild.Token is LiteralToken leftLiteralToken)
             {
-                //Could be an extension method?
-                if (node.LeftChild.Token is LiteralToken leftLiteralToken)
-                {
-                    string typeName = leftLiteralToken.LiteralType == LiteralTokenType.String
-                        ? (string)leftLiteralToken.LiteralValue
-                        : null;
-
-                    if (string.IsNullOrWhiteSpace(typeName))
-                    {
-                        typeName = ResolveLiteralTypeName(leftLiteralToken);
-                    }
-
-                    TypeSymbol resolvedTypeSymbol = (TypeSymbol)((ISymbolTable)symbolSet).FindSymbol(typeName, symbolContext, SymbolFilter.AllTypes);
-                    if (resolvedTypeSymbol != null)
-                    {
-                        string memberName = ((NameNode)node.RightChild).Name;
-                        var methodSymbol = symbolSet.ResolveExtensionMethodSymbol(resolvedTypeSymbol.FullName, memberName); //fix me
-
-                        MethodExpression methodExpression
-                                = new MethodExpression(
-                                    new TypeExpression((TypeSymbol)methodSymbol.Parent, SymbolFilter.Public | SymbolFilter.StaticMembers),
-                                    methodSymbol);
-                        var accessorExpression = BuildExpression(node.LeftChild);
-                        methodExpression.AddParameterValue(accessorExpression);
-                        methodExpression.IsExtensionMethod = true;
-
-                        return methodExpression;
-                    }
-                }
+                return CreateExtensionMethodInvocationExpression(node, leftLiteralToken);
             }
 
             Debug.Assert(objectExpression != null);
@@ -957,6 +931,37 @@ namespace DSharp.Compiler.Compiler
             return expression;
         }
 
+        private Expression CreateExtensionMethodInvocationExpression(BinaryExpressionNode node, LiteralToken leftLiteralToken)
+        {
+            string typeName = leftLiteralToken.LiteralType == LiteralTokenType.String
+                                ? (string)leftLiteralToken.LiteralValue
+                                : ResolveLiteralTypeName(leftLiteralToken);
+
+            if (string.IsNullOrEmpty(typeName))
+            {
+                throw new ExpressionBuildException($"Unable to parse type name of literal token : {leftLiteralToken.LiteralType}, {leftLiteralToken.LiteralValue}");
+            }
+
+            TypeSymbol resolvedTypeSymbol = ((ISymbolTable)symbolSet).FindSymbol<TypeSymbol>(typeName, symbolContext, SymbolFilter.AllTypes);
+            if (resolvedTypeSymbol == null)
+            {
+                throw new ExpressionBuildException($"Unable to resolve type '{typeName}' from symbol table.");
+            }
+
+            string memberName = ((NameNode)node.RightChild).Name;
+            MethodSymbol methodSymbol = symbolSet.ResolveExtensionMethodSymbol(resolvedTypeSymbol.FullName, memberName);
+
+            MethodExpression methodExpression
+                    = new MethodExpression(
+                        new TypeExpression((TypeSymbol)methodSymbol.Parent, SymbolFilter.Public | SymbolFilter.StaticMembers),
+                        methodSymbol);
+            Expression accessorExpression = BuildExpression(node.LeftChild);
+            methodExpression.AddParameterValue(accessorExpression);
+            methodExpression.IsExtensionMethod = true;
+
+            return methodExpression;
+        }
+
         private Expression ProcessIntrinsicType(IntrinsicTypeNode node)
         {
             TypeSymbol typeSymbol = symbolSet.ResolveType(node, symbolTable, symbolContext);
@@ -970,7 +975,7 @@ namespace DSharp.Compiler.Compiler
             LiteralToken token = (LiteralToken)node.Token;
 
             string systemTypeName = ResolveLiteralTypeName(token);
-            if(string.IsNullOrEmpty(systemTypeName))
+            if (string.IsNullOrEmpty(systemTypeName))
             {
                 Debug.Fail("Unknown Literal Token Type: " + token.LiteralType);
             }
@@ -990,7 +995,7 @@ namespace DSharp.Compiler.Compiler
 
         private static string ResolveLiteralTypeName(LiteralToken token)
         {
-            if(token == null)
+            if (token == null)
             {
                 return null;
             }
@@ -1258,7 +1263,7 @@ namespace DSharp.Compiler.Compiler
                 isDelegateInvoke = true;
             }
 
-            if(leftExpression is MethodExpression methodExpression && methodExpression.IsExtensionMethod)
+            if (leftExpression is MethodExpression methodExpression && methodExpression.IsExtensionMethod)
             {
                 var parameters = node.RightChild as ExpressionListNode;
                 Debug.Assert(parameters != null);

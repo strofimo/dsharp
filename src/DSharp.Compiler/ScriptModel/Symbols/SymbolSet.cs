@@ -865,7 +865,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public MethodSymbol ResolveExtensionMethodSymbol(string typeName, string memberName)
         {
-            if (!extensionMethods.TryGetValue(typeName, out HashSet < (string method, MethodSymbol methodSymbol)> registrations))
+            if (!extensionMethods.TryGetValue(typeName, out HashSet<(string method, MethodSymbol methodSymbol)> registrations))
             {
                 return null;
             }
@@ -1016,18 +1016,5 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         }
 
         #endregion
-
-        private class TypeSymbolEqualityComparer : IEqualityComparer<TypeSymbol>
-        {
-            public bool Equals(TypeSymbol x, TypeSymbol y)
-            {
-                return x?.FullName == y?.FullName;
-            }
-
-            public int GetHashCode(TypeSymbol obj)
-            {
-                return obj?.FullName.GetHashCode() ?? 0;
-            }
-        }
     }
 }

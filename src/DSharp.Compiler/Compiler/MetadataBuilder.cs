@@ -276,7 +276,9 @@ namespace DSharp.Compiler.Compiler
 
         private static bool IsExtensionMethod(MemberSymbol memberSymbol)
         {
-            return memberSymbol is MethodSymbol methodSymbol && methodSymbol.IsExensionMethod && memberSymbol.IsPublic;
+            return memberSymbol is MethodSymbol methodSymbol 
+                && methodSymbol.IsExensionMethod 
+                && (memberSymbol.IsPublic || memberSymbol.IsInternal);
         }
 
         private void BuildAssembly(ParseNodeList compilationUnits)

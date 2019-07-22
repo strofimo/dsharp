@@ -18,17 +18,14 @@ namespace DSharp.Compiler.Importer
         private readonly IErrorHandler errorHandler;
 
         private List<TypeSymbol> importedTypes;
-        private CompilerOptions options;
         private bool resolveError;
 
         private SymbolSet symbols;
 
-        public MetadataImporter(CompilerOptions options, IErrorHandler errorHandler)
+        public MetadataImporter(IErrorHandler errorHandler)
         {
-            Debug.Assert(options != null);
             Debug.Assert(errorHandler != null);
 
-            this.options = options;
             this.errorHandler = errorHandler;
         }
 
@@ -40,7 +37,7 @@ namespace DSharp.Compiler.Importer
 
             foreach (TypeSymbol typeSymbol in importedTypes)
                 if (typeSymbol.Type == SymbolType.Class &&
-                    typeSymbol.Name.Equals("Array", StringComparison.Ordinal))
+                    typeSymbol.Name.Equals(nameof(Array), StringComparison.Ordinal))
                 {
                     // Array is special - it is used to build other Arrays of more
                     // specific types we load members for in the second pass...
@@ -60,7 +57,7 @@ namespace DSharp.Compiler.Importer
             {
                 if (typeSymbol.IsGeneric == false &&
                     (typeSymbol.Type != SymbolType.Class ||
-                     typeSymbol.Name.Equals("Array", StringComparison.Ordinal) == false))
+                     typeSymbol.Name.Equals(nameof(Array), StringComparison.Ordinal) == false))
                 {
                     ImportMembers(typeSymbol);
                 }
@@ -77,13 +74,13 @@ namespace DSharp.Compiler.Importer
                         // referenced by generated code during compilation.
                         ImportPseudoMembers(PseudoClassMembers.Script, (ClassSymbol) typeSymbol);
                     }
-                    else if (typeSymbol.Name.Equals("Object", StringComparison.Ordinal))
+                    else if (typeSymbol.Name.Equals(nameof(Object), StringComparison.Ordinal))
                     {
                         // We need to add a static GetType method
 
                         ImportPseudoMembers(PseudoClassMembers.Object, (ClassSymbol) typeSymbol);
                     }
-                    else if (typeSymbol.Name.Equals("Dictionary`2", StringComparison.Ordinal))
+                    else if (typeSymbol.Name.Equals(typeof(Dictionary<,>).Name, StringComparison.Ordinal))
                     {
                         // The Dictionary class contains static methods at runtime, rather
                         // than instance methods.
@@ -132,9 +129,9 @@ namespace DSharp.Compiler.Importer
             {
                 if(typeSymbol is ClassSymbol classSymbol && classSymbol.IsPublic)
                 {
-                    foreach(var method in typeSymbol.Members.Where(member => member is MethodSymbol method && method.IsExensionMethod && method.IsPublic).Cast<MethodSymbol>())
+                    foreach(var method in GetExtensionMethods(typeSymbol.Members))
                     {
-                        var parameter = ((MethodDefinition)method.ParseContext).Parameters.First();
+                        ParameterDefinition parameter = ((MethodDefinition)method.ParseContext).Parameters.First();
                         string typeToExtend = parameter.ParameterType.FullName;
                         symbols.AddExtensionType(typeToExtend, method.Name, method);
                     }
@@ -142,6 +139,12 @@ namespace DSharp.Compiler.Importer
             }
 
             return importedTypes;
+        }
+
+        public IEnumerable<MethodSymbol> GetExtensionMethods(IEnumerable<MemberSymbol> memberSymbols)
+        {
+            return memberSymbols.Where(member => member is MethodSymbol method && method.IsExensionMethod && method.IsPublic)
+                .Cast<MethodSymbol>();
         }
 
         private void ImportBaseType(ClassSymbol classSymbol)
@@ -467,8 +470,11 @@ namespace DSharp.Compiler.Importer
                     continue;
                 }
 
-                bool isExtensionMethod = MetadataHelpers.IsExtensionMethod(method);
-                MethodSymbol methodSymbol = new MethodSymbol(methodName, typeSymbol, returnType, isExtensionMethod);
+                MethodSymbol methodSymbol = new MethodSymbol(
+                    methodName, 
+                    typeSymbol, 
+                    returnType, 
+                    MetadataHelpers.IsExtensionMethod(method));
                 methodSymbol.SetParseContext(method);
                 ImportMemberDetails(methodSymbol, method, method);
 

@@ -1,8 +1,9 @@
-// MemberSymbol.cs
+﻿// MemberSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System;
 using System.Diagnostics;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
@@ -72,6 +73,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 return false;
             }
         }
+
+        public bool IsInternal => (Visibility & MemberVisibility.Internal) != 0;
 
         public MemberVisibility Visibility { get; private set; }
 
