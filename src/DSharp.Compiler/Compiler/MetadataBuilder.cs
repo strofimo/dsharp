@@ -33,7 +33,7 @@ namespace DSharp.Compiler.Compiler
         }
 
         public ICollection<TypeSymbol> BuildMetadata(
-            ParseNodeList compilationUnits, 
+            ParseNodeList compilationUnits,
             SymbolSet symbols,
             CompilerOptions options)
         {
@@ -47,9 +47,19 @@ namespace DSharp.Compiler.Compiler
 
             List<TypeSymbol> types = new List<TypeSymbol>();
 
-            // Build all the types first.
-            // Types need to be loaded upfront so that they can be used in resolving types associated
-            // with members.
+            BuildTypes(compilationUnits, symbols, types);
+            BuildTypeInheritence(types);
+            ImportTypeMembers(types);
+            AssociateInterfacesWithMembers(types);
+            StoreExtensionMethods(symbols, types);
+            TryBuildResources(types);
+            LoadDocumentation(symbols, options);
+
+            return types;
+        }
+
+        private void BuildTypes(ParseNodeList compilationUnits, SymbolSet symbols, List<TypeSymbol> types)
+        {
             foreach (CompilationUnitNode compilationUnit in compilationUnits)
                 foreach (NamespaceNode namespaceNode in compilationUnit.Members)
                 {
@@ -200,8 +210,10 @@ namespace DSharp.Compiler.Compiler
                         }
                     }
                 }
+        }
 
-            // Build inheritance chains
+        private void BuildTypeInheritence(List<TypeSymbol> types)
+        {
             foreach (TypeSymbol typeSymbol in types)
                 if (typeSymbol.Type == SymbolType.Class)
                 {
@@ -211,73 +223,84 @@ namespace DSharp.Compiler.Compiler
                 {
                     BuildTypeInheritance((InterfaceSymbol)typeSymbol);
                 }
+        }
 
-            // Import members
-            foreach (TypeSymbol typeSymbol in types) BuildMembers(typeSymbol);
+        private void ImportTypeMembers(List<TypeSymbol> types)
+        {
+            foreach (TypeSymbol typeSymbol in types)
+                BuildMembers(typeSymbol);
+        }
 
-            // Associate interface members with interface member symbols
+        private void AssociateInterfacesWithMembers(List<TypeSymbol> types)
+        {
             foreach (TypeSymbol typeSymbol in types)
                 if (typeSymbol.Type == SymbolType.Class)
                 {
                     BuildInterfaceAssociations((ClassSymbol)typeSymbol);
                 }
+        }
 
-            //Store Extension types in a global lookup
-            foreach ((TypeSymbol type, IEnumerable<MethodSymbol> methods) in FetchTypesWithExtensionMethods(types))
+        private void StoreExtensionMethods(SymbolSet symbols, List<TypeSymbol> types)
+        {
+            var typesWithExtensionMethods = types.Where(symbol => symbol.IsPublic || symbol.IsInternal).Select(type =>
             {
-                foreach(var method in methods)
+                return (type, type.Members.Where(m => IsExtensionMethod(m)).Cast<MethodSymbol>());
+            });
+            foreach ((TypeSymbol type, IEnumerable<MethodSymbol> methods) in typesWithExtensionMethods)
+            {
+                foreach (var method in methods)
                 {
                     string typeToExtend = method.Parameters[0].ValueType.FullName;
                     symbols.AddExtensionType(typeToExtend, method.Name, method);
                 }
             }
-
-            // Load resource values
-            if (this.symbols.HasResources)
-            {
-                foreach (TypeSymbol typeSymbol in types)
-                    if (typeSymbol.Type == SymbolType.Resources)
-                    {
-                        BuildResources((ResourcesSymbol)typeSymbol);
-                    }
-            }
-
-            // Load documentation
-            if (this.options.EnableDocComments)
-            {
-                Stream docCommentsStream = options.DocCommentFile.GetStream();
-
-                if (docCommentsStream != null)
-                {
-                    try
-                    {
-                        XmlDocument docComments = new XmlDocument();
-                        docComments.Load(docCommentsStream);
-
-                        symbols.SetComments(docComments);
-                    }
-                    finally
-                    {
-                        options.DocCommentFile.CloseStream(docCommentsStream);
-                    }
-                }
-            }
-
-            return types;
         }
 
-        private IEnumerable<(TypeSymbol, IEnumerable<MethodSymbol>)> FetchTypesWithExtensionMethods(IEnumerable<TypeSymbol> typeSymbols)
+        private void TryBuildResources(List<TypeSymbol> types)
         {
-            return typeSymbols.Where(symbol => symbol.IsPublic || symbol.IsInternal).Select(type =>
+            if (!symbols.HasResources)
             {
-                return (type, type.Members.Where(m => IsExtensionMethod(m)).Cast<MethodSymbol>());
-            });
+                return;
+            }
+
+            foreach (TypeSymbol typeSymbol in types)
+            {
+                if (typeSymbol.Type == SymbolType.Resources)
+                {
+                    BuildResources((ResourcesSymbol)typeSymbol);
+                }
+            }
+        }
+
+        private void LoadDocumentation(SymbolSet symbols, CompilerOptions options)
+        {
+            if (!options.EnableDocComments)
+            {
+                return;
+            }
+
+            Stream docCommentsStream = options.DocCommentFile.GetStream();
+
+            if (docCommentsStream != null)
+            {
+                try
+                {
+                    XmlDocument docComments = new XmlDocument();
+                    docComments.Load(docCommentsStream);
+
+                    symbols.SetComments(docComments);
+                }
+                finally
+                {
+                    options.DocCommentFile.CloseStream(docCommentsStream);
+                }
+            }
         }
 
         private static bool IsExtensionMethod(MemberSymbol memberSymbol)
         {
-            return memberSymbol is MethodSymbol methodSymbol 
-                && methodSymbol.IsExtensionMethod 
+            return memberSymbol is MethodSymbol methodSymbol
+                && methodSymbol.IsExtensionMethod
                 && (memberSymbol.Visibility.HasFlag(MemberVisibility.Public) || memberSymbol.IsInternal);
         }
 
