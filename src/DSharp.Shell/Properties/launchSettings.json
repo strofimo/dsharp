@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "DSharp.Shell": {
-      "commandName": "Project",
-      "commandLineArgs": "/debug /nologo /ref:C:\\dev\\Projects\\dsharp\\src\\DSharp.Mscorlib\\bin\\Debug\\net471\\DSharp.Mscorlib.dll /out:test.js src\\\\program.cs src\\\\Extensions.cs"
-    }
-  }
-}
