@@ -274,7 +274,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             if (templateType.Type == SymbolType.Class)
             {
                 ClassSymbol genericClass = (ClassSymbol)templateType;
-                ClassSymbol instanceClass = new ClassSymbol(genericClass.Name, (NamespaceSymbol)genericClass.Parent);
+                ClassSymbol instanceClass = new ClassSymbol(genericClass.Name, (NamespaceSymbol) genericClass.Parent);
+
                 instanceClass.SetInheritance(genericClass.BaseClass, genericClass.Interfaces);
                 instanceClass.SetImported(genericClass.Dependency);
 
@@ -313,6 +314,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 InterfaceSymbol instanceInterface =
                     new InterfaceSymbol(genericInterface.Name, (NamespaceSymbol)genericInterface.Parent);
 
+                instanceInterface.SetInheritance(genericInterface.Interfaces);
                 instanceInterface.SetImported(genericInterface.Dependency);
 
                 if (genericInterface.IgnoreNamespace)
