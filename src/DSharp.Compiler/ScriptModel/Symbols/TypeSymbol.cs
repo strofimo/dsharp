@@ -135,7 +135,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public bool IsGeneric => GenericParameters != null &&
                                  GenericParameters.Count != 0;
 
-        public bool IsPublic { get; private set; }
+        public bool IsPublic { get; set; }
+
+        public bool IsInternal { get; set; }
 
         public ICollection<MemberSymbol> Members => members;
 
@@ -249,11 +251,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Debug.Assert(Imports == null);
             Debug.Assert(imports != null);
             Imports = imports;
-        }
-
-        public void SetPublic()
-        {
-            IsPublic = true;
         }
 
         public override bool MatchFilter(SymbolFilter filter)

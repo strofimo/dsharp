@@ -728,6 +728,24 @@ namespace DSharp.Compiler.Compiler
             return objectExpression;
         }
 
+        //Move to extension;
+        private T FindParentNode<T>(ParseNode node)
+            where T : ParseNode
+        {
+            ParseNode current = node?.Parent;
+            while (current != null)
+            {
+                if (current is T)
+                {
+                    return (T)current;
+                }
+
+                current = current.Parent;
+            }
+
+            return default(T);
+        }
+
         private Expression ProcessDotExpressionNode(BinaryExpressionNode node)
         {
             SymbolFilter filter = SymbolFilter.All;
@@ -746,9 +764,35 @@ namespace DSharp.Compiler.Compiler
 
             //If we are unable to parse the right hand child as a local member of the left hand expression,
             //then we want to try and find out if the token is a Extension method usage.
-            if (objectExpression == null && node.LeftChild.Token is LiteralToken leftLiteralToken)
+            if (objectExpression == null)
             {
-                return CreateExtensionMethodInvocationExpression(node, leftLiteralToken);
+                if (node.LeftChild.Token is LiteralToken leftLiteralToken)
+                {
+                    string typeName = leftLiteralToken.LiteralType == LiteralTokenType.String
+                                ? (string)leftLiteralToken.LiteralValue
+                                : null;
+
+                    if (string.IsNullOrEmpty(typeName))
+                    {
+                        typeName = ResolveLiteralTypeName(leftLiteralToken);
+                    }
+
+                    TypeSymbol typeSymbol = ((ISymbolTable)symbolSet).FindSymbol<TypeSymbol>(typeName, symbolContext, SymbolFilter.AllTypes);
+                    if (typeSymbol == null)
+                    {
+                        throw new ExpressionBuildException($"Unable to resolve type '{typeName}' from symbol table.");
+                    }
+
+                    return CreateExtensionMethodInvocationExpression(node, typeSymbol);
+                }
+                else if (node.LeftChild.Token is IdentifierToken identifier)
+                {
+                    MethodDeclarationNode parentMethod = FindParentNode<MethodDeclarationNode>(node);
+                    var token = parentMethod.Parameters.First().Token;
+                    var typeNode = symbolSet.ResolveIntrinsicToken(token);
+
+                    return CreateExtensionMethodInvocationExpression(node, typeNode);
+                }
             }
 
             Debug.Assert(objectExpression != null);
@@ -931,28 +975,12 @@ namespace DSharp.Compiler.Compiler
             return expression;
         }
 
-        private Expression CreateExtensionMethodInvocationExpression(BinaryExpressionNode node, LiteralToken leftLiteralToken)
+        private Expression CreateExtensionMethodInvocationExpression(BinaryExpressionNode node, TypeSymbol typeToExtend)
         {
-            string typeName = leftLiteralToken.LiteralType == LiteralTokenType.String
-                                ? (string)leftLiteralToken.LiteralValue
-                                : ResolveLiteralTypeName(leftLiteralToken);
-
-            if (string.IsNullOrEmpty(typeName))
-            {
-                throw new ExpressionBuildException($"Unable to parse type name of literal token : {leftLiteralToken.LiteralType}, {leftLiteralToken.LiteralValue}");
-            }
-
-            TypeSymbol resolvedTypeSymbol = ((ISymbolTable)symbolSet).FindSymbol<TypeSymbol>(typeName, symbolContext, SymbolFilter.AllTypes);
-            if (resolvedTypeSymbol == null)
-            {
-                throw new ExpressionBuildException($"Unable to resolve type '{typeName}' from symbol table.");
-            }
-
             string memberName = ((NameNode)node.RightChild).Name;
-            MethodSymbol methodSymbol = symbolSet.ResolveExtensionMethodSymbol(resolvedTypeSymbol.FullName, memberName);
+            MethodSymbol methodSymbol = symbolSet.ResolveExtensionMethodSymbol(typeToExtend.FullName, memberName);
 
-            MethodExpression methodExpression
-                    = new MethodExpression(
+            MethodExpression methodExpression = new MethodExpression(
                         new TypeExpression((TypeSymbol)methodSymbol.Parent, SymbolFilter.Public | SymbolFilter.StaticMembers),
                         methodSymbol);
             Expression accessorExpression = BuildExpression(node.LeftChild);

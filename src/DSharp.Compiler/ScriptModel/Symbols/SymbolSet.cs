@@ -722,6 +722,66 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return null;
         }
 
+        public TypeSymbol ResolveIntrinsicToken(Token token)
+        {
+            IntrinsicType intrinsicType = IntrinsicType.Void;
+
+            switch (token.Type)
+            {
+                case TokenType.Object:
+                    intrinsicType = IntrinsicType.Object;
+                    break;
+                case TokenType.Bool:
+                    intrinsicType = IntrinsicType.Boolean;
+                    break;
+                case TokenType.String:
+                case TokenType.Char:
+                    intrinsicType = IntrinsicType.String;
+                    break;
+                case TokenType.Int:
+                    intrinsicType = IntrinsicType.Integer;
+                    break;
+                case TokenType.UInt:
+                    intrinsicType = IntrinsicType.UnsignedInteger;
+                    break;
+                case TokenType.Long:
+                    intrinsicType = IntrinsicType.Long;
+                    break;
+                case TokenType.ULong:
+                    intrinsicType = IntrinsicType.UnsignedLong;
+                    break;
+                case TokenType.Short:
+                    intrinsicType = IntrinsicType.Short;
+                    break;
+                case TokenType.UShort:
+                    intrinsicType = IntrinsicType.UnsignedShort;
+                    break;
+                case TokenType.Byte:
+                    intrinsicType = IntrinsicType.Byte;
+                    break;
+                case TokenType.SByte:
+                    intrinsicType = IntrinsicType.SignedByte;
+                    break;
+                case TokenType.Float:
+                    intrinsicType = IntrinsicType.Single;
+                    break;
+                case TokenType.Decimal:
+                    intrinsicType = IntrinsicType.Decimal;
+                    break;
+                case TokenType.Double:
+                    intrinsicType = IntrinsicType.Double;
+                    break;
+                case TokenType.Delegate:
+                    intrinsicType = IntrinsicType.Delegate;
+                    break;
+                case TokenType.Void:
+                    intrinsicType = IntrinsicType.Void;
+                    break;
+            }
+
+            return ResolveIntrinsicType(intrinsicType);
+        }
+
         public TypeSymbol ResolveType(ParseNode node, ISymbolTable symbolTable, Symbol contextSymbol)
         {
             if (node is IntrinsicTypeNode)

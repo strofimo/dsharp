@@ -8,9 +8,8 @@
     <AssemblyOriginatorKeyFile>$(SolutionDir)DSharp.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="src\Program.cs" />
-  </ItemGroup>
+  
+  
   
   <ItemGroup>
     <Compile Include="..\FileInputStreamSource.cs">
@@ -22,16 +21,17 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="src\Program.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  
-  <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.6.85" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\DSharp.Compiler\DSharp.Compiler.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="src\*.cs" />
+    <None Include="src\*.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

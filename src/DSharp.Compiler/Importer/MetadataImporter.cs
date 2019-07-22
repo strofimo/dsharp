@@ -889,7 +889,7 @@ namespace DSharp.Compiler.Importer
                     typeSymbol.ScriptNamespace = scriptNamespace;
                 }
 
-                typeSymbol.SetPublic();
+                typeSymbol.IsPublic = true;
 
                 if (string.IsNullOrEmpty(scriptName) == false)
                 {

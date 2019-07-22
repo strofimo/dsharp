@@ -268,7 +268,7 @@ namespace DSharp.Compiler.Compiler
 
         private IEnumerable<(TypeSymbol, IEnumerable<MethodSymbol>)> FetchTypesWithExtensionMethods(IEnumerable<TypeSymbol> typeSymbols)
         {
-            return typeSymbols.Select(type =>
+            return typeSymbols.Where(symbol => symbol.IsPublic || symbol.IsInternal).Select(type =>
             {
                 return (type, type.Members.Where(m => IsExtensionMethod(m)).Cast<MethodSymbol>());
             });
@@ -278,7 +278,7 @@ namespace DSharp.Compiler.Compiler
         {
             return memberSymbol is MethodSymbol methodSymbol 
                 && methodSymbol.IsExensionMethod 
-                && (memberSymbol.IsPublic || memberSymbol.IsInternal);
+                && (memberSymbol.Visibility.HasFlag(MemberVisibility.Public) || memberSymbol.IsInternal);
         }
 
         private void BuildAssembly(ParseNodeList compilationUnits)
@@ -1062,9 +1062,13 @@ namespace DSharp.Compiler.Compiler
 
             if (typeSymbol != null)
             {
-                if ((typeNode.Modifiers & Modifiers.Public) != 0)
+                if (typeNode.Modifiers.HasFlag(Modifiers.Public))
                 {
-                    typeSymbol.SetPublic();
+                    typeSymbol.IsPublic = true;
+                }
+                else if (typeNode.Modifiers.HasFlag(Modifiers.Internal))
+                {
+                    typeSymbol.IsInternal = true;
                 }
 
                 BuildType(typeSymbol, typeNode);
