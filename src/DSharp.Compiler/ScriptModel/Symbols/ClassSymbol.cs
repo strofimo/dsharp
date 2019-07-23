@@ -1,4 +1,4 @@
-// ClassSymbol.cs
+﻿// ClassSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -403,19 +403,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
 
             staticClass = true;
-        }
-
-        public void SetTestClass()
-        {
-            if (primaryPartialClass != null)
-            {
-                primaryPartialClass.SetTestClass();
-
-                return;
-            }
-
-            Debug.Assert(testClass == false);
-            testClass = true;
         }
     }
 }

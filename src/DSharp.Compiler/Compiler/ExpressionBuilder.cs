@@ -726,6 +726,24 @@ namespace DSharp.Compiler.Compiler
             return objectExpression;
         }
 
+        //Move to extension;
+        private T FindParentNode<T>(ParseNode node)
+            where T : ParseNode
+        {
+            ParseNode current = node?.Parent;
+            while (current != null)
+            {
+                if (current is T)
+                {
+                    return (T)current;
+                }
+
+                current = current.Parent;
+            }
+
+            return default(T);
+        }
+
         private Expression ProcessDotExpressionNode(BinaryExpressionNode node)
         {
             SymbolFilter filter = SymbolFilter.All;
@@ -740,6 +758,32 @@ namespace DSharp.Compiler.Compiler
                 // right child as a static member this time around.
                 filter &= ~SymbolFilter.Members;
                 objectExpression = ProcessDotExpressionNode(node, filter, out memberSymbol);
+            }
+
+            //If we are unable to parse the right hand child as a local member of the left hand expression,
+            //then we want to try and find out if the token is a Extension method usage.
+            if (objectExpression == null)
+            {
+                if (node.LeftChild.Token is LiteralToken leftLiteralToken)
+                {
+                    string typeName = ResolveLiteralTypeName(leftLiteralToken);
+
+                    TypeSymbol typeSymbol = ((ISymbolTable)symbolSet).FindSymbol<TypeSymbol>(typeName, symbolContext, SymbolFilter.AllTypes);
+                    if (typeSymbol == null)
+                    {
+                        throw new ExpressionBuildException($"Unable to resolve type '{typeName}' from symbol table.");
+                    }
+
+                    return CreateExtensionMethodInvocationExpression(node, typeSymbol);
+                }
+                else if (node.LeftChild.Token is IdentifierToken identifier)
+                {
+                    MethodDeclarationNode parentMethod = FindParentNode<MethodDeclarationNode>(node);
+                    var token = parentMethod.Parameters.First().Token;
+                    var typeNode = symbolSet.ResolveIntrinsicToken(token);
+
+                    return CreateExtensionMethodInvocationExpression(node, typeNode);
+                }
             }
 
             Debug.Assert(objectExpression != null);
@@ -928,6 +972,21 @@ namespace DSharp.Compiler.Compiler
             return expression;
         }
 
+        private Expression CreateExtensionMethodInvocationExpression(BinaryExpressionNode node, TypeSymbol typeToExtend)
+        {
+            string memberName = ((NameNode)node.RightChild).Name;
+            MethodSymbol methodSymbol = symbolSet.ResolveExtensionMethodSymbol(typeToExtend.FullName, memberName);
+
+            MethodExpression methodExpression = new MethodExpression(
+                        new TypeExpression((TypeSymbol)methodSymbol.Parent, SymbolFilter.Public | SymbolFilter.StaticMembers),
+                        methodSymbol);
+            Expression accessorExpression = BuildExpression(node.LeftChild);
+            methodExpression.AddParameterValue(accessorExpression);
+            methodExpression.IsExtensionMethod = true;
+
+            return methodExpression;
+        }
+
         private Expression ProcessIntrinsicType(IntrinsicTypeNode node)
         {
             TypeSymbol typeSymbol = symbolSet.ResolveType(node, symbolTable, symbolContext);
@@ -940,58 +999,10 @@ namespace DSharp.Compiler.Compiler
         {
             LiteralToken token = (LiteralToken)node.Token;
 
-            string systemTypeName = null;
-
-            switch (token.LiteralType)
+            string systemTypeName = ResolveLiteralTypeName(token);
+            if (string.IsNullOrEmpty(systemTypeName))
             {
-                case LiteralTokenType.Null:
-                    systemTypeName = "Object";
-
-                    break;
-                case LiteralTokenType.Boolean:
-                    systemTypeName = "Boolean";
-
-                    break;
-                case LiteralTokenType.Char:
-                    systemTypeName = "Char";
-
-                    break;
-                case LiteralTokenType.String:
-                    systemTypeName = "String";
-
-                    break;
-                case LiteralTokenType.Int:
-                    systemTypeName = "Int32";
-
-                    break;
-                case LiteralTokenType.UInt:
-                    systemTypeName = "UInt32";
-
-                    break;
-                case LiteralTokenType.Long:
-                    systemTypeName = "Int64";
-
-                    break;
-                case LiteralTokenType.ULong:
-                    systemTypeName = "UInt64";
-
-                    break;
-                case LiteralTokenType.Float:
-                    systemTypeName = "Single";
-
-                    break;
-                case LiteralTokenType.Double:
-                    systemTypeName = "Double";
-
-                    break;
-                case LiteralTokenType.Decimal:
-                    systemTypeName = "Decimal";
-
-                    break;
-                default:
-                    Debug.Fail("Unknown Literal Token Type: " + token.LiteralType);
-
-                    break;
+                Debug.Fail("Unknown Literal Token Type: " + token.LiteralType);
             }
 
             if (systemTypeName != null)
@@ -1005,6 +1016,42 @@ namespace DSharp.Compiler.Compiler
             }
 
             return null;
+        }
+
+        private static string ResolveLiteralTypeName(LiteralToken token)
+        {
+            if (token == null)
+            {
+                return null;
+            }
+
+            switch (token.LiteralType)
+            {
+                case LiteralTokenType.Null:
+                    return nameof(Object);
+                case LiteralTokenType.Boolean:
+                    return nameof(Boolean);
+                case LiteralTokenType.Char:
+                    return nameof(Char);
+                case LiteralTokenType.String:
+                    return nameof(String);
+                case LiteralTokenType.Int:
+                    return nameof(Int32);
+                case LiteralTokenType.UInt:
+                    return nameof(UInt32);
+                case LiteralTokenType.Long:
+                    return nameof(Int64);
+                case LiteralTokenType.ULong:
+                    return nameof(UInt64);
+                case LiteralTokenType.Float:
+                    return nameof(Single);
+                case LiteralTokenType.Double:
+                    return nameof(Double);
+                case LiteralTokenType.Decimal:
+                    return nameof(Decimal);
+                default:
+                    return null;
+            }
         }
 
         private Expression ProcessNameNode(NameNode node)
@@ -1241,11 +1288,24 @@ namespace DSharp.Compiler.Compiler
                 isDelegateInvoke = true;
             }
 
+            if (leftExpression is MethodExpression methodExpression && methodExpression.IsExtensionMethod)
+            {
+                var parameters = node.RightChild as ExpressionListNode;
+                Debug.Assert(parameters != null);
+                foreach (var parameterNode in parameters.Expressions)
+                {
+                    var parameterExpression = BuildExpression(parameterNode);
+                    methodExpression.AddParameterValue(parameterExpression);
+                }
+
+                return methodExpression;
+            }
+
             if (leftExpression.Type != ExpressionType.Member)
             {
+
                 // A method call was evaluated into a non-member expression as part of building
                 // the left node. For example, Nullable<T>.GetValueOrDefault() becomes a logical or expression.
-
                 return leftExpression;
             }
 
@@ -1273,8 +1333,6 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
             TypeSymbol argsType = symbolSet.ResolveIntrinsicType(IntrinsicType.Arguments);
             TypeSymbol voidType = symbolSet.ResolveIntrinsicType(IntrinsicType.Void);
-
-            MethodExpression methodExpression = null;
 
             if (memberExpression.Member.Type != SymbolType.Method)
             {

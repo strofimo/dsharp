@@ -357,7 +357,7 @@ namespace DSharp.Compiler
 
         private void ImportMetadata()
         {
-            MetadataImporter mdImporter = new MetadataImporter(options, this);
+            MetadataImporter mdImporter = new MetadataImporter(this);
 
             importedSymbols = mdImporter.ImportMetadata(options.References, symbols);
         }

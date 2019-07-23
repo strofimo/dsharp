@@ -14,20 +14,21 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private SymbolImplementation implementation;
         private string selector;
 
-        public MethodSymbol(string name, TypeSymbol parent, TypeSymbol returnType)
-            : this(SymbolType.Method, name, parent, returnType)
+        public MethodSymbol(string name, TypeSymbol parent, TypeSymbol returnType, bool isExtensionMethod = false)
+            : this(SymbolType.Method, name, parent, returnType, isExtensionMethod)
         {
         }
 
-        public MethodSymbol(string name, TypeSymbol parent, TypeSymbol returnType, MemberVisibility visibility)
-            : this(SymbolType.Method, name, parent, returnType)
+        public MethodSymbol(string name, TypeSymbol parent, TypeSymbol returnType, MemberVisibility visibility, bool isExtensionMethod = false)
+            : this(SymbolType.Method, name, parent, returnType, isExtensionMethod)
         {
             SetVisibility(visibility);
         }
 
-        protected MethodSymbol(SymbolType type, string name, TypeSymbol parent, TypeSymbol returnType)
+        protected MethodSymbol(SymbolType type, string name, TypeSymbol parent, TypeSymbol returnType, bool isExtensionMethod = false)
             : base(type, name, parent, returnType)
         {
+            IsExtensionMethod = isExtensionMethod;
         }
 
         public string TransformName { get; private set; }
@@ -112,6 +113,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         }
 
         public bool SkipGeneration { get; private set; }
+
+        public bool IsExtensionMethod { get; } = false;
 
         public void AddGenericArguments(ICollection<GenericParameterSymbol> genericArguments)
         {

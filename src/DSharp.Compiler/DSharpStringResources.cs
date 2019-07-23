@@ -54,6 +54,7 @@
         public static readonly string UNSUPPORTED_PARAMETER_TYPE = "Out and Ref style of parameters are not yet implemented.";
         public static readonly string INVALID_DICTIONARY_INTIALIZATION_PARAMETER_VALUE = "Missing value parameter for the last name parameter in Dictionary instantiation.";
         public static readonly string INVALID_DICTIONARY_PARAMETER_TYPE = "Name parameters in Dictionary instantiation must be string literals.";
+        public static readonly string EXTENSION_TYPE_AND_METHOD_SHOULD_BE_STATIC = "Extension methods should only exist on a static type, and be a static method";
         public static readonly string UNRESOLVED_TYPE_REFERENCE_FORMAT = "Unable to resolve referenced type '{0}'. Make sure all needed assemblies have been explicitly referenced.";
         public static readonly string MISSING_ASSEMBLY_REFERENCE_FORMAT = "The referenced assembly '{0}' could not be located.";
         public static readonly string MISSING_SCRIPT_OUTPUT_STREAM_FORMAT = "Unable to write to file {0}";

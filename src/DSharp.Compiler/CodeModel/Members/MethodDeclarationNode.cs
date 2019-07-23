@@ -1,8 +1,9 @@
-// MethodDeclarationNode.cs
+﻿// MethodDeclarationNode.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System.Linq;
 using DSharp.Compiler.CodeModel.Attributes;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Statements;
@@ -64,5 +65,7 @@ namespace DSharp.Compiler.CodeModel.Members
         public ParseNodeList Parameters { get; }
 
         public override ParseNode Type { get; }
+
+        public bool IsExensionMethod => Parameters.FirstOrDefault()?.As<ParameterNode>().IsExtensionMethodTarget ?? false;
     }
 }

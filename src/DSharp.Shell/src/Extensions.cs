@@ -1,9 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
-[assembly: ScriptAssembly("ExpressionTests.ExtensionMethods")]
-
-namespace ExpressionTests
+﻿namespace DSharp.Shell.src
 {
     public static class StringExtensions
     {
@@ -26,18 +21,6 @@ namespace ExpressionTests
         public static int Add(this int source, int other)
         {
             return source + other;
-        }
-    }
-
-    public class Program
-    {
-        public static int Main(string[] args)
-        {
-            string value = "".PadRightC(10, 'F')
-                .PadRightC(10, 'F')
-                .PadRightC(10, 'F');
-
-            return 0.Increment();
         }
     }
 }

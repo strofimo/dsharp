@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 using DSharp.Compiler.CodeModel;
@@ -221,6 +222,16 @@ namespace DSharp.Compiler.Compiler
                     BuildInterfaceAssociations((ClassSymbol)typeSymbol);
                 }
 
+            //Store Extension types in a global lookup
+            foreach ((TypeSymbol type, IEnumerable<MethodSymbol> methods) in FetchTypesWithExtensionMethods(types))
+            {
+                foreach(var method in methods)
+                {
+                    string typeToExtend = method.Parameters[0].ValueType.FullName;
+                    symbols.AddExtensionType(typeToExtend, method.Name, method);
+                }
+            }
+
             // Load resource values
             if (this.symbols.HasResources)
             {
@@ -253,6 +264,21 @@ namespace DSharp.Compiler.Compiler
             }
 
             return types;
+        }
+
+        private IEnumerable<(TypeSymbol, IEnumerable<MethodSymbol>)> FetchTypesWithExtensionMethods(IEnumerable<TypeSymbol> typeSymbols)
+        {
+            return typeSymbols.Where(symbol => symbol.IsPublic || symbol.IsInternal).Select(type =>
+            {
+                return (type, type.Members.Where(m => IsExtensionMethod(m)).Cast<MethodSymbol>());
+            });
+        }
+
+        private static bool IsExtensionMethod(MemberSymbol memberSymbol)
+        {
+            return memberSymbol is MethodSymbol methodSymbol 
+                && methodSymbol.IsExtensionMethod 
+                && (memberSymbol.Visibility.HasFlag(MemberVisibility.Public) || memberSymbol.IsInternal);
         }
 
         private void BuildAssembly(ParseNodeList compilationUnits)
@@ -774,7 +800,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (returnType != null)
                 {
-                    method = new MethodSymbol(methodNode.Name, typeSymbol, returnType);
+                    method = new MethodSymbol(methodNode.Name, typeSymbol, returnType, methodNode.IsExensionMethod);
                     BuildMemberDetails(method, typeSymbol, methodNode, methodNode.Attributes);
 
                     ICollection<string> conditions = null;
@@ -870,7 +896,7 @@ namespace DSharp.Compiler.Compiler
 
             if (parameterType != null)
             {
-                return new ParameterSymbol(parameterNode.Name, methodSymbol, parameterType, parameterMode);
+                return new ParameterSymbol(parameterNode.Name, methodSymbol, parameterType, parameterMode, parameterNode.IsExtensionMethodTarget);
             }
 
             return null;
@@ -1006,12 +1032,6 @@ namespace DSharp.Compiler.Compiler
                     {
                         baseTypeNameNode = customTypeNode.BaseTypes[0] as NameNode;
                     }
-
-                    if (baseTypeNameNode != null &&
-                        string.CompareOrdinal(baseTypeNameNode.Name, "TestClass") == 0)
-                    {
-                        ((ClassSymbol)typeSymbol).SetTestClass();
-                    }
                 }
             }
             else if (typeNode.Type == TokenType.Interface)
@@ -1042,18 +1062,16 @@ namespace DSharp.Compiler.Compiler
 
             if (typeSymbol != null)
             {
-                if ((typeNode.Modifiers & Modifiers.Public) != 0)
+                if (typeNode.Modifiers.HasFlag(Modifiers.Public))
                 {
-                    typeSymbol.SetPublic();
+                    typeSymbol.IsPublic = true;
+                }
+                else if (typeNode.Modifiers.HasFlag(Modifiers.Internal))
+                {
+                    typeSymbol.IsInternal = true;
                 }
 
                 BuildType(typeSymbol, typeNode);
-
-                if (namespaceSymbol.Name.EndsWith(".Tests", StringComparison.Ordinal) ||
-                    namespaceSymbol.Name.IndexOf(".Tests.", StringComparison.Ordinal) > 0)
-                {
-                    typeSymbol.SetTestType();
-                }
             }
 
             return typeSymbol;

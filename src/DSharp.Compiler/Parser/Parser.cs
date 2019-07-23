@@ -1,4 +1,4 @@
-// Parser.cs
+﻿// Parser.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -1871,6 +1871,10 @@ namespace DSharp.Compiler.Parser
                 do
                 {
                     lastParam = ParseFormalParameter(allowAttributes);
+                    if(list.Count >= 1 && lastParam.IsExtensionMethodTarget)
+                    {
+                        throw new System.InvalidOperationException("Only the first parameter of a method can be an extension parameter");
+                    }
                     list.Append(lastParam);
                 } while (null != EatOpt(TokenType.Comma) && lastParam.Flags != ParameterFlags.Params);
             }
@@ -1885,12 +1889,20 @@ namespace DSharp.Compiler.Parser
 
         private ParameterNode ParseFormalParameter(bool allowAttributes)
         {
+            bool containsThis = false;
+            if(PeekType() == TokenType.This)
+            {
+                Eat(TokenType.This);
+                containsThis = true;
+            }
+            
             return new ParameterNode(
                 PeekToken(),
                 allowAttributes ? ParseAttributes() : new ParseNodeList(),
                 ParseParameterFlags(),
                 ParseType(),
-                ParseIdentifier());
+                ParseIdentifier(),
+                containsThis);
         }
 
         private ParameterFlags ParseParameterFlags()

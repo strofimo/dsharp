@@ -193,3 +193,4 @@ TestResults/
 node_modules/
 dist/
 src/Output/**
+launchSettings.json

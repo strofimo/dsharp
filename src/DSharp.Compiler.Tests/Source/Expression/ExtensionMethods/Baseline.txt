@@ -1,30 +1,55 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
+define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   var $global = this;
+  // ExpressionTests.StringExtensions
 
-  // ExpressionTests.App
-
-  function App() {
+  function StringExtensions() {
   }
-  var App$ = {
-    test: function(arg) {
-      eval('[ 1, 2 ]');
-      $global.foo();
-      setTimeout($global.foo, 0);
-    }
+  StringExtensions.padRightC = function(str, times, value) {
+    return str + new String(value, times);
   };
 
 
-  // ExpressionTests.Util
+  // ExpressionTests.IntExtensions
 
-  $global.foo = function() {
+  function IntExtensions() {
+  }
+  IntExtensions.increment = function(source) {
+    return InternalIntExtensions.add(source, 1);
   };
 
 
-  var $exports = ss.module('test', null,
+  // ExpressionTests.InternalIntExtensions
+
+  function InternalIntExtensions() {
+  }
+  InternalIntExtensions.add = function(source, other) {
+    return source + other;
+  };
+
+
+  // ExpressionTests.Program
+
+  function Program() {
+  }
+  Program.main = function(args) {
+    var value = StringExtensions.padRightC(StringExtensions.padRightC(StringExtensions.padRightC('', 10, 'F'), 10, 'F'), 10, 'F');
+    return IntExtensions.increment(0);
+  };
+  var Program$ = {
+
+  };
+
+
+  var $exports = ss.module('ExpressionTests.ExtensionMethods',
     {
-      App: ss.defineClass(App, App$, [], null)
+      InternalIntExtensions: ss.defineClass(InternalIntExtensions, null, [], null)
+    },
+    {
+      StringExtensions: ss.defineClass(StringExtensions, null, [], null),
+      IntExtensions: ss.defineClass(IntExtensions, null, [], null),
+      Program: ss.defineClass(Program, Program$, [], null)
     });
 
 
