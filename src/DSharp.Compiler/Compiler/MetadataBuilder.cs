@@ -14,6 +14,7 @@ using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Extensions;
+using DSharp.Compiler.Importer;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Compiler
@@ -295,6 +296,17 @@ namespace DSharp.Compiler.Compiler
                     options.DocCommentFile.CloseStream(docCommentsStream);
                 }
             }
+        }
+
+        private static bool IsExtensionMethod(MemberSymbol memberSymbol)
+        }
+
+        private IEnumerable<(TypeSymbol, IEnumerable<MethodSymbol>)> FetchTypesWithExtensionMethods(IEnumerable<TypeSymbol> typeSymbols)
+        {
+            return typeSymbols.Where(symbol => symbol.IsPublic || symbol.IsInternal).Select(type =>
+            {
+                return (type, type.Members.Where(m => IsExtensionMethod(m)).Cast<MethodSymbol>());
+            });
         }
 
         private static bool IsExtensionMethod(MemberSymbol memberSymbol)
@@ -718,6 +730,14 @@ namespace DSharp.Compiler.Compiler
 
             foreach (MemberNode member in typeNode.Members)
             {
+                var nodeAttributes = member.Attributes.Cast<AttributeNode>();
+
+                // skip symbol generation for members decorated with [ScriptIgnore]
+                if (nodeAttributes.Any(a => a.TypeName == DSharpStringResources.SCRIPT_IGNORE_ATTRIBUTE))
+                {
+                    continue;
+                }
+
                 MemberSymbol memberSymbol = null;
 
                 switch (member.NodeType)
@@ -824,6 +844,12 @@ namespace DSharp.Compiler.Compiler
                 if (returnType != null)
                 {
                     method = new MethodSymbol(methodNode.Name, typeSymbol, returnType, methodNode.IsExensionMethod);
+
+                    if (methodNode.TypeParameters.Any())
+                    {
+                        BuildMethodGenericArguments(method, methodNode, typeSymbol);
+                    }
+
                     BuildMemberDetails(method, typeSymbol, methodNode, methodNode.Attributes);
 
                     ICollection<string> conditions = null;
@@ -899,6 +925,44 @@ namespace DSharp.Compiler.Compiler
             return method;
         }
 
+        private void BuildMethodGenericArguments(MethodSymbol method, MethodDeclarationNode methodNode, TypeSymbol typeSymbol)
+        {
+            List<GenericParameterSymbol> genericArguments = new List<GenericParameterSymbol>();
+
+            for (var i = 0; i < methodNode.TypeParameters.Count; ++i)
+            {
+                TypeParameterNode genericParameter = (TypeParameterNode)methodNode.TypeParameters[i];
+
+                GenericParameterSymbol arg =
+                    new GenericParameterSymbol(i, genericParameter.NameNode.Name,
+                        /* typeArgument */ false,
+                        symbols.GlobalNamespace);
+
+                var constraints = methodNode.Constraints
+                    .Cast<TypeParameterConstraintNode>()
+                    .Where(c => c.TypeParameter.Name == genericParameter.NameNode.Name)
+                    .SelectMany(c => c.TypeConstraints)
+                    .Select(c => typeSymbol.SymbolSet.ResolveType(c, symbolTable, typeSymbol))
+                    .Distinct()
+                    .ToList();
+
+                var baseClass = constraints.OfType<ClassSymbol>().SingleOrDefault();
+                var interfaces = constraints.OfType<InterfaceSymbol>().ToList();
+
+                arg.SetInheritance(baseClass, interfaces);
+
+                // add members for the interfaces
+                foreach (var member in interfaces.SelectMany(x => x.Members).Distinct())
+                {
+                    arg.AddMember(member);
+                }
+
+                genericArguments.Add(arg);
+            }
+
+            method.AddGenericArguments(genericArguments);
+        }
+
         private ParameterSymbol BuildParameter(ParameterNode parameterNode, MethodSymbol methodSymbol)
         {
             ParameterMode parameterMode = ParameterMode.In;
@@ -915,6 +979,7 @@ namespace DSharp.Compiler.Compiler
 
             TypeSymbol parameterType =
                 methodSymbol.SymbolSet.ResolveType(parameterNode.Type, symbolTable, methodSymbol);
+
             Debug.Assert(parameterType != null);
 
             if (parameterType != null)
@@ -1245,8 +1310,16 @@ namespace DSharp.Compiler.Compiler
 
                 foreach (NameNode node in customTypeNode.BaseTypes)
                 {
+                    string nodeName = node.Name;
+
+                    if (node is GenericNameNode genericNameNode)
+                    {
+                        nodeName += $"`{genericNameNode.TypeArguments.Count}";
+                    }
+
                     TypeSymbol baseTypeSymbol =
-                        (TypeSymbol)symbolTable.FindSymbol(node.Name, classSymbol, SymbolFilter.Types);
+                        (TypeSymbol)symbolTable.FindSymbol(nodeName, classSymbol, SymbolFilter.Types);
+
                     Debug.Assert(baseTypeSymbol != null);
 
                     if (baseTypeSymbol.Type == SymbolType.Class)
@@ -1284,8 +1357,16 @@ namespace DSharp.Compiler.Compiler
 
                 foreach (NameNode node in customTypeNode.BaseTypes)
                 {
+                    string nodeName = node.Name;
+
+                    if (node is GenericNameNode genericNameNode)
+                    {
+                        nodeName += $"`{genericNameNode.TypeArguments.Count}";
+                    }
+
                     TypeSymbol baseTypeSymbol =
-                        (TypeSymbol)symbolTable.FindSymbol(node.Name, interfaceSymbol, SymbolFilter.Types);
+                        (TypeSymbol)symbolTable.FindSymbol(nodeName, interfaceSymbol, SymbolFilter.Types);
+
                     Debug.Assert(baseTypeSymbol.Type == SymbolType.Interface);
 
                     if (interfaces == null)

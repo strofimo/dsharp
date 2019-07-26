@@ -25,6 +25,7 @@
     <Compile Remove="Source\Basic\Flags\Code.cs" />
     <Compile Remove="Source\Basic\Guid\Code.cs" />
     <Compile Remove="Source\Basic\Includes\Code.cs" />
+    <Compile Remove="Source\Basic\GenericInheritance\Code.cs" />
     <Compile Remove="Source\Basic\Lists\Code.cs" />
     <Compile Remove="Source\Basic\Minimization\Code.cs" />
     <Compile Remove="Source\Basic\Minimization\Lib.cs" />
@@ -46,6 +47,7 @@
     <Compile Remove="Source\Expression\EnumToString\Code2.cs" />
     <Compile Remove="Source\Expression\Events\Code.cs" />
     <Compile Remove="Source\Expression\ExtensionMethods\Code.cs" />
+    <Compile Remove="Source\Expression\Generics2\Code.cs" />
     <Compile Remove="Source\Expression\Generics\Code.cs" />
     <Compile Remove="Source\Expression\GetType\Code.cs" />
     <Compile Remove="Source\Expression\InlineScript\Code.cs" />
@@ -55,6 +57,7 @@
     <Compile Remove="Source\Expression\Members\Code.cs" />
     <Compile Remove="Source\Expression\New\Code.cs" />
     <Compile Remove="Source\Expression\Number\Code.cs" />
+    <Compile Remove="Source\Expression\ScriptIgnore\Code.cs" />
     <Compile Remove="Source\Expression\Script\Code.cs" />
     <Compile Remove="Source\Expression\String\Code.cs" />
     <Compile Remove="Source\Expression\Truthy\Code.cs" />
@@ -133,6 +136,7 @@
     <None Remove="Source\Basic\Includes\Post.js" />
     <None Remove="Source\Basic\Includes\Pre.js" />
     <None Remove="Source\Basic\Includes\SingleIncBaseline.txt" />
+    <None Remove="Source\Basic\GenericInheritance\Baseline.txt" />
     <None Remove="Source\Basic\Lists\Baseline.txt" />
     <None Remove="Source\Basic\Minimization\Baseline.txt" />
     <None Remove="Source\Basic\Minimization\Lib.bat" />
@@ -155,6 +159,7 @@
     <None Remove="Source\Expression\EnumToString\NormalBaseline.txt" />
     <None Remove="Source\Expression\Events\Baseline.txt" />
     <None Remove="Source\Expression\ExtensionMethods\Baseline.txt" />
+    <None Remove="Source\Expression\Generics2\Baseline.txt" />
     <None Remove="Source\Expression\Generics\Baseline.txt" />
     <None Remove="Source\Expression\GetType\Baseline.txt" />
     <None Remove="Source\Expression\InlineScript\Baseline.txt" />
@@ -164,6 +169,7 @@
     <None Remove="Source\Expression\Members\Baseline.txt" />
     <None Remove="Source\Expression\New\Baseline.txt" />
     <None Remove="Source\Expression\Number\Baseline.txt" />
+    <None Remove="Source\Expression\ScriptIgnore\Baseline.txt" />
     <None Remove="Source\Expression\Script\Baseline.txt" />
     <None Remove="Source\Expression\String\Baseline.txt" />
     <None Remove="Source\Expression\Truthy\Baseline.txt" />
@@ -290,6 +296,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Basic\Includes\SingleIncBaseline.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Basic\GenericInheritance\Baseline.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Basic\Lists\Baseline.txt">
@@ -427,6 +436,9 @@
     <Content Include="Source\Expression\ExtensionMethods\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Source\Expression\Generics2\Baseline.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Source\Expression\Generics\Baseline.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -479,6 +491,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Expression\Number\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Expression\ScriptIgnore\Baseline.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Expression\ScriptIgnore\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Expression\Script\Baseline.txt">
@@ -761,12 +779,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Source\Basic\GenericInheritance\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Source\Basic\Resources\Strings1.Designer.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Source\Basic\Resources\Strings2.Designer.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="Source\Expression\Generics2\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
