@@ -93,6 +93,11 @@
         "ComparisonFile": "MultipleIncBaseline.txt"
       },
       {
+        "Name": "GenericInheritance",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "Default_Loader",
         "SourceFolder": "Simple",
         "SourceFiles": [ "Code.cs" ],
@@ -206,6 +211,12 @@
         "References": [ "DSharp.Web.dll" ]
       },
       {
+        "Name": "Generics2",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "References": []
+      },
+      {
         "Name": "GetType",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
@@ -247,6 +258,11 @@
       },
       {
         "Name": "Script",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "ScriptIgnore",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
       },

@@ -774,7 +774,12 @@ namespace DSharp.Compiler.Compiler
                         throw new ExpressionBuildException($"Unable to resolve type '{typeName}' from symbol table.");
                     }
 
-                    return CreateExtensionMethodInvocationExpression(node, typeSymbol);
+                    Expression extensionMethodInvocation = CreateExtensionMethodInvocationExpression(node, typeSymbol);
+
+                    if (extensionMethodInvocation != null)
+                    {
+                        return extensionMethodInvocation;
+                    }
                 }
                 else if (node.LeftChild.Token is IdentifierToken identifier)
                 {
@@ -782,7 +787,12 @@ namespace DSharp.Compiler.Compiler
                     var token = parentMethod.Parameters.First().Token;
                     var typeNode = symbolSet.ResolveIntrinsicToken(token);
 
-                    return CreateExtensionMethodInvocationExpression(node, typeNode);
+                    Expression extensionMethodInvocation = CreateExtensionMethodInvocationExpression(node, typeNode);
+
+                    if (extensionMethodInvocation != null)
+                    {
+                        return extensionMethodInvocation;
+                    }
                 }
             }
 
@@ -977,6 +987,11 @@ namespace DSharp.Compiler.Compiler
             string memberName = ((NameNode)node.RightChild).Name;
             MethodSymbol methodSymbol = symbolSet.ResolveExtensionMethodSymbol(typeToExtend.FullName, memberName);
 
+            if (methodSymbol == null)
+            {
+                return null;
+            }
+
             MethodExpression methodExpression = new MethodExpression(
                         new TypeExpression((TypeSymbol)methodSymbol.Parent, SymbolFilter.Public | SymbolFilter.StaticMembers),
                         methodSymbol);
@@ -1062,11 +1077,6 @@ namespace DSharp.Compiler.Compiler
         private Expression ProcessNameNode(NameNode node, SymbolFilter filter)
         {
             string name = node.Name;
-
-            if (node.NodeType == ParseNodeType.GenericName)
-            {
-                name = name + "`" + ((GenericNameNode)node).TypeArguments.Count;
-            }
 
             // TODO: When inside a static method, we should only lookup static members
 
@@ -1825,6 +1835,10 @@ namespace DSharp.Compiler.Compiler
                 }
 
                 methodExpression = new MethodExpression(memberExpression.ObjectReference, method);
+
+                // iterate over the parameters. If the parameter is generic, then get args[i].EvaluatedType
+                // add it as SetGenericType and the SymbolTable
+                // (method symbol signature might need to be decorated)
             }
 
             if (methodExpression != null)
@@ -1838,7 +1852,10 @@ namespace DSharp.Compiler.Compiler
 
                 if (args != null)
                 {
-                    foreach (Expression paramExpr in args) methodExpression.AddParameterValue(paramExpr);
+                    foreach (Expression paramExpr in args)
+                    {
+                        methodExpression.AddParameterValue(paramExpr);
+                    }
                 }
 
                 if (isDelegateInvoke)
