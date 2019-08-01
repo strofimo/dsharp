@@ -1112,11 +1112,8 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessNameNode(NameNode node, SymbolFilter filter)
         {
-            string name = node.Name;
-
-            // TODO: When inside a static method, we should only lookup static members
-
-            Symbol symbol = symbolTable.FindSymbol(name, symbolContext, filter);
+            Symbol symbol = ResolveNameNodeSymbol(node, filter);
+            Debug.Assert(symbol != null);
 
             if (symbol is LocalSymbol localSymbol)
             {
@@ -1153,6 +1150,17 @@ namespace DSharp.Compiler.Compiler
             }
 
             return null;
+        }
+
+        private Symbol ResolveNameNodeSymbol(NameNode node, SymbolFilter filter)
+        {
+            if (node is GenericNameNode genericNameNode)
+            {
+                return symbolTable.FindSymbol(genericNameNode.FullGenericName, symbolContext, filter)
+                    ?? symbolTable.FindSymbol(node.Name, symbolContext, filter);
+            }
+
+            return symbolTable.FindSymbol(node.Name, symbolContext, filter);
         }
 
         private Expression ProcessNewNode(NewNode node)
@@ -1747,126 +1755,6 @@ namespace DSharp.Compiler.Compiler
                         toArrayExpression.AddParameterValue(argsExpression);
 
                         return toArrayExpression;
-                    }
-                }
-                else if (method.Parent.Type == SymbolType.Class && ((ClassSymbol)method.Parent).IsArray)
-                {
-                    ClassSymbol arraySymbol = (ClassSymbol)method.Parent;
-
-                    if (method.Name.Equals("Clear", StringComparison.Ordinal))
-                    {
-                        // array.Clear() becomes array.length = 0 in generated code
-
-                        MemberSymbol lengthMember = arraySymbol.GetMember("Length");
-
-                        if (lengthMember == null)
-                        {
-                            lengthMember = arraySymbol.GetMember("Count");
-                        }
-
-                        Debug.Assert(lengthMember != null && lengthMember.Type == SymbolType.Field);
-
-                        MemberExpression lengthExpression =
-                            new MemberExpression(memberExpression.ObjectReference, lengthMember);
-
-                        return new BinaryExpression(Operator.Equals, TransformMemberExpression(lengthExpression),
-                            new LiteralExpression(intType, 0));
-                    }
-
-                    if (method.Name.Equals("Contains", StringComparison.Ordinal))
-                    {
-                        Debug.Assert(args.Count == 1);
-
-                        // array.Contains(item) becomes array.indexOf(item) >= 0
-
-                        MemberSymbol indexOfSymbol = arraySymbol.GetMember("IndexOf");
-                        Debug.Assert(indexOfSymbol != null && indexOfSymbol.Type == SymbolType.Method);
-
-                        MethodExpression indexOfExpression =
-                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol)indexOfSymbol);
-                        indexOfExpression.AddParameterValue(args[0]);
-
-                        BinaryExpression compareExpression =
-                            new BinaryExpression(Operator.GreaterEqual, indexOfExpression,
-                                new LiteralExpression(intType, 0));
-                        compareExpression.AddParenthesisHint();
-
-                        return compareExpression;
-                    }
-
-                    if (method.Name.Equals("Insert", StringComparison.Ordinal) ||
-                        method.Name.Equals("InsertRange", StringComparison.Ordinal))
-                    {
-                        Debug.Assert(args.Count >= 1);
-
-                        // array.Insert(index, item) becomes array.splice(index, 0, item);
-
-                        MemberSymbol spliceSymbol = arraySymbol.GetMember("Splice");
-                        Debug.Assert(spliceSymbol != null && spliceSymbol.Type == SymbolType.Method);
-
-                        MethodExpression spliceExpression =
-                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol)spliceSymbol);
-                        spliceExpression.AddParameterValue(args[0]);
-                        spliceExpression.AddParameterValue(new LiteralExpression(intType, 0));
-
-                        for (int i = 1; i < args.Count; i++) spliceExpression.AddParameterValue(args[i]);
-
-                        return spliceExpression;
-                    }
-
-                    if (method.Name.Equals("RemoveAt", StringComparison.Ordinal) ||
-                        method.Name.Equals("RemoveRange", StringComparison.Ordinal))
-                    {
-                        Debug.Assert(args.Count >= 1 && args.Count <= 2);
-
-                        // array.RemoveAt(index) becomes array.splice(index, 1)
-                        // array.RemoveRange(index, count) becomes array.splice(index, count)
-
-                        MemberSymbol spliceSymbol = arraySymbol.GetMember("Splice");
-                        Debug.Assert(spliceSymbol != null && spliceSymbol.Type == SymbolType.Method);
-
-                        MethodExpression spliceExpression =
-                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol)spliceSymbol);
-                        spliceExpression.AddParameterValue(args[0]);
-
-                        if (args.Count == 1)
-                        {
-                            spliceExpression.AddParameterValue(new LiteralExpression(intType, 1));
-                        }
-                        else
-                        {
-                            spliceExpression.AddParameterValue(args[1]);
-                        }
-
-                        return spliceExpression;
-                    }
-
-                    if (method.Name.Equals("GetRange", StringComparison.Ordinal))
-                    {
-                        Debug.Assert(args.Count == 2);
-
-                        // array.GetRange(index, count) becomes array.slice(index, index + count)
-
-                        MemberSymbol sliceSymbol = arraySymbol.GetMember("Slice");
-                        Debug.Assert(sliceSymbol != null && sliceSymbol.Type == SymbolType.Method);
-
-                        MethodExpression sliceExpression =
-                            new MethodExpression(memberExpression.ObjectReference, (MethodSymbol)sliceSymbol);
-                        sliceExpression.AddParameterValue(args[0]);
-
-                        if (args[0].Type == ExpressionType.Literal &&
-                            args[1].Type == ExpressionType.Literal)
-                        {
-                            int endValue = (int)((LiteralExpression)args[0]).Value +
-                                           (int)((LiteralExpression)args[1]).Value;
-                            sliceExpression.AddParameterValue(new LiteralExpression(intType, endValue));
-                        }
-                        else
-                        {
-                            sliceExpression.AddParameterValue(new BinaryExpression(Operator.Plus, args[0], args[1]));
-                        }
-
-                        return sliceExpression;
                     }
                 }
 
