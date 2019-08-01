@@ -894,6 +894,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 foreach (ParseNode argNode in genericNameNode.TypeArguments)
                 {
                     TypeSymbol argType = ResolveType(argNode, symbolTable, contextSymbol);
+                    Debug.Assert(argType != null);
                     typeArguments.Add(argType);
                 }
 
@@ -984,6 +985,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 if (context is MethodSymbol methodContext)
                 {
                     var genericType = methodContext.GenericArguments?.SingleOrDefault(a => a.Name == name);
+
+                    if(genericType == null && methodContext.Parent.IsGeneric)
+                    {
+                        genericType = methodContext.Parent.GenericParameters.FirstOrDefault(a => a.Name == name);
+                    }
 
                     if (genericType != null)
                     {
