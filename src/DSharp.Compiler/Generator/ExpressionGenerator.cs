@@ -1076,25 +1076,71 @@ namespace DSharp.Compiler.Generator
                 }
             }
 
-            writer.Write("new ");
-
-            if (expression.IsSpecificType)
+            if(expression.AssociatedType.IsGeneric)
             {
-                writer.Write(expression.AssociatedType.FullGeneratedName);
+                writer.Write(DSharpStringResources.ScriptExportMember("createGenericType"));
+                writer.Write("(");
+                if (expression.IsSpecificType)
+                {
+                    writer.Write(expression.AssociatedType.FullGeneratedName);
+                }
+                else
+                {
+                    GenerateExpression(generator, symbol, expression.TypeExpression);
+                }
+                writer.Write(", ");
+                GenerateGenericTypeArguments(generator, expression.AssociatedType);
+                writer.Write(", ");
+                if (expression.Parameters != null)
+                {
+                    GenerateExpressionList(generator, symbol, expression.Parameters);
+                }
+                writer.Write(")");
             }
             else
             {
-                GenerateExpression(generator, symbol, expression.TypeExpression);
+                writer.Write("new ");
+
+                if (expression.IsSpecificType)
+                {
+                    writer.Write(expression.AssociatedType.FullGeneratedName);
+                }
+                else
+                {
+                    GenerateExpression(generator, symbol, expression.TypeExpression);
+                }
+
+                writer.Write("(");
+
+                if (expression.Parameters != null)
+                {
+                    GenerateExpressionList(generator, symbol, expression.Parameters);
+                }
+
+                writer.Write(")");
             }
+        }
 
-            writer.Write("(");
+        private static void GenerateGenericTypeArguments(ScriptGenerator generator, TypeSymbol associatedType)
+        {
+            ScriptTextWriter writer = generator.Writer;
+            var typeArguments = associatedType.GenericArguments;
+            var typeParameters = associatedType.GenericParameters;
 
-            if (expression.Parameters != null)
+            if(typeArguments.Count == 0 || typeArguments.Count != typeParameters.Count)
             {
-                GenerateExpressionList(generator, symbol, expression.Parameters);
+                Debug.Fail($"{associatedType.Name} is generic, but contains no generic arguments, unable to generate generic arguments dictionary");
+                return;
             }
 
-            writer.Write(")");
+            writer.Write("{");
+            for (int i = 0; i < typeArguments.Count; i++)
+            {
+                var typeArgument = typeArguments[i];
+                var typeParameter = typeParameters[i];
+                writer.Write($"{typeParameter.FullName} : {typeArgument.FullGeneratedName}");
+            }
+            writer.Write("}");
         }
 
         private static void GeneratePropertyExpression(ScriptGenerator generator, MemberSymbol symbol,

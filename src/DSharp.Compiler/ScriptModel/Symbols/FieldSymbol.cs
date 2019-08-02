@@ -84,7 +84,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public void SetTransformName(string transformName)
         {
-            Debug.Assert((Visibility & MemberVisibility.Static) != 0);
+            //Why does this matter?
+            //Debug.Assert((Visibility & MemberVisibility.Static) != 0);
 
             SetTransformedName(transformName);
             IsGlobalField = true;

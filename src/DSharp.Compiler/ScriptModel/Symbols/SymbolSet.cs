@@ -1023,6 +1023,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     return null;
                 }
 
+                if (typeSymbol.IsGeneric)
+                {
+                    var resolved = typeSymbol.GenericParameters.FirstOrDefault(param => param.Name == name);
+                    if(resolved != null)
+                    {
+                        return resolved;
+                    }
+                }
+
                 bool systemNamespaceChecked = false;
 
                 NamespaceSymbol containerNamespace = (NamespaceSymbol)typeSymbol.Parent;
