@@ -486,9 +486,12 @@ namespace DSharp.Compiler.Generator
                     GenerateExpression(generator, symbol, ((NewDelegateExpression) expression).TypeExpression);
 
                     break;
+
+                case ExpressionType.Object:
+                    GenerateObjectExpression(generator, symbol, (ObjectExpression)expression);
+                    break;
                 default:
                     Debug.Fail("Unexpected expression type: " + expression.Type);
-
                     break;
             }
 
@@ -496,6 +499,29 @@ namespace DSharp.Compiler.Generator
             {
                 writer.Write(")");
             }
+        }
+
+        private static void GenerateObjectExpression(ScriptGenerator generator, MemberSymbol symbol, ObjectExpression expression)
+        {
+            ScriptTextWriter writer = generator.Writer;
+
+            writer.Write("{");
+            bool commaNeeded = false;
+
+            foreach (var property in expression.Properties)
+            {
+                writer.Write(property.Key);
+                writer.Write(": ");
+                GenerateExpression(generator, symbol, property.Value);
+                if(commaNeeded)
+                {
+                    writer.Write(", ");
+                }
+
+                commaNeeded = true;
+            }
+
+            writer.Write("}");
         }
 
         public static void GenerateExpressionList(ScriptGenerator generator, MemberSymbol symbol,

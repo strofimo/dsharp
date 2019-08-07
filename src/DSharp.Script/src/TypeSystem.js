@@ -273,3 +273,11 @@ function getTypeName(instance) {
         return instance.toString();
     }
 }
+
+function getTypeArgument(instance, typeArgumentName) {
+    if (!isValue(instance) || emptyString(typeArgumentName) || !isValue(instance.constructor.$typeArguments)) {
+        return null;
+    }
+
+    return instance.constructor.$typeArguments[typeArgumentName];
+}

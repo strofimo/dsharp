@@ -736,6 +736,8 @@ namespace DSharp.Compiler.Importer
                     (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol("Date", null, SymbolFilter.Types);
                 Debug.Assert(dateType != null);
 
+                TypeSymbol typeSymbol = symbols.ResolveIntrinsicType(IntrinsicType.Type);
+
                 // Enumerate - IEnumerable.GetEnumerator gets mapped to this
 
                 MethodSymbol enumerateMethod = new MethodSymbol("Enumerate", classSymbol, objectType,
@@ -762,6 +764,26 @@ namespace DSharp.Compiler.Importer
                 compareDatesMethod.AddParameter(new ParameterSymbol("d2", compareDatesMethod, dateType,
                     ParameterMode.In));
                 classSymbol.AddMember(compareDatesMethod);
+
+                MethodSymbol getGenericConstructorMethod 
+                    = new MethodSymbol("getGenericConstructor", classSymbol, typeSymbol, MemberVisibility.Public | MemberVisibility.Static);
+                getGenericConstructorMethod.SetTransformName(DSharpStringResources.ScriptExportMember("getGenericConstructor"));
+                getGenericConstructorMethod.AddParameter(
+                    new ParameterSymbol("ctorMethod", getGenericConstructorMethod, typeSymbol, ParameterMode.In));
+                getGenericConstructorMethod.AddParameter(
+                    new ParameterSymbol("typeArguments", getGenericConstructorMethod, objectType, ParameterMode.In));
+
+                classSymbol.AddMember(getGenericConstructorMethod);
+
+                MethodSymbol getTypeArgument
+                    = new MethodSymbol("getTypeArgument", classSymbol, typeSymbol, MemberVisibility.Public | MemberVisibility.Static);
+                getTypeArgument.SetTransformName(DSharpStringResources.ScriptExportMember("getTypeArgument"));
+                getTypeArgument.AddParameter(
+                    new ParameterSymbol("instance", getTypeArgument, objectType, ParameterMode.In));
+                getTypeArgument.AddParameter(
+                    new ParameterSymbol("typeArgumentName", getTypeArgument, stringType, ParameterMode.In));
+
+                classSymbol.AddMember(getTypeArgument);
 
                 return;
             }

@@ -60,6 +60,7 @@
         paramsGenerator: paramsGenerator,
         createPropertyGet: createPropertyGet,
         createPropertySet: createPropertySet,
+        copyArray: copyArray,
 
         module: module,
         modules: _modules,
@@ -87,6 +88,7 @@
         fail: fail,
         createGenericType: createGenericType,
         getGenericConstructor: getGenericConstructor,
+        getTypeArgument: getTypeArgument,
     });
   }
 

@@ -20,7 +20,6 @@ namespace DSharp.Shell
 Usage:
   ssc [/nologo] [/?]
       [/debug]
-      [/tests]
       [/minimize]
       [/D:<variable>]
       [/res:<resource file>]
@@ -33,8 +32,6 @@ Usage:
 /?          Displays usage information.
 /debug      Turns on debug mode. Specifically, it defines the 'DEBUG'
             variable.
-/tests      Includes test classes defined in the sources into the
-            generated script.
 /minimize   Minimizes the whitespace in the generated script file.
             This is only used in non-debug builds.
 /D          Defines one or more variables that are used to conditionally

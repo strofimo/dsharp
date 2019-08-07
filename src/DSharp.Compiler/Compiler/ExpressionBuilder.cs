@@ -1765,6 +1765,16 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol referencedType = symbolSet.ResolveType(node.TypeReference, symbolTable, symbolContext);
             Debug.Assert(referencedType != null);
 
+            return CreateTypeOfExpression(referencedType);
+        }
+
+        private Expression CreateTypeOfExpression(TypeSymbol referencedType)
+        {
+            if(referencedType == null)
+            {
+                throw new ArgumentNullException(nameof(referencedType));
+            }
+
             if (referencedType.Dependency != null)
             {
                 symbolSet.AddDependency(referencedType.Dependency);
@@ -1773,26 +1783,34 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol typeSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
             Debug.Assert(typeSymbol != null);
 
-            if(referencedType.IsGeneric)
+            if (referencedType is GenericParameterSymbol genericParameterSymbol)
             {
                 TypeSymbol scriptSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
-                TypeSymbol objectSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
+                TypeSymbol stringSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
+
+                TypeExpression scriptExpression = new TypeExpression(scriptSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
+                var methodSymbol = (MethodSymbol)scriptSymbol.GetMember("getTypeArgument");
+                var methodExpression = new MethodExpression(scriptExpression, methodSymbol);
+                methodExpression.AddParameterValue(new ThisExpression(referencedType.Parent as ClassSymbol, false));
+                methodExpression.AddParameterValue(new LiteralExpression(stringSymbol, genericParameterSymbol.GeneratedName));
+
+                //ss.getTypeArgument(this, "T");
+                return methodExpression;
+            }
+            else if (referencedType.IsGeneric)
+            {
+                TypeSymbol scriptSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
 
                 TypeExpression scriptExpression = new TypeExpression(scriptSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
                 var methodSymbol = (MethodSymbol)scriptSymbol.GetMember("getGenericConstructor");
-                var methodExpression =  new MethodExpression(scriptExpression, methodSymbol);
+                var methodExpression = new MethodExpression(scriptExpression, methodSymbol);
 
                 methodExpression.AddParameterValue(new LiteralExpression(typeSymbol, referencedType));
                 ObjectExpression typeInferenceMap = CreateTypeInterenceMap(referencedType);
                 methodExpression.AddParameterValue(typeInferenceMap);
 
-                return null; //return an expression like: ss.getGenericConstructor(MyType. { T: ConstructorOfT })
-            }
-            else if (referencedType is GenericParameterSymbol genericParameterSymbol)
-            {
-                //else if typeof(T){}
-                //Should return like: this.constructor.$typeArguments[T];
-                //or: ss.getTypeArgument(this, "T"); <- this
+                //return an expression like: ss.getGenericConstructor(MyType, { T: ConstructorOfT })
+                return methodExpression; 
             }
 
             return new LiteralExpression(typeSymbol, referencedType);
@@ -1806,6 +1824,8 @@ namespace DSharp.Compiler.Compiler
                 var genericParameter = referencedType.GenericParameters[i];
                 var genericArgument = referencedType.GenericArguments[i];
 
+                var typeofExpression = CreateTypeOfExpression(genericArgument);
+                typeInterenceMap.Add(genericParameter.GeneratedName, typeofExpression);
             }
 
             return new ObjectExpression(null, typeInterenceMap);
