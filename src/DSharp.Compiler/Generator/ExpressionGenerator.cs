@@ -510,13 +510,14 @@ namespace DSharp.Compiler.Generator
 
             foreach (var property in expression.Properties)
             {
-                writer.Write(property.Key);
-                writer.Write(": ");
-                GenerateExpression(generator, symbol, property.Value);
                 if(commaNeeded)
                 {
                     writer.Write(", ");
                 }
+
+                writer.Write(property.Key);
+                writer.Write(": ");
+                GenerateExpression(generator, symbol, property.Value);
 
                 commaNeeded = true;
             }
