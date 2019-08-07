@@ -1773,7 +1773,37 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol typeSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
             Debug.Assert(typeSymbol != null);
 
+            if(referencedType.IsGeneric)
+            {
+                TypeSymbol scriptSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+                TypeSymbol objectSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
+
+                TypeExpression scriptExpression = new TypeExpression(scriptSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
+                var methodSymbol = (MethodSymbol)scriptSymbol.GetMember("getGenericConstructor");
+                var methodExpression =  new MethodExpression(scriptExpression, methodSymbol);
+
+                methodExpression.AddParameterValue(new LiteralExpression(typeSymbol, referencedType));
+                ObjectExpression typeInferenceMap = CreateTypeInterenceMap(referencedType);
+                methodExpression.AddParameterValue(typeInferenceMap);
+
+                return null; //return an expression like: ss.getGenericConstructor(MyType. { T: })
+            }
+            //else if typeof(T){}
+
             return new LiteralExpression(typeSymbol, referencedType);
+        }
+
+        private ObjectExpression CreateTypeInterenceMap(TypeSymbol referencedType)
+        {
+            Dictionary<string, Expression> typeInterenceMap = new Dictionary<string, Expression>();
+            for (int i = 0; i < referencedType.GenericParameters.Count; i++)
+            {
+                var genericParameter = referencedType.GenericParameters[i];
+                var genericArgument = referencedType.GenericArguments[i];
+
+            }
+
+            return new ObjectExpression(null, typeInterenceMap);
         }
 
         private Expression ProcessUnaryExpressionNode(UnaryExpressionNode node)
