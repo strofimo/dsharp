@@ -21,6 +21,10 @@
   </Target>
 
   <ItemGroup>
-    <None Include="dist\**\*"/>
+    <None Include="dist\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="dist\" />
   </ItemGroup>
 </Project>
