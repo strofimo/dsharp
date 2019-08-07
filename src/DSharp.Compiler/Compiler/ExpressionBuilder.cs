@@ -1786,9 +1786,14 @@ namespace DSharp.Compiler.Compiler
                 ObjectExpression typeInferenceMap = CreateTypeInterenceMap(referencedType);
                 methodExpression.AddParameterValue(typeInferenceMap);
 
-                return null; //return an expression like: ss.getGenericConstructor(MyType. { T: })
+                return null; //return an expression like: ss.getGenericConstructor(MyType. { T: ConstructorOfT })
             }
-            //else if typeof(T){}
+            else if (referencedType is GenericParameterSymbol genericParameterSymbol)
+            {
+                //else if typeof(T){}
+                //Should return like: this.constructor.$typeArguments[T];
+                //or: ss.getTypeArgument(this, "T"); <- this
+            }
 
             return new LiteralExpression(typeSymbol, referencedType);
         }
