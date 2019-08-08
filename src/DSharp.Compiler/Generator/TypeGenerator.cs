@@ -439,6 +439,11 @@ namespace DSharp.Compiler.Generator
                 }
             }
 
+            if(parameterType is GenericParameterSymbol)
+            {
+                parameterType = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
+            }
+
             return parameterType.FullGeneratedName;
         }
 
