@@ -9,6 +9,9 @@
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
+  
+  
+  
   <ItemGroup>
     <Compile Include="..\FileInputStreamSource.cs">
       <Link>FileInputStreamSource.cs</Link>

@@ -1,4 +1,4 @@
-﻿// ExpressionGenerator.cs
+﻿`// ExpressionGenerator.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -492,6 +492,7 @@ namespace DSharp.Compiler.Generator
                     break;
                 default:
                     Debug.Fail("Unexpected expression type: " + expression.Type);
+
                     break;
             }
 

@@ -14,6 +14,7 @@ using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Extensions;
+using DSharp.Compiler.Importer;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Compiler
@@ -1109,6 +1110,13 @@ namespace DSharp.Compiler.Compiler
                 else
                 {
                     typeSymbol = new ClassSymbol(name, namespaceSymbol);
+
+                    NameNode baseTypeNameNode = null;
+
+                    if (customTypeNode.BaseTypes.Count != 0)
+                    {
+                        baseTypeNameNode = customTypeNode.BaseTypes[0] as NameNode;
+                    }
                 }
             }
             else if (typeNode.Type == TokenType.Interface)
