@@ -1075,42 +1075,6 @@ namespace DSharp.Compiler.Compiler
             }
         }
 
-        private static string ResolveLiteralTypeName(LiteralToken token)
-        {
-            if (token == null)
-            {
-                return null;
-            }
-
-            switch (token.LiteralType)
-            {
-                case LiteralTokenType.Null:
-                    return nameof(Object);
-                case LiteralTokenType.Boolean:
-                    return nameof(Boolean);
-                case LiteralTokenType.Char:
-                    return nameof(Char);
-                case LiteralTokenType.String:
-                    return nameof(String);
-                case LiteralTokenType.Int:
-                    return nameof(Int32);
-                case LiteralTokenType.UInt:
-                    return nameof(UInt32);
-                case LiteralTokenType.Long:
-                    return nameof(Int64);
-                case LiteralTokenType.ULong:
-                    return nameof(UInt64);
-                case LiteralTokenType.Float:
-                    return nameof(Single);
-                case LiteralTokenType.Double:
-                    return nameof(Double);
-                case LiteralTokenType.Decimal:
-                    return nameof(Decimal);
-                default:
-                    return null;
-            }
-        }
-
         private Expression ProcessNameNode(NameNode node)
         {
             return ProcessNameNode(node, SymbolFilter.All);
