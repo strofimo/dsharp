@@ -298,9 +298,6 @@ namespace DSharp.Compiler.Compiler
             }
         }
 
-        private static bool IsExtensionMethod(MemberSymbol memberSymbol)
-        }
-
         private IEnumerable<(TypeSymbol, IEnumerable<MethodSymbol>)> FetchTypesWithExtensionMethods(IEnumerable<TypeSymbol> typeSymbols)
         {
             return typeSymbols.Where(symbol => symbol.IsPublic || symbol.IsInternal).Select(type =>
