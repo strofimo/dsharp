@@ -181,6 +181,11 @@ namespace DSharp.Compiler
 
             this.options = options;
 
+            if(options.DebugMode)
+            {
+                Debugger.Launch();
+            }
+
             hasErrors = false;
             symbols = new SymbolSet();
 

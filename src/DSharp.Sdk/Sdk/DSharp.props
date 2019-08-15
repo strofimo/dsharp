@@ -4,6 +4,7 @@
     <LangVersion Condition="'$(GenerateScript)' == 'True'">3</LangVersion>
     <ExcludeCoreLib Condition="'$(ExcludeCoreLib)' == ''">false</ExcludeCoreLib>
     <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
+    <DSharpCompilerDebugMode Condition="'$(DSharpCompilerDebugMode)' == ''">false</DSharpCompilerDebugMode>
     <DefineConstants>DSHARP;@(DefineConstants)</DefineConstants>
     <GenerateScriptAssemblyAttribute Condition="'$(GenerateScriptAssemblyAttributeCondition)' == ''">true</GenerateScriptAssemblyAttribute>
   </PropertyGroup>
