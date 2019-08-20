@@ -115,6 +115,7 @@ namespace DSharp.Compiler.Validator
                 case ParseNodeType.AnonymousMethod:
                 case ParseNodeType.BinaryExpression:
                 case ParseNodeType.Using:
+                case ParseNodeType.ObjectInitializer:
                 case ParseNodeType.TypeParameter:
 
                     // No validation required

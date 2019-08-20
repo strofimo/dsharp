@@ -121,13 +121,6 @@
         "SourceFiles": [ "Code.cs" ],
         "Defines": [ "AMD_TEMPLATE" ],
         "ComparisonFile": "AMDBaseline.txt"
-      },
-      {
-        "Name": "Resources",
-        "SourceFiles": [ "Code.cs", "Strings1.Designer.cs", "Strings2.Designer.cs" ],
-        "Resources": [ "Strings1.resx", "Strings1.fr.resx", "Strings1.fr-FR.resx", "Strings2.resx" ],
-        "Defines": [ "DEBUG" ],
-        "ComparisonFile": "Baseline.txt"
       }
     ]
   },
@@ -444,21 +437,6 @@
         "Name": "Interfaces",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
-      },
-      {
-        "Name": "Modules_Included_Export",
-        "SourceFolder": "Modules",
-        "SourceFiles": [ "Code.cs" ],
-        "References": [ "DSharp.Web.dll" ],
-        "Defines": [ "INCLUDE_EXPORT" ],
-        "ComparisonFile": "Baseline.txt"
-      },
-      {
-        "Name": "Modules_Without_Export",
-        "SourceFolder": "Modules",
-        "SourceFiles": [ "Code.cs" ],
-        "References": [ "DSharp.Web.dll" ],
-        "ComparisonFile": "ZeroExportsBaseline.txt"
       },
       {
         "Name": "Namespaces",

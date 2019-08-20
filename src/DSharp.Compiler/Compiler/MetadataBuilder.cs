@@ -34,7 +34,7 @@ namespace DSharp.Compiler.Compiler
         }
 
         public ICollection<TypeSymbol> BuildMetadata(
-            ParseNodeList compilationUnits,
+            IEnumerable<ParseNode> compilationUnits,
             SymbolSet symbols,
             CompilerOptions options)
         {
@@ -59,7 +59,7 @@ namespace DSharp.Compiler.Compiler
             return types;
         }
 
-        private void BuildTypes(ParseNodeList compilationUnits, SymbolSet symbols, List<TypeSymbol> types)
+        private void BuildTypes(IEnumerable<ParseNode> compilationUnits, SymbolSet symbols, List<TypeSymbol> types)
         {
             foreach (CompilationUnitNode compilationUnit in compilationUnits)
                 foreach (NamespaceNode namespaceNode in compilationUnit.Members)
@@ -297,7 +297,7 @@ namespace DSharp.Compiler.Compiler
                 }
             }
         }
-
+        
         private IEnumerable<(TypeSymbol, IEnumerable<MethodSymbol>)> FetchTypesWithExtensionMethods(IEnumerable<TypeSymbol> typeSymbols)
         {
             return typeSymbols.Where(symbol => symbol.IsPublic || symbol.IsInternal).Select(type =>
@@ -313,7 +313,7 @@ namespace DSharp.Compiler.Compiler
                 && (memberSymbol.Visibility.HasFlag(MemberVisibility.Public) || memberSymbol.IsInternal);
         }
 
-        private void BuildAssembly(ParseNodeList compilationUnits)
+        private void BuildAssembly(IEnumerable<ParseNode> compilationUnits)
         {
             string scriptName = GetAssemblyScriptName(compilationUnits);
 
@@ -1194,14 +1194,6 @@ namespace DSharp.Compiler.Compiler
                     typeSymbol.AddGenericParameters(genericParameterSymbols);
                 }
 
-                if (typeNode.Modifiers.HasFlag(Modifiers.Public))
-                {
-                    typeSymbol.IsPublic = true;
-                }
-                else if (typeNode.Modifiers.HasFlag(Modifiers.Internal))
-                {
-                    typeSymbol.IsInternal = true;
-                }
 
                 BuildType(typeSymbol, typeNode);
             }
@@ -1269,6 +1261,15 @@ namespace DSharp.Compiler.Compiler
 
             string scriptName = attributes.GetAttributeValue("ScriptName");
 
+            if (typeNode.Modifiers.HasFlag(Modifiers.Public))
+            {
+                typeSymbol.IsPublic = true;
+            }
+            else if (typeNode.Modifiers.HasFlag(Modifiers.Internal))
+            {
+                typeSymbol.IsInternal = true;
+            }
+
             if (scriptName != null)
             {
                 typeSymbol.SetTransformedName(scriptName);
@@ -1276,26 +1277,6 @@ namespace DSharp.Compiler.Compiler
 
             if (typeNode.Type == TokenType.Class || typeNode.Type == TokenType.Struct)
             {
-                AttributeNode extensionAttribute = AttributeNode.FindAttribute(attributes, "ScriptExtension");
-
-                if (extensionAttribute != null)
-                {
-                    Debug.Assert(extensionAttribute.Arguments[0] is LiteralNode);
-                    Debug.Assert(((LiteralNode)extensionAttribute.Arguments[0]).Value is string);
-
-                    string extendee = (string)((LiteralNode)extensionAttribute.Arguments[0]).Value;
-                    Debug.Assert(string.IsNullOrEmpty(extendee) == false);
-
-                    ((ClassSymbol)typeSymbol).SetExtenderClass(extendee);
-                }
-
-                AttributeNode moduleAttribute = AttributeNode.FindAttribute(attributes, "ScriptModule");
-
-                if (moduleAttribute != null)
-                {
-                    ((ClassSymbol)typeSymbol).SetModuleClass();
-                }
-
                 if ((typeNode.Modifiers & Modifiers.Static) != 0)
                 {
                     ((ClassSymbol)typeSymbol).SetStaticClass();
@@ -1428,7 +1409,7 @@ namespace DSharp.Compiler.Compiler
             }
         }
 
-        private void GetAssemblyMetadata(ParseNodeList compilationUnits, out string description, out string copyright,
+        private void GetAssemblyMetadata(IEnumerable<ParseNode> compilationUnits, out string description, out string copyright,
                                          out string version)
         {
             description = null;
@@ -1455,7 +1436,7 @@ namespace DSharp.Compiler.Compiler
                 }
         }
 
-        private string GetAssemblyScriptName(ParseNodeList compilationUnits)
+        private string GetAssemblyScriptName(IEnumerable<ParseNode> compilationUnits)
         {
             foreach (CompilationUnitNode compilationUnit in compilationUnits)
                 foreach (AttributeBlockNode attribBlock in compilationUnit.Attributes)
@@ -1471,7 +1452,7 @@ namespace DSharp.Compiler.Compiler
             return options.AssemblyName;
         }
 
-        private List<AttributeNode> GetAttributes(ParseNodeList compilationUnits, string attributeName)
+        private List<AttributeNode> GetAttributes(IEnumerable<ParseNode> compilationUnits, string attributeName)
         {
             List<AttributeNode> attributes = new List<AttributeNode>();
 
@@ -1486,7 +1467,7 @@ namespace DSharp.Compiler.Compiler
             return attributes;
         }
 
-        private bool GetScriptTemplate(ParseNodeList compilationUnits, out string template)
+        private bool GetScriptTemplate(IEnumerable<ParseNode> compilationUnits, out string template)
         {
             template = null;
 

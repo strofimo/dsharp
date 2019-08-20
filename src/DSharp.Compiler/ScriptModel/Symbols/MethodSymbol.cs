@@ -91,19 +91,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public bool IsAliased => !string.IsNullOrEmpty(TransformName);
 
-        public bool IsExtension
-        {
-            get
-            {
-                if (Parent.Type == SymbolType.Class)
-                {
-                    return ((ClassSymbol)Parent).IsExtenderClass;
-                }
-
-                return false;
-            }
-        }
-
         public bool IsGeneric => GenericArguments != null &&
                                  GenericArguments.Count != 0;
 

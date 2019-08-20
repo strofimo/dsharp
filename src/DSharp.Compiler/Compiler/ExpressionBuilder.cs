@@ -58,68 +58,55 @@ namespace DSharp.Compiler.Compiler
             {
                 case ParseNodeType.Literal:
                     expression = ProcessLiteralNode((LiteralNode)node);
-
                     break;
                 case ParseNodeType.Name:
                 case ParseNodeType.GenericName:
                     expression = ProcessNameNode((NameNode)node);
-
                     break;
                 case ParseNodeType.Typeof:
                     expression = ProcessTypeofNode((TypeofNode)node);
-
                     break;
                 case ParseNodeType.This:
                     expression = ProcessThisNode((ThisNode)node);
-
                     break;
                 case ParseNodeType.Base:
                     expression = ProcessBaseNode((BaseNode)node);
-
                     break;
                 case ParseNodeType.UnaryExpression:
                     expression = ProcessUnaryExpressionNode((UnaryExpressionNode)node);
-
                     break;
                 case ParseNodeType.BinaryExpression:
                     expression = ProcessBinaryExpressionNode((BinaryExpressionNode)node);
-
                     break;
                 case ParseNodeType.Conditional:
                     expression = ProcessConditionalNode((ConditionalNode)node);
-
+                    break;
+                case ParseNodeType.ObjectInitializer:
+                    expression = ProcessObjectInitializerNode((ObjectInitializerNode)node);
                     break;
                 case ParseNodeType.New:
                     expression = ProcessNewNode((NewNode)node);
-
                     break;
                 case ParseNodeType.ArrayNew:
                     expression = ProcessArrayNewNode((ArrayNewNode)node);
-
                     break;
                 case ParseNodeType.ArrayInitializer:
                     expression = ProcessArrayInitializerNode((ArrayInitializerNode)node);
-
                     break;
                 case ParseNodeType.ArrayType:
                     expression = ProcessArrayTypeNode((ArrayTypeNode)node);
-
                     break;
                 case ParseNodeType.PredefinedType:
                     expression = ProcessIntrinsicType((IntrinsicTypeNode)node);
-
                     break;
                 case ParseNodeType.Cast:
                     expression = ProcessCastNode((CastNode)node);
-
                     break;
                 case ParseNodeType.AnonymousMethod:
                     expression = ProcessAnonymousMethodNode((AnonymousMethodNode)node);
-
                     break;
                 default:
                     Debug.Fail("Unhandled Expression Node: " + node.NodeType);
-
                     break;
             }
 
@@ -577,6 +564,23 @@ namespace DSharp.Compiler.Compiler
 
                         operatorType = (Operator)((int)operatorType + 2);
                     }
+                }
+
+                if(leftExpression is PropertyExpression propertyExpression && propertyExpression.Property.GetPropertyNode().IsReadonlyProperty)
+                {
+                    var scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+                    var stringType = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
+                    MethodSymbol createReadonlyPropertySymbol = (MethodSymbol)scriptType.GetMember("CreateReadonlyProperty");
+                    Debug.Assert(createReadonlyPropertySymbol != null);
+
+                    var methodExpression = new MethodExpression(
+                        new TypeExpression(scriptType, SymbolFilter.Public | SymbolFilter.StaticMembers),
+                        createReadonlyPropertySymbol);
+                    methodExpression.AddParameterValue(new ThisExpression(null, false));
+                    methodExpression.AddParameterValue(new LiteralExpression(stringType, propertyExpression.Property.GeneratedName));
+                    methodExpression.AddParameterValue(rightExpression);
+
+                    return methodExpression;
                 }
 
                 if (resultType == null)
@@ -1083,7 +1087,7 @@ namespace DSharp.Compiler.Compiler
         private Expression ProcessNameNode(NameNode node, SymbolFilter filter)
         {
             Symbol symbol = ResolveNameNodeSymbol(node, filter);
-            Debug.Assert(symbol != null);
+            //Debug.Assert(symbol != null);
 
             if (symbol == null)
             {
@@ -1125,6 +1129,11 @@ namespace DSharp.Compiler.Compiler
             }
 
             return null;
+        }
+
+        private Expression ProcessObjectInitializerNode(ObjectInitializerNode objectInitializerNode)
+        {
+            return ProcessNewNode(objectInitializerNode.NewNodeExpression);
         }
 
         private Symbol ResolveNameNodeSymbol(NameNode node, SymbolFilter filter)

@@ -304,23 +304,9 @@ namespace DSharp.Compiler.Generator
             }
             else if ((expression.Method.Visibility & MemberVisibility.Static) != 0)
             {
-                if (expression.Method.IsExtension)
-                {
-                    Debug.Assert(expression.Method.Parent.Type == SymbolType.Class);
-
-                    ClassSymbol classSymbol = (ClassSymbol)expression.Method.Parent;
-                    Debug.Assert(classSymbol.IsExtenderClass);
-
-                    writer.Write(classSymbol.Extendee);
-                    writer.Write(".");
-                    writer.Write(expression.Method.GeneratedName);
-                }
-                else
-                {
-                    GenerateExpression(generator, symbol, expression.ObjectReference);
-                    writer.Write(".");
-                    writer.Write(expression.Method.GeneratedName);
-                }
+                GenerateExpression(generator, symbol, expression.ObjectReference);
+                writer.Write(".");
+                writer.Write(expression.Method.GeneratedName);
             }
             else
             {
@@ -945,8 +931,6 @@ namespace DSharp.Compiler.Generator
 
             if (expression.ObjectReference is BaseExpression baseExpression)
             {
-                Debug.Assert(expression.Method.IsExtension == false);
-
                 writer.Write(baseExpression.EvaluatedType.FullGeneratedName);
                 writer.Write(".prototype.");
                 writer.Write(expression.Method.GeneratedName);
@@ -987,24 +971,11 @@ namespace DSharp.Compiler.Generator
                 }
                 else
                 {
-                    if (expression.Method.IsExtension)
+                    GenerateExpression(generator, symbol, expression.ObjectReference);
+
+                    if (expression.Method.GeneratedName.Length != 0)
                     {
-                        Debug.Assert(expression.Method.Parent.Type == SymbolType.Class);
-
-                        string extendee = ((ClassSymbol)expression.Method.Parent).Extendee;
-                        Debug.Assert(string.IsNullOrEmpty(extendee) == false);
-
-                        writer.Write(extendee);
                         writer.Write(".");
-                    }
-                    else
-                    {
-                        GenerateExpression(generator, symbol, expression.ObjectReference);
-
-                        if (expression.Method.GeneratedName.Length != 0)
-                        {
-                            writer.Write(".");
-                        }
                     }
 
                     if (expression.Method.GeneratedName.Length != 0)

@@ -952,11 +952,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             EntryPoint = entryPoint;
         }
 
-        #region ISymbolTable Members
+        public ICollection Symbols => namespaces;
 
-        ICollection ISymbolTable.Symbols => namespaces;
-
-        Symbol ISymbolTable.FindSymbol(string name, Symbol context, SymbolFilter filter)
+        public Symbol FindSymbol(string name, Symbol context, SymbolFilter filter)
         {
             if ((filter & SymbolFilter.Types) == 0)
             {
@@ -1101,7 +1099,5 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             return symbol;
         }
-
-        #endregion
     }
 }
