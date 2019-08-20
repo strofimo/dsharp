@@ -56,6 +56,7 @@
         removeString: removeString,
         replaceString: replaceString,
         bind: bind,
+        baseBind: baseBind,
         bindAdd: bindAdd,
         bindSub: bindSub,
         bindExport: bindExport,
@@ -82,11 +83,7 @@
         getConstructorParams: getConstructorParams,
         createInstance: paramsGenerator(1, createInstance),
 
-        culture: {
-            neutral: neutralCulture,
-            current: currentCulture
-        },
-
+        culture: culture,
         fail: fail,
         contains: contains,
         insert: insert,

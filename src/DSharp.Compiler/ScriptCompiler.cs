@@ -251,7 +251,7 @@ namespace DSharp.Compiler
             }
             catch (Exception e)
             {
-                Debug.Fail(e.ToString());
+                throw;
             }
             finally
             {
@@ -278,7 +278,7 @@ namespace DSharp.Compiler
             }
             catch (Exception e)
             {
-                Debug.Fail(e.ToString());
+                throw;
             }
             finally
             {
