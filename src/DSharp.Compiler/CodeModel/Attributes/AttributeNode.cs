@@ -76,7 +76,7 @@ namespace DSharp.Compiler.CodeModel.Attributes
 
                 if (localAttributes.Count != 0)
                 {
-                    attributes.Append(localAttributes);
+                    attributes.Add(localAttributes);
                 }
             }
 

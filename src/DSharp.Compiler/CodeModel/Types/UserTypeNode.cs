@@ -49,7 +49,7 @@ namespace DSharp.Compiler.CodeModel.Types
 
             if (partialTypeNode.Attributes.Count > 0)
             {
-                Attributes.Append(GetParentedNodeList(partialTypeNode.Attributes));
+                Attributes.Add(GetParentedNodeList(partialTypeNode.Attributes));
             }
 
             if ((partialTypeNode.Modifiers & Modifiers.PartialModifiers) != 0)
@@ -59,12 +59,12 @@ namespace DSharp.Compiler.CodeModel.Types
 
             if (partialTypeNode.TypeParameters.Count > 0)
             {
-                TypeParameters.Append(GetParentedNodeList(partialTypeNode.TypeParameters));
+                TypeParameters.Add(GetParentedNodeList(partialTypeNode.TypeParameters));
             }
 
             if (partialTypeNode.constraintClauses.Count > 0)
             {
-                constraintClauses.Append(GetParentedNodeList(partialTypeNode.constraintClauses));
+                constraintClauses.Add(GetParentedNodeList(partialTypeNode.constraintClauses));
             }
         }
     }

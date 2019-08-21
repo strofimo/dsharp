@@ -236,7 +236,7 @@ namespace DSharp.Compiler.Parser
             while (null != (token = EatOpt(TokenType.Extern)))
             {
                 EatContextualKeyword(aliasName);
-                list.Append(
+                list.Add(
                     new ExternAliasNode(
                         token,
                         ParseIdentifier()));
@@ -260,7 +260,7 @@ namespace DSharp.Compiler.Parser
                     // using-alias-directive
                     AtomicNameNode name = ParseIdentifier();
                     Eat(TokenType.Equal);
-                    list.Append(
+                    list.Add(
                         new UsingAliasNode(
                             token,
                             name,
@@ -269,7 +269,7 @@ namespace DSharp.Compiler.Parser
                 else
                 {
                     // using-namespace-directive
-                    list.Append(
+                    list.Add(
                         new UsingNamespaceNode(
                             token,
                             ParseNamespaceOrTypeName()));
@@ -351,7 +351,7 @@ namespace DSharp.Compiler.Parser
 
             do
             {
-                returnValue.Append(ParseType());
+                returnValue.Add(ParseType());
             } while (null != EatOpt(TokenType.Comma));
 
             Eat(TokenType.CloseAngle);
@@ -425,7 +425,7 @@ namespace DSharp.Compiler.Parser
                 do
                 {
                     Eat(TokenType.Dot);
-                    list.Append(ParseIdentifier());
+                    list.Add(ParseIdentifier());
                 } while (PeekType() == TokenType.Dot && PeekType(1) == TokenType.Identifier);
 
                 return new MultiPartNameNode(token, list);
@@ -472,7 +472,7 @@ namespace DSharp.Compiler.Parser
                 do
                 {
                     EatDotOrColonColon();
-                    list.Append(ParseSimpleName(false));
+                    list.Add(ParseSimpleName(false));
                 } while (PeekType() == TokenType.Dot && PeekType(1) == TokenType.Identifier);
 
                 return new MultiPartNameNode(token, list);
@@ -493,7 +493,7 @@ namespace DSharp.Compiler.Parser
                 switch (type)
                 {
                     case TokenType.Namespace:
-                        list.Append(ParseNamespace());
+                        list.Add(ParseNamespace());
 
                         break;
 
@@ -520,7 +520,7 @@ namespace DSharp.Compiler.Parser
                     case TokenType.Unsafe:
 
                     case TokenType.OpenSquare:
-                        list.Append(ParseTypeDeclaration());
+                        list.Add(ParseTypeDeclaration());
 
                         break;
 
@@ -634,7 +634,7 @@ namespace DSharp.Compiler.Parser
 
                 do
                 {
-                    returnValue.Append(ParseTypeParameter());
+                    returnValue.Add(ParseTypeParameter());
                 } while (null != EatOpt(TokenType.Comma));
 
                 Eat(TokenType.CloseAngle);
@@ -679,7 +679,7 @@ namespace DSharp.Compiler.Parser
                         ReportError(ParseError.ConstructorConstraintMustBeLast);
                     }
 
-                    typeConstraints.Append(ParseNamespaceOrTypeName());
+                    typeConstraints.Add(ParseNamespaceOrTypeName());
                 }
             } while (null != EatOpt(TokenType.Comma));
 
@@ -690,7 +690,7 @@ namespace DSharp.Compiler.Parser
         {
             ParseNodeList returnValue = new ParseNodeList();
 
-            while (PeekWhere()) returnValue.Append(ParseConstraintClause());
+            while (PeekWhere()) returnValue.Add(ParseConstraintClause());
 
             return returnValue;
         }
@@ -900,7 +900,7 @@ namespace DSharp.Compiler.Parser
                     {
                         case TokenType.Object:
                         case TokenType.String:
-                            list.Append(ParsePredefinedType());
+                            list.Add(ParsePredefinedType());
 
                             if (null == EatOpt(TokenType.Comma))
                             {
@@ -915,7 +915,7 @@ namespace DSharp.Compiler.Parser
 
                     do
                     {
-                        list.Append(ParseNamespaceOrTypeName());
+                        list.Add(ParseNamespaceOrTypeName());
                     } while (null != EatOpt(TokenType.Comma));
                 }
             }
@@ -969,7 +969,7 @@ namespace DSharp.Compiler.Parser
                    PeekType(2) == TokenType.Colon &&
                    (((IdentifierToken) PeekToken(1)).Symbol == assemblyName ||
                     ((IdentifierToken) PeekToken(1)).Symbol == moduleName))
-                list.Append(ParseAttributeBlock());
+                list.Add(ParseAttributeBlock());
 
             return list;
         }
@@ -978,7 +978,7 @@ namespace DSharp.Compiler.Parser
         {
             ParseNodeList list = new ParseNodeList();
 
-            while (PeekType() == TokenType.OpenSquare) list.Append(ParseAttributeBlock());
+            while (PeekType() == TokenType.OpenSquare) list.Add(ParseAttributeBlock());
 
             return list;
         }
@@ -1002,7 +1002,7 @@ namespace DSharp.Compiler.Parser
 
             do
             {
-                list.Append(ParseAttribute());
+                list.Add(ParseAttribute());
             } while (null != EatOpt(TokenType.Comma) && PeekType() != TokenType.CloseSquare);
 
             Eat(TokenType.CloseSquare);
@@ -1039,7 +1039,7 @@ namespace DSharp.Compiler.Parser
             while (type != TokenType.CloseCurly && type != TokenType.Eof)
             {
                 int mark = Mark();
-                list.Append(ParseClassOrStructMember());
+                list.Add(ParseClassOrStructMember());
 
                 if (mark == Mark())
                 {
@@ -1240,7 +1240,7 @@ namespace DSharp.Compiler.Parser
             if (PeekType() == TokenType.Identifier && PeekType(1) == TokenType.ColonColon)
             {
                 interfaceType = ParseAliasQualifiedName(false);
-                list.Append(interfaceType);
+                list.Add(interfaceType);
                 EatDotOrColonColon();
             }
             else
@@ -1303,13 +1303,13 @@ namespace DSharp.Compiler.Parser
                                 break;
                             }
 
-                            list.Append(ParseSimpleName(false));
+                            list.Add(ParseSimpleName(false));
                             EatDotOrColonColon();
 
                             break;
                         case TokenType.ColonColon:
                         case TokenType.Dot:
-                            list.Append(ParseSimpleName(false));
+                            list.Add(ParseSimpleName(false));
                             EatDotOrColonColon();
 
                             break;
@@ -1668,11 +1668,11 @@ namespace DSharp.Compiler.Parser
             {
                 if (!isFixed)
                 {
-                    list.Append(new VariableInitializerNode(ParseIdentifier(), ParseVariableInitializer()));
+                    list.Add(new VariableInitializerNode(ParseIdentifier(), ParseVariableInitializer()));
                 }
                 else
                 {
-                    list.Append(new VariableInitializerNode(ParseIdentifier(), ParseFixedArrayDimension()));
+                    list.Add(new VariableInitializerNode(ParseIdentifier(), ParseFixedArrayDimension()));
                 }
             } while (EatOpt(TokenType.Comma) != null);
 
@@ -1703,7 +1703,7 @@ namespace DSharp.Compiler.Parser
 
             while (PeekType() == TokenType.Identifier || PeekType() == TokenType.OpenSquare)
             {
-                list.Append(ParseEnumerationField());
+                list.Add(ParseEnumerationField());
 
                 if (null == EatOpt(TokenType.Comma))
                 {
@@ -1876,7 +1876,7 @@ namespace DSharp.Compiler.Parser
                     {
                         throw new System.InvalidOperationException("Only the first parameter of a method can be an extension parameter");
                     }
-                    list.Append(lastParam);
+                    list.Add(lastParam);
                 } while (null != EatOpt(TokenType.Comma) && lastParam.Flags != ParameterFlags.Params);
             }
 
@@ -1964,7 +1964,7 @@ namespace DSharp.Compiler.Parser
             while (type != TokenType.CloseCurly && type != TokenType.Eof)
             {
                 int mark = Mark();
-                statements.Append(ParseStatement());
+                statements.Add(ParseStatement());
 
                 // ensure we make progress in an error case
                 if (mark == Mark())
@@ -2137,7 +2137,7 @@ namespace DSharp.Compiler.Parser
                 while ((label = ParseSwitchLabel()) != null)
                 {
                     Eat(TokenType.Colon);
-                    labels.Append(label);
+                    labels.Add(label);
                 }
 
                 if (labels.Count == 0)
@@ -2154,7 +2154,7 @@ namespace DSharp.Compiler.Parser
                 {
                     int mark = Mark();
 
-                    statements.Append(ParseStatement());
+                    statements.Add(ParseStatement());
 
                     // ensure we make progress in an error case
                     if (mark == Mark())
@@ -2170,7 +2170,7 @@ namespace DSharp.Compiler.Parser
                     ReportError(ParseError.StatementExpected);
                 }
 
-                cases.Append(new SwitchSectionNode(
+                cases.Add(new SwitchSectionNode(
                     sectionToken,
                     labels,
                     statements));
@@ -2281,7 +2281,7 @@ namespace DSharp.Compiler.Parser
             {
                 do
                 {
-                    list.Append(ParseStatementExpression());
+                    list.Add(ParseStatementExpression());
                 } while (null != EatOpt(TokenType.Comma));
             }
 
@@ -2297,7 +2297,7 @@ namespace DSharp.Compiler.Parser
             {
                 do
                 {
-                    list.Append(ParseExpression());
+                    list.Add(ParseExpression());
                 } while (null != EatOpt(TokenType.Comma));
             }
 
@@ -2449,7 +2449,7 @@ namespace DSharp.Compiler.Parser
                     name = null;
                 }
 
-                catchClauses.Append(new CatchNode(
+                catchClauses.Add(new CatchNode(
                     catchToken,
                     type,
                     name,
@@ -3326,7 +3326,7 @@ namespace DSharp.Compiler.Parser
                 ParseNodeList objectAssignmentExpressions = new ParseNodeList();
                 while (PeekType() != TokenType.CloseCurly && PeekType() != TokenType.Eof)
                 {
-                    objectAssignmentExpressions.Append(ParseExpression());
+                    objectAssignmentExpressions.Add(ParseExpression());
 
                     if (null == EatOpt(TokenType.Comma))
                     {
@@ -3351,11 +3351,11 @@ namespace DSharp.Compiler.Parser
             {
                 if (PeekType() == TokenType.OpenCurly)
                 {
-                    list.Append(ParseArrayInitializer());
+                    list.Add(ParseArrayInitializer());
                 }
                 else
                 {
-                    list.Append(ParseExpression());
+                    list.Add(ParseExpression());
                 }
 
                 if (null == EatOpt(TokenType.Comma))
@@ -3378,7 +3378,7 @@ namespace DSharp.Compiler.Parser
 
             while (PeekType() != TokenType.CloseParen)
             {
-                list.Append(ParseArgument());
+                list.Add(ParseArgument());
 
                 if (null == EatOpt(TokenType.Comma))
                 {

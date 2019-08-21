@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using DSharp.Compiler.CodeModel.Attributes;
 using DSharp.Compiler.CodeModel.Expressions;
+using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
@@ -16,15 +17,10 @@ namespace DSharp.Compiler.CodeModel
 {
     internal class RoslynCodeModelBuilder : ICodeModelBuilder
     {
-        private readonly MetadataReference[] metadataReferences;
         private readonly CSharpParseOptions parseOptions;
 
         public RoslynCodeModelBuilder(CompilerOptions options)
         {
-            metadataReferences = options.References
-                .Select(reference => MetadataReference.CreateFromFile(reference))
-                .ToArray();
-
             parseOptions = new CSharpParseOptions(
                 LanguageVersion.CSharp3,
                 documentationMode: options.EnableDocComments ? DocumentationMode.Parse : DocumentationMode.None,
@@ -37,16 +33,16 @@ namespace DSharp.Compiler.CodeModel
             var syntaxTree = CSharpSyntaxTree.ParseText(LoadText(source), options: parseOptions);
             var root = syntaxTree.GetCompilationUnitRoot();
 
-            List<ParseNode> parsedUsings = ParseUsings(root.Usings);
-            List<ParseNode> parsedAttributes = ParseAttributes(root.AttributeLists);
-            List<ParseNode> parsedNamespaceMembers = ParseMembers(root);
+            var parsedUsings = ParseUsings(root.Usings);
+            var parsedAttributes = ParseAttributes(root.AttributeLists);
+            var parsedNamespaceMembers = ParseMembers(root);
 
             return new CompilationUnitNode(
-                token: null, //Should be BOF
+                token: null, //Should be BOF, but does it matter!?
                 externAliases: new ParseNodeList(), //Not actually sure what goes in here
-                usingClauses: new ParseNodeList(parsedUsings),
-                attributes: new ParseNodeList(parsedAttributes),
-                members: new ParseNodeList(parsedNamespaceMembers));
+                usingClauses: parsedUsings,
+                attributes: parsedAttributes,
+                members: parsedNamespaceMembers);
         }
 
         private List<ParseNode> ParseMembers(SyntaxNode node)
@@ -62,11 +58,19 @@ namespace DSharp.Compiler.CodeModel
                         parsedMembers.Add(namespaceNode);
                         break;
                     case ClassDeclarationSyntax classDeclarationSyntax:
-                        CustomTypeNode classNode = ParseClassDefinition(classDeclarationSyntax);
+                        CustomTypeNode classNode = ParseCustomTypeDefinition(TokenType.Class, classDeclarationSyntax);
                         parsedMembers.Add(classNode);
                         break;
-                    case TypeDeclarationSyntax typeDeclarationSyntax:
+                    case InterfaceDeclarationSyntax interfaceDeclarationSyntax:
+                        CustomTypeNode interfaceNode = ParseCustomTypeDefinition(TokenType.Interface, interfaceDeclarationSyntax);
+                        parsedMembers.Add(interfaceNode);
                         break;
+                    case StructDeclarationSyntax structDeclarationSyntax:
+                        CustomTypeNode structNode = ParseCustomTypeDefinition(TokenType.Struct, structDeclarationSyntax);
+                        parsedMembers.Add(structNode);
+                        break;
+                    case TypeDeclarationSyntax typeDeclarationSyntax:
+                        break;  
                     default:
                         break;
                 }
@@ -75,22 +79,195 @@ namespace DSharp.Compiler.CodeModel
             return parsedMembers;
         }
 
-        private CustomTypeNode ParseClassDefinition(ClassDeclarationSyntax classDeclarationSyntax)
+        private CustomTypeNode ParseCustomTypeDefinition(TokenType type, TypeDeclarationSyntax typeDeclarationSyntax)
         {
-            var attributes = new ParseNodeList(ParseAttributes(classDeclarationSyntax.AttributeLists));
-            var name = CreateAtomicName(classDeclarationSyntax.Identifier);
-            var modifiers = ParseModifiers(classDeclarationSyntax.Modifiers);
+            var attributes = new ParseNodeList(ParseAttributes(typeDeclarationSyntax.AttributeLists));
+            var name = CreateAtomicName(typeDeclarationSyntax.Identifier);
+            var modifiers = ParseModifiers(typeDeclarationSyntax.Modifiers);
+            var typeParameters = ParseTypeParameters(typeDeclarationSyntax.TypeParameterList);
+            var baseTypes = ParseBaseTypes(typeDeclarationSyntax.BaseList);
+            var constraints = ParseConstraints(typeDeclarationSyntax.ConstraintClauses);
+            var members = ParseTypeMembers(typeDeclarationSyntax.Members);
+
             var classNode = new CustomTypeNode(
                 null,
-                TokenType.Class,
+                type,
                 attributes,
                 modifiers, // Parse actual modifiers
                 name,
-                typeParameters: null,
-                baseTypes: null,
-                constraintClauses: null,
-                members: null);
+                typeParameters: typeParameters,
+                baseTypes: baseTypes,
+                constraintClauses: constraints,
+                members: members);
             return classNode;
+        }
+
+        private ParseNodeList ParseTypeMembers(SyntaxList<MemberDeclarationSyntax> members)
+        {
+            ParseNodeList parseNodes = new ParseNodeList();
+
+            foreach (var member in members)
+            {
+                var attributes = ParseAttributes(member.AttributeLists);
+                var modifiers = ParseModifiers(member.Modifiers);
+                switch(member)
+                {
+                    case FieldDeclarationSyntax fieldDeclarationSyntax:
+                        var field = new FieldDeclarationNode(null, attributes, modifiers, null, null, false);
+                        parseNodes.Add(field);
+                        break;
+                    case BaseFieldDeclarationSyntax baseFieldDeclarationSyntax: //Is this actually a thing?
+                        break;
+                    case ConstructorDeclarationSyntax constructorDeclarationSyntax:
+                        break;
+                    case DestructorDeclarationSyntax destructorDeclarationSyntax:
+                        break;
+                    case IndexerDeclarationSyntax indexerDeclarationSyntax:
+                        break;
+                    case EventDeclarationSyntax eventDeclarationSyntax:
+                        break;
+                    case PropertyDeclarationSyntax propertyDeclarationSyntax:
+                        break;
+                    case MethodDeclarationSyntax methodDeclarationSyntax:
+                        MethodDeclarationNode method = ParseMethod(methodDeclarationSyntax, attributes, modifiers);
+                        parseNodes.Add(method);
+                        break;
+                    case OperatorDeclarationSyntax operatorDeclarationSyntax:
+                        break;
+                    case TypeDeclarationSyntax typeDeclarationSyntax:
+                        throw new NotSupportedException();
+                    default:
+                        throw new Exception("Invalid member!");
+                }
+            }
+
+            return parseNodes;
+        }
+
+        private MethodDeclarationNode ParseMethod(MethodDeclarationSyntax methodDeclarationSyntax, ParseNodeList attributes, Modifiers modifiers)
+        {
+            var returnType = ParseTypeName(methodDeclarationSyntax.ReturnType);
+            var name = CreateAtomicName(methodDeclarationSyntax.Identifier);
+            var typeParameters = ParseTypeParameters(methodDeclarationSyntax.TypeParameterList);
+            var constraints = ParseConstraints(methodDeclarationSyntax.ConstraintClauses);
+            var interfaceType = ParseExplicitInterfaceType(methodDeclarationSyntax);
+            var parameters = ParseParameters(methodDeclarationSyntax.ParameterList);
+
+            var method = new MethodDeclarationNode(
+                null,
+                attributes,
+                modifiers,
+                returnType: returnType,
+                interfaceType: interfaceType,
+                name: name,
+                typeParameters: typeParameters,
+                parameters: parameters,
+                constraints: constraints,
+                body: null);
+            return method;
+        }
+
+        private static NameNode ParseExplicitInterfaceType(MethodDeclarationSyntax methodDeclarationSyntax)
+        {
+            if (methodDeclarationSyntax.ExplicitInterfaceSpecifier != null)
+            {
+                return ParseNameNode(methodDeclarationSyntax.ExplicitInterfaceSpecifier.Name);
+            }
+
+            return null;
+        }
+
+        private ParseNodeList ParseParameters(ParameterListSyntax parameterList)
+        {
+            ParseNodeList parseNodes = new ParseNodeList();
+
+            foreach(var parameter in parameterList.Parameters)
+            {
+                var attributes = ParseAttributes(parameter.AttributeLists);
+                ParameterFlags parameterFlags = ParameterFlags.None; //Parse the modifiers or keywords
+                var typeName = ParseTypeName(parameter.Type);
+                var name = CreateAtomicName(parameter.Identifier);
+                ParameterNode parameterNode = new ParameterNode(
+                    null,
+                    attributes,
+                    parameterFlags,
+                    typeName,
+                    name);
+
+                parseNodes.Add(parameterNode);
+            }
+
+            return parseNodes;
+        }
+
+        private static ParseNode ParseTypeName(TypeSyntax typeSyntax)
+        {
+            if(typeSyntax is IdentifierNameSyntax identifierNameSyntax)
+            {
+                return CreateAtomicName(identifierNameSyntax.Identifier);
+            }
+
+            throw new Exception();
+        }
+
+        private static ParseNodeList ParseConstraints(SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses)
+        {
+            ParseNodeList parseNodes = new ParseNodeList();
+
+            foreach (var constraintClause in constraintClauses)
+            {
+                //We don't really care about this.
+                var name = ParseIdentifier(constraintClause.Name);
+                var constraint = new TypeParameterConstraintNode((AtomicNameNode)name, new ParseNodeList(), false);
+                parseNodes.Add(constraint);
+            }
+
+            return parseNodes;
+        }
+
+        private ParseNodeList ParseBaseTypes(BaseListSyntax baseList)
+        {
+            ParseNodeList parseNodes = new ParseNodeList();
+            if(baseList == null)
+            {
+                return parseNodes;
+            }
+
+            foreach(var type in baseList.Types)
+            {
+                if(type is SimpleBaseTypeSyntax simpleBaseTypeSyntax)
+                {
+                    var name = ParseTypeName(simpleBaseTypeSyntax.Type);
+                    parseNodes.Add(name);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+
+            return parseNodes;
+        }
+
+        private ParseNodeList ParseTypeParameters(TypeParameterListSyntax typeParameterList)
+        {
+            ParseNodeList parseNodes = new ParseNodeList();
+
+            if(typeParameterList == null)
+            {
+                return parseNodes;
+            }
+
+            foreach (var typeParameterSyntax in typeParameterList.Parameters)
+            {
+                var attributes = ParseAttributes(typeParameterSyntax.AttributeLists);
+                var name = CreateAtomicName(typeParameterSyntax.Identifier);
+                var typeParameter = new TypeParameterNode(attributes, name);
+
+                parseNodes.Add(typeParameter);
+            }
+
+            return parseNodes;
         }
 
         private Modifiers ParseModifiers(SyntaxTokenList modifiers)

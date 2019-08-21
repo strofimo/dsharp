@@ -1,17 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 
-using Test = System.Activator;
-
-[assembly:AssemblyCopyright(""), AssemblyCulture(null), AssemblyDelaySign(true), AssemblyFlags(AssemblyNameFlags.None)]
+[assembly: AssemblyCopyright(""), AssemblyCulture(null), AssemblyDelaySign(true), AssemblyFlags(AssemblyNameFlags.None)]
 
 namespace DSharp.Shell.src
 {
-    public class Lambda
+    public interface IBaseInt
+    {
+    }
+
+    public class BaseClass
+    {
+    }
+
+    public class Lambda<T> : BaseClass, IBaseInt
+        where T : Object
     {
         public void Process()
         {
@@ -20,16 +23,16 @@ namespace DSharp.Shell.src
             {
                 DoSomeWork(null);
             });
-            var singleLineActionLambdaWithProperty = new Action<string>(str => DoSomeWork(str));
-            var singleLineFuncLambdaWithProperty = new Func<string>(str => DoSomeWork(str));
+            var singleLineActionLambdaWithProperty = new Action<T>(str => DoSomeWork(str));
+            var singleLineFuncLambdaWithProperty = new Func<T>(str => DoSomeWork(str));
 
             var functionNoType = str => DoSomeWork(str);
             var functionNoTypeWithStatement = str =>
             {
                 DoSomeWork(str);
             };
-            var functionNoTypeWithPropertyType = (string str) => DoSomeWork(str);
-            var functionNoTypeWithPropertyTypeWithStatement = (string str) =>
+            var functionNoTypeWithPropertyType = (T str) => DoSomeWork(str);
+            var functionNoTypeWithPropertyTypeWithStatement = (T str) =>
             {
                 DoSomeWork(str);
             };
@@ -42,14 +45,14 @@ namespace DSharp.Shell.src
             DoSomeWorkWithLambda((str, obj) => str + obj.ToString());
         }
 
-        public string DoSomeWork(string data)
+        public string DoSomeWork(T data)
         {
 
         }
 
-        public string DoSomeWorkWithLambda(Func<string, object, string> func)
+        public T DoSomeWorkWithLambda(Func<T, object, T> func)
         {
-            return func.Invoke("", new object());
+            return func.Invoke(null, new object());
         }
     }
 }

@@ -34,7 +34,7 @@ namespace DSharp.Compiler.CodeModel.Types
 
             if (partialTypeNode.BaseTypes.Count > 0)
             {
-                BaseTypes.Append(GetParentedNodeList(partialTypeNode.BaseTypes));
+                BaseTypes.Add(GetParentedNodeList(partialTypeNode.BaseTypes));
             }
         }
     }

@@ -26,7 +26,7 @@ namespace DSharp.Compiler.CodeModel
 
         public ParseNode this[int index] => parseNodes[index];
 
-        public void Append(ParseNode node)
+        public void Add(ParseNode node)
         {
             if (node != null)
             {
@@ -34,7 +34,7 @@ namespace DSharp.Compiler.CodeModel
             }
         }
 
-        public void Append(ParseNodeList nodes)
+        public void Add(ParseNodeList nodes)
         {
             parseNodes.AddRange(nodes.parseNodes);
         }
@@ -56,6 +56,16 @@ namespace DSharp.Compiler.CodeModel
         IEnumerator IEnumerable.GetEnumerator()
         {
             return parseNodes.GetEnumerator();
+        }
+
+        public static implicit operator List<ParseNode>(ParseNodeList parseNode)
+        {
+            return parseNode.parseNodes;
+        }
+
+        public static implicit operator ParseNodeList(List<ParseNode> parseNodes)
+        {
+            return new ParseNodeList(parseNodes);
         }
     }
 }

@@ -26,10 +26,10 @@ namespace DSharp.Compiler.CodeModel.Members
                                      NameNode interfaceType,
                                      AtomicNameNode name,
                                      ParseNodeList typeParameters,
-                                     ParseNodeList formals,
+                                     ParseNodeList parameters,
                                      ParseNodeList constraints,
                                      BlockStatementNode body)
-            : this(ParseNodeType.MethodDeclaration, token, attributes, modifiers, returnType, name, formals, body)
+            : this(ParseNodeType.MethodDeclaration, token, attributes, modifiers, returnType, name, parameters, body)
         {
             this.interfaceType = (NameNode) GetParentedNode(interfaceType);
             this.typeParameters = GetParentedNodeList(typeParameters);
@@ -41,7 +41,7 @@ namespace DSharp.Compiler.CodeModel.Members
                                         Modifiers modifiers,
                                         ParseNode returnType,
                                         AtomicNameNode name,
-                                        ParseNodeList formals,
+                                        ParseNodeList parameters,
                                         BlockStatementNode body)
             : base(nodeType, token)
         {
@@ -49,7 +49,7 @@ namespace DSharp.Compiler.CodeModel.Members
             Modifiers = modifiers;
             Type = GetParentedNode(returnType);
             this.name = (AtomicNameNode) GetParentedNode(name);
-            Parameters = GetParentedNodeList(formals);
+            Parameters = GetParentedNodeList(parameters);
             Implementation = (BlockStatementNode) GetParentedNode(body);
         }
 

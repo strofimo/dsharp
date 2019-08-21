@@ -47,11 +47,11 @@ namespace DSharp.Compiler.CodeModel.Types
             if (compilationUnit.UsingClauses.Count != 0)
             {
                 ParseNodeList mergedUsings = new ParseNodeList();
-                mergedUsings.Append(compilationUnit.UsingClauses);
+                mergedUsings.Add(compilationUnit.UsingClauses);
 
                 if (UsingClauses.Count != 0)
                 {
-                    mergedUsings.Append(UsingClauses);
+                    mergedUsings.Add(UsingClauses);
                 }
 
                 UsingClauses = GetParentedNodeList(mergedUsings);

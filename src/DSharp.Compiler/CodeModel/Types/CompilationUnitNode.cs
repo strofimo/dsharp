@@ -47,7 +47,7 @@ namespace DSharp.Compiler.CodeModel.Types
                         new NamespaceNode(nsToken, string.Empty, UsingClauses, new ParseNodeList(memberNode));
                 }
 
-                namespaceList.Append(namespaceNode);
+                namespaceList.Add(namespaceNode);
             }
 
             return namespaceList;

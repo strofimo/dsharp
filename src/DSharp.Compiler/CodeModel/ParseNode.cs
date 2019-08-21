@@ -37,7 +37,7 @@ namespace DSharp.Compiler.CodeModel
 
         protected ParseNodeList GetParentedNodeList(ParseNodeList nodeList)
         {
-            nodeList.SetParent(this);
+            nodeList?.SetParent(this);
 
             return nodeList;
         }
