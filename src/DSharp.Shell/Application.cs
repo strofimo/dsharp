@@ -158,6 +158,7 @@ Usage:
                 Resources = resources,
                 ScriptFile = scriptFile,
                 IncludeResolver = includeResolver,
+                Features = new List<string>() { "Roslyn" }
             };
 
             if (string.IsNullOrWhiteSpace(compilerOptions.AssemblyName))

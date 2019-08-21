@@ -12,7 +12,7 @@ using DSharp.Compiler.Parser;
 
 namespace DSharp.Compiler.CodeModel
 {
-    internal sealed class CodeModelBuilder
+    internal sealed class MonoCodeModelBuilder : ICodeModelBuilder
     {
         private readonly IErrorHandler errorHandler;
 
@@ -20,7 +20,7 @@ namespace DSharp.Compiler.CodeModel
 
         private bool hasErrors;
 
-        public CodeModelBuilder(CompilerOptions options, IErrorHandler errorHandler)
+        public MonoCodeModelBuilder(CompilerOptions options, IErrorHandler errorHandler)
         {
             this.options = options;
             this.errorHandler = errorHandler;

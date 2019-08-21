@@ -17,6 +17,11 @@ namespace DSharp.Compiler.CodeModel
             parseNodes.AddRange(nodes);
         }
 
+        public ParseNodeList(IEnumerable<ParseNode> nodes)
+        {
+            parseNodes.AddRange(nodes);
+        }
+
         public int Count => parseNodes.Count;
 
         public ParseNode this[int index] => parseNodes[index];

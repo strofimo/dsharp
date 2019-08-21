@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+
+using Test = System.Activator;
+
+[assembly:AssemblyCopyright(""), AssemblyCulture(null), AssemblyDelaySign(true), AssemblyFlags(AssemblyNameFlags.None)]
 
 namespace DSharp.Shell.src
 {

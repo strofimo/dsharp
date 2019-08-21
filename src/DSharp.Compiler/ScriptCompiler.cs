@@ -93,7 +93,16 @@ namespace DSharp.Compiler
 
         private void BuildCodeModel()
         {
-            CodeModelBuilder codeModelBuilder = new CodeModelBuilder(options, this);
+            ICodeModelBuilder codeModelBuilder = null;
+            if (options.Features.Contains("Roslyn"))
+            {
+                codeModelBuilder = new RoslynCodeModelBuilder(options);
+            }
+            else
+            {
+                codeModelBuilder = new MonoCodeModelBuilder(options, this);
+            }
+            
             CodeModelValidator codeModelValidator = new CodeModelValidator(this);
             CodeModelProcessor validationProcessor = new CodeModelProcessor(codeModelValidator, options);
 

@@ -33,6 +33,8 @@ namespace DSharp.Compiler
 
         public bool DebugMode { get; set; } = false;
 
+        public IReadOnlyList<string> Features { get; set; }
+
         //TODO: Remove this mechanism
         public bool Validate(out string errorMessage)
         {
