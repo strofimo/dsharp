@@ -566,7 +566,7 @@ namespace DSharp.Compiler.Compiler
                     }
                 }
 
-                if(leftExpression is PropertyExpression propertyExpression && propertyExpression.Property.GetPropertyNode().IsReadonlyProperty)
+                if(leftExpression is PropertyExpression propertyExpression && (propertyExpression.Property.GetPropertyNode()?.IsReadonlyProperty ?? false))
                 {
                     var scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
                     var stringType = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
