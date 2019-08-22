@@ -18,6 +18,18 @@ namespace DSharp.Shell.src
     {
         public void Process()
         {
+            const bool boolType = false;
+            const short shortType = -1;
+            const ushort ushortType = 0;
+            const int intType = 10000;
+            const uint uintType = 1000000;
+            const long longType = -1000000000;
+            const ulong ulongType = 10000000;
+            const float floatType = 1.1;
+            const double doubleType = 1.1;
+            const decimal decimalType = 1.1;
+            const string stringType = "";
+
             var singleLineActionLambda = new Action(DoSomeWork);
             var multiLineActionStatementLambda = new Action(() =>
             {
@@ -53,6 +65,14 @@ namespace DSharp.Shell.src
         public T DoSomeWorkWithLambda(Func<T, object, T> func)
         {
             return func.Invoke(null, new object());
+        }
+    }
+
+    public static class LambdaExtensions
+    {
+        public static bool IsAwesome<T>(this Lambda<T> instance)
+        {
+
         }
     }
 }

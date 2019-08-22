@@ -151,6 +151,7 @@ namespace DSharp.Compiler.CodeModel.Tokens
                 new TokenInfo("EOF", TokenFlags.None),
                 new TokenInfo("Comment", TokenFlags.None),
                 new TokenInfo("Error", TokenFlags.None),
+                new TokenInfo("var", TokenFlags.None),
                 new TokenInfo("Invalid", TokenFlags.None)
             };
 

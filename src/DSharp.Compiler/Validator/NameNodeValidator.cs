@@ -4,6 +4,7 @@
 //
 
 using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Statements;
 using DSharp.Compiler.Errors;
@@ -16,7 +17,7 @@ namespace DSharp.Compiler.Validator
         {
             NameNode nameNode = (NameNode)node;
 
-            if(nameNode.Parent is VariableDeclarationNode)
+            if(nameNode.Parent is VariableDeclarationNode || nameNode.Parent is ParameterNode)
             {
                 if(nameNode.Name == "var")
                 {

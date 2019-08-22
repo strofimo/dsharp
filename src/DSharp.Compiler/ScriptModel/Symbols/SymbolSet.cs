@@ -794,6 +794,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                 switch (intrinsicTypeNode.Type)
                 {
+                    case TokenType.Var:
                     case TokenType.Object:
                         intrinsicType = IntrinsicType.Object;
 
@@ -857,7 +858,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                         break;
                     case TokenType.Void:
                         intrinsicType = IntrinsicType.Void;
-
                         break;
                 }
 

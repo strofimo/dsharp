@@ -1995,10 +1995,12 @@ namespace DSharp.Compiler.Parser
             switch (PeekType())
             {
                 // block
-                case TokenType.OpenCurly: return ParseBlock();
+                case TokenType.OpenCurly:
+                    return ParseBlock();
 
                 // empty
-                case TokenType.Semicolon: return ParseEmptyStatement();
+                case TokenType.Semicolon:
+                    return ParseEmptyStatement();
 
                 // local const
                 case TokenType.Const:
@@ -2016,14 +2018,20 @@ namespace DSharp.Compiler.Parser
                     goto default;
 
                 // selection statements
-                case TokenType.If:     return ParseIf();
-                case TokenType.Switch: return ParseSwitch();
+                case TokenType.If:
+                    return ParseIf();
+                case TokenType.Switch:
+                    return ParseSwitch();
 
                 // iteration statements
-                case TokenType.While:   return ParseWhile();
-                case TokenType.For:     return ParseFor();
-                case TokenType.Do:      return ParseDo();
-                case TokenType.Foreach: return ParseForeach();
+                case TokenType.While:
+                    return ParseWhile();
+                case TokenType.For:
+                    return ParseFor();
+                case TokenType.Do:
+                    return ParseDo();
+                case TokenType.Foreach:
+                    return ParseForeach();
 
                 // labelled statement
                 case TokenType.Identifier:
@@ -2049,27 +2057,39 @@ namespace DSharp.Compiler.Parser
                 }
 
                 // jump statements
-                case TokenType.Break:    return ParseBreak();
-                case TokenType.Continue: return ParseContinue();
-                case TokenType.Goto:     return ParseGoto();
-                case TokenType.Return:   return ParseReturn();
-                case TokenType.Throw:    return ParseThrow();
+                case TokenType.Break:
+                    return ParseBreak();
+                case TokenType.Continue:
+                    return ParseContinue();
+                case TokenType.Goto:
+                    return ParseGoto();
+                case TokenType.Return:
+                    return ParseReturn();
+                case TokenType.Throw:
+                    return ParseThrow();
 
                 // try
-                case TokenType.Try: return ParseTry();
+                case TokenType.Try:
+                    return ParseTry();
 
                 // checked
-                case TokenType.Checked:   return ParseChecked();
-                case TokenType.Unchecked: return ParseUnchecked();
-                case TokenType.Using:     return ParseUsing();
+                case TokenType.Checked:
+                    return ParseChecked();
+                case TokenType.Unchecked:
+                    return ParseUnchecked();
+                case TokenType.Using:
+                    return ParseUsing();
 
                 // lock
-                case TokenType.Lock: return ParseLock();
+                case TokenType.Lock:
+                    return ParseLock();
 
                 // fixed
-                case TokenType.Fixed: return ParseFixed();
+                case TokenType.Fixed:
+                    return ParseFixed();
 
-                case TokenType.Unsafe: return ParseUnsafeStatement();
+                case TokenType.Unsafe:
+                    return ParseUnsafeStatement();
 
                 default:
                 {
