@@ -41,12 +41,18 @@ namespace DSharp.Compiler.Tests
                     string.Format(DSharpStringResources.RESERVED_KEYWORD_ERROR_FORMAT, "instanceof")
                     ),
                 ["PrivateNestedTypes"] = CreateContainsErrorMessagesFunction(
+                    DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED,
+                    DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED,
                     DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED
                     ),
                 ["ProtectedNestedTypes"] = CreateContainsErrorMessagesFunction(
+                    DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED,
+                    DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED,
                     DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED
                     ),
                 ["NewKeywordOnType"] = CreateContainsErrorMessagesFunction(
+                    DSharpStringResources.NEW_KEYWORD_ON_TYPE_UNSUPPORTED,
+                    DSharpStringResources.NEW_KEYWORD_ON_TYPE_UNSUPPORTED,
                     DSharpStringResources.NEW_KEYWORD_ON_TYPE_UNSUPPORTED
                     ),
                 ["Overloads"] = CreateContainsErrorMessagesFunction(

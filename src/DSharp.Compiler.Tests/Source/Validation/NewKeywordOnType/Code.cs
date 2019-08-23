@@ -7,8 +7,16 @@ using System.Runtime.CompilerServices;
 namespace ValidationTests {
 
     public class Test {
+        new public enum TestEnum
+        {
+        }
 
-        new public class TestEx {
+        new public interface TestInterface
+        {
+        }
+
+        new public class TestClass
+        {
         }
     }
 }
