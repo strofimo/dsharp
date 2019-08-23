@@ -8,7 +8,16 @@ namespace ValidationTests {
 
     public class Test {
 
-        protected class TestEx {
+        protected enum TestEnum
+        {
+        }
+
+        protected interface TestInterface
+        {
+        }
+
+        protected class TestClass
+        {
         }
     }
 }
