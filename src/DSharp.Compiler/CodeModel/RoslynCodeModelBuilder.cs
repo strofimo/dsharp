@@ -79,7 +79,7 @@ namespace DSharp.Compiler.CodeModel
             return parsedMembers;
         }
 
-        private static CustomTypeNode ParseCustomTypeDefinition(TokenType type, TypeDeclarationSyntax typeDeclarationSyntax)
+        private static CustomTypeNode ParseCustomTypeDefinition(TokenType type, TypeDeclarationSyntax typeDeclarationSyntax, bool isNestedType = false)
         {
             var attributes = new ParseNodeList(ParseAttributes(typeDeclarationSyntax.AttributeLists));
             var name = CreateAtomicName(typeDeclarationSyntax.Identifier);
@@ -98,7 +98,8 @@ namespace DSharp.Compiler.CodeModel
                 typeParameters: typeParameters,
                 baseTypes: baseTypes,
                 constraintClauses: constraints,
-                members: members);
+                members: members,
+                isNestedType: isNestedType);
             return classNode;
         }
 
@@ -134,8 +135,18 @@ namespace DSharp.Compiler.CodeModel
                         break;
                     case OperatorDeclarationSyntax operatorDeclarationSyntax:
                         break;
-                    case TypeDeclarationSyntax typeDeclarationSyntax:
-                        throw new NotSupportedException();
+                    case ClassDeclarationSyntax classDeclarationSyntax:
+                        CustomTypeNode classNode = ParseCustomTypeDefinition(TokenType.Class, classDeclarationSyntax, true);
+                        parseNodes.Add(classNode);
+                        break;
+                    case InterfaceDeclarationSyntax interfaceDeclarationSyntax:
+                        CustomTypeNode interfaceNode = ParseCustomTypeDefinition(TokenType.Interface, interfaceDeclarationSyntax, true);
+                        parseNodes.Add(interfaceNode);
+                        break;
+                    case StructDeclarationSyntax structDeclarationSyntax:
+                        CustomTypeNode structNode = ParseCustomTypeDefinition(TokenType.Struct, structDeclarationSyntax, true);
+                        parseNodes.Add(structNode);
+                        break;
                     default:
                         throw new Exception("Invalid member!");
                 }
