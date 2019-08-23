@@ -37,7 +37,7 @@ var Queue$ = {
         this.count++;
     },
     getEnumerator: function () {
-        if (this._offset != 0) {
+        if (this._offset !== 0) {
             _cleanQueue(this);
         }
         return new Enumerator(this._items);
@@ -46,5 +46,8 @@ var Queue$ = {
         return this._items.length
             ? this._items[this._offset]
             : undefined;
+    },
+    toArray: function () {
+        return this._items.slice(0);
     }
 };

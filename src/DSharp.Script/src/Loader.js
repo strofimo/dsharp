@@ -12,7 +12,7 @@
         CancelEventArgs: defineClass(CancelEventArgs, {}, [], null),
         StringBuilder: defineClass(StringBuilder, StringBuilder$, [], null),
         Stack: defineClass(Stack, Stack$, [], null),
-        Queue: defineClass(Queue, Queue$, [], null),
+        Queue: defineClass(Queue, Queue$, [], null, [IEnumerable]),
         Guid: defineClass(Guid, Guid$, [], null),
         DateTime: defineClass(DateTime, {}, [], null),
         Nullable: defineClass(Nullable, Nullable$, [], null),

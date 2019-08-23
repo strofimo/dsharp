@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace DSharp.Shell.src
 {
+    public class X { }
+    public class Y : X { }
+
     public class Usages
     {
         public void Use()
@@ -23,6 +26,11 @@ namespace DSharp.Shell.src
 
             bulkAsyncExecutionManager.AddExecutionKeys(new string[] { "1", "2" });
             bulkAsyncExecutionManager.StartExecution();
+        }
+
+        public static IEnumerable<T> ToEnumerable<T>(ICollection<T> arg) 
+        {
+            var typeofT = typeof(T);
         }
     }
 
