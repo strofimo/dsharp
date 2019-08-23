@@ -18,7 +18,7 @@
         Nullable: defineClass(Nullable, Nullable$, [], null),
     }),
     {
-        version: {{version}},
+        version: '{{version}}',
         isValue: isValue,
         value: value,
         extend: extend,

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
@@ -7,12 +7,16 @@ using System.Runtime.CompilerServices;
 namespace ValidationTests {
 
     public class Test {
-
-        public enum Foo {
-            A = 0, B = 1
+        private enum TestEnum
+        {
         }
 
-        public class TestEx {
+        private interface TestInterface
+        {
+        }
+
+        private class TestClass
+        {
         }
     }
 }

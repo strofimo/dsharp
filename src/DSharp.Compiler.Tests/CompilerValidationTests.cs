@@ -40,9 +40,20 @@ namespace DSharp.Compiler.Tests
                     string.Format(DSharpStringResources.RESERVED_KEYWORD_ERROR_FORMAT, DSharpStringResources.DSHARP_SCRIPT_NAME),
                     string.Format(DSharpStringResources.RESERVED_KEYWORD_ERROR_FORMAT, "instanceof")
                     ),
-                ["NestedTypes"] = CreateContainsErrorMessagesFunction(
-                    DSharpStringResources.NESTED_TYPE_ERROR,
-                    DSharpStringResources.NESTED_TYPE_ERROR
+                ["PrivateNestedTypes"] = CreateContainsErrorMessagesFunction(
+                    DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED,
+                    DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED,
+                    DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED
+                    ),
+                ["ProtectedNestedTypes"] = CreateContainsErrorMessagesFunction(
+                    DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED,
+                    DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED,
+                    DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED
+                    ),
+                ["NewKeywordOnType"] = CreateContainsErrorMessagesFunction(
+                    DSharpStringResources.NEW_KEYWORD_ON_TYPE_UNSUPPORTED,
+                    DSharpStringResources.NEW_KEYWORD_ON_TYPE_UNSUPPORTED,
+                    DSharpStringResources.NEW_KEYWORD_ON_TYPE_UNSUPPORTED
                     ),
                 ["Overloads"] = CreateContainsErrorMessagesFunction(
                     DSharpStringResources.EXTERN_IMPLEMENTATION_FOUND_ERROR,
