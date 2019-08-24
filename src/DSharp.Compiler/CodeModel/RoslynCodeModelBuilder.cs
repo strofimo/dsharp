@@ -69,6 +69,10 @@ namespace DSharp.Compiler.CodeModel
                         CustomTypeNode structNode = ParseCustomTypeDefinition(TokenType.Struct, structDeclarationSyntax);
                         parsedMembers.Add(structNode);
                         break;
+                    case DelegateDeclarationSyntax delegateDeclarationSyntax:
+                        DelegateTypeNode delegateTypeNode = ParseDelegate(delegateDeclarationSyntax);
+                        parsedMembers.Add(delegateTypeNode);
+                        break;
                     case TypeDeclarationSyntax typeDeclarationSyntax:
                         break;
                     default:
@@ -77,6 +81,28 @@ namespace DSharp.Compiler.CodeModel
             }
 
             return parsedMembers;
+        }
+
+        private static DelegateTypeNode ParseDelegate(DelegateDeclarationSyntax delegateDeclaration, bool isNestedType = false)
+        {
+            var attributes = ParseAttributes(delegateDeclaration.AttributeLists);
+            var modifiers = ParseModifiers(delegateDeclaration.Modifiers);
+            var returnType = ParseTypeName(delegateDeclaration.ReturnType);
+            var name = CreateAtomicName(delegateDeclaration.Identifier);
+            var typeParameters = ParseTypeParameters(delegateDeclaration.TypeParameterList);
+            var parameters = ParseParameters(delegateDeclaration.ParameterList);
+            var constraints = ParseConstraints(delegateDeclaration.ConstraintClauses);
+
+            return new DelegateTypeNode(
+                null, 
+                attributes, 
+                modifiers, 
+                returnType, 
+                name,
+                typeParameters,
+                parameters,
+                constraints,
+                isNestedType);
         }
 
         private static CustomTypeNode ParseCustomTypeDefinition(TokenType type, TypeDeclarationSyntax typeDeclarationSyntax, bool isNestedType = false)
@@ -114,7 +140,9 @@ namespace DSharp.Compiler.CodeModel
                 switch (member)
                 {
                     case FieldDeclarationSyntax fieldDeclarationSyntax:
-                        var field = new FieldDeclarationNode(null, attributes, modifiers, null, null, false);
+                        var type = ParseTypeName(fieldDeclarationSyntax.Declaration.Type);
+                        var initializers = ParseInitializers(fieldDeclarationSyntax.Declaration.Variables);
+                        var field = new FieldDeclarationNode(null, attributes, modifiers, type, initializers, false);
                         parseNodes.Add(field);
                         break;
                     case BaseFieldDeclarationSyntax baseFieldDeclarationSyntax: //Is this actually a thing?
@@ -146,6 +174,10 @@ namespace DSharp.Compiler.CodeModel
                     case StructDeclarationSyntax structDeclarationSyntax:
                         CustomTypeNode structNode = ParseCustomTypeDefinition(TokenType.Struct, structDeclarationSyntax, true);
                         parseNodes.Add(structNode);
+                        break;
+                    case DelegateDeclarationSyntax delegateDeclarationSyntax:
+                        DelegateTypeNode delegateTypeNode = ParseDelegate(delegateDeclarationSyntax, true);
+                        parseNodes.Add(delegateTypeNode);
                         break;
                     default:
                         throw new Exception("Invalid member!");
@@ -181,6 +213,11 @@ namespace DSharp.Compiler.CodeModel
 
         private static BlockStatementNode ParseBlockStatement(BlockSyntax body)
         {
+            if(body == null)
+            {
+                return null; // Should this be an empty statement node?
+            }
+
             ParseNodeList statements = new ParseNodeList();
 
             foreach (var statement in body.Statements)
@@ -192,12 +229,25 @@ namespace DSharp.Compiler.CodeModel
             return new BlockStatementNode(null, statements);
         }
 
+        private static ParseNodeList ParseStatements(IEnumerable<StatementSyntax> statements)
+        {
+            ParseNodeList parseNodes = new ParseNodeList();
+
+            foreach (var statement in statements)
+            {
+                var parsedStatement = ParseStatement(statement);
+                parseNodes.Add(parsedStatement);
+            }
+
+            return parseNodes;
+        }
+
         private static StatementNode ParseStatement(StatementSyntax statement)
         {
             switch (statement)
             {
                 case BreakStatementSyntax breakStatement:
-                    return new BreakNode(CreateTokenFromSyntax(breakStatement.BreakKeyword, TokenType.Break));
+                    return new BreakNode(ParseTokenFromSyntax(breakStatement.BreakKeyword, TokenType.Break));
                 case BlockSyntax blockSyntax:
                     return ParseBlockStatement(blockSyntax);
                 case LocalDeclarationStatementSyntax localDeclarationStatement:
@@ -205,10 +255,116 @@ namespace DSharp.Compiler.CodeModel
                 case ExpressionStatementSyntax expressionStatement:
                     return new ExpressionStatementNode(ParseExpression(expressionStatement.Expression));
                 case ReturnStatementSyntax returnStatementSyntax:
-                    return new ReturnNode(null, ParseExpression(returnStatementSyntax.Expression));
+                    ParseNode returnValue = null;
+                    if (returnStatementSyntax.Expression != null)
+                        returnValue = ParseExpression(returnStatementSyntax.Expression);
+                    return new ReturnNode(null, returnValue);
+                case ForStatementSyntax forStatementSyntax:
+                    return ParseForStatement(forStatementSyntax);
+                case IfStatementSyntax ifStatementSyntax:
+                    return ParseIfStatement(ifStatementSyntax);
+                case DoStatementSyntax doStatementSyntax:
+                    return ParseDoWhileStatement(doStatementSyntax);
+                case WhileStatementSyntax whileStatementSyntax:
+                    return ParseWhileStatement(whileStatementSyntax);
+                case ContinueStatementSyntax continueStatementSyntax:
+                    return new ContinueNode(ParseTokenFromSyntaxKind(SyntaxKind.ContinueKeyword));
+                case SwitchStatementSyntax switchStatementSyntax:
+                    return ParseSwitchStatement(switchStatementSyntax);
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException(statement.GetType().Name);
             }
+        }
+
+        //TODO: Refactor
+        private static StatementNode ParseSwitchStatement(SwitchStatementSyntax switchStatementSyntax)
+        {
+            var condition = ParseExpression(switchStatementSyntax.Expression);
+
+            ParseNodeList cases = new ParseNodeList();
+            foreach (var section in switchStatementSyntax.Sections)
+            {
+                var statements = ParseStatements(section.Statements);
+                ParseNodeList parsedLabels = new ParseNodeList();
+
+                foreach(var label in section.Labels)
+                {
+                    if(label is DefaultSwitchLabelSyntax)
+                    {
+                        parsedLabels.Add(new DefaultLabelNode(null));
+                    }
+                    else if(label is CaseSwitchLabelSyntax caseSwitchLabelSyntax)
+                    {
+                        parsedLabels.Add(new CaseLabelNode(null, ParseExpression(caseSwitchLabelSyntax.Value)));
+                    }
+                    else
+                    {
+                        throw new NotSupportedException(label.GetType().Name);
+                    }
+                }
+                var sectionNode = new SwitchSectionNode(null, parsedLabels, statements);
+                cases.Add(sectionNode);
+            }
+            //SwitchSectionNode
+            return new SwitchNode(null, condition, cases);
+        }
+
+        private static StatementNode ParseWhileStatement(WhileStatementSyntax whileStatementSyntax)
+        {
+            var block = ParseStatement(whileStatementSyntax.Statement);
+            var condition = ParseExpression(whileStatementSyntax.Condition);
+            return new WhileNode(null, condition, block);
+        }
+
+        private static StatementNode ParseDoWhileStatement(DoStatementSyntax doStatementSyntax)
+        {
+            var block = ParseStatement(doStatementSyntax.Statement);
+            var condition = ParseExpression(doStatementSyntax.Condition);
+            return new DoWhileNode(null, block, condition);
+        }
+
+        private static StatementNode ParseIfStatement(IfStatementSyntax ifStatementSyntax)
+        {
+            var condition = ParseExpression(ifStatementSyntax.Condition);
+            var ifBlock = ParseStatement(ifStatementSyntax.Statement);
+
+            ParseNode elseBlock = null;
+            if (ifStatementSyntax.Else != null)
+            {
+                elseBlock = ParseStatement(ifStatementSyntax.Else.Statement);
+            }
+            return new IfElseNode(null, condition, ifBlock, elseBlock);
+        }
+
+        private static StatementNode ParseForStatement(ForStatementSyntax forStatementSyntax)
+        {
+            ParseNode initializer = null;
+            if(forStatementSyntax.Declaration != null)
+            {
+                initializer = new VariableDeclarationNode(
+                    null,
+                    new ParseNodeList(),
+                    Modifiers.None,
+                    ParseTypeName(forStatementSyntax.Declaration.Type),
+                    ParseInitializers(forStatementSyntax.Declaration.Variables),
+                    false);
+            }
+            else
+            {
+                initializer = new ExpressionListNode(
+                    null, 
+                    ParseExpressions(forStatementSyntax.Initializers));
+            }
+
+            var condition = ParseExpression(forStatementSyntax.Condition);
+            var increment = ParseExpressions(forStatementSyntax.Incrementors);
+            var body = ParseStatement(forStatementSyntax.Statement);
+            return new ForNode(
+                null,
+                initializer,
+                condition,
+                new ExpressionListNode(null, increment),
+                body);
         }
 
         private static StatementNode ParseDeclerationStatement(LocalDeclarationStatementSyntax localDeclarationStatement)
@@ -216,14 +372,7 @@ namespace DSharp.Compiler.CodeModel
             var modifiers = ParseModifiers(localDeclarationStatement.Modifiers);
             var type = ParseTypeName(localDeclarationStatement.Declaration.Type);
 
-            ParseNodeList variableInitializers = new ParseNodeList();
-            foreach (var variable in localDeclarationStatement.Declaration.Variables)
-            {
-                var name = CreateAtomicName(variable.Identifier);
-                var initializer = ParseVariableInitializer(variable.Initializer);
-                var initilizerNode = new VariableInitializerNode(name, initializer);
-                variableInitializers.Add(initilizerNode);
-            }
+            ParseNodeList variableInitializers = ParseInitializers(localDeclarationStatement.Declaration.Variables);
 
             if (localDeclarationStatement.Modifiers.Contains(SyntaxFactory.Token(SyntaxKind.ConstKeyword)))
             {
@@ -233,18 +382,29 @@ namespace DSharp.Compiler.CodeModel
             return new VariableDeclarationNode(null, new ParseNodeList(), modifiers, type, variableInitializers, false);
         }
 
+        private static ParseNodeList ParseInitializers(IEnumerable<VariableDeclaratorSyntax> variableDeclarationSyntaxes)
+        {
+            ParseNodeList variableInitializers = new ParseNodeList();
+            foreach (var variable in variableDeclarationSyntaxes)
+            {
+                VariableInitializerNode initilizerNode = ParseInitializer(variable);
+                variableInitializers.Add(initilizerNode);
+            }
+
+            return variableInitializers;
+        }
+
+        private static VariableInitializerNode ParseInitializer(VariableDeclaratorSyntax variable)
+        {
+            var name = CreateAtomicName(variable.Identifier);
+            var initializer = ParseVariableInitializer(variable.Initializer);
+            var initilizerNode = new VariableInitializerNode(name, initializer);
+            return initilizerNode;
+        }
+
         private static ParseNode ParseVariableInitializer(EqualsValueClauseSyntax initializer)
         {
-            switch (initializer.Value)
-            {
-                case StackAllocArrayCreationExpressionSyntax stackAlloc:
-                case ImplicitStackAllocArrayCreationExpressionSyntax implicitStack:
-                    throw new NotSupportedException();
-                case ArrayCreationExpressionSyntax arrayCreation:
-                    return new ArrayInitializerNode(null, null); //Implement
-                default:
-                    return ParseExpression(initializer.Value);
-            }
+            return ParseExpression(initializer.Value);
         }
 
         private static NameNode ParseExplicitInterfaceType(MethodDeclarationSyntax methodDeclarationSyntax)
@@ -291,7 +451,16 @@ namespace DSharp.Compiler.CodeModel
 
         private static ParseNode ParseTypeName(TypeSyntax typeSyntax)
         {
-            if (typeSyntax is IdentifierNameSyntax identifierNameSyntax)
+            if (typeSyntax == null)
+            {
+                var varToken = ParseTokenFromSyntax(SyntaxFactory.Token(SyntaxKind.VarKeyword));
+                return new IntrinsicTypeNode(varToken);
+            }
+            else if (typeSyntax.IsVar)
+            {
+                return ScanSyntaxTreeForImplicitVarType(typeSyntax);
+            }
+            else if (typeSyntax is IdentifierNameSyntax identifierNameSyntax)
             {
                 return CreateAtomicName(identifierNameSyntax.Identifier);
             }
@@ -305,13 +474,53 @@ namespace DSharp.Compiler.CodeModel
                     CreateIdentifier(genericNameSyntax.Identifier),
                     ParseTypeArguments(genericNameSyntax.TypeArgumentList));
             }
-            else if(typeSyntax == null) //Var or anonymous usages
+            else if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
             {
-                var varToken = CreateTokenFromSyntax(SyntaxFactory.Token(SyntaxKind.VarKeyword));
-                return new IntrinsicTypeNode(varToken);
+                return new ArrayTypeNode(ParseTypeName(arrayTypeSyntax.ElementType), 1);
             }
 
             throw new Exception();
+        }
+
+        private static ParseNode ScanSyntaxTreeForImplicitVarType(TypeSyntax typeSyntax)
+        {
+            var parent = typeSyntax.Parent;
+            if(parent is VariableDeclarationSyntax variableDeclarationSyntax)
+            {
+                foreach (var variable in variableDeclarationSyntax.Variables)
+                {
+                    var initializerExpression = variable.Initializer.Value;
+                    if (initializerExpression is ObjectCreationExpressionSyntax objectCreationExpressionSyntax)
+                    {
+                        return ParseTypeName(objectCreationExpressionSyntax.Type);
+                    }
+                    else if (initializerExpression is ArrayCreationExpressionSyntax arrayCreationExpressionSyntax)
+                    {
+                        return ParseTypeName(arrayCreationExpressionSyntax.Type);
+                    }
+                    else if (initializerExpression is InvocationExpressionSyntax invocationExpressionSyntax)
+                    {
+                        if(invocationExpressionSyntax.Expression is MemberAccessExpressionSyntax memberAccessExpressionSyntax)
+                        {
+                            if(memberAccessExpressionSyntax.Expression is NameSyntax nameSyntax)
+                            {
+                                //We can't resolve the node at this point, so we should make it for scanning later.
+                                return new UnresolvedVarNameNode(ParseNameNode(nameSyntax));
+                            }
+                            if(memberAccessExpressionSyntax.Expression is CastExpressionSyntax castExpressionSyntax)
+                            {
+                                return ParseTypeName(castExpressionSyntax.Type);
+                            }
+                        }
+                    }
+                    else if (initializerExpression is LiteralExpressionSyntax literalExpressionSyntax)
+                    {
+                        return ParsePredefinedType(literalExpressionSyntax.Token);
+                    }
+                }
+            }
+
+            throw new NotImplementedException();
         }
 
         private static ParseNodeList ParseTypeArguments(TypeArgumentListSyntax typeArgumentList)
@@ -329,6 +538,12 @@ namespace DSharp.Compiler.CodeModel
         private static ParseNode ParsePredefinedType(SyntaxToken keyword)
         {
             var position = GetTokenPosition(keyword, out string path);
+
+            switch(keyword.Kind())
+            {
+                case SyntaxKind.StringLiteralToken:
+                    return new IntrinsicTypeNode(new Token(TokenType.String, path, position));
+            }
 
             switch (keyword.ValueText)
             {
@@ -454,6 +669,27 @@ namespace DSharp.Compiler.CodeModel
                     case SyntaxKind.SealedKeyword:
                         parsedModifier |= Modifiers.Sealed;
                         break;
+                    case SyntaxKind.VirtualKeyword:
+                        parsedModifier |= Modifiers.Virtual;
+                        break;
+                    case SyntaxKind.NewKeyword:
+                        parsedModifier |= Modifiers.New;
+                        break;
+                    case SyntaxKind.ReadOnlyKeyword:
+                        parsedModifier |= Modifiers.Readonly;
+                        break;
+                    case SyntaxKind.ExternKeyword:
+                        parsedModifier |= Modifiers.Extern;
+                        break;
+                    case SyntaxKind.OverrideKeyword:
+                        parsedModifier |= Modifiers.Override;
+                        break;
+                    case SyntaxKind.UnsafeKeyword:
+                        parsedModifier |= Modifiers.Unsafe;
+                        break;
+                    case SyntaxKind.VolatileKeyword:
+                        parsedModifier |= Modifiers.Volatile;
+                        break;
                     case SyntaxKind.ConstKeyword:
                         break;
                     default:
@@ -467,7 +703,8 @@ namespace DSharp.Compiler.CodeModel
         private static NamespaceNode ParseNamespace(NamespaceDeclarationSyntax namespaceDeclaration)
         {
             var nameNode = ParseNameNode(namespaceDeclaration.Name);
-            var usings = new ParseNodeList(ParseUsings(namespaceDeclaration.Usings));
+            var usings = new ParseNodeList(ParseUsings(namespaceDeclaration.Usings)
+                .Concat(ParseUsings(((CompilationUnitSyntax)namespaceDeclaration.Parent).Usings)));
             var members = ParseMembers(namespaceDeclaration);
             var namespaceNode = new NamespaceNode(null, nameNode, new ParseNodeList(), usings, new ParseNodeList(members));
             return namespaceNode;
@@ -506,6 +743,12 @@ namespace DSharp.Compiler.CodeModel
             return new ExpressionListNode(null, new ParseNodeList(expressions));
         }
 
+        private static ParseNodeList ParseExpressions<T>(IEnumerable<T> expressions)
+            where T : ExpressionSyntax
+        {
+            return new ParseNodeList(expressions?.Select(expression => ParseExpression(expression)));
+        }
+
         private static ParseNode ParseExpression(ExpressionSyntax expressionSyntax)
         {
             switch (expressionSyntax)
@@ -519,22 +762,82 @@ namespace DSharp.Compiler.CodeModel
                 case ObjectCreationExpressionSyntax objectCreationExpressionSyntax:
                     var typeReference = ParseTypeName(objectCreationExpressionSyntax.Type);
                     var arguments = ParseArguments(objectCreationExpressionSyntax.ArgumentList);
-                    return new NewNode(ParseTokenFromSyntaxTokenKind(SyntaxKind.NewKeyword), typeReference, arguments);
+                    return new NewNode(ParseTokenFromSyntaxKind(SyntaxKind.NewKeyword), typeReference, arguments);
                 case LambdaExpressionSyntax lambdaExpressionSyntax:
                     return ParseLambdaExpression(lambdaExpressionSyntax);
                 case InvocationExpressionSyntax invocationExpressionSyntax:
                     return ParseInvocationExpression(invocationExpressionSyntax);
                 case PrefixUnaryExpressionSyntax prefixUnaryExpressionSyntax:
+                    //Is this the right thing to do here?
                     return new UnaryExpressionNode(
-                        CreateTokenFromSyntax(prefixUnaryExpressionSyntax.OperatorToken),
+                        ParseTokenFromSyntax(prefixUnaryExpressionSyntax.OperatorToken),
                         ParseExpression(prefixUnaryExpressionSyntax.Operand));
+                case PostfixUnaryExpressionSyntax postfixUnaryExpressionSyntax:
+                    //Is this the right thing to do here?
+                    return new UnaryExpressionNode(
+                        ParseTokenFromSyntax(postfixUnaryExpressionSyntax.OperatorToken),
+                        ParseExpression(postfixUnaryExpressionSyntax.Operand));
                 case BinaryExpressionSyntax binaryExpressionSyntax:
                     return new BinaryExpressionNode(
                         ParseExpression(binaryExpressionSyntax.Left),
                         ResolveSyntaxTokenType(binaryExpressionSyntax.OperatorToken),
                         ParseExpression(binaryExpressionSyntax.Right));
+                case GenericNameSyntax genericNameSyntax:
+                    return ParseNameNode(genericNameSyntax);
+                case StackAllocArrayCreationExpressionSyntax stackAlloc:
+                case ImplicitStackAllocArrayCreationExpressionSyntax implicitStack:
+                    throw new NotSupportedException();
+                case ArrayCreationExpressionSyntax arrayCreation:
+                    var parsedExpressions = ParseExpressions<ExpressionSyntax>(arrayCreation.Initializer?.Expressions);
+                    return new ArrayInitializerNode(null, parsedExpressions); //Implement
+                case TypeOfExpressionSyntax typeOfExpressionSyntax:
+                    return new TypeofNode(null, ParseTypeName(typeOfExpressionSyntax.Type));
+                case CastExpressionSyntax castExpressionSyntax:
+                    return new CastNode(
+                        null, 
+                        ParseTypeName(castExpressionSyntax.Type), 
+                        ParseExpression(castExpressionSyntax.Expression));
+                case ConditionalExpressionSyntax conditionalExpressionSyntax:
+                    var condition = ParseExpression(conditionalExpressionSyntax.Condition);
+                    var whenTrue = ParseExpression(conditionalExpressionSyntax.WhenTrue);
+                    var whenFalse = ParseExpression(conditionalExpressionSyntax.WhenFalse);
+                    return new ConditionalNode(condition, whenTrue, whenFalse);
+                case IsPatternExpressionSyntax isPatternExpressionSyntax:
+                    var left = ParseExpression(isPatternExpressionSyntax.Expression);
+                    var right = ParsePattern(isPatternExpressionSyntax.Pattern);
+                    return new BinaryExpressionNode(left, TokenType.Is, right);
+                case PredefinedTypeSyntax predefinedTypeSyntax:
+                    return ParsePredefinedType(predefinedTypeSyntax.Keyword);
+                case AssignmentExpressionSyntax assignmentExpressionSyntax:
+                    return ParseAssignmentExpression(assignmentExpressionSyntax);
+                case ParenthesizedExpressionSyntax parenthesizedExpressionSyntax:
+                    return new ParameterizedExpressionNode(
+                        ParseTokenFromSyntax(parenthesizedExpressionSyntax.OpenParenToken), 
+                        ParseExpression(parenthesizedExpressionSyntax.Expression));
+                case BaseExpressionSyntax baseExpressionSyntax:
+                    return new BaseNode(ParseTokenFromSyntax(baseExpressionSyntax.Token));
                 default:
                     throw new NotSupportedException(expressionSyntax.GetType().Name);
+            }
+        }
+
+        private static ParseNode ParseAssignmentExpression(AssignmentExpressionSyntax assignmentExpressionSyntax)
+        {
+            var left = ParseExpression(assignmentExpressionSyntax.Left);
+            var right = ParseExpression(assignmentExpressionSyntax.Right);
+            var operatorToken = ResolveSyntaxTokenType(assignmentExpressionSyntax.OperatorToken);
+            return new BinaryExpressionNode(left, operatorToken, right);
+        }
+
+        private static ParseNode ParsePattern(PatternSyntax pattern)
+        {
+            switch(pattern)
+            {
+                case VarPatternSyntax varPatternSyntax:
+                case DiscardPatternSyntax discardPatternSyntax:
+                case DeclarationPatternSyntax declarationPatternSyntax:
+                default:
+                    throw new NotSupportedException(pattern.GetType().Name);
             }
         }
 
@@ -559,7 +862,7 @@ namespace DSharp.Compiler.CodeModel
             }
 
             BlockStatementNode body = null;
-            if(lambdaExpressionSyntax.Body is BlockSyntax block)
+            if (lambdaExpressionSyntax.Body is BlockSyntax block)
             {
                 body = ParseBlockStatement(block);
             }
@@ -583,7 +886,7 @@ namespace DSharp.Compiler.CodeModel
                 if (argument.RefKindKeyword.Kind() == SyntaxKind.OutKeyword)
                 {
                     parsedExpression = new UnaryExpressionNode(
-                        CreateTokenFromSyntax(argument.RefKindKeyword, TokenType.Out),
+                        ParseTokenFromSyntax(argument.RefKindKeyword, TokenType.Out),
                         parsedExpression);
                 }
 
@@ -623,7 +926,7 @@ namespace DSharp.Compiler.CodeModel
                         case decimal decimalValue:
                             return new DecimalToken(decimalValue, path, position);
                         default:
-                            throw new Exception();
+                            throw new NotSupportedException($"Literal numerical type of {literalExpression.Token.Value.GetType().Name} is not supported");
                     }
                 case SyntaxKind.FalseLiteralExpression:
                 case SyntaxKind.TrueLiteralExpression:
@@ -686,6 +989,11 @@ namespace DSharp.Compiler.CodeModel
             {
                 return ParseIdentifier(identifierNameSyntax);
             }
+            else if (nameSyntax is GenericNameSyntax genericNameSyntax)
+            {
+                var typeArguments = ParseTypeArguments(genericNameSyntax.TypeArgumentList);
+                return new GenericNameNode(CreateIdentifier(genericNameSyntax.Identifier), typeArguments);
+            }
 
             throw new Exception("We can't get here?!");
         }
@@ -717,7 +1025,7 @@ namespace DSharp.Compiler.CodeModel
         private static Parser.BufferPosition GetTokenPosition(SyntaxToken syntaxToken, out string path)
         {
             var location = syntaxToken.GetLocation();
-            if(location.Kind == LocationKind.None)
+            if (location.Kind == LocationKind.None)
             {
                 path = string.Empty;
                 return new Parser.BufferPosition(0, 0, 0);
@@ -730,7 +1038,7 @@ namespace DSharp.Compiler.CodeModel
 
         //TODO: Make extension method
         //TODO: Make it handle it's type internally
-        private static Token CreateTokenFromSyntax(SyntaxToken syntaxToken, TokenType? tokenType = null)
+        private static Token ParseTokenFromSyntax(SyntaxToken syntaxToken, TokenType? tokenType = null)
         {
             tokenType = tokenType ?? ResolveSyntaxTokenType(syntaxToken);
             var position = GetTokenPosition(syntaxToken, out string path);
@@ -753,13 +1061,60 @@ namespace DSharp.Compiler.CodeModel
                     return TokenType.Var;
                 case SyntaxKind.NewKeyword:
                     return TokenType.New;
-                default: throw new NotSupportedException();
+                case SyntaxKind.LessThanToken:
+                    return TokenType.Less;
+                case SyntaxKind.GreaterThanToken:
+                    return TokenType.Greater;
+                case SyntaxKind.LessThanEqualsToken:
+                    return TokenType.LessEqual;
+                case SyntaxKind.GreaterThanEqualsToken:
+                    return TokenType.GreaterEqual;
+                case SyntaxKind.EqualsKeyword:
+                case SyntaxKind.EqualsToken:
+                    return TokenType.Equal;
+                case SyntaxKind.EqualsEqualsToken:
+                    return TokenType.EqualEqual;
+                case SyntaxKind.ContinueKeyword:
+                    return TokenType.Continue;
+                case SyntaxKind.IsKeyword:
+                    return TokenType.Is;
+                case SyntaxKind.OpenParenToken:
+                    return TokenType.OpenParen;
+                case SyntaxKind.CloseParenToken:
+                    return TokenType.CloseParen;
+                case SyntaxKind.BaseKeyword:
+                    return TokenType.Base;
+                case SyntaxKind.AsteriskToken:
+                    return TokenType.Star;
+                case SyntaxKind.AsteriskEqualsToken:
+                    return TokenType.StarEqual;
+                case SyntaxKind.PlusEqualsToken:
+                    return TokenType.PlusEqual;
+                case SyntaxKind.SlashToken:
+                    return TokenType.Slash;
+                case SyntaxKind.SlashEqualsToken:
+                    return TokenType.SlashEqual;
+                case SyntaxKind.MinusEqualsToken:
+                    return TokenType.MinusEqual;
+                case SyntaxKind.PercentToken:
+                    return TokenType.Percent;
+                case SyntaxKind.PercentEqualsToken:
+                    return TokenType.PercentEqual;
+                case SyntaxKind.LessThanLessThanToken:
+                    return TokenType.ShiftLeft;
+                case SyntaxKind.LessThanLessThanEqualsToken:
+                    return TokenType.ShiftLeftEqual;
+                case SyntaxKind.GreaterThanGreaterThanToken:
+                    return TokenType.ShiftRight;
+                case SyntaxKind.GreaterThanGreaterThanEqualsToken:
+                    return TokenType.ShiftRightEqual;
+                default: throw new NotSupportedException(syntaxToken.Kind().ToString());
             }
         }
 
-        private static Token ParseTokenFromSyntaxTokenKind(SyntaxKind syntaxKind)
+        private static Token ParseTokenFromSyntaxKind(SyntaxKind syntaxKind)
         {
-            return CreateTokenFromSyntax(SyntaxFactory.Token(syntaxKind));
+            return ParseTokenFromSyntax(SyntaxFactory.Token(syntaxKind));
         }
 
         private string LoadText(IStreamSource source)

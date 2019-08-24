@@ -87,6 +87,7 @@ namespace DSharp.Compiler.CodeModel
         ConstraintClause,
         DefaultValueExpression,
         GenericName,
-        ObjectInitializer
+        ObjectInitializer,
+        ParameterizedExpression,
     }
 }

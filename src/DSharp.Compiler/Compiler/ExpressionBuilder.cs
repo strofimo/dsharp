@@ -105,6 +105,12 @@ namespace DSharp.Compiler.Compiler
                 case ParseNodeType.AnonymousMethod:
                     expression = ProcessAnonymousMethodNode((AnonymousMethodNode)node);
                     break;
+                case ParseNodeType.ParameterizedExpression:
+                    expression = ProcessOpenParenExpressionNode(
+                        new BinaryExpressionNode(((ParameterizedExpressionNode)node).InnerExpression, 
+                        TokenType.OpenParen, 
+                        null));
+                    break;
                 default:
                     Debug.Fail("Unhandled Expression Node: " + node.NodeType);
                     break;
@@ -1323,7 +1329,6 @@ namespace DSharp.Compiler.Compiler
                 Debug.Assert(invokeMethodSymbol != null);
 
                 leftExpression = new MemberExpression(leftExpression, invokeMethodSymbol);
-                isDelegateInvoke = true;
             }
 
             if (leftExpression is MethodExpression methodExpression && methodExpression.IsExtensionMethod)

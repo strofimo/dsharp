@@ -1,4 +1,4 @@
-// NameNode.cs
+﻿// NameNode.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -26,6 +26,11 @@ namespace DSharp.Compiler.CodeModel.Names
                 if (name != null)
                 {
                     return name;
+                }
+
+                if(this is UnresolvedVarNameNode)
+                {
+                    return null;
                 }
 
                 StringBuilder sb = new StringBuilder();

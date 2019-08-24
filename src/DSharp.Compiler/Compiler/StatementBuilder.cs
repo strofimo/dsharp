@@ -48,7 +48,7 @@ namespace DSharp.Compiler.Compiler
             }
             catch(Exception e)
             {
-                string location = statementNode.Token.Location;
+                string location = statementNode?.Token?.Location;
                 errorHandler.ReportGeneralError(e);
             }
 
@@ -200,7 +200,8 @@ namespace DSharp.Compiler.Compiler
 
                     ICollection<Expression> initializers =
                         expressionBuilder.BuildExpressionList((ExpressionListNode) node.Initializer);
-                    foreach (Expression initializer in initializers) statement.AddInitializer(initializer);
+                    foreach (Expression initializer in initializers)
+                        statement.AddInitializer(initializer);
                 }
             }
 
@@ -461,6 +462,7 @@ namespace DSharp.Compiler.Compiler
         {
             VariableDeclarationStatement statement = new VariableDeclarationStatement();
             TypeSymbol variableType = symbolSet.ResolveType(node.Type, symbolTable, memberContext);
+            Debug.Assert(variableType != null, $"Unable to resolve type of {node.Type}");
 
             foreach (VariableInitializerNode initializerNode in node.Initializers)
             {

@@ -158,7 +158,10 @@ namespace DSharp.Compiler
 
         public static bool IsKeyword(string identifier, bool testCamelCase)
         {
-            Debug.Assert(string.IsNullOrEmpty(identifier) == false);
+            if(string.IsNullOrEmpty(identifier))
+            {
+                return false;
+            }
 
             if (keywordTable == null)
             {

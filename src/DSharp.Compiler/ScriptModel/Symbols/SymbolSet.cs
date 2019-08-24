@@ -888,6 +888,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 string genericTypeName = genericNameNode.Name + "`" + genericNameNode.TypeArguments.Count;
                 TypeSymbol templateType =
                     (TypeSymbol)symbolTable.FindSymbol(genericTypeName, contextSymbol, SymbolFilter.Types);
+                if(templateType == null)
+                {
+                    return null;
+                }
 
                 List<TypeSymbol> typeArguments = new List<TypeSymbol>();
 
@@ -902,6 +906,19 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 Debug.Assert(resolvedSymbol != null);
 
                 return resolvedSymbol;
+            }
+
+            if(node is UnresolvedVarNameNode unresolvedVarNameNode)
+            {
+                var foundSymbol = symbolTable.FindSymbol(unresolvedVarNameNode.LookupNameNode.Name, contextSymbol, SymbolFilter.AllTypes);
+                if(foundSymbol is VariableSymbol variableSymbol)
+                {
+                    return variableSymbol.ValueType;
+                }
+                else if(foundSymbol != null)
+                {
+                    throw new InvalidOperationException($"Unhandled Case of unresolved var from symbol: {foundSymbol.GetType().Name}");
+                }
             }
 
             Debug.Assert(node is NameNode);

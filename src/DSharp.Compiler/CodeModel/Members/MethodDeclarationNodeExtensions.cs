@@ -56,13 +56,13 @@ namespace DSharp.Compiler.CodeModel.Members
             {
                 var typeParameterToken = (IdentifierToken)typeParameter.NameNode.Token;
 
-                if(!identifiers.Any(identifier => identifier.Symbol.Text == typeParameterToken.Symbol.Text))
+                if(identifiers.Any(identifier => identifier.Symbol.Text == typeParameterToken.Symbol.Text))
                 {
-                    return false;
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         }
 
         private static ParseNode ResolveReturnType(ParseNode type)

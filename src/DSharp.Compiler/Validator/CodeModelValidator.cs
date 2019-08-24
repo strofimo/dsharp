@@ -117,6 +117,7 @@ namespace DSharp.Compiler.Validator
                 case ParseNodeType.Using:
                 case ParseNodeType.ObjectInitializer:
                 case ParseNodeType.TypeParameter:
+                case ParseNodeType.ParameterizedExpression:
 
                     // No validation required
                     break;
