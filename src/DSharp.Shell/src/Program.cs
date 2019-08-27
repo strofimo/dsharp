@@ -21,8 +21,18 @@ namespace DSharp.Shell.src
     {
         private const int NUM = 10000;
 
+        private static TOut ParseGenerics<TOut, TIn>(TIn inValue, Func<TIn, TOut> converter)
+        {
+            return converter.Invoke(inValue);
+        }
+
         public static void Main(string[] args)
         {
+            var method = new Func<int>(() => 1);
+            var value = method.Invoke();
+
+            var result = ParseGenerics(1.1, (db) => (int)db);
+
             int[] arr = new int[0];
             var arr2 = new int[] { 1 };
 
@@ -46,7 +56,7 @@ namespace DSharp.Shell.src
             }
 
             DoSomethingFunc<string> doSomethingFunc = LocalMethod;
-            Console.WriteLine(doSomethingFunc.Invoke("Fred", (value) => value + "DoIt"));
+            Console.WriteLine(doSomethingFunc.Invoke("Fred", (v1) => v1 + "DoIt"));
         }
 
         private static string LocalMethod(string inVar, Func<string, string> appender)
@@ -117,7 +127,7 @@ namespace DSharp.Shell.src
 
             val <<= 2;
             val >>= 1;
-            return (base.Grab(not) + ((val * 2 / 4) << -val)) >> 1;
+            return (base.Grab(not) + ((val * 2 / 4) << -(val))) >> 1;
         }
     }
 }
