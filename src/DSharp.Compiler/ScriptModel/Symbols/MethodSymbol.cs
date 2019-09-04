@@ -110,6 +110,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public new TypeSymbol Parent => base.Parent as TypeSymbol;
 
+        public bool IgnoreGeneratedTypeArguments { get; set; }
+
         public void AddGenericArguments(ICollection<GenericParameterSymbol> genericArguments)
         {
             Debug.Assert(GenericArguments == null);
@@ -117,6 +119,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Debug.Assert(genericArguments.Count != 0);
 
             GenericArguments = genericArguments;
+            AssignGenericArgumentOwner(genericArguments);
+        }
+
+        protected void AssignGenericArgumentOwner(ICollection<GenericParameterSymbol> genericArguments)
+        {
+            foreach (var argument in genericArguments)
+            {
+                argument.Owner = this;
+            }
         }
 
         public void AddImplementation(SymbolImplementation implementation)

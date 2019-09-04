@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using DSharp.Compiler.Extensions;
 using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Symbols;
@@ -888,7 +889,14 @@ namespace DSharp.Compiler.Generator
                 }
                 else if (value is char || value is string)
                 {
-                    textValue = Utility.QuoteString(value.ToString());
+                    if (expression.EvaluatedType is TypeSymbol typeSymbol && typeSymbol.IsNativeObject())
+                    {
+                        textValue = value.ToString();
+                    }
+                    else
+                    {
+                        textValue = Utility.QuoteString(value.ToString());
+                    }
                 }
                 else if (value is TypeSymbol typeSymbol)
                 {
@@ -1110,7 +1118,7 @@ namespace DSharp.Compiler.Generator
                 }
             }
 
-            if(expression.AssociatedType.IsGeneric)
+            if(expression.AssociatedType.IsGeneric && (expression.AssociatedType.GenericArguments?.Any() ?? false))
             {
                 writer.Write(DSharpStringResources.ScriptExportMember("createGenericType"));
                 writer.Write("(");
@@ -1123,7 +1131,7 @@ namespace DSharp.Compiler.Generator
                     GenerateExpression(generator, symbol, expression.TypeExpression);
                 }
                 writer.Write(", ");
-                GenerateGenericTypeArguments(generator, expression.AssociatedType);
+                generator.WriteGenericTypeArgumentsMap(expression.AssociatedType.GenericArguments, expression.AssociatedType.GenericParameters);
                 writer.Write(", ");
                 if (expression.Parameters != null)
                 {
@@ -1153,28 +1161,6 @@ namespace DSharp.Compiler.Generator
 
                 writer.Write(")");
             }
-        }
-
-        private static void GenerateGenericTypeArguments(ScriptGenerator generator, TypeSymbol associatedType)
-        {
-            ScriptTextWriter writer = generator.Writer;
-            var typeArguments = associatedType.GenericArguments;
-            var typeParameters = associatedType.GenericParameters;
-
-            if(typeArguments.Count == 0 || typeArguments.Count != typeParameters.Count)
-            {
-                Debug.Fail($"{associatedType.Name} is generic, but contains no generic arguments, unable to generate generic arguments dictionary");
-                return;
-            }
-
-            writer.Write("{");
-            for (int i = 0; i < typeArguments.Count; i++)
-            {
-                var typeArgument = typeArguments[i];
-                var typeParameter = typeParameters[i];
-                writer.Write($"{typeParameter.FullName} : {typeArgument.FullGeneratedName}");
-            }
-            writer.Write("}");
         }
 
         private static void GeneratePropertyExpression(ScriptGenerator generator, MemberSymbol symbol,

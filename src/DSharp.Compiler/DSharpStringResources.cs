@@ -61,5 +61,16 @@
         {
             return $"{DSHARP_SCRIPT_NAME}.{methodName}";
         }
+
+        public class GeneratedScript
+        {
+            public const string GENERIC_ARGS_PARAMETER_NAME = "$TArgs";
+        }
+
+        public class Mscorlib
+        {
+            public const string SCRIPT_IGNORE_GENERIC_ARGUMENTS_ATTRIBUTE_SHORTNAME = "ScriptIgnoreGenericArguments";
+            public const string SCRIPT_IGNORE_GENERIC_ARGUMENTS_ATTRIBUTE_FULLNAME = "System.Runtime.CompilerServices.ScriptIgnoreGenericArgumentsAttribute";
+        }
     }
 }

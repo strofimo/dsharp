@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
@@ -33,7 +34,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private XmlDocument docComments;
 
-        private Dictionary<string, TypeSymbol> genericTypeTable;
+        private Dictionary<string, TypeSymbol> genericTypeTable = new Dictionary<string, TypeSymbol>();
 
         public SymbolSet()
         {
@@ -234,39 +235,53 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public TypeSymbol CreateGenericTypeSymbol(TypeSymbol templateType, IList<TypeSymbol> typeArguments)
         {
             foreach (TypeSymbol typeSymbol in typeArguments)
-                if (typeSymbol.Type == SymbolType.GenericParameter)
+                if (typeSymbol is GenericParameterSymbol genericParameterSymbol && genericParameterSymbol.Owner == null)
                 {
                     return templateType;
                 }
 
+            string key = CreateGenericTypeKey(templateType, typeArguments);
+
+            if(!genericTypeTable.TryGetValue(key, out TypeSymbol instanceTypeSymbol))
+            {
+                // Prepopulate with a placeholder ... if a generic type's member refers to its
+                // parent type it will use the type being created when the return value is null.
+                genericTypeTable[key] = null;
+                instanceTypeSymbol = CreateGenericTypeCore(templateType, typeArguments);
+                genericTypeTable[key] = instanceTypeSymbol;
+            }
+            return instanceTypeSymbol;
+        }
+
+        private static string CreateGenericTypeKey(TypeSymbol templateType, IList<TypeSymbol> typeArguments)
+        {
             StringBuilder keyBuilder = new StringBuilder(templateType.FullName);
 
-            foreach (TypeSymbol typeSymbol in typeArguments)
+            foreach (TypeSymbol typeArgument in typeArguments)
             {
                 keyBuilder.Append("+");
-                keyBuilder.Append(typeSymbol.FullName);
+                if (typeArgument is GenericParameterSymbol genericParameterSymbol)
+                {
+                    if (genericParameterSymbol.Owner is MethodSymbol ownerMethoSymbol)
+                    {
+                        keyBuilder.Append(ownerMethoSymbol.Name + "_" + typeArgument.FullName);
+                    }
+                    else if (genericParameterSymbol.Owner is TypeSymbol ownerTypeSymbol)
+                    {
+                        keyBuilder.Append(ownerTypeSymbol.FullName + "_" + typeArgument.FullName);
+                    }
+                    else
+                    {
+                        keyBuilder.Append(typeArgument.FullName);
+                    }
+                }
+                else
+                {
+                    keyBuilder.Append(typeArgument.FullName);
+                }
             }
 
-            string key = keyBuilder.ToString();
-
-            if (genericTypeTable != null && genericTypeTable.ContainsKey(key))
-            {
-                return genericTypeTable[key];
-            }
-
-            if (genericTypeTable == null)
-            {
-                genericTypeTable = new Dictionary<string, TypeSymbol>();
-            }
-
-            // Prepopulate with a placeholder ... if a generic type's member refers to its
-            // parent type it will use the type being created when the return value is null.
-            genericTypeTable[key] = null;
-
-            TypeSymbol instanceTypeSymbol = CreateGenericTypeCore(templateType, typeArguments);
-            genericTypeTable[key] = instanceTypeSymbol;
-
-            return instanceTypeSymbol;
+            return keyBuilder.ToString();
         }
 
         private TypeSymbol CreateGenericTypeCore(TypeSymbol templateType, IList<TypeSymbol> typeArguments)
@@ -726,7 +741,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public TypeSymbol ResolveIntrinsicToken(Token token)
         {
-            if(token == null)
+            if (token == null)
             {
                 return null;
             }
@@ -887,6 +902,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 return CreateArrayTypeSymbol(itemTypeSymbol);
             }
 
+            if (node is AtomicNameNode atomicNameNode)
+            {
+                TypeSymbol typeSymbol = ResolveAtomicNameNodeType(atomicNameNode);
+                if (typeSymbol != null)
+                {
+                    return typeSymbol;
+                }
+            }
+
             if (node is GenericNameNode)
             {
                 GenericNameNode genericNameNode = (GenericNameNode)node;
@@ -915,6 +939,33 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return (TypeSymbol)symbolTable.FindSymbol(nameNode.Name, contextSymbol, SymbolFilter.Types);
         }
 
+        private TypeSymbol ResolveAtomicNameNodeType(AtomicNameNode atomicNameNode)
+        {
+            if (atomicNameNode.Parent is GenericNameNode || atomicNameNode.Parent is ArrayTypeNode || atomicNameNode.Parent is MethodDeclarationNode)
+            {
+                var methodDeclaration = atomicNameNode.FindParent<MethodDeclarationNode>();
+                if (methodDeclaration != null && (methodDeclaration?.TypeParameters?.Count ?? 0) > 0)
+                {
+                    for (int i = 0; i < methodDeclaration.TypeParameters.Count; i++)
+                    {
+                        TypeParameterNode typeParameterNode = (TypeParameterNode)methodDeclaration.TypeParameters[i];
+                        if (typeParameterNode.NameNode.Equals(atomicNameNode))
+                        {
+                            return new GenericParameterSymbol(i, atomicNameNode.Name, true, GlobalNamespace);
+                        }
+                    }
+                }
+            }
+
+            //TODO: Implement Var resolution mechanism here. Need to evaluate the right hand expression of the node, probably needs roslyn
+            if (atomicNameNode.Name == "var")
+            {
+                return ResolveIntrinsicType(IntrinsicType.Object);
+            }
+
+            return null;
+        }
+
         public void AddExtensionType(string typeToExtend, string extensionMethodName, MethodSymbol methodSymbol)
         {
             if (string.IsNullOrWhiteSpace(typeToExtend) || string.IsNullOrWhiteSpace(extensionMethodName))
@@ -931,9 +982,61 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             registrations.Add((extensionMethodName, methodSymbol));
         }
 
-        public MethodSymbol ResolveExtensionMethodSymbol(string typeName, string memberName)
+        //TODO: Migrate this to be on the symbol directly
+        public MethodSymbol ResolveExtensionMethodSymbol(TypeSymbol type, string memberName)
         {
-            if (!extensionMethods.TryGetValue(typeName, out HashSet<(string method, MethodSymbol methodSymbol)> registrations))
+            var extensionMethod = GetTypeExtensionMethod(type, memberName);
+            if (extensionMethod != null)
+            {
+                return extensionMethod;
+            }
+
+            var baseType = type.GetBaseType();
+            while (baseType != null)
+            {
+                extensionMethod = GetTypeExtensionMethod(baseType, memberName);
+                if (extensionMethod != null)
+                {
+                    return extensionMethod;
+                }
+
+                baseType = baseType.GetBaseType();
+            }
+
+            if (type is ClassSymbol classSymbol)
+            {
+                foreach (var inheritedInterface in classSymbol?.Interfaces ?? Enumerable.Empty<InterfaceSymbol>())
+                {
+                    extensionMethod = GetTypeExtensionMethod(inheritedInterface, memberName);
+                    if (extensionMethod != null)
+                    {
+                        return extensionMethod;
+                    }
+                }
+            }
+            else if (type is InterfaceSymbol interfaceSymbol)
+            {
+                foreach (var inheritedInterface in interfaceSymbol?.Interfaces ?? Enumerable.Empty<InterfaceSymbol>())
+                {
+                    extensionMethod = GetTypeExtensionMethod(inheritedInterface, memberName);
+                    if (extensionMethod != null)
+                    {
+                        return extensionMethod;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private MethodSymbol GetTypeExtensionMethod(TypeSymbol type, string memberName)
+        {
+            if (type == null)
+            {
+                return null;
+            }
+
+            if (!extensionMethods.TryGetValue(type.FullName, out HashSet<(string method, MethodSymbol methodSymbol)> registrations))
             {
                 return null;
             }
@@ -1129,7 +1232,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             foreach (NamespaceSymbol namespaceSymbol in namespaces)
             {
-                if(namespaceSymbol.FindSymbol(typeName, /* context */ null, SymbolFilter.Types) is TypeSymbol foundType)
+                if (namespaceSymbol.FindSymbol(typeName, /* context */ null, SymbolFilter.Types) is TypeSymbol foundType)
                 {
                     if (IsNamespaceMatch(foundType, name, namespaceName, context))
                     {
@@ -1152,11 +1255,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private IEnumerable<KeyValuePair<string, string>> GetAliasesFromContext(Symbol context)
         {
-            if(context is TypeSymbol typeContext)
+            if (context is TypeSymbol typeContext)
             {
                 return typeContext.Aliases ?? Enumerable.Empty<KeyValuePair<string, string>>();
             }
-            if(context is MemberSymbol memberContext && memberContext.Parent is TypeSymbol parentContext)
+            if (context is MemberSymbol memberContext && memberContext.Parent is TypeSymbol parentContext)
             {
                 return parentContext.Aliases ?? Enumerable.Empty<KeyValuePair<string, string>>();
             }
