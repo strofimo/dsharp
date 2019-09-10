@@ -15,6 +15,7 @@ using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.ScriptModel.Visitors;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
@@ -985,48 +986,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         //TODO: Migrate this to be on the symbol directly
         public MethodSymbol ResolveExtensionMethodSymbol(TypeSymbol type, string memberName)
         {
-            var extensionMethod = GetTypeExtensionMethod(type, memberName);
-            if (extensionMethod != null)
-            {
-                return extensionMethod;
-            }
+            var extensionMethods = TypeSymbolVisitor.Visit(type, t => GetTypeExtensionMethod(t, memberName));
 
-            var baseType = type.GetBaseType();
-            while (baseType != null)
-            {
-                extensionMethod = GetTypeExtensionMethod(baseType, memberName);
-                if (extensionMethod != null)
-                {
-                    return extensionMethod;
-                }
-
-                baseType = baseType.GetBaseType();
-            }
-
-            if (type is ClassSymbol classSymbol)
-            {
-                foreach (var inheritedInterface in classSymbol?.Interfaces ?? Enumerable.Empty<InterfaceSymbol>())
-                {
-                    extensionMethod = GetTypeExtensionMethod(inheritedInterface, memberName);
-                    if (extensionMethod != null)
-                    {
-                        return extensionMethod;
-                    }
-                }
-            }
-            else if (type is InterfaceSymbol interfaceSymbol)
-            {
-                foreach (var inheritedInterface in interfaceSymbol?.Interfaces ?? Enumerable.Empty<InterfaceSymbol>())
-                {
-                    extensionMethod = GetTypeExtensionMethod(inheritedInterface, memberName);
-                    if (extensionMethod != null)
-                    {
-                        return extensionMethod;
-                    }
-                }
-            }
-
-            return null;
+            return extensionMethods
+                .Where(i => i != null)
+                .SingleOrDefault();
         }
 
         private MethodSymbol GetTypeExtensionMethod(TypeSymbol type, string memberName)
