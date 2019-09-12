@@ -530,15 +530,26 @@ namespace DSharp.Compiler.Generator
             ObjectInitializerExpression initializerExpression)
         {
             ScriptTextWriter writer = generator.Writer;
-            writer.Write($"{DSharpStringResources.ScriptExportMember("initializeObject")}");
-            writer.Write("(");
-            GenerateNewExpression(generator, symbol, initializerExpression.NewExpression);
-            writer.Write(", ");
-            var properties = initializerExpression.Initializers.ToDictionary(
-                item => (((BinaryExpression)item).LeftOperand as PropertyExpression).Property.GeneratedName,
-                item => ((BinaryExpression)item).RightOperand);
-            GenerateObjectExpression(generator, symbol, properties);
-            writer.Write(")");
+
+            var type = initializerExpression.NewExpression.EvaluatedType;
+
+            if(type.IsReservedType())
+            {
+                //TODO: Implement Dictionary initializer + List Initializer + Custom initializers
+                GenerateNewExpression(generator, symbol, initializerExpression.NewExpression);
+            }
+            else
+            {
+                writer.Write($"{DSharpStringResources.ScriptExportMember("initializeObject")}");
+                writer.Write("(");
+                GenerateNewExpression(generator, symbol, initializerExpression.NewExpression);
+                writer.Write(", ");
+                var properties = initializerExpression.Initializers.ToDictionary(
+                    item => (((BinaryExpression)item).LeftOperand as PropertyExpression).Property.GeneratedName,
+                    item => ((BinaryExpression)item).RightOperand);
+                GenerateObjectExpression(generator, symbol, properties);
+                writer.Write(")");
+            }
         }
 
         public static void GenerateExpressionList(ScriptGenerator generator, MemberSymbol symbol,
