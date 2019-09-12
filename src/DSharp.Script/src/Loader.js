@@ -98,6 +98,7 @@
         createGenericType: createGenericType,
         getGenericConstructor: getGenericConstructor,
         getTypeArgument: getTypeArgument,
+        initializeObject: initializeObject,
     });
   }
 

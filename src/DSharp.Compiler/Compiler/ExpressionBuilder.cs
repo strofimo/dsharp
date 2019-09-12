@@ -8,6 +8,7 @@ using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Expressions;
 using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
+using DSharp.Compiler.CodeModel.Statements;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
 using DSharp.Compiler.Errors;
@@ -1164,7 +1165,21 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessObjectInitializerNode(ObjectInitializerNode objectInitializerNode)
         {
-            return ProcessNewNode(objectInitializerNode.NewNodeExpression);
+            Expression expression = ProcessNewNode(objectInitializerNode.NewNodeExpression);
+
+            if(expression is NewExpression newExpression)
+            {
+                List<Expression> initializers = new List<Expression>();
+                foreach (var objectAssignment in objectInitializerNode.ObjectAssignmentExpressions)
+                {
+                    Expression parsedExpression = BuildExpression(objectAssignment);
+                    initializers.Add(parsedExpression);
+                }
+
+                return new ObjectInitializerExpression(newExpression, initializers);
+            }
+
+            throw new NotSupportedException();
         }
 
         private Symbol ResolveNameNodeSymbol(NameNode node, SymbolFilter filter)
@@ -1175,7 +1190,19 @@ namespace DSharp.Compiler.Compiler
                     ?? symbolTable.FindSymbol(node.Name, symbolContext, filter);
             }
 
-            return symbolTable.FindSymbol(node.Name, symbolContext, filter);
+            Symbol symbol = symbolTable.FindSymbol(node.Name, symbolContext, filter);
+            if(symbol == null)
+            {
+                ObjectInitializerNode parent = FindParentNode<ObjectInitializerNode>(node);
+                if(parent != null)
+                {
+                    var typeReference = parent.NewNodeExpression.TypeReference;
+                    var typeSymbol = symbolSet.ResolveType(typeReference, symbolTable, symbolContext);
+                    symbol = typeSymbol.FindSymbol(node.Name, symbolContext, SymbolFilter.Members);
+                }
+            }
+
+            return symbol;
         }
 
         private Expression ProcessNewNode(NewNode node)
