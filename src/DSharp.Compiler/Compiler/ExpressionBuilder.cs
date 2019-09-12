@@ -8,7 +8,6 @@ using DSharp.Compiler.CodeModel;
 using DSharp.Compiler.CodeModel.Expressions;
 using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
-using DSharp.Compiler.CodeModel.Statements;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
 using DSharp.Compiler.Errors;
@@ -696,7 +695,15 @@ namespace DSharp.Compiler.Compiler
             Debug.Assert(objectExpression.EvaluatedType is ISymbolTable table);
 
             ISymbolTable typeSymbolTable = objectExpression.EvaluatedType;
-            string memberName = ((NameNode)node.RightChild).Name;
+            string memberName = null;
+            if (node.RightChild is GenericNameNode genericNameNode)
+            {
+                memberName = genericNameNode.FullGenericName;
+            }
+            else
+            {
+                memberName = ((NameNode)node.RightChild).Name;
+            }
 
             memberSymbol = (MemberSymbol)typeSymbolTable.FindSymbol(memberName,
                 symbolContext,
@@ -782,7 +789,7 @@ namespace DSharp.Compiler.Compiler
                     TypeSymbol typeSymbol = ((ISymbolTable)symbolSet).FindSymbol<TypeSymbol>(typeName, symbolContext, SymbolFilter.AllTypes);
                     if (typeSymbol == null)
                     {
-                        throw new ExpressionBuildException($"Unable to resolve type '{typeName}' from symbol table.");
+                        throw new ExpressionBuildException(node, $"Unable to resolve type '{typeName}' from symbol table.");
                     }
 
                     Expression extensionMethodInvocation = CreateExtensionMethodInvocationExpression(node, typeSymbol);
@@ -807,7 +814,7 @@ namespace DSharp.Compiler.Compiler
 
             if (objectExpression == null)
             {
-                throw new InvalidOperationException($"Unable to resolve expression: {node.RightChild.Token.Location}");
+                throw new ExpressionBuildException(node, $"Unable to resolve expression: {node.RightChild.Token.Location}");
             }
 
             TypeSymbol[] dictionaryTypes = symbolSet.ResolveIntrinsicTypes(IntrinsicType.GenericDictionary, IntrinsicType.IDictionary, IntrinsicType.GenericIDictionary, IntrinsicType.GenericIReadOnlyDictionary);
@@ -976,10 +983,27 @@ namespace DSharp.Compiler.Compiler
         {
             TypeSymbol typeNode = null;
 
-            if (node.LeftChild is BinaryExpressionNode)
+            if (node.LeftChild is BinaryExpressionNode leftAsBinaryExpression)
             {
                 var leftExpression = BuildExpression(node.LeftChild);
-                typeNode = leftExpression.EvaluatedType;
+                if (leftExpression is MethodExpression methodExpression)
+                {
+                    typeNode = methodExpression.Method.AssociatedType;
+
+                    if (typeNode is GenericParameterSymbol genericParameterSymbol)
+                    {
+                        var chainedType = GetGenericNameNode(leftAsBinaryExpression);
+                        if(chainedType != null)
+                        {
+                            var arg = chainedType.TypeArguments[genericParameterSymbol.Index];
+                            typeNode = symbolSet.ResolveType(arg, symbolTable, memberContext);
+                        }
+                    }
+                }
+                else
+                {
+                    typeNode = leftExpression.EvaluatedType;
+                }
             }
 
             if (typeNode != null)
@@ -1032,7 +1056,7 @@ namespace DSharp.Compiler.Compiler
                         methodSymbol);
             Expression accessorExpression = BuildExpression(node.LeftChild);
 
-            if(methodSymbol.IsGeneric)
+            if (methodSymbol.IsGeneric)
             {
                 GenericNameNode genericNameNode = (GenericNameNode)nameNode;
                 Expression typeMapExpression = ParseTypeMap(methodSymbol, genericNameNode);
@@ -1167,7 +1191,7 @@ namespace DSharp.Compiler.Compiler
         {
             Expression expression = ProcessNewNode(objectInitializerNode.NewNodeExpression);
 
-            if(expression is NewExpression newExpression)
+            if (expression is NewExpression newExpression)
             {
                 List<Expression> initializers = new List<Expression>();
                 foreach (var objectAssignment in objectInitializerNode.ObjectAssignmentExpressions)
@@ -1191,10 +1215,10 @@ namespace DSharp.Compiler.Compiler
             }
 
             Symbol symbol = symbolTable.FindSymbol(node.Name, symbolContext, filter);
-            if(symbol == null)
+            if (symbol == null)
             {
                 ObjectInitializerNode parent = FindParentNode<ObjectInitializerNode>(node);
-                if(parent != null)
+                if (parent != null)
                 {
                     var typeReference = parent.NewNodeExpression.TypeReference;
                     var typeSymbol = symbolSet.ResolveType(typeReference, symbolTable, symbolContext);
@@ -1833,9 +1857,9 @@ namespace DSharp.Compiler.Compiler
                 return (null, argumentExpressions);
             }
 
-            if(!(node.RightChild is ExpressionListNode argumentNodes))
+            if (!(node.RightChild is ExpressionListNode argumentNodes))
             {
-                throw new ExpressionBuildException($"Expected Arguments as right child of binary expression, instead got {node?.RightChild?.GetType()?.Name}");
+                throw new ExpressionBuildException(node, $"Expected Arguments as right child of binary expression, instead got {node?.RightChild?.GetType()?.Name}");
             }
 
             if (memberExpression.Member is MethodSymbol methodSymbol && methodSymbol.IsGeneric)
