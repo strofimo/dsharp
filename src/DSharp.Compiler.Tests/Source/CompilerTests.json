@@ -148,6 +148,11 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
+        "Name": "TypeDeclarations",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "Binary",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
@@ -216,6 +221,12 @@
       },
       {
         "Name": "Generics3",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "References": []
+      },
+      {
+        "Name": "Generics4",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt",
         "References": []

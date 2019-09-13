@@ -537,6 +537,11 @@ namespace DSharp.Compiler.Importer
                     returnType,
                     MetadataHelpers.IsExtensionMethod(method));
 
+                if(MetadataHelpers.ShouldIgnoreMethodGeneratedTypeArguments(method))
+                {
+                    methodSymbol.IgnoreGeneratedTypeArguments = true;
+                }
+
                 methodSymbol.SetParseContext(method);
                 ImportMemberDetails(methodSymbol, method, method);
 
@@ -964,9 +969,8 @@ namespace DSharp.Compiler.Importer
                     foreach (GenericParameter genericParameter in type.GenericParameters)
                     {
                         GenericParameterSymbol arg =
-                            new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
-                                /* typeArgument */ true,
-                                symbols.GlobalNamespace);
+                            new GenericParameterSymbol(genericParameter.Position, genericParameter.Name, true, symbols.GlobalNamespace);
+
                         genericArguments.Add(arg);
                     }
 

@@ -168,7 +168,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             {
                 Debug.Assert(Parent is NamespaceSymbol);
 
-                return ((NamespaceSymbol) Parent).Name;
+                return ((NamespaceSymbol)Parent).Name;
             }
         }
 
@@ -206,6 +206,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Debug.Assert(genericParameters.Count != 0);
 
             GenericParameters = genericParameters;
+            AssignGenericArgumentOwner(genericParameters);
+        }
+
+        private void AssignGenericArgumentOwner(IEnumerable<GenericParameterSymbol> genericArguments)
+        {
+            foreach (var argument in genericArguments)
+            {
+                argument.Owner = this;
+            }
         }
 
         public virtual TypeSymbol GetBaseType()
@@ -292,7 +301,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             Symbol symbol = null;
 
-            if((filter & SymbolFilter.Types) != 0)
+            if ((filter & SymbolFilter.Types) != 0)
             {
                 symbol = GetNestedType(name, context, filter);
             }
@@ -310,10 +319,16 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 }
             }
 
-            if (symbol == null && parentSymbolTable != null &&
-                (filter & SymbolFilter.ExcludeParent) == 0)
+            if (symbol == null && !filter.HasFlag(SymbolFilter.ExcludeParent))
             {
-                symbol = parentSymbolTable.FindSymbol(name, context, filter);
+                if (parentSymbolTable != null)
+                {
+                    symbol = parentSymbolTable.FindSymbol(name, context, filter);
+                }
+                else if (context?.Parent is ISymbolTable symbolTable)
+                {
+                    symbolTable.FindSymbol(name, context, filter);
+                }
             }
 
             return symbol;
@@ -351,7 +366,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             {
                 foreach (var nestedType in types)
                 {
-                    if(((ISymbolTable)nestedType).FindSymbol(name, context, filter | SymbolFilter.ExcludeParent) is Symbol symbol)
+                    if (((ISymbolTable)nestedType).FindSymbol(name, context, filter | SymbolFilter.ExcludeParent) is Symbol symbol)
                     {
                         return symbol;
                     }
