@@ -694,18 +694,24 @@ namespace DSharp.Compiler.Compiler
 
             Debug.Assert(objectExpression.EvaluatedType is ISymbolTable table);
 
-            ISymbolTable typeSymbolTable = objectExpression.EvaluatedType;
-            string memberName = null;
-            if (node.RightChild is GenericNameNode genericNameNode)
+            TypeSymbol evaluatedType = objectExpression.EvaluatedType;
+            if(objectExpression is MethodExpression methodExpression && methodExpression.IsExtensionMethod)
             {
-                memberName = genericNameNode.FullGenericName;
+                evaluatedType = methodExpression.Method.AssociatedType;
+                if(evaluatedType is GenericParameterSymbol genericParameterSymbol)
+                {
+                    evaluatedType = ResolveGenericNameNode(node);
+                }
             }
-            else
+            NameNode memberName = node.RightChild as NameNode;
+
+            MethodSymbol extensionSymbol = symbolSet.ResolveExtensionMethodSymbol(evaluatedType, memberName?.Name);
+            if((memberName is GenericNameNode && (extensionSymbol?.IsGeneric ?? false)) || (!(memberName is GenericNameNode) && (!extensionSymbol?.IsGeneric ?? false)))
             {
-                memberName = ((NameNode)node.RightChild).Name;
+                return null;
             }
 
-            memberSymbol = (MemberSymbol)typeSymbolTable.FindSymbol(memberName,
+            memberSymbol = (MemberSymbol)evaluatedType.FindSymbol(memberName?.Name,
                 symbolContext,
                 objectExpression.MemberMask);
 
@@ -983,28 +989,7 @@ namespace DSharp.Compiler.Compiler
         {
             TypeSymbol typeNode = null;
 
-            if (node.LeftChild is BinaryExpressionNode leftAsBinaryExpression)
-            {
-                var leftExpression = BuildExpression(node.LeftChild);
-                if (leftExpression is MethodExpression methodExpression)
-                {
-                    typeNode = methodExpression.Method.AssociatedType;
-
-                    if (typeNode is GenericParameterSymbol genericParameterSymbol)
-                    {
-                        var chainedType = GetGenericNameNode(leftAsBinaryExpression);
-                        if(chainedType != null)
-                        {
-                            var arg = chainedType.TypeArguments[genericParameterSymbol.Index];
-                            typeNode = symbolSet.ResolveType(arg, symbolTable, memberContext);
-                        }
-                    }
-                }
-                else
-                {
-                    typeNode = leftExpression.EvaluatedType;
-                }
-            }
+            typeNode = ResolveGenericNameNode(node);
 
             if (typeNode != null)
             {
@@ -1026,6 +1011,36 @@ namespace DSharp.Compiler.Compiler
                 default:
                     return ResolveTypeNode(node);
             }
+        }
+
+        private TypeSymbol ResolveGenericNameNode(BinaryExpressionNode node)
+        {
+            TypeSymbol typeNode = null;
+
+            if (node.LeftChild is BinaryExpressionNode leftAsBinaryExpression)
+            {
+                var leftExpression = BuildExpression(node.LeftChild);
+                if (leftExpression is MethodExpression methodExpression)
+                {
+                    typeNode = methodExpression.Method.AssociatedType;
+
+                    if (typeNode is GenericParameterSymbol genericParameterSymbol)
+                    {
+                        var chainedType = GetGenericNameNode(leftAsBinaryExpression);
+                        if (chainedType != null)
+                        {
+                            var arg = chainedType.TypeArguments[genericParameterSymbol.Index];
+                            typeNode = symbolSet.ResolveType(arg, symbolTable, memberContext);
+                        }
+                    }
+                }
+                else
+                {
+                    typeNode = leftExpression.EvaluatedType;
+                }
+            }
+
+            return typeNode;
         }
 
         private TypeSymbol ResolveTypeNode(ParseNode node)

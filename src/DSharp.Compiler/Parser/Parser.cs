@@ -3136,6 +3136,7 @@ namespace DSharp.Compiler.Parser
                 case TokenType.True:
                 case TokenType.False:
                 case TokenType.Literal:
+                case TokenType.Default:
                     expr = new LiteralNode(NextToken());
 
                     break;
