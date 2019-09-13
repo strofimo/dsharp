@@ -3,31 +3,35 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace DSharp.Compiler.CodeModel
 {
-    internal sealed class ParseNodeList : IEnumerable<ParseNode>
+    internal sealed class ParseNodeList : ParseNodeList<ParseNode>
     {
-        private readonly List<ParseNode> parseNodes = new List<ParseNode>();
+        public ParseNodeList(params ParseNode[] nodes) 
+            : base(nodes)
+        {
+        }
+    }
 
-        public ParseNodeList(params ParseNode[] nodes)
+    internal class ParseNodeList<T> : IEnumerable<T>
+        where T : ParseNode
+    {
+        private readonly List<T> parseNodes = new List<T>();
+
+        public ParseNodeList(params T[] nodes)
         {
             parseNodes.AddRange(nodes);
         }
 
-        public ParseNodeList(IEnumerable<ParseNode> nodes)
-        {
-            if(nodes != null)
-                parseNodes.AddRange(nodes);
-        }
-
         public int Count => parseNodes.Count;
 
-        public ParseNode this[int index] => parseNodes[index];
+        public T this[int index] => parseNodes[index];
 
-        public void Add(ParseNode node)
+        public void Add(T node)
         {
             if (node != null)
             {
@@ -35,21 +39,21 @@ namespace DSharp.Compiler.CodeModel
             }
         }
 
-        public void Add(ParseNodeList nodes)
+        public void Add(ParseNodeList<T> nodes)
         {
             parseNodes.AddRange(nodes.parseNodes);
         }
 
-        internal void SetParent(ParseNode parent)
+        internal void SetParent(T parent)
         {
             if (parseNodes != null)
             {
-                foreach (ParseNode child in this)
+                foreach (T child in this)
                     child.SetParent(parent);
             }
         }
 
-        public IEnumerator<ParseNode> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return parseNodes.GetEnumerator();
         }
@@ -59,12 +63,12 @@ namespace DSharp.Compiler.CodeModel
             return parseNodes.GetEnumerator();
         }
 
-        public static implicit operator List<ParseNode>(ParseNodeList parseNode)
+        public static implicit operator List<T>(ParseNodeList parseNode)
         {
             return parseNode.parseNodes;
         }
 
-        public static implicit operator ParseNodeList(List<ParseNode> parseNodes)
+        public static implicit operator ParseNodeList(List<T> parseNodes)
         {
             return new ParseNodeList(parseNodes);
         }
