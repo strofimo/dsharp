@@ -13,12 +13,32 @@ namespace ExpressionTests
         }
     }
 
+    public enum MyNumbers
+    {
+        Zero = 0,
+
+        One = 1,
+    }
+
+    [ScriptConstants(UseNames = true)]
+    public enum MyConstantNumbers
+    {
+        ConstantOne = 1,
+
+        [ScriptName("CONSTANT_TWO")]
+        ConstantTwo = 2,
+    }
+
     public static class IntExtensions
     {
         public static int Increment(this int source)
         {
             return source.Add(1);
         }
+
+        public static bool IsNumber(this int source, MyNumbers number) { return source == (int)number; }
+
+        public static bool IsNumber2(this int source, MyConstantNumbers number) { return source == (int)number; }
     }
 
     internal static class InternalIntExtensions
@@ -118,6 +138,10 @@ namespace ExpressionTests
             ITemp temp2 = Resolve().GetT3<int, bool, Temp>()
                 .MyAwesomeExtension()
                 .MyAwesomeExtension();
+          
+            0.IsNumber(MyNumbers.One);
+            1.IsNumber2(MyConstantNumbers.ConstantOne);
+            1.IsNumber2(MyConstantNumbers.ConstantTwo);
 
             return 0.Increment();
         }
