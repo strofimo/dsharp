@@ -107,7 +107,7 @@ namespace DSharp.Compiler.CodeModel
 
         private static CustomTypeNode ParseCustomTypeDefinition(TokenType type, TypeDeclarationSyntax typeDeclarationSyntax, bool isNestedType = false)
         {
-            var attributes = new ParseNodeList(ParseAttributes(typeDeclarationSyntax.AttributeLists));
+            var attributes = new ParseNodeList(ParseAttributes(typeDeclarationSyntax.AttributeLists).ToArray());
             var name = CreateAtomicName(typeDeclarationSyntax.Identifier);
             var modifiers = ParseModifiers(typeDeclarationSyntax.Modifiers);
             var typeParameters = ParseTypeParameters(typeDeclarationSyntax.TypeParameterList);
@@ -704,9 +704,9 @@ namespace DSharp.Compiler.CodeModel
         {
             var nameNode = ParseNameNode(namespaceDeclaration.Name);
             var usings = new ParseNodeList(ParseUsings(namespaceDeclaration.Usings)
-                .Concat(ParseUsings(((CompilationUnitSyntax)namespaceDeclaration.Parent).Usings)));
+                .Concat(ParseUsings(((CompilationUnitSyntax)namespaceDeclaration.Parent).Usings)).ToArray());
             var members = ParseMembers(namespaceDeclaration);
-            var namespaceNode = new NamespaceNode(null, nameNode, new ParseNodeList(), usings, new ParseNodeList(members));
+            var namespaceNode = new NamespaceNode(null, nameNode, new ParseNodeList(), usings, new ParseNodeList(members.ToArray()));
             return namespaceNode;
         }
 
@@ -724,7 +724,7 @@ namespace DSharp.Compiler.CodeModel
                     attributeNodes.Add(new AttributeNode(name, ParseAttributesArguments(attribute.ArgumentList)));
                 }
 
-                var attributeBlockNode = new AttributeBlockNode(null, new ParseNodeList(attributeNodes));
+                var attributeBlockNode = new AttributeBlockNode(null, new ParseNodeList(attributeNodes.ToArray()));
             }
 
             return attributes;
@@ -740,13 +740,13 @@ namespace DSharp.Compiler.CodeModel
                 expressions.Add(expression);
             }
 
-            return new ExpressionListNode(null, new ParseNodeList(expressions));
+            return new ExpressionListNode(null, new ParseNodeList(expressions.ToArray()));
         }
 
         private static ParseNodeList ParseExpressions<T>(IEnumerable<T> expressions)
             where T : ExpressionSyntax
         {
-            return new ParseNodeList(expressions?.Select(expression => ParseExpression(expression)));
+            return new ParseNodeList(expressions?.Select(expression => ParseExpression(expression))?.ToArray());
         }
 
         private static ParseNode ParseExpression(ExpressionSyntax expressionSyntax)
@@ -983,7 +983,7 @@ namespace DSharp.Compiler.CodeModel
                     break;
                 }
 
-                return new MultiPartNameNode(null, new ParseNodeList(parseNodes.Reverse<ParseNode>()));
+                return new MultiPartNameNode(null, new ParseNodeList(parseNodes.Reverse<ParseNode>().ToArray()));
             }
             else if (nameSyntax is IdentifierNameSyntax identifierNameSyntax)
             {

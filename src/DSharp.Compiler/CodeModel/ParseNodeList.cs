@@ -15,6 +15,16 @@ namespace DSharp.Compiler.CodeModel
             : base(nodes)
         {
         }
+
+        public static implicit operator List<ParseNode>(ParseNodeList parseNode)
+        {
+            return parseNode;
+        }
+
+        public static implicit operator ParseNodeList(List<ParseNode> parseNodes)
+        {
+            return new ParseNodeList(parseNodes.ToArray());
+        }
     }
 
     internal class ParseNodeList<T> : IEnumerable<T>
@@ -63,14 +73,14 @@ namespace DSharp.Compiler.CodeModel
             return parseNodes.GetEnumerator();
         }
 
-        public static implicit operator List<T>(ParseNodeList parseNode)
+        public static implicit operator List<T>(ParseNodeList<T> parseNode)
         {
             return parseNode.parseNodes;
         }
 
-        public static implicit operator ParseNodeList(List<T> parseNodes)
+        public static implicit operator ParseNodeList<T>(List<T> parseNodes)
         {
-            return new ParseNodeList(parseNodes);
+            return new ParseNodeList<T>(parseNodes.ToArray());
         }
     }
 }
