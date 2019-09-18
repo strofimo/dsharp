@@ -241,9 +241,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     return templateType;
                 }
 
-            string key = CreateGenericTypeKey(templateType, typeArguments);
+            string key = CreateTypeName(templateType, typeArguments);
 
-            if(!genericTypeTable.TryGetValue(key, out TypeSymbol instanceTypeSymbol))
+            if (!genericTypeTable.TryGetValue(key, out TypeSymbol instanceTypeSymbol))
             {
                 // Prepopulate with a placeholder ... if a generic type's member refers to its
                 // parent type it will use the type being created when the return value is null.
@@ -254,35 +254,14 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return instanceTypeSymbol;
         }
 
-        private static string CreateGenericTypeKey(TypeSymbol templateType, IList<TypeSymbol> typeArguments)
+        private static string CreateTypeName(TypeSymbol symbol, IEnumerable<TypeSymbol> arguments)
         {
-            StringBuilder keyBuilder = new StringBuilder(templateType.FullName);
-
-            foreach (TypeSymbol typeArgument in typeArguments)
+            if (arguments?.Any() ?? false)
             {
-                keyBuilder.Append("+");
-                if (typeArgument is GenericParameterSymbol genericParameterSymbol)
-                {
-                    if (genericParameterSymbol.Owner is MethodSymbol ownerMethoSymbol)
-                    {
-                        keyBuilder.Append(ownerMethoSymbol.Name + "_" + typeArgument.FullName);
-                    }
-                    else if (genericParameterSymbol.Owner is TypeSymbol ownerTypeSymbol)
-                    {
-                        keyBuilder.Append(ownerTypeSymbol.FullName + "_" + typeArgument.FullName);
-                    }
-                    else
-                    {
-                        keyBuilder.Append(typeArgument.FullName);
-                    }
-                }
-                else
-                {
-                    keyBuilder.Append(typeArgument.FullName);
-                }
+                return $"{symbol.FullName}<{string.Join(",", arguments.Select(s => CreateTypeName(s, s.GenericArguments)))}>";
             }
 
-            return keyBuilder.ToString();
+            return symbol.FullName;
         }
 
         private TypeSymbol CreateGenericTypeCore(TypeSymbol templateType, IList<TypeSymbol> typeArguments)
