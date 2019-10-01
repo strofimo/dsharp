@@ -11,6 +11,7 @@ using DSharp.Compiler.Compiler;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Generator;
 using DSharp.Compiler.Importer;
+using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Symbols;
 using DSharp.Compiler.Validator;
 
@@ -46,6 +47,7 @@ namespace DSharp.Compiler
 
             hasErrors = false;
             symbols = new SymbolSet();
+            ScriptReferenceProvider.Instance.Reset();
 
             ImportMetadata();
 
@@ -291,6 +293,17 @@ namespace DSharp.Compiler
             {
                 if (dependency.DelayLoaded)
                 {
+                    continue;
+                }
+
+                if (dependency.TypeReferenceCount <= 0
+                    && dependency.Identifier != DSharpStringResources.DSHARP_SCRIPT_NAME)
+                {
+                    if (dependency.ConstReferenceCount <= 0)
+                    {
+                        Console.Error.WriteLine($"WARN: Unnecessary dependency to '{dependency.Identifier}'.");
+                    }
+
                     continue;
                 }
 

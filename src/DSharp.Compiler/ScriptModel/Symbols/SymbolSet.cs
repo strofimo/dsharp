@@ -15,6 +15,7 @@ using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Visitors;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
@@ -460,7 +461,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             if (dependencySet.TryGetValue(name, out ScriptReference reference) == false)
             {
-                reference = new ScriptReference(name, null);
+                reference = ScriptReferenceProvider.Instance.GetReference(name, null);
                 newReference = true;
                 AddDependency(reference);
             }

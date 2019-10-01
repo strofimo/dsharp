@@ -43,6 +43,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public ScriptReference Dependency { get; private set; }
 
+        public ScriptReference Source { get; private set; }
+
         public bool HasNestedTypes => types.Any();
 
         public override string DocumentationId
@@ -266,6 +268,21 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             IsApplicationType = false;
             Dependency = dependency;
+        }
+
+        public void SetSource(ScriptReference source)
+        {
+            Source = source;
+        }
+
+        public void IncrementReferenceCount()
+        {
+            if (Source == null)
+            {
+                return;
+            }
+
+            Source.IncrementTypeReferenceCount();
         }
 
         public void SetNativeArray()
