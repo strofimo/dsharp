@@ -589,6 +589,7 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol typeSymbol = symbolSet.ResolveType(node.TypeReference, symbolTable, symbolContext);
             Debug.Assert(typeSymbol != null);
 
+            typeSymbol.IncrementReferenceCount();
             if (typeSymbol == symbolSet.ResolveIntrinsicType(IntrinsicType.Integer))
             {
                 if (childExpression.EvaluatedType == symbolSet.ResolveIntrinsicType(IntrinsicType.Double) ||
@@ -1943,6 +1944,7 @@ namespace DSharp.Compiler.Compiler
                 throw new ArgumentNullException(nameof(referencedType));
             }
 
+            referencedType.IncrementReferenceCount();
             if (referencedType.Dependency != null)
             {
                 symbolSet.AddDependency(referencedType.Dependency);
