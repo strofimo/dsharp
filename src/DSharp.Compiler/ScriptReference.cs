@@ -41,15 +41,9 @@ namespace DSharp.Compiler
             set => path = value;
         }
 
-        public int TypeReferenceCount
-        {
-            get => typeReferenceCount;
-        }
+        public int TypeReferenceCount => typeReferenceCount;
 
-        public int ConstReferenceCount
-        {
-            get => constReferenceCount;
-        }
+        public int ConstReferenceCount => constReferenceCount;
 
         public void IncrementTypeReferenceCount()
         {
