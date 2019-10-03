@@ -465,6 +465,7 @@ namespace DSharp.Compiler.Compiler
                 fieldTypeSymbol = symbols.ResolveIntrinsicType(IntrinsicType.Integer);
             }
 
+            fieldTypeSymbol.IncrementReferenceCount();
             EnumerationFieldSymbol fieldSymbol =
                 new EnumerationFieldSymbol(fieldNode.Name, typeSymbol, fieldNode.Value, fieldTypeSymbol);
             BuildMemberDetails(fieldSymbol, typeSymbol, fieldNode, fieldNode.Attributes);
@@ -479,6 +480,7 @@ namespace DSharp.Compiler.Compiler
 
             if (handlerType != null)
             {
+                handlerType.IncrementReferenceCount();
                 EventSymbol eventSymbol = new EventSymbol(eventNode.Name, typeSymbol, handlerType);
                 BuildMemberDetails(eventSymbol, typeSymbol, eventNode, eventNode.Attributes);
 
@@ -525,6 +527,7 @@ namespace DSharp.Compiler.Compiler
 
             if (fieldType != null)
             {
+                fieldType.IncrementReferenceCount();
                 FieldSymbol symbol = new FieldSymbol(fieldNode.Name, typeSymbol, fieldType);
                 BuildMemberDetails(symbol, typeSymbol, fieldNode, fieldNode.Attributes);
 
@@ -567,6 +570,7 @@ namespace DSharp.Compiler.Compiler
 
             if (indexerType != null)
             {
+                indexerType.IncrementReferenceCount();
                 IndexerSymbol indexer = new IndexerSymbol(typeSymbol, indexerType);
                 BuildMemberDetails(indexer, typeSymbol, indexerNode, indexerNode.Attributes);
 
@@ -879,6 +883,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (returnTypeSymbol != null)
                 {
+                    returnTypeSymbol.IncrementReferenceCount();
                     method = new MethodSymbol(methodNode.Name, typeSymbol, returnTypeSymbol, methodNode.IsExensionMethod);
 
                     if (methodNode.Attributes.Cast<AttributeNode>().Any(node => node.TypeName.Contains(DSharpStringResources.Mscorlib.SCRIPT_IGNORE_GENERIC_ARGUMENTS_ATTRIBUTE_SHORTNAME)))
@@ -1048,6 +1053,7 @@ namespace DSharp.Compiler.Compiler
 
             if (parameterType != null)
             {
+                parameterType.IncrementReferenceCount();
                 return new ParameterSymbol(parameterNode.Name, methodSymbol, parameterType, parameterMode, parameterNode.IsExtensionMethodTarget);
             }
 
@@ -1062,6 +1068,7 @@ namespace DSharp.Compiler.Compiler
 
             if (parameterType != null)
             {
+                parameterType.IncrementReferenceCount();
                 return new ParameterSymbol(parameterNode.Name, indexerSymbol, parameterType, ParameterMode.In);
             }
 
@@ -1075,6 +1082,7 @@ namespace DSharp.Compiler.Compiler
 
             if (propertyType != null)
             {
+                propertyType.IncrementReferenceCount();
                 PropertySymbol property = new PropertySymbol(propertyNode.Name, typeSymbol, propertyType);
                 BuildMemberDetails(property, typeSymbol, propertyNode, propertyNode.Attributes);
                 property.SetNameCasing(true);
@@ -1118,6 +1126,7 @@ namespace DSharp.Compiler.Compiler
 
             if (fieldType != null)
             {
+                fieldType.IncrementReferenceCount();
                 FieldSymbol symbol = new FieldSymbol(propertyNode.Name, typeSymbol, fieldType);
                 BuildMemberDetails(symbol, typeSymbol, propertyNode, propertyNode.Attributes);
 
@@ -1394,6 +1403,7 @@ namespace DSharp.Compiler.Compiler
 
                     Debug.Assert(baseTypeSymbol != null);
 
+                    baseTypeSymbol.IncrementReferenceCount();
                     if (baseTypeSymbol.Type == SymbolType.Class)
                     {
                         Debug.Assert(baseClass == null);
@@ -1441,6 +1451,7 @@ namespace DSharp.Compiler.Compiler
 
                     Debug.Assert(baseTypeSymbol.Type == SymbolType.Interface);
 
+                    baseTypeSymbol.IncrementReferenceCount();
                     if (interfaces == null)
                     {
                         interfaces = new List<InterfaceSymbol>();
