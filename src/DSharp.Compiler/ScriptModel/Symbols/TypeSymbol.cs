@@ -277,6 +277,20 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public void IncrementReferenceCount()
         {
+            if (isNativeArray)
+            {
+                ((ClassSymbol)this).Indexer?.AssociatedType.IncrementReferenceCount();
+                return;
+            }
+
+            if (IsGeneric && GenericArguments != null)
+            {
+                foreach (TypeSymbol genericArgument in GenericArguments)
+                {
+                    genericArgument.IncrementReferenceCount();
+                }
+            }
+
             if (Source == null)
             {
                 return;
