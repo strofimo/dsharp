@@ -18,6 +18,7 @@ namespace System.Collections
         [DSharpScriptMemberName("keyExists")]
         bool Contains(object key);
 
+        [DSharpScriptMemberName("addKeyValue")]
         void Add(object key, object value);
 
         [DSharpScriptMemberName("clearKeys")]
