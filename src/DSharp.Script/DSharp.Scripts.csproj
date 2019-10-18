@@ -44,6 +44,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SourceScript Remove="src\Shims.js" />
+    <SourceScript Remove="src\Shims\ObjectAssign.js" />
+    <SourceScript Remove="src\System\Enum.js" />
     <SourceScript Remove="src\System\Generics.js" />
   </ItemGroup>
 
