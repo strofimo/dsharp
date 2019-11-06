@@ -5,13 +5,11 @@ namespace DSharp.CodeAnalysis
 {
     public static class MethodSymbolExtensions
     {
-        private const string ScriptIgnoreGenericArgumentsAttribute = "ScriptIgnoreGenericArguments";
-
-        public static bool HasScriptIgnoreGenericArgumentsAttribute(this IMethodSymbol methodSymbol)
+        public static bool HasAttributeWithName(this IMethodSymbol methodSymbol, string name)
         {
             return methodSymbol
                 .GetAttributes()
-                .Any(a => a.AttributeClass.Name.StartsWith(ScriptIgnoreGenericArgumentsAttribute));
+                .Any(a => a.AttributeClass.Name.Equals(name, System.StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

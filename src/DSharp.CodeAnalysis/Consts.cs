@@ -6,5 +6,7 @@
         public const string ScriptIgnoreGenericArgumentsAttributeMissingId = "DSE002";
 
         public const string Category = "Generics";
+
+        public const string ScriptIgnoreGenericArgumentsAttribute = nameof(ScriptIgnoreGenericArgumentsAttribute);
     }
 }

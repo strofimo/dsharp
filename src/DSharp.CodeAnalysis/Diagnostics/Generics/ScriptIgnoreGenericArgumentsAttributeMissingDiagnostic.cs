@@ -39,7 +39,7 @@ namespace DSharp.CodeAnalysis.Diagnostics
             {
                 IMethodSymbol method = context.Symbol as IMethodSymbol;
 
-                if(method == null || !method.IsGenericMethod || !method.HasScriptIgnoreGenericArgumentsAttribute())
+                if(method == null || !method.IsGenericMethod || !method.HasAttributeWithName(Consts.ScriptIgnoreGenericArgumentsAttribute))
                 {
                     return;
                 }

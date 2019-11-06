@@ -32,7 +32,7 @@ namespace DSharp.CodeAnalysis.Diagnostics
                 FoundInvocations.Add(new GenericMethodInvocation
                 {
                     Name = node.Name,
-                    HasScriptIgnoreGenericArgumentsAttribute = methodSymbol.HasScriptIgnoreGenericArgumentsAttribute(),
+                    HasScriptIgnoreGenericArgumentsAttribute = methodSymbol.HasAttributeWithName(Consts.ScriptIgnoreGenericArgumentsAttribute),
                     Node = node
                 });
             }
@@ -50,7 +50,7 @@ namespace DSharp.CodeAnalysis.Diagnostics
                 FoundInvocations.Add(new GenericMethodInvocation
                 {
                     Name = nameSyntax,
-                    HasScriptIgnoreGenericArgumentsAttribute = methodSymbol.HasScriptIgnoreGenericArgumentsAttribute(),
+                    HasScriptIgnoreGenericArgumentsAttribute = methodSymbol.HasAttributeWithName(Consts.ScriptIgnoreGenericArgumentsAttribute),
                     Node = node
                 });
             }
