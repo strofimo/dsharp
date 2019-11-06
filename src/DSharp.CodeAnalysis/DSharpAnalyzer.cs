@@ -1,4 +1,5 @@
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
+using System.Diagnostics;
 using DSharp.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -9,6 +10,11 @@ namespace DSharp.CodeAnalysis
     public class DSharpAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor[] rules;
+
+        public DSharpAnalyzer()
+        {
+            this.rules = AvailableDiagnostics.Rules;
+        }
 
         public DSharpAnalyzer(params DiagnosticDescriptor[] rules)
         {

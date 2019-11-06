@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CF118BCB-F594-4EBD-9571-107AD2E1B569}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Build", "DSharp.Build\DSharp.Build.csproj", "{AFF55DAB-FF5C-41DC-9209-0C0B54EE1645}"
+	ProjectSection(ProjectDependencies) = postProject
+		{40A2DC00-FD4C-4B91-899F-AD989691DE50} = {40A2DC00-FD4C-4B91-899F-AD989691DE50}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharp.Compiler", "DSharp.Compiler\DSharp.Compiler.csproj", "{35E58E1C-E298-44D8-9CA5-FB427C16FD1C}"
 EndProject
@@ -37,6 +40,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{9ECDD7B6-4D4A-4578-9157-B99214BEDE6F}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
 		DSharp.snk = DSharp.snk
 		global.json = global.json
 		NuGet.Config = NuGet.Config
