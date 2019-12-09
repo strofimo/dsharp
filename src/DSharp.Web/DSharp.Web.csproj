@@ -9,7 +9,7 @@
     <DelaySign>false</DelaySign>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <TargetFrameworks>net40;net471</TargetFrameworks>
+    <TargetFrameworks>net471</TargetFrameworks>
     <ToolsPath>$(SolutionDir)DSharp.Sdk\bin\$(Configuration)\$(TargetFramework)\</ToolsPath>
 
     <NoStdLib>True</NoStdLib>
