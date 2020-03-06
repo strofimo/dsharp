@@ -455,6 +455,11 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
+        "Name": "Lambdas",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "LateBound",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"

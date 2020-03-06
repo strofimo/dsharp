@@ -1,0 +1,24 @@
+"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+  // ExpressionTests.Test
+
+  function Test() {
+    this._getFalse = function() {
+      return false;
+    };
+  }
+  var Test$ = {
+
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      Test: ss.defineClass(Test, Test$, [], null)
+    });
+
+
+  return $exports;
+});

@@ -11,6 +11,7 @@ using DSharp.Compiler.Compiler;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Generator;
 using DSharp.Compiler.Importer;
+using DSharp.Compiler.Preprocessing;
 using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Symbols;
 using DSharp.Compiler.Validator;
@@ -40,7 +41,7 @@ namespace DSharp.Compiler
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
 
-            if(options.DebugMode)
+            if (options.DebugMode)
             {
                 Debugger.Launch();
             }
@@ -99,7 +100,7 @@ namespace DSharp.Compiler
             CodeModelValidator codeModelValidator = new CodeModelValidator(this);
             CodeModelProcessor validationProcessor = new CodeModelProcessor(codeModelValidator, options);
 
-            foreach (IStreamSource source in options.Sources)
+            foreach (IStreamSource source in options.Sources.Select(PreprocessSource))
             {
                 CompilationUnitNode compilationUnit = codeModelBuilder.BuildCodeModel(source);
 
@@ -110,6 +111,11 @@ namespace DSharp.Compiler
                     compilationUnitList.Add(compilationUnit);
                 }
             }
+        }
+
+        private IStreamSource PreprocessSource(IStreamSource source)
+        {
+            return new SourcePreprocessor().Preprocess(source);
         }
 
         private void BuildMetadata()
