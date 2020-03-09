@@ -8,6 +8,19 @@ define('test', ['ss'], function(ss) {
     this._getFalse = function() {
       return false;
     };
+    var addOne = function(a) {
+      return a + 1;
+    };
+    var sum = function(a, b) {
+      return a + b;
+    };
+    var doNothing = function() {
+    };
+    var doSomething = function(a) {
+      if (!a) {
+        return;
+      }
+    };
   }
   var Test$ = {
 
