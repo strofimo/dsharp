@@ -12,6 +12,7 @@ using DSharp.Compiler.Errors;
 using DSharp.Compiler.Generator;
 using DSharp.Compiler.Importer;
 using DSharp.Compiler.Preprocessing;
+using DSharp.Compiler.Preprocessing.Lowering;
 using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Symbols;
 using DSharp.Compiler.Validator;
@@ -103,13 +104,9 @@ namespace DSharp.Compiler
             CodeModelValidator codeModelValidator = new CodeModelValidator(this);
             CodeModelProcessor validationProcessor = new CodeModelProcessor(codeModelValidator, options);
 
-            var trees = options.Sources.Select(s => CSharpSyntaxTree.ParseText(path: s.FullName, text: SourceText.From(s.GetStream())));
-            var references = options.References.Select(r => MetadataReference.CreateFromFile(r));
-            var comp = CSharpCompilation.Create(options.AssemblyName, trees, references);
+            var sources = PreprocessSources();
 
-            comp = PreprocessCompilation(comp);
-
-            foreach (IStreamSource source in options.Sources.Select(s=>GetPreprocessedSource(comp, s)))
+            foreach (IStreamSource source in sources)
             {
                 CompilationUnitNode compilationUnit = codeModelBuilder.BuildCodeModel(source);
 
@@ -122,21 +119,26 @@ namespace DSharp.Compiler
             }
         }
 
-        private CSharpCompilation PreprocessCompilation(CSharpCompilation comp)
+        private IEnumerable<IStreamSource> PreprocessSources()
         {
-            return new SourcePreprocessor().Preprocess(comp);
+            var trees = options.Sources.Select(s => CSharpSyntaxTree.ParseText(path: s.FullName, text: SourceText.From(s.GetStream())));
+            var references = options.References.Select(r => MetadataReference.CreateFromFile(r));
+            var compilation = CSharpCompilation.Create(options.AssemblyName, trees, references);
+
+            var lowerers = new ILowerer[] {
+                new StaticUsingRewriter(),
+                new VarRewriter(),
+                new LambdaRewriter()
+            };
+
+            var newCompilation = new CompilationPreprocessor().Preprocess(compilation, lowerers);
+
+            return options.Sources.Select(s=> GetPreprocessedSource(newCompilation, s));
         }
 
         private IStreamSource GetPreprocessedSource(CSharpCompilation comp, IStreamSource source)
         {
-            var contents = comp.SyntaxTrees.Single(s => s.FilePath == source.FullName).ToString();
-
-            return new StringSource()
-            {
-                FullName = source.FullName,
-                Name = source.Name,
-                Contents = contents
-            };
+            return new SyntaxTreeSource(source.Name, comp.SyntaxTrees.Single(s => s.FilePath == source.FullName));
         }
 
         private void BuildMetadata()
