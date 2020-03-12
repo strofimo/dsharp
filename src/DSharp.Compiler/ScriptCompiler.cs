@@ -15,6 +15,9 @@ using DSharp.Compiler.Preprocessing;
 using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Symbols;
 using DSharp.Compiler.Validator;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Text;
 
 namespace DSharp.Compiler
 {
@@ -100,7 +103,13 @@ namespace DSharp.Compiler
             CodeModelValidator codeModelValidator = new CodeModelValidator(this);
             CodeModelProcessor validationProcessor = new CodeModelProcessor(codeModelValidator, options);
 
-            foreach (IStreamSource source in options.Sources.Select(PreprocessSource))
+            var trees = options.Sources.Select(s => CSharpSyntaxTree.ParseText(path: s.FullName, text: SourceText.From(s.GetStream())));
+            var references = options.References.Select(r => MetadataReference.CreateFromFile(r));
+            var comp = CSharpCompilation.Create(options.AssemblyName, trees, references);
+
+            comp = PreprocessCompilation(comp);
+
+            foreach (IStreamSource source in options.Sources.Select(s=>GetPreprocessedSource(comp, s)))
             {
                 CompilationUnitNode compilationUnit = codeModelBuilder.BuildCodeModel(source);
 
@@ -113,9 +122,21 @@ namespace DSharp.Compiler
             }
         }
 
-        private IStreamSource PreprocessSource(IStreamSource source)
+        private CSharpCompilation PreprocessCompilation(CSharpCompilation comp)
         {
-            return new SourcePreprocessor().Preprocess(source);
+            return new SourcePreprocessor().Preprocess(comp);
+        }
+
+        private IStreamSource GetPreprocessedSource(CSharpCompilation comp, IStreamSource source)
+        {
+            var contents = comp.SyntaxTrees.Single(s => s.FilePath == source.FullName).ToString();
+
+            return new StringSource()
+            {
+                FullName = source.FullName,
+                Name = source.Name,
+                Contents = contents
+            };
         }
 
         private void BuildMetadata()

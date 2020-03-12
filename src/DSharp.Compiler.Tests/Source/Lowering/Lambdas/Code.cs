@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
 
-namespace ExpressionTests {
+namespace LoweringTests {
 
     public class Test {
 
@@ -20,6 +20,18 @@ namespace ExpressionTests {
                     return;
                 };
             };
+            GenericClass<Test> foo = new GenericClass<Test>();
+            foo.Method(a => a.Bar);
+        }
+
+        public int Bar;
+    }
+
+    public class GenericClass<T>
+    {
+        public void Method(Action<T> action)
+        {
+
         }
     }
 }

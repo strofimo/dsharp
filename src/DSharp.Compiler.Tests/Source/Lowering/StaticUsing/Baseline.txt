@@ -1,15 +1,14 @@
 "use strict";
 
-define('test', ['ss', 'lib'], function(ss, lib) {
+define('test', ['ss'], function(ss) {
   var $global = this;
-  // BasicTests.App
+  // LoweringTests.App
 
   function App() {
   }
   var App$ = {
     _foo: function() {
-      var scopeVariable;
-      var temp = 'temp';
+      Console.writeLine('hello');
     }
   };
 

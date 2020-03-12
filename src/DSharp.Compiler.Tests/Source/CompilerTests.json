@@ -455,11 +455,6 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
-        "Name": "Lambdas",
-        "SourceFiles": [ "Code.cs" ],
-        "ComparisonFile": "Baseline.txt"
-      },
-      {
         "Name": "LateBound",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
@@ -703,6 +698,26 @@
         "Name": "UsingAlias",
         "SourceFiles": [ "Code.cs" ],
         "References": [ "DSharp.Web.dll" ],
+        "ComparisonFile": "Baseline.txt"
+      }
+    ]
+  },
+  {
+    "Category": "Lowering",
+    "Tests": [
+      {
+        "Name": "Var",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "Lambdas",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "StaticUsing",
+        "SourceFiles": [ "Code.cs", "Console.cs" ],
         "ComparisonFile": "Baseline.txt"
       }
     ]

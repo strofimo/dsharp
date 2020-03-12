@@ -1,16 +1,15 @@
 ﻿using System;
-using Library;
+using static System.Console;
 
 [assembly: ScriptAssembly("test")]
 
-namespace BasicTests
+namespace LoweringTests
 {
     public class App
     {
         private void Foo()
         {
-            DelegateInLib scopeVariable;
-            var temp = "temp";
+            WriteLine("hello");
         }
     }
 }
