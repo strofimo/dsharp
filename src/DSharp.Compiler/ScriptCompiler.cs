@@ -121,7 +121,8 @@ namespace DSharp.Compiler
 
         private IEnumerable<IStreamSource> PreprocessSources()
         {
-            var trees = options.Sources.Select(s => CSharpSyntaxTree.ParseText(path: s.FullName, text: SourceText.From(s.GetStream())));
+            CSharpParseOptions parseOptions = new CSharpParseOptions(preprocessorSymbols: options.Defines);
+            var trees = options.Sources.Select(s => CSharpSyntaxTree.ParseText(path: s.FullName, text: SourceText.From(s.GetStream()), options: parseOptions));
             var references = options.References.Select(r => MetadataReference.CreateFromFile(r));
             var compilation = CSharpCompilation.Create(options.AssemblyName, trees, references);
 
