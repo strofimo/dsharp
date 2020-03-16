@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DSharp.Compiler.Errors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -11,9 +12,15 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 {
     public class VarRewriter : CSharpSyntaxRewriter, ILowerer
     {
+        private readonly IErrorHandler errorHandler;
         private SemanticModel sem;
         private Dictionary<string, string> aliases;
         private HashSet<string> requiredUsings;
+
+        public VarRewriter(IErrorHandler errorHandler)
+        {
+            this.errorHandler = errorHandler;
+        }
 
         public CompilationUnitSyntax Apply(Compilation compilation, CompilationUnitSyntax root)
         {
@@ -44,6 +51,12 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             if (node.Type.IsVar)
             {
                 var type = sem.GetTypeInfo(node.Type).Type as INamedTypeSymbol;
+
+                if(type is null)
+                {
+                    errorHandler.ReportExpressionError($"unable to determine type of var: '{node.ToString()}'", node);
+                    return base.VisitVariableDeclaration(node);
+                }
 
                 string typeName;
 
