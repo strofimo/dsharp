@@ -13,6 +13,12 @@ namespace DSharp.Compiler.Preprocessing.Lowering
     public class VarRewriter : CSharpSyntaxRewriter, ILowerer
     {
         private readonly IErrorHandler errorHandler;
+        private static readonly SymbolDisplayFormat displayFormat = new SymbolDisplayFormat(
+                            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+                            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
+                            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable | SymbolDisplayMiscellaneousOptions.UseSpecialTypes
+                        );
+
         private SemanticModel sem;
         private Dictionary<string, string> aliases;
         private HashSet<string> requiredUsings;
@@ -50,33 +56,33 @@ namespace DSharp.Compiler.Preprocessing.Lowering
         {
             if (node.Type.IsVar)
             {
-                var type = sem.GetTypeInfo(node.Type).Type as INamedTypeSymbol;
+                string typeName;
 
-                if(type is null)
+                if (sem.GetTypeInfo(node.Type).Type is INamedTypeSymbol type)
+                {
+                    if (!aliases.TryGetValue(type.ToString(), out typeName))
+                    {
+                        typeName = type.ToDisplayString(displayFormat);
+
+                        requiredUsings.Add(type.ContainingNamespace.Name);
+
+                        if (type.IsGenericType)
+                        {
+                            foreach (var namespaceName in type.TypeParameters.Select(t => t.ContainingNamespace.Name))
+                            {
+                                requiredUsings.Add(namespaceName);
+                            }
+                        }
+                    }
+                }
+                else if(sem.GetTypeInfo(node.Type).Type is IArrayTypeSymbol arrayType)
+                {
+                    typeName = arrayType.ToDisplayString(displayFormat);
+                }
+                else
                 {
                     errorHandler.ReportExpressionError($"unable to determine type of var: '{node.ToString()}'", node);
                     return base.VisitVariableDeclaration(node);
-                }
-
-                string typeName;
-
-                if (!aliases.TryGetValue(type.ToString(), out typeName))
-                {
-                    typeName = type.ToDisplayString(new SymbolDisplayFormat(
-                        genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-                        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
-                        miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable | SymbolDisplayMiscellaneousOptions.UseSpecialTypes
-                    ));
-
-                    requiredUsings.Add(type.ContainingNamespace.Name);
-
-                    if (type.IsGenericType)
-                    {
-                        foreach (var namespaceName in type.TypeParameters.Select(t => t.ContainingNamespace.Name))
-                        {
-                            requiredUsings.Add(namespaceName);
-                        }
-                    }
                 }
 
                 return node.WithType(ParseTypeName(typeName).WithTrailingTrivia(Whitespace(" ")).WithTriviaFrom(node.Type));

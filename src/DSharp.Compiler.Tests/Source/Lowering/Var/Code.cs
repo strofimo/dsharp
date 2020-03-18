@@ -17,6 +17,7 @@ namespace LoweringTests
             var nest = new c1.Nest();
             var n = (Number)num;
             var list = new List<string>();
+            var array = new object[] { false, 1, "2" };
         }
     }
 }

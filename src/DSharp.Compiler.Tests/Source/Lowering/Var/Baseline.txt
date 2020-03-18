@@ -14,6 +14,7 @@ define('test', ['ss'], function(ss) {
       var nest = new c1$Nest();
       var n = num;
       var list = [];
+      var array = [ false, 1, '2' ];
     }
   };
 
