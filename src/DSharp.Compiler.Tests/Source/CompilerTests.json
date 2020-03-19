@@ -720,6 +720,11 @@
         "Name": "StaticUsing",
         "SourceFiles": [ "Code.cs", "Console.cs" ],
         "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "GenericArguments",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
       }
     ]
   }

@@ -129,6 +129,7 @@ namespace DSharp.Compiler
             var lowerers = new ILowerer[] {
                 new StaticUsingRewriter(),
                 new VarRewriter(this),
+                new GenericArgumentRewriter(this),
                 new LambdaRewriter()
             };
 

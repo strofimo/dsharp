@@ -59,6 +59,7 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
 
         public static T[] Copy<T>(T[] source, int startIndex, int count)
         {
+            Type type = typeof(T);
             T[] destination = new T[source.Length];
             Array.Copy(source, startIndex, destination, 0, count);
             return destination;
