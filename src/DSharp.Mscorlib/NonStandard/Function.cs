@@ -10,6 +10,8 @@ namespace System
     [ScriptImport]
     public sealed class Function
     {
+        public static extern implicit operator Function(Action action);
+
         /// <summary>
         /// Creates a new function with the specified implementation.
         /// </summary>
