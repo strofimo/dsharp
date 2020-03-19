@@ -41,7 +41,7 @@ namespace System.Html
         [ScriptName("Object")]
         public class Handler
         {
-            public delegate object ApplyTrap(object target, string property, params object[] args);
+            public delegate object ApplyTrap(object target, object thisArg, params object[] args);
             public delegate object GetTrap(object target, string property);
             public delegate void SetTrap(object target, string property, object value);
             public delegate bool HasTrap(object target, string property);
@@ -73,7 +73,7 @@ namespace System.Html
         [ScriptIgnoreGenericArguments]
         public class Handler<T> : Handler
         {
-            new public delegate object ApplyTrap(T target, string property, params object[] args);
+            new public delegate object ApplyTrap(T target, object thisArg, params object[] args);
             new public delegate object GetTrap(T target, string property);
             new public delegate void SetTrap(T target, string property, object value);
             new public delegate bool HasTrap(T target, string property);
