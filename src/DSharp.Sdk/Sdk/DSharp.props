@@ -6,6 +6,7 @@
     <ExcludeCodeAnalysis Condition="'$(ExcludeCodeAnalysis)' == ''">false</ExcludeCodeAnalysis>
     <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
     <DSharpCompilerDebugMode Condition="'$(DSharpCompilerDebugMode)' == ''">false</DSharpCompilerDebugMode>
+    <IntermediarySourceFolder Condition="'$(IntermediarySourceFolder)' == '' AND '$(Configuration)' == 'Debug'">$(BaseIntermediateOutputPath)PreprocessedScripts\</IntermediarySourceFolder>
     <DefineConstants>DSHARP;@(DefineConstants)</DefineConstants>
     <GenerateScriptAssemblyAttribute Condition="'$(GenerateScriptAssemblyAttributeCondition)' == ''">true</GenerateScriptAssemblyAttribute>
   </PropertyGroup>

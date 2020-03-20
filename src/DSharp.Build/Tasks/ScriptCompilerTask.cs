@@ -32,6 +32,8 @@ namespace DSharp.Build.Tasks
 
         public bool DebugMode { get; set; }
 
+        public string IntermediarySourceFolder { get; set; }
+
         public string AssemblyName { get; set; }
 
         public string CopyReferencesPath
@@ -173,6 +175,7 @@ namespace DSharp.Build.Tasks
             options.IncludeResolver = this;
             options.AssemblyName = AssemblyName;
             options.DebugMode = DebugMode;
+            options.IntermediarySourceFolder = IntermediarySourceFolder;
 
             if (!string.IsNullOrEmpty(TemplatePath))
             {

@@ -5,6 +5,13 @@ namespace DSharp.Compiler.Preprocessing
 {
     public class CompilationPreprocessor
     {
+        private readonly IntermediarySourceManager intermediarySourceManager;
+
+        public CompilationPreprocessor(IntermediarySourceManager intermediarySourceManager = null)
+        {
+            this.intermediarySourceManager = intermediarySourceManager;
+        }
+
         public CSharpCompilation Preprocess(CSharpCompilation compilation, params ILowerer[] lowerers)
         {
             for (int i = 0; i < compilation.SyntaxTrees.Length; ++i)
@@ -16,6 +23,8 @@ namespace DSharp.Compiler.Preprocessing
                     compilation = compilation.ReplaceSyntaxTree(syntaxTree, syntaxTree.WithRootAndOptions(newRoot, syntaxTree.Options));
                 }
             }
+
+            intermediarySourceManager?.Write(compilation);
 
             return compilation;
         }

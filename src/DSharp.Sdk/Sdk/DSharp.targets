@@ -30,6 +30,7 @@
       ScriptName="$(ScriptName)"
       TemplatePath="$(ScriptTemplatePath)"
       DebugMode ="$(DSharpCompilerDebugMode)"
+      IntermediarySourceFolder="$(IntermediarySourceFolder)"
       ProjectPath="$(MSBuildProjectFullPath)">
       <Output TaskParameter="Scripts" ItemName="Scripts" />
     </ScriptCompilerTask>
@@ -67,6 +68,7 @@
     <ItemGroup>
       <DeleteFile Include="$(OutputPath)*.js"/>
       <DeleteFile Include="$(OutputPath)$(AssemblyName).scripts"/>
+      <DeleteFile Include="$(IntermediarySourceFolder)*.*"/>
     </ItemGroup>
     <Delete Files="@(DeleteFile)" />
   </Target>

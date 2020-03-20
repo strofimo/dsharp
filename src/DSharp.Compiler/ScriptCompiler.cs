@@ -133,7 +133,8 @@ namespace DSharp.Compiler
                 new LambdaRewriter()
             };
 
-            var newCompilation = new CompilationPreprocessor().Preprocess(compilation, lowerers);
+            IntermediarySourceManager intermediarySourceManager = new IntermediarySourceManager(options.IntermediarySourceFolder);            
+            var newCompilation = new CompilationPreprocessor(intermediarySourceManager).Preprocess(compilation, lowerers);
 
             return options.Sources.Select(s=> GetPreprocessedSource(newCompilation, s));
         }
