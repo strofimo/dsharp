@@ -154,8 +154,12 @@ namespace DSharp.Compiler.Compiler
 
             if ((userTypeNode.Modifiers & Modifiers.Partial) != 0)
             {
+                var name = userTypeNode.TypeParameters.Any()
+                    ? $"{userTypeNode.Name}`{userTypeNode.TypeParameters.Count()}"
+                    : userTypeNode.Name;
+
                 partialTypeSymbol =
-                    (ClassSymbol)((ISymbolTable)namespaceSymbol).FindSymbol(userTypeNode.Name, /* context */
+                    (ClassSymbol)((ISymbolTable)namespaceSymbol).FindSymbol(name, /* context */
                         null, SymbolFilter.Types);
 
                 if (partialTypeSymbol != null && partialTypeSymbol.IsApplicationType)
