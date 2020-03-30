@@ -21,7 +21,9 @@ namespace LoweringTests {
                 };
             };
             GenericClass<Test> foo = new GenericClass<Test>();
-            foo.Method(a => a.Bar);
+
+            Action<GenericClass<Test>> nested = x => x.Method(a => a.Bar++);
+            foo.Method(a => a.Bar++);
         }
 
         public int Bar;

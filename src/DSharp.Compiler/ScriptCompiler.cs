@@ -130,7 +130,7 @@ namespace DSharp.Compiler
                 new StaticUsingRewriter(),
                 new VarRewriter(this),
                 new GenericArgumentRewriter(this),
-                new LambdaRewriter(),
+                new LambdaRewriter(this),
                 new EnumValueRewriter(),
             };
 

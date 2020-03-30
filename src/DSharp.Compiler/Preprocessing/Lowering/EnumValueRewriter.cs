@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DSharp.Compiler.Errors;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -23,7 +19,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         public override SyntaxNode VisitEnumMemberDeclaration(EnumMemberDeclarationSyntax node)
         {
-            if(node.EqualsValue is null)
+            if (node.EqualsValue is null)
             {
                 if (sem.GetDeclaredSymbol(node) is IFieldSymbol fieldSymbol)
                 {
