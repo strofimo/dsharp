@@ -445,6 +445,12 @@
         "References": []
       },
       {
+        "Name": "Generics5",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "References": []
+      },
+      {
         "Name": "GetType",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"

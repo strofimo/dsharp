@@ -1,0 +1,36 @@
+﻿"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+  // TypeTests.Program
+
+  function Program() {
+  }
+  var Program$ = {
+    main: function() {
+      var subject = ss.createGenericType(ClassWithGenericOverload_$1, {T1 : Number});
+      subject.method();
+      subject.method({T2: String});
+    }
+  };
+
+
+  // TypeTests.ClassWithGenericOverload`1
+
+  function ClassWithGenericOverload_$1() {
+  }
+  var ClassWithGenericOverload_$1$ = {
+    method: function($TArgs) {
+    }
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      Program: ss.defineClass(Program, Program$, [], null),
+      ClassWithGenericOverload_$1: ss.defineClass(ClassWithGenericOverload_$1, ClassWithGenericOverload_$1$, [], null)
+    });
+
+
+  return $exports;
+});

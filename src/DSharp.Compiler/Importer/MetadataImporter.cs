@@ -516,8 +516,13 @@ namespace DSharp.Compiler.Importer
 
                 string methodName = method.Name;
 
-                if (typeSymbol.GetMember(methodName) != null)
+                if (typeSymbol.GetMember(methodName) is MethodSymbol overloadSymbol)
                 {
+                    //add generics to the existing overload
+                    if (method.HasGenericParameters && !overloadSymbol.IsGeneric)
+                    {
+                        AddGenericParameters(method, overloadSymbol);
+                    }
                     // Ignore if its an overload since we don't care about parameters
                     // for imported methods, overloaded ctors don't matter.
                     // We just care about return values pretty much, and existence of the
@@ -544,28 +549,12 @@ namespace DSharp.Compiler.Importer
                     returnType,
                     MetadataHelpers.IsExtensionMethod(method));
 
-                if (MetadataHelpers.ShouldIgnoreMethodGeneratedTypeArguments(method))
-                {
-                    methodSymbol.IgnoreGeneratedTypeArguments = true;
-                }
-
                 methodSymbol.SetParseContext(method);
                 ImportMemberDetails(methodSymbol, method, method);
 
                 if (method.HasGenericParameters)
                 {
-                    List<GenericParameterSymbol> genericArguments = new List<GenericParameterSymbol>();
-
-                    foreach (GenericParameter genericParameter in method.GenericParameters)
-                    {
-                        GenericParameterSymbol arg =
-                            new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
-                                /* typeArgument */ false,
-                                symbols.GlobalNamespace);
-                        genericArguments.Add(arg);
-                    }
-
-                    methodSymbol.AddGenericArguments(genericArguments);
+                    AddGenericParameters(method, methodSymbol);
                 }
 
                 if (method.IsAbstract)
@@ -608,6 +597,28 @@ namespace DSharp.Compiler.Importer
 
                 typeSymbol.AddMember(methodSymbol);
             }
+        }
+
+        private void AddGenericParameters(MethodDefinition method, MethodSymbol methodSymbol)
+        {
+
+            if (MetadataHelpers.ShouldIgnoreMethodGeneratedTypeArguments(method))
+            {
+                methodSymbol.IgnoreGeneratedTypeArguments = true;
+            }
+
+            List<GenericParameterSymbol> genericArguments = new List<GenericParameterSymbol>();
+
+            foreach (GenericParameter genericParameter in method.GenericParameters)
+            {
+                GenericParameterSymbol arg =
+                    new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
+                        /* typeArgument */ false,
+                        symbols.GlobalNamespace);
+                genericArguments.Add(arg);
+            }
+
+            methodSymbol.AddGenericArguments(genericArguments);
         }
 
         private void ImportProperties(TypeSymbol typeSymbol)
