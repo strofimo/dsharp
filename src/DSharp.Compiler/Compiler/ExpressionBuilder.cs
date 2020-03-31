@@ -1961,6 +1961,11 @@ namespace DSharp.Compiler.Compiler
             }
             else if (referencedType.IsGeneric)
             {
+                if(referencedType.GenericType == symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable))
+                {
+                    return CreateTypeOfExpression(referencedType.GenericArguments[0]);
+                }
+
                 TypeSymbol scriptSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
 
                 TypeExpression scriptExpression = new TypeExpression(scriptSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
