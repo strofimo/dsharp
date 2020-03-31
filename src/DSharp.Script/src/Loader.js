@@ -30,7 +30,9 @@
         Guid: defineClass(Guid, Guid$, [], null),
         DateTime: defineClass(DateTime, {}, [], null),
         Nullable: defineClass(Nullable, Nullable$, [], null),
-        Enum: defineClass(Enum, {}, [], null)
+        Enum: defineClass(Enum, {}, [], null),
+        Exception: defineClass(Exception, Exception$, [String], Error),
+        NotImplementedException: defineClass(NotImplementedException, NotImplementedException$, [], Exception)
     }),
     {
         version: '{{version}}',
