@@ -20,9 +20,5 @@ namespace Library1 {
         public ReferencedGenericClass()
         {
         }
-
-        public extern void Method();
-
-        public void Method<T2>(){}
     }
 }

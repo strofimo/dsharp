@@ -16,8 +16,6 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
             GenericTypeWithIgnore<int, MyType> genericClass3 = new GenericTypeWithIgnore<int, MyType>();
             ScriptImportedGenericClass<MyType> importedGenericClass = new ScriptImportedGenericClass<MyType>();
             ReferencedGenericClass<MyType> referencedGenericClass = new ReferencedGenericClass<MyType>();
-            referencedGenericClass.Method();
-            referencedGenericClass.Method<string>();
 
             bool isSame = genericClass2.Type == genericClass.Type;
             Type genericClassType = typeof(GenericClass<int>);
