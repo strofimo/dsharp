@@ -725,6 +725,11 @@
         "Name": "GenericArguments",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "ObjectInitializers",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
       }
     ]
   }

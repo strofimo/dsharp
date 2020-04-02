@@ -1,0 +1,47 @@
+"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+  // LoweringTests.App
+
+  function App() {
+  }
+  var App$ = {
+    _foo: function() {
+      var array = [ false, 1, '2' ];
+      var c = (function() {
+        var _obj_ = new C1();
+        _obj_.BoolProp = false;
+        _obj_.StringProp = null;
+        _obj_.C1Prop = (function() {
+          var _obj_ = new C1();
+          _obj_.BoolProp = true;
+          return _obj_;
+        })();
+        return _obj_;
+      })();
+    }
+  };
+
+
+  // LoweringTests.C1
+
+  function C1() {
+    ss.defineProperty(this, 'BoolProp');
+    ss.defineProperty(this, 'StringProp');
+    ss.defineProperty(this, 'C1Prop');
+  }
+  var C1$ = {
+
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      App: ss.defineClass(App, App$, [], null),
+      C1: ss.defineClass(C1, C1$, [], null)
+    });
+
+
+  return $exports;
+});

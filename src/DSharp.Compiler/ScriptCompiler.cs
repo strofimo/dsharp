@@ -132,6 +132,7 @@ namespace DSharp.Compiler
                 new GenericArgumentRewriter(),
                 new LambdaRewriter(this),
                 new EnumValueRewriter(),
+                new ObjectInitializerRewriter(),
             };
 
             IntermediarySourceManager intermediarySourceManager = new IntermediarySourceManager(options.IntermediarySourceFolder);            
