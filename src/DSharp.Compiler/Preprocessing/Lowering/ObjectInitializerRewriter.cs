@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using DSharp.Compiler.Errors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -10,11 +11,18 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 {
     public class ObjectInitializerRewriter : CSharpSyntaxRewriter, ILowerer
     {
+        private readonly IErrorHandler errorHandler;
+
+        public ObjectInitializerRewriter(IErrorHandler errorHandler)
+        {
+            this.errorHandler = errorHandler;
+        }
+
         public CompilationUnitSyntax Apply(Compilation compilation, CompilationUnitSyntax root)
         {
             var newRoot = Visit(root) as CompilationUnitSyntax;
 
-            if(!newRoot.Usings.Any(u=>u.Name.ToString() == "System"))
+            if (!newRoot.Usings.Any(u => u.Name.ToString() == "System"))
             {
                 newRoot = newRoot.AddUsings(UsingDirective(ParseName("System").WithLeadingTrivia(Space)));
             }
@@ -35,20 +43,58 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             var closeBrace = newNode.Initializer.CloseBraceToken;
 
             IdentifierNameSyntax obj = IdentifierName("_obj_");
+
             var constructObject = GenerateObject(newNode.Type.WithoutTrailingTrivia(), obj.Identifier)
                 .WithTrailingTrivia(openBrace.TrailingTrivia)
                 .WithLeadingTrivia((newNode.ArgumentList?.GetTrailingTrivia() ?? newNode.Type.GetTrailingTrivia()).AddRange(openBrace.LeadingTrivia));
 
-            var initialiseProperties = newNode.Initializer.Expressions
+            StatementSyntax[] statements = GetInitialiserFunctionStatements(node, newNode, obj);
+
+            var returnObject = ReturnStatement(obj.WithLeadingTrivia(Space)).WithLeadingTrivia(closeBrace.LeadingTrivia);
+
+            var func = GenerateFunction(constructObject, statements, returnObject);
+
+            return GenerateInvocation(newNode, func);
+        }
+
+        private StatementSyntax[] GetInitialiserFunctionStatements(ObjectCreationExpressionSyntax node, ObjectCreationExpressionSyntax newNode, IdentifierNameSyntax obj)
+        {
+            if (newNode.Initializer.Kind() == SyntaxKind.CollectionInitializerExpression)
+            {
+                return newNode.Initializer.Expressions
+                .Select((e, i) => GenerateAddInvocation(obj, e, GetTrailingPropertyTrivia(i, node.Initializer.Expressions)))
+                .ToArray();
+            }
+            else if (newNode.Initializer.Kind() == SyntaxKind.ObjectInitializerExpression)
+            {
+                return newNode.Initializer.Expressions
                 .Cast<AssignmentExpressionSyntax>()
                 .Select((e, i) => ProcessPropertyExpression(obj, e, GetTrailingPropertyTrivia(i, node.Initializer.Expressions)))
                 .ToArray();
-            
-            var returnObject = ReturnStatement(obj.WithLeadingTrivia(Space)).WithLeadingTrivia(closeBrace.LeadingTrivia);
+            }
 
-            var func = GenerateFunction(constructObject, initialiseProperties, returnObject);
+            errorHandler.ReportExpressionError("unknown object Initializer", newNode.Initializer);
+            return null;
+        }
 
-            return GenerateInvocation(newNode, func);
+        private StatementSyntax GenerateAddInvocation(IdentifierNameSyntax obj, ExpressionSyntax e, SyntaxTriviaList trailingTrivia)
+        {
+            var invocation = InvocationExpression(
+                expression: MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, obj, IdentifierName("Add")),
+                argumentList: GetAddArguments(e)
+            );
+
+            return ExpressionStatement(invocation).WithTrailingTrivia(trailingTrivia);
+        }
+
+        private ArgumentListSyntax GetAddArguments(ExpressionSyntax e)
+        {
+            if(e.Kind() == SyntaxKind.ComplexElementInitializerExpression && e is InitializerExpressionSyntax initializer)
+            {
+                return ArgumentList(arguments: SeparatedList(initializer.Expressions.Select(ex => Argument(ex).WithoutLeadingTrivia())));
+            }
+
+            return ArgumentList(arguments: SingletonSeparatedList(Argument(e).WithoutLeadingTrivia()));
         }
 
         private static AnonymousMethodExpressionSyntax GenerateFunction(LocalDeclarationStatementSyntax constructObject, StatementSyntax[] initialiseProperties, ReturnStatementSyntax returnObject)
