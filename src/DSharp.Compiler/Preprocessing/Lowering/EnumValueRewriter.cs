@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -23,7 +24,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             {
                 if (sem.GetDeclaredSymbol(node) is IFieldSymbol fieldSymbol)
                 {
-                    int value = (int)fieldSymbol.ConstantValue;
+                    int value = Convert.ToInt32(fieldSymbol.ConstantValue);
                     return node.WithEqualsValue(EqualsValueClause(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value))));
                 }
             }

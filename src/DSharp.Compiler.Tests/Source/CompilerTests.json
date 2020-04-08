@@ -712,6 +712,11 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
+        "Name": "EnumValues",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "Lambdas",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
