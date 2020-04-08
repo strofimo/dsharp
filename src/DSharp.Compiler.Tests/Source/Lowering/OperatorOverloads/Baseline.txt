@@ -1,0 +1,66 @@
+"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+  // LoweringTests.App
+
+  function App() {
+  }
+  App.main = function() {
+    var x = 1 + 2;
+    var y = 'a' + 'b';
+    var z = x + y;
+    var a = new Fraction(5, 4);
+    var b = new Fraction(1, 2);
+    var result;
+    result = Fraction.op_UnaryNegation(a);
+    result = Fraction.op_Addition(a, b);
+    result = Fraction.op_Subtraction(a, b);
+    result = Fraction.op_Multiply(a, b);
+    result = Fraction.op_Division(a, b);
+  };
+
+
+  // LoweringTests.Fraction
+
+  function Fraction(numerator, denominator) {
+    this.num = 0;
+    this.den = 0;
+    this.num = numerator;
+    this.den = denominator;
+  }
+  Fraction.op_UnaryPlus = function(a) {
+    return a;
+  };
+  Fraction.op_UnaryNegation = function(a) {
+    return new Fraction(-a.num, a.den);
+  };
+  Fraction.op_Addition = function(a, b) {
+    return new Fraction(a.num * b.den + b.num * a.den, a.den * b.den);
+  };
+  Fraction.op_Subtraction = function(a, b) {
+    return Fraction.op_Addition(a, (-b));
+  };
+  Fraction.op_Multiply = function(a, b) {
+    return new Fraction(a.num * b.num, a.den * b.den);
+  };
+  Fraction.op_Division = function(a, b) {
+    if (!b.num) {
+      throw new Error('Divide by zero');
+    }
+    return new Fraction(a.num * b.den, a.den * b.num);
+  };
+  var Fraction$ = {
+
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      App: ss.defineClass(App, null, [], null),
+      Fraction: ss.defineClass(Fraction, Fraction$, [Number, Number], null)
+    });
+
+
+  return $exports;
+});

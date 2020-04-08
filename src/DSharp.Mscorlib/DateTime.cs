@@ -88,16 +88,22 @@ namespace System
         [ScriptAlias("ss.DateTime.Parse")]
         public extern static DateTime Parse(string date);
 
+        [ScriptIgnore]
         public extern static bool operator ==(DateTime left, DateTime right);
 
+        [ScriptIgnore]
         public extern static bool operator !=(DateTime left, DateTime right);
 
+        [ScriptIgnore]
         public extern static bool operator >=(DateTime left, DateTime right);
 
+        [ScriptIgnore]
         public extern static bool operator <=(DateTime left, DateTime right);
 
+        [ScriptIgnore]
         public extern static bool operator >(DateTime left, DateTime right);
 
+        [ScriptIgnore]
         public extern static bool operator <(DateTime left, DateTime right);
     }
 }
