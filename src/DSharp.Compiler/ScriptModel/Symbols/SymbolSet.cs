@@ -700,9 +700,14 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     mappedTypeName = "Nullable`1";
 
                     break;
+
+                case IntrinsicType.Anonymous:
+                    mappedTypeName = "__AnonymousType__";
+                    mappedNamespace = "";
+                    break;
+
                 default:
                     Debug.Fail("Unmapped intrinsic type " + type);
-
                     break;
             }
 

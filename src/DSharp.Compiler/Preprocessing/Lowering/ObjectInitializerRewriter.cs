@@ -11,7 +11,9 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 {
     public class ObjectInitializerRewriter : CSharpSyntaxRewriter, ILowerer
     {
+        const string ANONYMOUS_TYPE_NAME = "__AnonymousType__";
         private readonly IErrorHandler errorHandler;
+        private SemanticModel sem;
 
         public ObjectInitializerRewriter(IErrorHandler errorHandler)
         {
@@ -20,6 +22,8 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         public CompilationUnitSyntax Apply(Compilation compilation, CompilationUnitSyntax root)
         {
+            sem = compilation.GetSemanticModel(root.SyntaxTree);
+
             var newRoot = Visit(root) as CompilationUnitSyntax;
 
             if (!newRoot.Usings.Any(u => u.Name.ToString() == "System"))
@@ -32,7 +36,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         public override SyntaxNode VisitObjectCreationExpression(ObjectCreationExpressionSyntax node)
         {
-            if (node.Initializer == null)
+            if (node.Initializer == null || IsAnonymousType(node))
             {
                 return base.VisitObjectCreationExpression(node);
             }
@@ -55,6 +59,11 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             var func = GenerateFunction(constructObject, statements, returnObject);
 
             return GenerateInvocation(newNode, func);
+        }
+
+        private static bool IsAnonymousType(ObjectCreationExpressionSyntax node)
+        {
+            return node.Type.ToString().Equals(ANONYMOUS_TYPE_NAME);
         }
 
         private StatementSyntax[] GetInitialiserFunctionStatements(ObjectCreationExpressionSyntax node, ObjectCreationExpressionSyntax newNode, IdentifierNameSyntax obj)

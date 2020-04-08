@@ -12,6 +12,8 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 {
     public class VarRewriter : CSharpSyntaxRewriter, ILowerer
     {
+        const string ANONYMOUS_TYPE_NAME = "__AnonymousType__";
+
         private readonly IErrorHandler errorHandler;
         private static readonly SymbolDisplayFormat displayFormat = new SymbolDisplayFormat(
                             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
@@ -41,7 +43,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
             var newRoot = Visit(root) as CompilationUnitSyntax;
 
-            var missingUsings = requiredUsings.Where(r => !root.Usings.Select(u => u.Name.ToString()).Contains(r));
+            var missingUsings = requiredUsings.Where(r => !string.IsNullOrWhiteSpace(r)).Where(r => !root.Usings.Select(u => u.Name.ToString()).Contains(r));
 
             if (missingUsings.Any())
             {
@@ -54,15 +56,23 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         public override SyntaxNode VisitVariableDeclaration(VariableDeclarationSyntax node)
         {
-            if (node.Type.IsVar)
+            var typeInfo = sem.GetTypeInfo(node.Type);
+            var newNode = (VariableDeclarationSyntax)base.VisitVariableDeclaration(node);
+
+            if (newNode.Type.IsVar)
             {
                 string typeName;
 
-                if (sem.GetTypeInfo(node.Type).Type is INamedTypeSymbol type)
+                if (typeInfo.Type is INamedTypeSymbol type)
                 {
                     if (!aliases.TryGetValue(type.ToString(), out typeName))
                     {
                         typeName = type.ToDisplayString(displayFormat);
+
+                        if (type.IsAnonymousType)
+                        {
+                            typeName = ANONYMOUS_TYPE_NAME;
+                        }
 
                         requiredUsings.Add(type.ContainingNamespace.Name);
 
@@ -75,20 +85,48 @@ namespace DSharp.Compiler.Preprocessing.Lowering
                         }
                     }
                 }
-                else if(sem.GetTypeInfo(node.Type).Type is IArrayTypeSymbol arrayType)
+                else if (typeInfo.Type is IArrayTypeSymbol arrayType)
                 {
                     typeName = arrayType.ToDisplayString(displayFormat);
                 }
                 else
                 {
-                    errorHandler.ReportExpressionError($"unable to determine type of var: '{node.ToString()}'", node);
-                    return base.VisitVariableDeclaration(node);
+                    errorHandler.ReportExpressionError($"unable to determine type of var: '{newNode.ToString()}'", newNode);
+                    return newNode;
                 }
 
-                return node.WithType(ParseTypeName(typeName).WithTrailingTrivia(Whitespace(" ")).WithTriviaFrom(node.Type));
+                return newNode.WithType(ParseTypeName(typeName).WithTrailingTrivia(Whitespace(" ")).WithTriviaFrom(newNode.Type));
             }
 
-            return base.VisitVariableDeclaration(node);
+            return newNode;
+        }
+
+        public override SyntaxNode VisitAnonymousObjectCreationExpression(AnonymousObjectCreationExpressionSyntax node)
+        {
+            if (sem.GetTypeInfo(node).Type is INamedTypeSymbol type && type.IsAnonymousType)
+            {
+                var typeName = ANONYMOUS_TYPE_NAME;
+
+                return ObjectCreationExpression(ParseTypeName(typeName).WithLeadingTrivia(Space))
+                    .WithInitializer(InitializerExpression(
+                        kind: SyntaxKind.ObjectInitializerExpression,
+                        openBraceToken: node.OpenBraceToken,
+                        expressions: SeparatedList(node.Initializers.Select(MapInitialiser)),
+                        closeBraceToken: node.CloseBraceToken))
+                    .WithTriviaFrom(node);
+            }
+
+            return base.VisitAnonymousObjectCreationExpression(node);
+        }
+
+        private ExpressionSyntax MapInitialiser(AnonymousObjectMemberDeclaratorSyntax node)
+        {
+            return AssignmentExpression(
+                kind: SyntaxKind.SimpleAssignmentExpression,
+                left: node.NameEquals.Name,
+                operatorToken: node.NameEquals.EqualsToken,
+                right: node.Expression
+            ).WithTriviaFrom(node);
         }
     }
 }

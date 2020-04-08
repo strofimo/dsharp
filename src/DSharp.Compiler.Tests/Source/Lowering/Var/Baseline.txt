@@ -15,6 +15,7 @@ define('test', ['ss'], function(ss) {
       var n = num;
       var list = [];
       var array = [ false, 1, '2' ];
+      var anon = {Prop1: false, Prop2: 1, Prop3: '2'};
     }
   };
 

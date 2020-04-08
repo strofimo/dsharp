@@ -156,6 +156,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public bool IsInternal { get; set; }
 
+        public bool IsAnonymousType => Name == "__AnonymousType__";
+
         public ICollection<MemberSymbol> Members => members;
 
         public object MetadataReference
@@ -335,6 +337,13 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Debug.Assert(string.IsNullOrEmpty(name) == false);
 
             Symbol symbol = null;
+
+            if(this.IsAnonymousType && (filter & SymbolFilter.Types) == 0)
+            {
+                var anonymousProperty = new PropertySymbol(name, this, this);
+                anonymousProperty.SetNameCasing(preserveCase: true);
+                return anonymousProperty;
+            }
 
             if ((filter & SymbolFilter.Types) != 0)
             {

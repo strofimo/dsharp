@@ -18,6 +18,7 @@ namespace LoweringTests
             var n = (Number)num;
             var list = new List<string>();
             var array = new object[] { false, 1, "2" };
+            var anon = new { Prop1=false, Prop2=1, Prop3="2" };
         }
     }
 }
