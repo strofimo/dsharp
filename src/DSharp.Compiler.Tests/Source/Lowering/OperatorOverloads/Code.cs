@@ -1,4 +1,7 @@
-﻿[assembly: ScriptAssembly("test")]
+﻿using System;
+using System.Runtime.CompilerServices;
+
+[assembly: ScriptAssembly("test")]
 
 namespace LoweringTests
 {
@@ -17,6 +20,32 @@ namespace LoweringTests
             result = a - b;
             result = a * b;
             result = a / b;
+            a == b;
+            a++;
+            b++;
+            a += b;
+            a -= b;
+            a *= b;
+            a /= b;
+            a %= b;
+            a < b;
+            b > a;
+            if (a >= b)
+            {
+
+            }
+            if(b)
+            {
+
+            }
+            if(a && !a)
+            {
+
+            }
+            if (a || !a)
+            {
+
+            }
         }
     }
 
@@ -31,10 +60,14 @@ namespace LoweringTests
             Den = denominator;
         }
 
+        public static Fraction operator ==(Fraction a, Fraction b) { return a.Num == b.Num && a.Den == b.Den; }
+        public static Fraction operator !=(Fraction a, Fraction b) { return a != b; }
         public static Fraction operator +(Fraction a) { return a; }
         public static Fraction operator -(Fraction a) { return new Fraction(-a.Num, a.Den); }
         public static Fraction operator +(Fraction a, Fraction b) { return new Fraction(a.Num * b.Den + b.Num * a.Den, a.Den * b.Den); }
         public static Fraction operator -(Fraction a, Fraction b) { return a + (-b); }
+        public static Fraction operator ++(Fraction a) { return new Fraction(a.Num + a.Den, a.Den); }
+        public static Fraction operator --(Fraction a) { return new Fraction(a.Num - a.Den, a.Den); }
         public static Fraction operator *(Fraction a, Fraction b) { return new Fraction(a.Num * b.Num, a.Den * b.Den); }
         public static Fraction operator /(Fraction a, Fraction b)
         {
@@ -46,6 +79,66 @@ namespace LoweringTests
             return new Fraction(a.Num * b.Den, a.Den * b.Num);
         }
 
+        public static Fraction operator %(Fraction a, Fraction b)
+        {
+            throw new Exception();
+        }
+
+        public static Fraction operator ^(Fraction a, Fraction b)
+        {
+            throw new Exception();
+        }
+
+        public static Fraction operator |(Fraction a, Fraction b)
+        {
+            throw new Exception();
+        }
+
+        public static Fraction operator >(Fraction a, Fraction b)
+        {
+            throw new Exception();
+        }
+
+        public static Fraction operator <(Fraction a, Fraction b)
+        {
+            throw new Exception();
+        }
+
+        public static Fraction operator >=(Fraction a, Fraction b)
+        {
+            throw new Exception();
+        }
+
+        public static Fraction operator <=(Fraction a, Fraction b)
+        {
+            throw new Exception();
+        }
+
+        public static bool operator true(Fraction a)
+        {
+            throw new Exception();
+        }
+
+        public static bool operator false(Fraction a)
+        {
+            throw new Exception();
+        }
+
+        public static Fraction operator !(Fraction a)
+        {
+            throw new Exception();
+        }
+
+        public static Fraction operator &(Fraction a, Fraction b)
+        {
+            return a;
+        }
+
+        [ScriptIgnore]
+        public static Fraction operator |(Fraction a, Fraction b)
+        {
+            return a;
+        }
     }
 }
 
