@@ -21,6 +21,11 @@ namespace LoweringTests
                     { "test2", false } 
                 }
             };
+
+            C2 c2 = new C2("hello")
+            {
+                Prop = "world"
+            };
         }
     }
 
@@ -30,5 +35,15 @@ namespace LoweringTests
         public string StringProp { get; set; }
         public C1 C1Prop { get; set; }
         public Dictionary<string, object> DictProp { get; set; }
+    }
+
+    public class C2
+    {
+        public string Prop { get; set; }
+
+        public C2(string arg)
+        {
+
+        }
     }
 }

@@ -48,7 +48,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
             IdentifierNameSyntax obj = IdentifierName("_obj_");
 
-            var constructObject = GenerateObject(newNode.Type.WithoutTrailingTrivia(), obj.Identifier)
+            var constructObject = GenerateObject(newNode.Type.WithoutTrailingTrivia(), obj.Identifier, node.ArgumentList)
                 .WithTrailingTrivia(openBrace.TrailingTrivia)
                 .WithLeadingTrivia((newNode.ArgumentList?.GetTrailingTrivia() ?? newNode.Type.GetTrailingTrivia()).AddRange(openBrace.LeadingTrivia));
 
@@ -138,7 +138,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             return expressions.SeparatorCount > i ? expressions.GetSeparator(i).TrailingTrivia : expressions[i].GetTrailingTrivia();
         }
 
-        private static LocalDeclarationStatementSyntax GenerateObject(TypeSyntax type, SyntaxToken objectIdentifier)
+        private static LocalDeclarationStatementSyntax GenerateObject(TypeSyntax type, SyntaxToken objectIdentifier, ArgumentListSyntax constructorArgs)
         {
             return LocalDeclarationStatement(
                             VariableDeclaration(type)
@@ -148,7 +148,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
                                     .WithInitializer(
                                         EqualsValueClause(
                                             ObjectCreationExpression(type.WithLeadingTrivia(Space))
-                                            .WithArgumentList(ArgumentList())
+                                            .WithArgumentList(constructorArgs)
                                         )
                                     )
                                 )

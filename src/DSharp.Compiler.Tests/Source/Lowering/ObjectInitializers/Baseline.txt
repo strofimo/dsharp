@@ -33,6 +33,11 @@ define('test', ['ss'], function(ss) {
         })();
         return _obj_;
       })();
+      var c2 = (function() {
+        var _obj_ = new C2('hello');
+        _obj_.Prop = 'world';
+        return _obj_;
+      })();
     }
   };
 
@@ -50,10 +55,21 @@ define('test', ['ss'], function(ss) {
   };
 
 
+  // LoweringTests.C2
+
+  function C2(arg) {
+    ss.defineProperty(this, 'Prop');
+  }
+  var C2$ = {
+
+  };
+
+
   var $exports = ss.module('test', null,
     {
       App: ss.defineClass(App, App$, [], null),
-      C1: ss.defineClass(C1, C1$, [], null)
+      C1: ss.defineClass(C1, C1$, [], null),
+      C2: ss.defineClass(C2, C2$, [String], null)
     });
 
 
