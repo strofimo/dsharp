@@ -195,4 +195,17 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
     {
 
     }
+
+    public class GenericTypeWithParamsInCtor<T>
+    {
+        public GenericTypeWithParamsInCtor(T arg, params object[] args)
+        {
+            string x = typeof(T).Name;
+        }
+
+        public void GenericMethodWithParams<T2>(T2 arg, params object[] args)
+        {
+
+        }
+    }
 }

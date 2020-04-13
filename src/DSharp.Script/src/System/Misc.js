@@ -153,5 +153,11 @@ function paramsGenerator(n, f) {
             args.push(unnamed);
         }
         return f.apply(this, args);
-    }
+    };
+}
+
+function namedFunction(name, fn) {
+    return new Function('fn',
+        "return function " + name + "(){ return fn.apply(this, arguments)}"
+    )(fn);
 }

@@ -76,6 +76,7 @@
         bindSub: bindSub,
         bindExport: bindExport,
         paramsGenerator: paramsGenerator,
+        namedFunction: namedFunction,
         createPropertyGet: createPropertyGet,
         createPropertySet: createPropertySet,
         createReadonlyProperty: createReadonlyProperty,

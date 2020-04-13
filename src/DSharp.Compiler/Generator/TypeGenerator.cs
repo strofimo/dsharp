@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Generator
@@ -85,15 +86,27 @@ namespace DSharp.Compiler.Generator
 
         private static void GenerateClassConstructor(ScriptGenerator generator, ClassSymbol classSymbol, ScriptTextWriter writer, string name)
         {
-            writer.Write("function ");
-            writer.Write(name);
+            var ctorSymbol = classSymbol.Constructor;
+
+            if (HasParamsModifier(ctorSymbol))
+            {
+                writer.Write($"var {name} = ss.namedFunction('{name}',");
+                writer.Write($"{DSharpStringResources.ScriptExportMember("paramsGenerator")}(");
+                writer.Write($"{ctorSymbol.GetGeneratedParamsCount()}, function");
+            }
+            else
+            {
+                writer.Write("function ");
+                writer.Write(name);   
+            }
+
             writer.Write("(");
 
-            if (classSymbol.Constructor != null && classSymbol.Constructor.Parameters != null)
+            if (ctorSymbol != null && ctorSymbol.Parameters != null)
             {
                 bool firstParameter = true;
 
-                foreach (ParameterSymbol parameterSymbol in classSymbol.Constructor.Parameters)
+                foreach (ParameterSymbol parameterSymbol in ctorSymbol.Parameters)
                 {
                     if (firstParameter == false)
                     {
@@ -139,9 +152,9 @@ namespace DSharp.Compiler.Generator
                 }
             }
 
-            if (classSymbol.Constructor != null)
+            if (ctorSymbol != null)
             {
-                CodeGenerator.GenerateScript(generator, classSymbol.Constructor);
+                CodeGenerator.GenerateScript(generator, ctorSymbol);
             }
             else if (classSymbol.BaseClass != null)
             {
@@ -152,6 +165,11 @@ namespace DSharp.Compiler.Generator
 
             writer.Indent--;
             writer.WriteLine("}");
+
+            if (HasParamsModifier(ctorSymbol))
+            {
+                writer.WriteLine($"));");
+            }
         }
 
         private static IEnumerable<PropertySymbol> GetNonReadonlyAutoProperties(ClassSymbol classSymbol)
@@ -417,6 +435,18 @@ namespace DSharp.Compiler.Generator
             }
 
             writer.Write(")");
+        }
+
+        private static bool HasParamsModifier(MethodSymbol methodSymbol)
+        {
+            if (methodSymbol == null || methodSymbol.Parameters == null || methodSymbol.Parameters.Count() == 0)
+            {
+                return false;
+            }
+
+            ParameterNode lastParameterParseContext = methodSymbol.Parameters.Last().ParseContext as ParameterNode;
+
+            return lastParameterParseContext.Flags.HasFlag(ParameterFlags.Params);
         }
 
         private static string GetParameterTypeName(TypeSymbol parameterType)
