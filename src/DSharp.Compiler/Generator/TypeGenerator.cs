@@ -186,8 +186,13 @@ namespace DSharp.Compiler.Generator
             string enumName = enumSymbol.FullGeneratedName;
 
             writer.Write("var ");
-            writer.Write(enumSymbol.FullGeneratedName);
-            writer.Write(" = {");
+            writer.Write(enumName);
+            writer.Write(" = new ");
+            writer.Write(DSharpStringResources.ScriptExportMember("Enum"));
+            writer.Write("('");
+            writer.Write(enumName);
+            writer.Write("', ");
+            writer.Write("{");
             writer.Indent++;
 
             bool firstValue = true;
@@ -222,7 +227,7 @@ namespace DSharp.Compiler.Generator
 
             writer.Indent--;
             writer.WriteLine();
-            writer.Write("};");
+            writer.Write("});");
             writer.WriteLine();
         }
 
@@ -527,11 +532,7 @@ namespace DSharp.Compiler.Generator
         {
             ScriptTextWriter writer = generator.Writer;
 
-            writer.Write($"new {DSharpStringResources.ScriptExportMember("Enum")}(");
-            writer.Write($"'{enumerationSymbol.FullGeneratedName}'");
-            writer.Write(", ");
             writer.Write(enumerationSymbol.FullGeneratedName);
-            writer.Write(")");
         }
 
         private static void GenerateResources(ScriptGenerator generator, ResourcesSymbol resourcesSymbol)

@@ -4,10 +4,10 @@ define('test', ['ss'], function(ss) {
   var $global = this;
   // BasicTests.MyEnum
 
-  var MyEnum = {
+  var MyEnum = new ss.Enum('MyEnum', {
     item1: 0, 
     item2: 1
-  };
+  });
 
 
   // BasicTests.MyInterface`1
@@ -67,7 +67,7 @@ define('test', ['ss'], function(ss) {
 
   var $exports = ss.module('test', null,
     {
-      MyEnum: new ss.Enum('MyEnum', MyEnum),
+      MyEnum: MyEnum,
       MyInterface_$1: ss.defineInterface(MyInterface_$1),
       App: ss.defineClass(App, App$, [], null, [MyInterface_$1]),
       Extensions: ss.defineClass(Extensions, null, [], null),
