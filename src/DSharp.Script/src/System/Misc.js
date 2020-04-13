@@ -145,6 +145,7 @@ function paramsGenerator(n, f) {
     return function () {
         var slice = Array.prototype.slice;
         var args = slice.call(arguments, 0, n);
+        while (args.length < n) { args.push(null); }
         if (arguments.length == n + 1 && Array.isArray(arguments[n])) {
             args.push(arguments[n]);
         }
