@@ -18,6 +18,24 @@ define('test', ['ss'], function(ss) {
     result = Fraction.op_Subtraction(a, b);
     result = Fraction.op_Multiply(a, b);
     result = Fraction.op_Division(a, b);
+    Fraction.op_Equality(a, b);
+    Fraction.op_Increment(a);
+    Fraction.op_Increment(b);
+    a = Fraction.op_Addition(a, b);
+    a = Fraction.op_Subtraction(a, b);
+    a = Fraction.op_Multiply(a, b);
+    a = Fraction.op_Division(a, b);
+    a = Fraction.op_Modulus(a, b);
+    Fraction.op_LessThan(a, b);
+    Fraction.op_GreaterThan(b, a);
+    if (Fraction.op_GreaterThanOrEqual(a, b)) {
+    }
+    if (b) {
+    }
+    if (Fraction.op_BitwiseAnd(a, !a)) {
+    }
+    if (a || Fraction.op_LogicalNot(a)) {
+    }
   };
 
 
@@ -29,6 +47,12 @@ define('test', ['ss'], function(ss) {
     this.num = numerator;
     this.den = denominator;
   }
+  Fraction.op_Equality = function(a, b) {
+    return a.num === b.num && a.den === b.den;
+  };
+  Fraction.op_Inequality = function(a, b) {
+    return Fraction.op_Inequality(a, b);
+  };
   Fraction.op_UnaryPlus = function(a) {
     return a;
   };
@@ -41,6 +65,12 @@ define('test', ['ss'], function(ss) {
   Fraction.op_Subtraction = function(a, b) {
     return Fraction.op_Addition(a, (-b));
   };
+  Fraction.op_Increment = function(a) {
+    return new Fraction(a.num + a.den, a.den);
+  };
+  Fraction.op_Decrement = function(a) {
+    return new Fraction(a.num - a.den, a.den);
+  };
   Fraction.op_Multiply = function(a, b) {
     return new Fraction(a.num * b.num, a.den * b.den);
   };
@@ -49,6 +79,39 @@ define('test', ['ss'], function(ss) {
       throw new Error('Divide by zero');
     }
     return new Fraction(a.num * b.den, a.den * b.num);
+  };
+  Fraction.op_Modulus = function(a, b) {
+    throw new Error();
+  };
+  Fraction.op_ExclusiveOr = function(a, b) {
+    throw new Error();
+  };
+  Fraction.op_BitwiseOr = function(a, b) {
+    throw new Error();
+  };
+  Fraction.op_GreaterThan = function(a, b) {
+    throw new Error();
+  };
+  Fraction.op_LessThan = function(a, b) {
+    throw new Error();
+  };
+  Fraction.op_GreaterThanOrEqual = function(a, b) {
+    throw new Error();
+  };
+  Fraction.op_LessThanOrEqual = function(a, b) {
+    throw new Error();
+  };
+  Fraction.op_True = function(a) {
+    throw new Error();
+  };
+  Fraction.op_False = function(a) {
+    throw new Error();
+  };
+  Fraction.op_LogicalNot = function(a) {
+    throw new Error();
+  };
+  Fraction.op_BitwiseAnd = function(a, b) {
+    return a;
   };
   var Fraction$ = {
 
