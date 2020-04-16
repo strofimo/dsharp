@@ -233,8 +233,7 @@ namespace DSharp.Compiler.Compiler
 
                 types.Add(typeSymbol);
 
-                var nestedTypes = (typeNode as CustomTypeNode)?.Members.Where(m => m.NodeType == ParseNodeType.Type).Cast<TypeNode>() ?? Enumerable.Empty<TypeNode>();
-
+                var nestedTypes = (typeNode as CustomTypeNode)?.Members.Where(m => m.NodeType == ParseNodeType.Type || m.NodeType == ParseNodeType.Delegate).Cast<TypeNode>() ?? Enumerable.Empty<TypeNode>();
                 foreach (var nestedTypeNode in nestedTypes)
                 {
                     TryAddType(symbols, types, namespaceSymbol, imports, aliases, nestedTypeNode, typeSymbol);
@@ -776,7 +775,7 @@ namespace DSharp.Compiler.Compiler
 
             CustomTypeNode typeNode = (CustomTypeNode)typeSymbol.ParseContext;
 
-            foreach (MemberNode member in typeNode.Members.Where(m => m.NodeType != ParseNodeType.Type))
+            foreach (MemberNode member in typeNode.Members.Where(m => m.NodeType != ParseNodeType.Type && m.NodeType != ParseNodeType.Delegate))
             {
                 var nodeAttributes = member.Attributes.Cast<AttributeNode>();
 
