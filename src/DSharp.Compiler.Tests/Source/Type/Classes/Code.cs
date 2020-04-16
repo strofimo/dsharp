@@ -19,6 +19,10 @@ namespace TypeTests {
 
     public class MyClass {
         public MyClass() { Foo f = new Foo(); }
+
+        public class NestedClass
+        {
+        }
     }
 
     public class MyClass2 : MyClass {
