@@ -186,10 +186,17 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public virtual void AddMember(MemberSymbol memberSymbol)
         {
-            Debug.Assert(memberSymbol != null);
-            Debug.Assert(string.IsNullOrEmpty(memberSymbol.Name) == false);
-            Debug.Assert(memberTable.ContainsKey(memberSymbol.Name) == false);
+            AddMember(memberSymbol, false);
+        }
 
+        protected void AddMember(MemberSymbol memberSymbol, bool allowOverride)
+        {
+            if(!allowOverride)
+            {
+                Debug.Assert(memberSymbol != null);
+                Debug.Assert(string.IsNullOrEmpty(memberSymbol.Name) == false);
+                Debug.Assert(memberTable.ContainsKey(memberSymbol.Name) == false);
+            }
             members.Add(memberSymbol);
             memberTable[memberSymbol.Name] = memberSymbol;
         }
