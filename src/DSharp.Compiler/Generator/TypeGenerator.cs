@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DSharp.Compiler.CodeModel.Members;
+using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Generator
@@ -129,7 +130,12 @@ namespace DSharp.Compiler.Generator
             foreach (var property in GetNonReadonlyAutoProperties(classSymbol))
             {
                 writer.Write(DSharpStringResources.ScriptExportMember("defineProperty"));
-                writer.Write($"(this, '{property.GeneratedName}');");
+                writer.Write($"(this, '{property.GeneratedName}', ");
+                    
+                var initialValueExpression = Compiler.ImplementationBuilder.GetDefaultValueExpression(property.AssociatedType, property.SymbolSet);
+                ExpressionGenerator.GenerateLiteralExpression(generator, property, initialValueExpression);
+
+                writer.Write(");");
                 writer.WriteLine();
             }
 

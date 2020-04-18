@@ -18,7 +18,7 @@ define('test', ['ss'], function(ss) {
   // BasicTests.App
 
   function App() {
-    ss.defineProperty(this, 'AutoProperty');
+    ss.defineProperty(this, 'AutoProperty', null);
     this._field = null;
   }
   var App$ = {
@@ -79,4 +79,3 @@ define('test', ['ss'], function(ss) {
 
   return $exports;
 });
-

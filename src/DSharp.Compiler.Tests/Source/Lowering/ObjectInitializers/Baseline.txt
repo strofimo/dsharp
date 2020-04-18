@@ -45,10 +45,10 @@ define('test', ['ss'], function(ss) {
   // LoweringTests.C1
 
   function C1() {
-    ss.defineProperty(this, 'BoolProp');
-    ss.defineProperty(this, 'StringProp');
-    ss.defineProperty(this, 'C1Prop');
-    ss.defineProperty(this, 'DictProp');
+    ss.defineProperty(this, 'BoolProp', false);
+    ss.defineProperty(this, 'StringProp', null);
+    ss.defineProperty(this, 'C1Prop', null);
+    ss.defineProperty(this, 'DictProp', null);
   }
   var C1$ = {
 
@@ -58,7 +58,7 @@ define('test', ['ss'], function(ss) {
   // LoweringTests.C2
 
   function C2(arg) {
-    ss.defineProperty(this, 'Prop');
+    ss.defineProperty(this, 'Prop', null);
   }
   var C2$ = {
 

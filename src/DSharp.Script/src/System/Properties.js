@@ -20,8 +20,8 @@ function createPropertySet(obj, propertyName, fn) {
     });
 }
 
-function defineProperty(instance, propertyName) {
-    var prop = undefined;
+function defineProperty(instance, propertyName, value) {
+    var prop = value;
     Object.defineProperty(instance, propertyName, {
         get: function () { return prop; },
         set: function (value) { prop = value; }

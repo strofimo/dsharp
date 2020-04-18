@@ -49,11 +49,11 @@ define('test', ['ss'], function(ss) {
   // ExpressionTests.MyTestClass
 
   function MyTestClass() {
-    ss.defineProperty(this, 'MyProperty');
-    ss.defineProperty(this, 'Prop2');
-    ss.defineProperty(this, 'InnerClass');
-    ss.defineProperty(this, 'Act');
-    ss.defineProperty(this, 'Func');
+    ss.defineProperty(this, 'MyProperty', 0);
+    ss.defineProperty(this, 'Prop2', null);
+    ss.defineProperty(this, 'InnerClass', null);
+    ss.defineProperty(this, 'Act', null);
+    ss.defineProperty(this, 'Func', null);
   }
   var MyTestClass$ = {
 

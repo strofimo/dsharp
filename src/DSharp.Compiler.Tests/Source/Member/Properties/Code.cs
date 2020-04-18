@@ -98,6 +98,10 @@ namespace MemberTests {
 
         public string ReadonlyValue { get; } //CSharp 6!
 
+        public bool BoolAutoProp { get; set; }
+
+        public int IntAutoProp { get; set; }
+
         public string ReadWriteWithBacking
         {
             get { return readWriteWithBacking; }

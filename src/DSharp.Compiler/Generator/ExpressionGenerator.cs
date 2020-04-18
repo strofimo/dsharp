@@ -904,7 +904,7 @@ namespace DSharp.Compiler.Generator
             }
         }
 
-        private static void GenerateLiteralExpression(ScriptGenerator generator, MemberSymbol symbol,
+        public static void GenerateLiteralExpression(ScriptGenerator generator, MemberSymbol symbol,
                                                       LiteralExpression expression)
         {
             ScriptTextWriter writer = generator.Writer;
