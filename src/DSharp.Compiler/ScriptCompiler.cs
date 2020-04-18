@@ -133,6 +133,7 @@ namespace DSharp.Compiler
                 new LambdaRewriter(this),
                 new EnumValueRewriter(),
                 new ObjectInitializerRewriter(this),
+                new ImplicitArrayCreationRewriter(),
                 new OperatorOverloadRewriter(),
             };
 

@@ -740,6 +740,11 @@
         "Name": "OperatorOverloads",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "ArrayCreation",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
       }
     ]
   }
