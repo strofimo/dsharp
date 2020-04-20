@@ -23,6 +23,8 @@ namespace DSharp.Compiler
 
         public IStreamSource ScriptFile { get; set; }
 
+        public IStreamSource MetadataFile { get; set; }
+
         public ICollection<IStreamSource> Sources { get; set; }
 
         public string AssemblyName { get; set; }

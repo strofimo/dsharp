@@ -84,12 +84,47 @@ namespace DSharp.Compiler
 
             GenerateScript();
 
+            GenerateMetadata();
+
             if (hasErrors)
             {
                 return false;
             }
 
             return true;
+        }
+
+        private void GenerateMetadata()
+        {
+            Stream outputStream = null;
+            TextWriter outputWriter = null;
+
+            try
+            {
+                outputStream = options.MetadataFile?.GetStream();
+
+                if (outputStream == null)
+                {
+                    return;
+                }
+
+                outputWriter = new StreamWriter(outputStream, new UTF8Encoding(false));
+                ScriptMetadataGenerator scriptGenerator = new ScriptMetadataGenerator(outputWriter, options, symbols);
+                scriptGenerator.GenerateScriptMetadata(symbols);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+            finally
+            {
+                outputWriter?.Flush();
+
+                if (outputStream != null)
+                {
+                    options.ScriptFile.CloseStream(outputStream);
+                }
+            }
         }
 
         private void ImportMetadata()
@@ -137,10 +172,10 @@ namespace DSharp.Compiler
                 new OperatorOverloadRewriter(),
             };
 
-            IntermediarySourceManager intermediarySourceManager = new IntermediarySourceManager(options.IntermediarySourceFolder);            
+            IntermediarySourceManager intermediarySourceManager = new IntermediarySourceManager(options.IntermediarySourceFolder);
             var newCompilation = new CompilationPreprocessor(intermediarySourceManager).Preprocess(compilation, lowerers);
 
-            return options.Sources.Select(s=> GetPreprocessedSource(newCompilation, s));
+            return options.Sources.Select(s => GetPreprocessedSource(newCompilation, s));
         }
 
         private IStreamSource GetPreprocessedSource(CSharpCompilation comp, IStreamSource source)

@@ -100,6 +100,7 @@
         defineInterface: defineInterface,
         getConstructorParams: getConstructorParams,
         createInstance: paramsGenerator(1, createInstance),
+        getMembers: getMembers,
 
         culture: culture,
         fail: fail,

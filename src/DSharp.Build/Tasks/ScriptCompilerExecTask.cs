@@ -71,6 +71,8 @@ namespace DSharp.Build.Tasks
             }
         }
 
+        public bool GenerateScriptMetadata { get; set; }
+
         public string ProjectPath { get; set; }
 
         [Required]
@@ -97,6 +99,12 @@ namespace DSharp.Build.Tasks
 
             ITaskItem scriptTaskItem = new TaskItem(OutputPath);
             options.ScriptFile = new TaskItemOutputStreamSource(scriptTaskItem);
+
+            if (GenerateScriptMetadata)
+            {
+                var metadataPath = Path.ChangeExtension(OutputPath, "meta.js");
+                options.MetadataFile = new TaskItemOutputStreamSource(new TaskItem(metadataPath));
+            }
 
             string errorMessage = string.Empty;
             if (options.Validate(out errorMessage) == false)

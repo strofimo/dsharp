@@ -214,3 +214,7 @@ function createInstance(type, parameters) {
     proto.constructor.apply(instance, parameters);
     return instance;
 }
+
+function getMembers(type) {
+    return type.$members || [];
+}

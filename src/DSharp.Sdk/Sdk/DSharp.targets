@@ -26,6 +26,7 @@
       CopyReferences="$(CopyReferences)"
       CopyReferencesPath="$(CopyReferencesPath)"
       OutputPath="$(OutputPath)"
+      GenerateScriptMetadata="$(GenerateScriptMetadata)"
       Assembly="@(IntermediateAssembly)"
       ScriptName="$(ScriptName)"
       TemplatePath="$(ScriptTemplatePath)"

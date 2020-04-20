@@ -32,5 +32,8 @@ namespace System
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public extern static Type GetTypeFromHandle(RuntimeTypeHandle typeHandle);
+
+        [DSharpScriptMemberName("getMembers")]
+        public extern MemberInfo[] GetMembers();
     }
 }

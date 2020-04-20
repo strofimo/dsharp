@@ -87,6 +87,8 @@ namespace DSharp.Build.Tasks
             }
         }
 
+        public bool GenerateScriptMetadata { get; set; }
+
         [Required]
         public string ProjectPath { get; set; }
 
@@ -185,6 +187,12 @@ namespace DSharp.Build.Tasks
             string scriptFilePath = GetScriptFilePath(locale, minimize);
             outputScriptItem = new TaskItem(scriptFilePath);
             options.ScriptFile = new TaskItemOutputStreamSource(outputScriptItem);
+
+            if(GenerateScriptMetadata)
+            {
+                var metadataPath = Path.ChangeExtension(scriptFilePath, "meta.js");
+                options.MetadataFile = new TaskItemOutputStreamSource(new TaskItem(metadataPath));
+            }
 
             return options;
         }
