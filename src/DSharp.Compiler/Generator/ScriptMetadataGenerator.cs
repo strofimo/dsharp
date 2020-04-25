@@ -3,6 +3,7 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -33,6 +34,7 @@ namespace DSharp.Compiler.Generator
         public void GenerateScriptMetadata(SymbolSet symbolSet)
         {
             Debug.Assert(symbolSet != null);
+            TypeSymbol nullableType = symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable);
 
             var types = CollectEmittableTypes(symbolSet)
                 .OrderBy(t => t, typeComparer);
@@ -51,7 +53,7 @@ namespace DSharp.Compiler.Generator
                 {
                     Writer.WriteLine($"module.{type.GeneratedName}.$members = [");
                     Writer.Indent++;
-                    WriteMembers(members);
+                    WriteMembers(members, nullableType);
                     Writer.Indent--;
                     Writer.WriteLine("];");
                 }
@@ -63,7 +65,7 @@ namespace DSharp.Compiler.Generator
             Writer.Write(");");
         }
 
-        private void WriteMembers(IEnumerable<MemberSymbol> members)
+        private void WriteMembers(IEnumerable<MemberSymbol> members, TypeSymbol nullableType)
         {
             bool first = true;
             foreach (var member in members)
@@ -73,66 +75,57 @@ namespace DSharp.Compiler.Generator
                     Writer.WriteLine(",");
                 }
                 first = false;
-                
-                if (member.Type == SymbolType.Method)
-                {
-                    WriteMethod((MethodSymbol)member);
-                }
 
-                if (member.Type == SymbolType.Property)
-                {
-                    WriteProperty((PropertySymbol)member);
-                }
+                var memberType = GetMemberType(member);
 
-                if (member.Type == SymbolType.Field)
+                if(memberType.HasValue)
                 {
-                    WriteField((FieldSymbol)member);
+                    WriteMember(memberType.Value, member.GeneratedName, GetType(member.AssociatedType, nullableType));
                 }
             }
         }
 
-        private void WriteMethod(MethodSymbol member)
+        private int? GetMemberType(MemberSymbol member)
         {
-            Writer.Write("{");
-            Writer.Write("MemberType: 8,");
-            Writer.Write($"Name: '{member.GeneratedName}'");
-            Writer.Write(", ");
-            Writer.Write("Type: ");
-            if(member.AssociatedType.IsApplicationType)
+            switch(member.Type)
             {
-                Writer.Write("module.");
+                case SymbolType.Method:
+                    return 8;
+
+                case SymbolType.Property:
+                    return 16;
+
+                case SymbolType.Field:
+                    return 4;
+
+                default:
+                    return null;
             }
-            Writer.Write(member.AssociatedType.FullGeneratedName);
-            Writer.Write("}");
         }
 
-        private void WriteProperty(PropertySymbol member)
+        private string GetType(TypeSymbol associatedType, TypeSymbol nullableType)
         {
-            Writer.Write("{");
-            Writer.Write("MemberType: 16,");
-            Writer.Write($"Name: '{member.GeneratedName}'");
-            Writer.Write(", ");
-            Writer.Write("Type: ");
-            if (member.AssociatedType.IsApplicationType)
+            if (associatedType.FullName == nullableType.FullName)
             {
-                Writer.Write("module.");
+                associatedType = associatedType.GenericArguments.First();
             }
-            Writer.Write(member.AssociatedType.FullGeneratedName);
-            Writer.Write("}");
+
+            if (associatedType.IsApplicationType)
+            {
+                return $"module.{associatedType.FullGeneratedName}";
+            }
+
+            return associatedType.FullGeneratedName;
         }
 
-        private void WriteField(FieldSymbol member)
+        private void WriteMember(int memberType, string name, string type)
         {
             Writer.Write("{");
-            Writer.Write("MemberType: 4,");
-            Writer.Write($"Name: '{member.GeneratedName}'");
+            Writer.Write($"MemberType: {memberType},");
+            Writer.Write($"Name: '{name}'");
             Writer.Write(", ");
             Writer.Write("Type: ");
-            if (member.AssociatedType.IsApplicationType)
-            {
-                Writer.Write("module.");
-            }
-            Writer.Write(member.AssociatedType.FullGeneratedName);
+            Writer.Write(type);
             Writer.Write("}");
         }
 

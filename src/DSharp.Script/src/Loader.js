@@ -101,6 +101,8 @@
         getConstructorParams: getConstructorParams,
         createInstance: paramsGenerator(1, createInstance),
         getMembers: getMembers,
+        getGenericTemplate: getGenericTemplate,
+        makeGenericType: makeGenericType,
 
         culture: culture,
         fail: fail,

@@ -42,6 +42,7 @@ define('test', ['ss'], function(ss) {
     var isInt = specificClassOfGeneric.Type === Number;
     var myContainer = specificClassOfGeneric.createContainer();
     isInt = myContainer.Type === Number;
+    var isType = ss.makeGenericType(ss.getGenericTemplate(Generic_2_$2, [ 'T1', 'T2' ]), String, Number) === ss.getGenericConstructor(Generic_2_$2, {T1: String, T2: Number});
   };
   Program.copy = function($TArgs, source, startIndex, count) {
     var type = $TArgs['T'];
@@ -137,6 +138,15 @@ define('test', ['ss'], function(ss) {
   };
 
 
+  // DSharp.Compiler.Tests.Source.Type.GenericClasses.Generic_2`2
+
+  function Generic_2_$2() {
+  }
+  var Generic_2_$2$ = {
+
+  };
+
+
   // DSharp.Compiler.Tests.Source.Type.GenericClasses.GenericClass`1
 
   function GenericClass_$1(value, mutator) {
@@ -185,6 +195,7 @@ define('test', ['ss'], function(ss) {
       GenericWithMultipleParams_$3: ss.defineClass(GenericWithMultipleParams_$3, GenericWithMultipleParams_$3$, [], null),
       GenericTypeWithIgnore: ss.defineClass(GenericTypeWithIgnore, GenericTypeWithIgnore$, [], null),
       GenericTypeWithParamsInCtor_$1: ss.defineClass(GenericTypeWithParamsInCtor_$1, GenericTypeWithParamsInCtor_$1$, [Object, Array], null),
+      Generic_2_$2: ss.defineClass(Generic_2_$2, Generic_2_$2$, [], null),
       GenericClass_$1: ss.defineClass(GenericClass_$1, GenericClass_$1$, [Object, Function], BaseGenericClass_$1),
       SpecificClassOfGeneric: ss.defineClass(SpecificClassOfGeneric, SpecificClassOfGeneric$, [Number], GenericClass_$1)
     });

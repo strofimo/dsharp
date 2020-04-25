@@ -907,7 +907,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 TypeSymbol templateType =
                     (TypeSymbol)symbolTable.FindSymbol(genericTypeName, contextSymbol, SymbolFilter.Types);
 
-                if (!templateType.IsGeneric)
+                if (!templateType.IsGeneric || genericNameNode.TypeArguments.All( n => n is AtomicNameNode n1 && n1.Name == "__unknown"))
                 {
                     //generics ignored
                     return templateType;

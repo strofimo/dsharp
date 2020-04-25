@@ -35,5 +35,10 @@ namespace System
 
         [DSharpScriptMemberName("getMembers")]
         public extern MemberInfo[] GetMembers();
+
+        [DSharpScriptMemberName("makeGenericType")]
+        public extern Type MakeGenericType(params Type[] typeArguments);
+
+        public extern bool IsGenericTypeDefinition { get; }
     }
 }

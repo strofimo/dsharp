@@ -1961,25 +1961,55 @@ namespace DSharp.Compiler.Compiler
             }
             else if (referencedType.IsGeneric)
             {
-                if(referencedType.GenericType == symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable))
+                if (referencedType.GenericArguments == null)
+                {
+                    return CreateGetGenericTemplateInvocation(referencedType);
+                }
+
+                if (referencedType.GenericType == symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable))
                 {
                     return CreateTypeOfExpression(referencedType.GenericArguments[0]);
                 }
 
-                TypeSymbol scriptSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
-
-                TypeExpression scriptExpression = new TypeExpression(scriptSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
-                var methodSymbol = (MethodSymbol)scriptSymbol.GetMember("getGenericConstructor");
-                var methodExpression = new MethodExpression(scriptExpression, methodSymbol);
-
-                methodExpression.AddParameterValue(new LiteralExpression(typeSymbol, referencedType));
-                ObjectExpression typeInferenceMap = CreateTypeInterenceMap(referencedType);
-                methodExpression.AddParameterValue(typeInferenceMap);
-
-                return methodExpression;
+                return CreateGetGenericConstructorInvocation(referencedType);
             }
 
             return new LiteralExpression(typeSymbol, referencedType);
+        }
+
+        private Expression CreateGetGenericConstructorInvocation(TypeSymbol referencedType)
+        {
+            TypeSymbol typeSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
+            TypeSymbol scriptSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+
+            TypeExpression scriptExpression = new TypeExpression(scriptSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
+            var methodSymbol = (MethodSymbol)scriptSymbol.GetMember("getGenericConstructor");
+            var methodExpression = new MethodExpression(scriptExpression, methodSymbol);
+
+            methodExpression.AddParameterValue(new LiteralExpression(typeSymbol, referencedType));
+            ObjectExpression typeInferenceMap = CreateTypeInterenceMap(referencedType);
+            methodExpression.AddParameterValue(typeInferenceMap);
+
+            return methodExpression;
+        }
+
+        private Expression CreateGetGenericTemplateInvocation(TypeSymbol referencedType)
+        {
+            TypeSymbol typeSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
+            TypeSymbol scriptSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+            TypeSymbol stringSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
+
+            TypeExpression scriptExpression = new TypeExpression(scriptSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
+            var methodSymbol = (MethodSymbol)scriptSymbol.GetMember("getGenericTemplate");
+            var methodExpression = new MethodExpression(scriptExpression, methodSymbol);
+            methodExpression.AddParameterValue(new LiteralExpression(typeSymbol, referencedType));
+
+            var typeArraySymbol = symbolSet.CreateArrayTypeSymbol(typeSymbol);
+            Expression[] genericParams = referencedType.GenericParameters.Select(p => new LiteralExpression(stringSymbol, p.GeneratedName)).ToArray();
+
+            methodExpression.AddParameterValue(new LiteralExpression(typeArraySymbol, genericParams));
+
+            return methodExpression;
         }
 
         private ObjectExpression CreateTypeInterenceMap(TypeSymbol referencedType)
