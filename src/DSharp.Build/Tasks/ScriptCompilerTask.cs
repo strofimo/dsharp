@@ -128,8 +128,8 @@ namespace DSharp.Build.Tasks
             }
 
             ScriptCompiler compiler = new ScriptCompiler(this);
-            compiler.Compile(options);
-            if (hasErrors == false)
+
+            if (compiler.Compile(options) && hasErrors == false)
             {
                 // Only copy references once (when building language neutral scripts)
                 bool copyReferences = string.IsNullOrEmpty(locale) && CopyReferences;
@@ -149,8 +149,8 @@ namespace DSharp.Build.Tasks
             {
                 CompilerOptions minimizeOptions = CreateOptions(sourceItems, resourceItems, locale, true, out scriptTaskItem);
                 ScriptCompiler minimizingCompiler = new ScriptCompiler(this);
-                minimizingCompiler.Compile(minimizeOptions);
-                if (hasErrors == false)
+
+                if (minimizingCompiler.Compile(minimizeOptions) && hasErrors == false)
                 {
                     ExecuteCruncher(scriptTaskItem);
                     OnScriptFileGenerated(scriptTaskItem, minimizeOptions, /* copyReferences */ false);

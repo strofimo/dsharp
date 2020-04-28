@@ -114,8 +114,8 @@ namespace DSharp.Build.Tasks
             }
 
             ScriptCompiler compiler = new ScriptCompiler(this);
-            compiler.Compile(options);
-            if (hasErrors == false)
+            
+            if (compiler.Compile(options) && hasErrors == false)
             {
                 Script = scriptTaskItem;
 

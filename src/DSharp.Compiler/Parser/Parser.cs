@@ -15,7 +15,7 @@ using DSharp.Compiler.CodeModel.Types;
 
 namespace DSharp.Compiler.Parser
 {
-    internal sealed class Parser
+    internal sealed class Parser : IFilePathProvider
     {
         // UNDONE use an array of TID's here instead
         private static readonly string[] ModifierNames =
@@ -57,6 +57,8 @@ namespace DSharp.Compiler.Parser
         private BufferPosition lastErrorPosition;
         private NameTable symbolTable;
         private Token[] tokens;
+
+        public string FilePath => path;
 
         public Parser(NameTable symbolTable, string path)
         {

@@ -30,6 +30,7 @@ namespace DSharp.Compiler
         private bool hasErrors;
         private CompilerOptions options;
         private SymbolSet symbols;
+        private CSharpCompilation compilation;
 
         public ScriptCompiler()
             : this(null)
@@ -139,7 +140,8 @@ namespace DSharp.Compiler
             CodeModelValidator codeModelValidator = new CodeModelValidator(this);
             CodeModelProcessor validationProcessor = new CodeModelProcessor(codeModelValidator, options);
 
-            var sources = PreprocessSources();
+            this.compilation = GetPreprocessedCompilation();
+            var sources = options.Sources.Select(s => GetPreprocessedSource(compilation, s));
 
             foreach (IStreamSource source in sources)
             {
@@ -154,7 +156,7 @@ namespace DSharp.Compiler
             }
         }
 
-        private IEnumerable<IStreamSource> PreprocessSources()
+        private CSharpCompilation GetPreprocessedCompilation()
         {
             CSharpParseOptions parseOptions = new CSharpParseOptions(preprocessorSymbols: options.Defines);
             var trees = options.Sources.Select(s => CSharpSyntaxTree.ParseText(path: s.FullName, text: SourceText.From(s.GetStream()), options: parseOptions));
@@ -162,6 +164,7 @@ namespace DSharp.Compiler
             var compilation = CSharpCompilation.Create(options.AssemblyName, trees, references);
 
             var lowerers = new ILowerer[] {
+                new AnnotatedCSharpRewriter(),
                 new StaticUsingRewriter(),
                 new VarRewriter(this),
                 new GenericArgumentRewriter(),
@@ -173,9 +176,7 @@ namespace DSharp.Compiler
             };
 
             IntermediarySourceManager intermediarySourceManager = new IntermediarySourceManager(options.IntermediarySourceFolder);
-            var newCompilation = new CompilationPreprocessor(intermediarySourceManager).Preprocess(compilation, lowerers);
-
-            return options.Sources.Select(s => GetPreprocessedSource(newCompilation, s));
+            return new CompilationPreprocessor(intermediarySourceManager).Preprocess(compilation, lowerers);
         }
 
         private IStreamSource GetPreprocessedSource(CSharpCompilation comp, IStreamSource source)
@@ -463,22 +464,59 @@ namespace DSharp.Compiler
             hasErrors = true;
             if (errorHandler != null)
             {
-                errorHandler.ReportError(error);
+                errorHandler.ReportError(MapErrorLocation(error, compilation));
                 return;
             }
 
             //TODO: Look at adding a logger interface
-            LogError(error);
+            LogError(MapErrorLocation(error, compilation));
         }
 
         private void LogError(CompilerError error)
         {
             if (error.ColumnNumber != null || error.LineNumber != null)
             {
-                Console.Error.WriteLine($"{error.File}({error.LineNumber.GetValueOrDefault()},{error.ColumnNumber.GetValueOrDefault()})");
+                Console.Error.WriteLine($"{error.File}({error.LineNumber.GetValueOrDefault()}, {error.ColumnNumber.GetValueOrDefault()})");
             }
 
             Console.Error.WriteLine(error.Description);
+        }
+
+        private static CompilerError MapErrorLocation(CompilerError compilerError, Compilation compilation)
+        {
+            try
+            {
+                if (!compilerError.LineNumber.HasValue || !compilerError.ColumnNumber.HasValue || string.IsNullOrEmpty(compilerError.File))
+                {
+                    return compilerError;
+                }
+
+                var syntaxTree = compilation.SyntaxTrees.Where(s => s.FilePath == compilerError.File).SingleOrDefault();
+                var pos = syntaxTree.GetText().Lines[compilerError.LineNumber.Value - 1].Start + compilerError.ColumnNumber.Value - 1;
+                var node = syntaxTree.GetRoot().FindNode(new TextSpan(pos, 0));
+
+                return new CompilerError(
+                    errorCode: compilerError.ErrorCode,
+                    description: compilerError.Description,
+                    file: compilerError.File,
+                    lineNumber: ParseAnnotation(node, "OriginalLineStart", p => p.StartLinePosition.Line) + 1,
+                    columnNumber: ParseAnnotation(node, "OriginalColumnStart", p => p.StartLinePosition.Character) + 1
+                );
+            }
+            catch
+            {
+                return compilerError;
+            }
+
+            int ParseAnnotation(SyntaxNode node, string name, Func<FileLinePositionSpan, int> getDefault)
+            {
+                if (node.GetAnnotations(name).FirstOrDefault() is SyntaxAnnotation annotation && annotation != default)
+                {
+                    return int.Parse(annotation.Data);
+                }
+
+                return getDefault.Invoke(node.GetLocation().GetLineSpan());
+            }
         }
     }
 }
