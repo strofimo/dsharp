@@ -14,6 +14,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
         const string ANONYMOUS_TYPE_NAME = "__AnonymousType__";
         private readonly IErrorHandler errorHandler;
         private SemanticModel sem;
+        private bool requiresSystemUsing;
 
         public ObjectInitializerRewriter(IErrorHandler errorHandler)
         {
@@ -26,7 +27,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
             var newRoot = Visit(root) as CompilationUnitSyntax;
 
-            if (!newRoot.Usings.Any(u => u.Name.ToString() == "System"))
+            if (requiresSystemUsing && !newRoot.Usings.Any(u => u.Name.ToString() == "System"))
             {
                 newRoot = newRoot.AddUsings(UsingDirective(ParseName("System").WithLeadingTrivia(Space)));
             }
@@ -58,6 +59,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
             var func = GenerateFunction(constructObject, statements, returnObject);
 
+            requiresSystemUsing = true;
             return GenerateInvocation(newNode, func);
         }
 
