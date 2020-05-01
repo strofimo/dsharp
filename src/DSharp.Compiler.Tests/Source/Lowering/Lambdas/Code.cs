@@ -36,4 +36,30 @@ namespace LoweringTests {
 
         }
     }
+
+    public interface ILogger
+    {
+        void Info(string message, string channel, params object[] args);
+    }
+
+    public static class LoggerExtensions
+    {
+        public static void Info<T>(this ILogger logger, string message)
+        {
+            ExecuteLogger<T>(logger, inner => inner.Info, message);
+        }
+
+        public static void FormatInfo<T>(this ILogger logger, string messageFormat, params object[] parameters)
+        {
+            ExecuteLogger<T>(logger, inner => inner.Info, messageFormat, parameters);
+        }
+
+        private static void ExecuteLogger<T>(this ILogger logger, Func<ILogger, Action<string, string, object[]>> method, string message, params object[] parameters)
+        {
+            Action<string, string, object[]> loggerMethod = method.Invoke(logger);
+            Type type = typeof(T);
+            string channelName = type.Name;
+            loggerMethod.Invoke(message, channelName, parameters ?? new object[0]);
+        }
+    }
 }

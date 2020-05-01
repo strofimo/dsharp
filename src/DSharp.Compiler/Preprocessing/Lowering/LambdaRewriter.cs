@@ -75,7 +75,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         private bool ExpressionHasType(ExpressionSyntax expression)
         {
-            return sem.GetTypeInfo(expression).Type is ITypeSymbol ts && ts.Kind != SymbolKind.ErrorType;
+            return sem.GetTypeInfo(expression).ConvertedType is ITypeSymbol ts && ts.Kind != SymbolKind.ErrorType;
         }
 
         private static ParameterSyntax FormatParam(ParameterSyntax p, int i, IMethodSymbol symb)
