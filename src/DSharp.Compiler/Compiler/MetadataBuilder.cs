@@ -1012,10 +1012,7 @@ namespace DSharp.Compiler.Compiler
                     .Cast<TypeParameterConstraintNode>()
                     .Where(c => c.TypeParameter.Name == genericParameter.NameNode.Name)
                     .SelectMany(c => c.TypeConstraints)
-                    .Select(c => {
-                        return typeSymbol.SymbolSet.ResolveType(c, symbolTable, typeSymbol)
-                            ?? symbolTable.FindSymbol<TypeSymbol>(((GenericNameNode)c).FullGenericName, typeSymbol, SymbolFilter.All);
-                        })
+                    .Select(c => ResolveTypeConstraint(typeSymbol, c))
                     .Distinct()
                     .ToList();
 
@@ -1034,6 +1031,27 @@ namespace DSharp.Compiler.Compiler
             }
 
             method.AddGenericArguments(genericArguments);
+        }
+
+        private TypeSymbol ResolveTypeConstraint(TypeSymbol typeSymbol, ParseNode c)
+        {
+            var type = typeSymbol.SymbolSet.ResolveType(c, symbolTable, typeSymbol);
+            if (type != null)
+            {
+                return type;
+            }
+
+            string name = string.Empty;
+            if (c is GenericNameNode genericNameNode)
+            {
+                name = genericNameNode.FullGenericName;
+            }
+            else if (c is NameNode nameNode)
+            {
+                name = nameNode.Name;
+            }
+
+            return symbolTable.FindSymbol<TypeSymbol>(name, typeSymbol, SymbolFilter.All);
         }
 
         private ParameterSymbol BuildParameter(ParameterNode parameterNode, MethodSymbol methodSymbol)
@@ -1247,7 +1265,7 @@ namespace DSharp.Compiler.Compiler
 
             if (typeSymbol != null)
             {
-                if(ignoreGenerics)
+                if (ignoreGenerics)
                 {
                     typeSymbol.SetIgnoreGenerics();
                 }
