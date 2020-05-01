@@ -918,6 +918,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 foreach (ParseNode argNode in genericNameNode.TypeArguments)
                 {
                     TypeSymbol argType = ResolveType(argNode, symbolTable, contextSymbol);
+                    if(argType == null)
+                    {
+                        return null;
+                    }
                     Debug.Assert(argType != null);
                     typeArguments.Add(argType);
                 }

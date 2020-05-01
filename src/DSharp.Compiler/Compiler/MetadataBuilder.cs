@@ -1012,7 +1012,10 @@ namespace DSharp.Compiler.Compiler
                     .Cast<TypeParameterConstraintNode>()
                     .Where(c => c.TypeParameter.Name == genericParameter.NameNode.Name)
                     .SelectMany(c => c.TypeConstraints)
-                    .Select(c => typeSymbol.SymbolSet.ResolveType(c, symbolTable, typeSymbol))
+                    .Select(c => {
+                        return typeSymbol.SymbolSet.ResolveType(c, symbolTable, typeSymbol)
+                            ?? symbolTable.FindSymbol<TypeSymbol>(((GenericNameNode)c).FullGenericName, typeSymbol, SymbolFilter.All);
+                        })
                     .Distinct()
                     .ToList();
 
