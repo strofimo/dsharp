@@ -42,7 +42,8 @@ define('test', ['ss'], function(ss) {
     var isInt = specificClassOfGeneric.Type === Number;
     var myContainer = specificClassOfGeneric.createContainer();
     isInt = myContainer.Type === Number;
-    var isType = ss.makeGenericType(ss.getGenericTemplate(Generic_2_$2, [ 'T1', 'T2' ]), String, Number) === ss.getGenericConstructor(Generic_2_$2, {T1: String, T2: Number});
+    var isType1 = ss.makeGenericType(ss.getGenericTemplate(GenericClass_$1, [ 'T' ]), String) === ss.getGenericConstructor(GenericClass_$1, {T: String});
+    var isType2 = ss.makeGenericType(ss.getGenericTemplate(Generic_2_$2, [ 'T1', 'T2' ]), String, Number) === ss.getGenericConstructor(Generic_2_$2, {T1: String, T2: Number});
   };
   Program.copy = function($TArgs, source, startIndex, count) {
     var type = $TArgs['T'];

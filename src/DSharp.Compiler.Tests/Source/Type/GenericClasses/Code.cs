@@ -56,7 +56,8 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
             GenericClass<int> myContainer = specificClassOfGeneric.CreateContainer();
             isInt = myContainer.Type == typeof(int);
 
-            bool isType = typeof(Generic_2<,>).MakeGenericType(typeof(string), typeof(int)) == typeof(Generic_2<string,int>);
+            bool isType1 = typeof(GenericClass<>).MakeGenericType(typeof(string)) == typeof(GenericClass<string>);
+            bool isType2 = typeof(Generic_2<,>).MakeGenericType(typeof(string), typeof(int)) == typeof(Generic_2<string,int>);
         }
 
         public static T[] Copy<T>(T[] source, int startIndex, int count)

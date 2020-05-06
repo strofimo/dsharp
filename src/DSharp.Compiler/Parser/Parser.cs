@@ -385,7 +385,7 @@ namespace DSharp.Compiler.Parser
             {
                 arity++;
             }
-            if (arity > 0 && PeekType(arity) == TokenType.CloseAngle)
+            if (PeekType(arity) == TokenType.CloseAngle)
             {
                 //generic template definition only
                 return TypeArgumentListScan.MustBeTypeArgumentList;
