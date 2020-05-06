@@ -3,7 +3,6 @@
 namespace System.Reflection
 {
     [ScriptImport]
-    [ScriptIgnoreNamespace]
     public enum MemberType
     {
         /// <summary>

@@ -30,7 +30,18 @@
         Guid: defineClass(Guid, Guid$, [], null),
         DateTime: defineClass(DateTime, {}, [], null),
         Nullable: defineClass(Nullable, Nullable$, [], null),
-        Enum: defineClass(Enum, {}, [], null)
+        Enum: defineClass(Enum, {}, [], null),
+        MemberType: new Enum('MemberType', {
+            all: 191,
+            constructor: 1,
+            custom: 64,
+            event: 2,
+            field: 4,
+            method: 8,
+            nestedType: 128,
+            property: 16,
+            typeInfo: 32
+        })
     }),
     {
         version: '{{version}}',
