@@ -54,61 +54,67 @@ namespace DSharp.Compiler.Compiler
         public Expression BuildExpression(ParseNode node)
         {
             Expression expression = null;
-
-            switch (node.NodeType)
+            try
             {
-                case ParseNodeType.Literal:
-                    expression = ProcessLiteralNode((LiteralNode)node);
-                    break;
-                case ParseNodeType.Name:
-                case ParseNodeType.GenericName:
-                    expression = ProcessNameNode((NameNode)node);
-                    break;
-                case ParseNodeType.Typeof:
-                    expression = ProcessTypeofNode((TypeofNode)node);
-                    break;
-                case ParseNodeType.This:
-                    expression = ProcessThisNode((ThisNode)node);
-                    break;
-                case ParseNodeType.Base:
-                    expression = ProcessBaseNode((BaseNode)node);
-                    break;
-                case ParseNodeType.UnaryExpression:
-                    expression = ProcessUnaryExpressionNode((UnaryExpressionNode)node);
-                    break;
-                case ParseNodeType.BinaryExpression:
-                    expression = ProcessBinaryExpressionNode((BinaryExpressionNode)node);
-                    break;
-                case ParseNodeType.Conditional:
-                    expression = ProcessConditionalNode((ConditionalNode)node);
-                    break;
-                case ParseNodeType.ObjectInitializer:
-                    expression = ProcessObjectInitializerNode((ObjectInitializerNode)node);
-                    break;
-                case ParseNodeType.New:
-                    expression = ProcessNewNode((NewNode)node);
-                    break;
-                case ParseNodeType.ArrayNew:
-                    expression = ProcessArrayNewNode((ArrayNewNode)node);
-                    break;
-                case ParseNodeType.ArrayInitializer:
-                    expression = ProcessArrayInitializerNode((ArrayInitializerNode)node);
-                    break;
-                case ParseNodeType.ArrayType:
-                    expression = ProcessArrayTypeNode((ArrayTypeNode)node);
-                    break;
-                case ParseNodeType.PredefinedType:
-                    expression = ProcessIntrinsicType((IntrinsicTypeNode)node);
-                    break;
-                case ParseNodeType.Cast:
-                    expression = ProcessCastNode((CastNode)node);
-                    break;
-                case ParseNodeType.AnonymousMethod:
-                    expression = ProcessAnonymousMethodNode((AnonymousMethodNode)node);
-                    break;
-                default:
-                    Debug.Fail("Unhandled Expression Node: " + node.NodeType);
-                    break;
+                switch (node.NodeType)
+                {
+                    case ParseNodeType.Literal:
+                        expression = ProcessLiteralNode((LiteralNode)node);
+                        break;
+                    case ParseNodeType.Name:
+                    case ParseNodeType.GenericName:
+                        expression = ProcessNameNode((NameNode)node);
+                        break;
+                    case ParseNodeType.Typeof:
+                        expression = ProcessTypeofNode((TypeofNode)node);
+                        break;
+                    case ParseNodeType.This:
+                        expression = ProcessThisNode((ThisNode)node);
+                        break;
+                    case ParseNodeType.Base:
+                        expression = ProcessBaseNode((BaseNode)node);
+                        break;
+                    case ParseNodeType.UnaryExpression:
+                        expression = ProcessUnaryExpressionNode((UnaryExpressionNode)node);
+                        break;
+                    case ParseNodeType.BinaryExpression:
+                        expression = ProcessBinaryExpressionNode((BinaryExpressionNode)node);
+                        break;
+                    case ParseNodeType.Conditional:
+                        expression = ProcessConditionalNode((ConditionalNode)node);
+                        break;
+                    case ParseNodeType.ObjectInitializer:
+                        expression = ProcessObjectInitializerNode((ObjectInitializerNode)node);
+                        break;
+                    case ParseNodeType.New:
+                        expression = ProcessNewNode((NewNode)node);
+                        break;
+                    case ParseNodeType.ArrayNew:
+                        expression = ProcessArrayNewNode((ArrayNewNode)node);
+                        break;
+                    case ParseNodeType.ArrayInitializer:
+                        expression = ProcessArrayInitializerNode((ArrayInitializerNode)node);
+                        break;
+                    case ParseNodeType.ArrayType:
+                        expression = ProcessArrayTypeNode((ArrayTypeNode)node);
+                        break;
+                    case ParseNodeType.PredefinedType:
+                        expression = ProcessIntrinsicType((IntrinsicTypeNode)node);
+                        break;
+                    case ParseNodeType.Cast:
+                        expression = ProcessCastNode((CastNode)node);
+                        break;
+                    case ParseNodeType.AnonymousMethod:
+                        expression = ProcessAnonymousMethodNode((AnonymousMethodNode)node);
+                        break;
+                    default:
+                        Debug.Fail("Unhandled Expression Node: " + node.NodeType);
+                        break;
+                }
+            }
+            catch(Exception e)
+            {
+                errorHandler.ReportExpressionError(e.Message, node);
             }
 
             if (node is ExpressionNode expressionNode && expressionNode.Parenthesized)
