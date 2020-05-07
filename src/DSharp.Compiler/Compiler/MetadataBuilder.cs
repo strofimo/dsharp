@@ -795,6 +795,13 @@ namespace DSharp.Compiler.Compiler
 
                         break;
                     case ParseNodeType.PropertyDeclaration:
+
+                        if ((member.Modifiers & Modifiers.Extern) != 0)
+                        {
+                            // skip extern properties.
+                            continue;
+                        }
+
                         memberSymbol = BuildPropertyAsField((PropertyDeclarationNode)member, typeSymbol);
 
                         if (memberSymbol == null)

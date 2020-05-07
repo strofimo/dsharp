@@ -26,6 +26,7 @@ define('test', ['ss'], function(ss) {
   // MemberTests.Test
 
   function Test() {
+    ss.defineProperty(this, 'Object', null);
     this.isFoo = false;
     this.XYZ = 1;
     this.XYZ = this.Name.length;

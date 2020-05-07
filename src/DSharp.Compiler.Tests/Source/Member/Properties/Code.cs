@@ -10,6 +10,7 @@ namespace MemberTests {
         int XYZ { get; set; }
         bool IsFoo { get; }
         string ISet { set; }
+        object Object { get; set; }
     }
 
     public class Program
@@ -46,6 +47,10 @@ namespace MemberTests {
         {
             set {  }
         }
+
+        public string Object { get; set; }
+
+        extern object ITest.Object { get; set; }
 
         protected string Name { get { return "nk"; } }
 
