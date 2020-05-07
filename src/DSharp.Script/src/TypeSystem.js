@@ -216,5 +216,15 @@ function createInstance(type, parameters) {
 }
 
 function getMembers(type) {
-    return type.$members || [];
+    return type ? [].concat(type.$members, getMembers(type.$base), getInterfaceMembers(type.$interfaces)) : [];
+}
+
+function getInterfaceMembers(types) {
+    var members = [];
+    if (types) {
+        for (var i = 0, ln = types.length; i < ln; ++i) {
+            members = members.concat(getMembers(types[i]));
+        }
+    }
+    return members;
 }
