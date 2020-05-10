@@ -216,7 +216,7 @@ function createInstance(type, parameters) {
 }
 
 function getMembers(type) {
-    return type ? [].concat(type.$members, getMembers(type.$base), getInterfaceMembers(type.$interfaces)) : [];
+    return type ? [].concat(type.$members || [], getMembers(type.$base), getInterfaceMembers(type.$interfaces)) : [];
 }
 
 function getInterfaceMembers(types) {

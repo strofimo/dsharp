@@ -49,7 +49,7 @@ namespace DSharp.Compiler.Generator
 
             foreach (TypeSymbol type in types)
             {
-                if (type.Members?.Where(MemberHasMetadata) is IEnumerable<MemberSymbol> members && members.Any())
+                if (GetMembers(type) is IEnumerable<MemberSymbol> members && members.Any())
                 {
                     Writer.WriteLine($"module.{type.GeneratedName}.$members = [");
                     Writer.Indent++;
@@ -63,6 +63,22 @@ namespace DSharp.Compiler.Generator
             Writer.Write("})(");
             Writer.Write(string.Join(",", symbols.Dependencies.Select(d=>d.Identifier)));
             Writer.Write(");");
+        }
+
+        private IEnumerable<MemberSymbol> GetMembers(TypeSymbol type)
+        {
+            MemberSymbol indexerSymbol = null;
+
+            if(type is ClassSymbol classSymbol)
+            {
+                indexerSymbol = classSymbol.GetIndexer();
+            }
+            else if (type is InterfaceSymbol interfaceSymbol)
+            {
+                indexerSymbol = interfaceSymbol.Indexer;
+            }
+
+            return type.Members?.Concat(new [] {indexerSymbol}).Where(MemberHasMetadata);
         }
 
         private void WriteMembers(IEnumerable<MemberSymbol> members, TypeSymbol nullableType)
@@ -80,9 +96,19 @@ namespace DSharp.Compiler.Generator
 
                 if(memberType.HasValue)
                 {
-                    WriteMember(memberType.Value, member.GeneratedName, GetType(member.AssociatedType, nullableType));
+                    WriteMember(memberType.Value, GetMemberName(member), GetType(member.AssociatedType, nullableType));
                 }
             }
+        }
+
+        private static string GetMemberName(MemberSymbol member)
+        {
+            if(member.Type == SymbolType.Indexer)
+            {
+                return "get_" + member.GeneratedName;
+            }
+
+            return member.GeneratedName;
         }
 
         private int? GetMemberType(MemberSymbol member)
@@ -90,6 +116,7 @@ namespace DSharp.Compiler.Generator
             switch(member.Type)
             {
                 case SymbolType.Method:
+                case SymbolType.Indexer:
                     return 8;
 
                 case SymbolType.Property:
@@ -131,12 +158,12 @@ namespace DSharp.Compiler.Generator
 
         private bool MemberHasMetadata(MemberSymbol arg)
         {
-            switch (arg.Type)
+            switch (arg?.Type)
             {
                 case SymbolType.Method:
                 case SymbolType.Field:
                 case SymbolType.Property:
-                //case SymbolType.Indexer: //todo
+                case SymbolType.Indexer:
                 //case SymbolType.Event: //todo
                     return true;
                 default:
