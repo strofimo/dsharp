@@ -96,19 +96,18 @@ namespace DSharp.Compiler.Generator
 
                 if(memberType.HasValue)
                 {
-                    WriteMember(memberType.Value, GetMemberName(member), GetType(member.AssociatedType, nullableType));
+                    if(member is IndexerSymbol indexerSymbol && !indexerSymbol.UseScriptIndexer)
+                    {
+                        WriteMember(memberType.Value, $"get_{member.GeneratedName}", GetType(member.AssociatedType, nullableType));
+                        Writer.WriteLine(",");
+                        WriteMember(memberType.Value, $"set_{member.GeneratedName}", GetType(member.AssociatedType, nullableType));
+                    }
+                    else
+                    {
+                        WriteMember(memberType.Value, member.GeneratedName, GetType(member.AssociatedType, nullableType));
+                    }
                 }
             }
-        }
-
-        private static string GetMemberName(MemberSymbol member)
-        {
-            if(member.Type == SymbolType.Indexer)
-            {
-                return "get_" + member.GeneratedName;
-            }
-
-            return member.GeneratedName;
         }
 
         private int? GetMemberType(MemberSymbol member)
