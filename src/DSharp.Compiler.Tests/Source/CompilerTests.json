@@ -696,6 +696,12 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
+        "Name": "Reflection",
+        "SourceFiles": [ "Code.cs" ],
+        "MetadataComparisonFile": "Metadata.txt",
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "UsingAlias",
         "SourceFiles": [ "Code.cs" ],
         "References": [ "DSharp.Web.dll" ],
