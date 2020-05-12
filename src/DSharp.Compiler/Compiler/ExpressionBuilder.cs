@@ -886,7 +886,7 @@ namespace DSharp.Compiler.Compiler
                         return methodExpression;
                     }
                 }
-                else if (memberSymbol.Parent == memberInfoType || memberSymbol.Parent == typeType)
+                else if (memberSymbol.Parent == typeType)
                 {
                     if (string.CompareOrdinal(memberSymbol.Name, nameof(MemberInfo.Name)) == 0)
                     {

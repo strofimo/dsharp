@@ -123,7 +123,7 @@ namespace DSharp.Compiler
 
                 if (outputStream != null)
                 {
-                    options.ScriptFile.CloseStream(outputStream);
+                    options.MetadataFile.CloseStream(outputStream);
                 }
             }
         }

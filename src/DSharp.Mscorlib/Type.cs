@@ -40,5 +40,7 @@ namespace System
         public extern Type MakeGenericType(params Type[] typeArguments);
 
         public extern bool IsGenericTypeDefinition { get; }
+
+        public extern override string Name { get; }
     }
 }
