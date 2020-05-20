@@ -23,7 +23,6 @@
     <Content Include="test\**\*.js">
       <TestFramework>Jest</TestFramework>
     </Content>
-    <Content Include="build\DSharp.Scripts.Build.targets" PackagePath="build\DSharp.Scripts.Build.targets" />
   </ItemGroup>
   
   <ItemGroup>
