@@ -1,0 +1,10 @@
+﻿<Project>
+  <Target Name="CopyScriptsToProject" BeforeTargets="Build" Condition="'$(DSharpScriptsCopyPath)' != ''">
+    <ItemGroup>
+      <SourceScriptFiles Include="$(MSBuildThisFileDirectory)..\content\any\any\*.js" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(SourceScriptFiles)"
+          DestinationFolder="$(DSharpScriptCopyPath)"/>
+  </Target>
+</Project>
