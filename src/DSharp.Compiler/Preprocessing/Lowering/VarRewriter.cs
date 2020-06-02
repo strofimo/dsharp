@@ -36,6 +36,8 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             requiredUsings = new HashSet<string>();
             aliases = root.Usings
                 .Where(u => u.Alias is NameEqualsSyntax)
+                .GroupBy(u => u.Name.ToString())
+                .Select(g => g.First())
                 .ToDictionary(
                     keySelector: a => a.Name.ToString(),
                     elementSelector: a => a.Alias.ToString()
