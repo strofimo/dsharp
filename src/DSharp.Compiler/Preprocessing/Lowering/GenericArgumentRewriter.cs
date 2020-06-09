@@ -14,12 +14,14 @@ namespace DSharp.Compiler.Preprocessing.Lowering
         private static readonly SymbolDisplayFormat displayFormat = new SymbolDisplayFormat(
                     genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
                     typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
-                    miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable | SymbolDisplayMiscellaneousOptions.UseSpecialTypes
+                    miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable | SymbolDisplayMiscellaneousOptions.UseSpecialTypes,
+                    extensionMethodStyle: SymbolDisplayExtensionMethodStyle.StaticMethod
                 );
+        private static readonly SymbolDisplayFormat namespaceUsingsFormat = SymbolDisplayFormat.FullyQualifiedFormat
+            .WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted);
 
         private SemanticModel semanticModel;
         private HashSet<string> requiredUsings;
-
 
         public CompilationUnitSyntax Apply(Compilation compilation, CompilationUnitSyntax root)
         {
@@ -39,6 +41,11 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             return newRoot;
         }
 
+        public override SyntaxNode VisitAliasQualifiedName(AliasQualifiedNameSyntax node)
+        {
+            return base.VisitAliasQualifiedName(node);
+        }
+
         public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
         {
             var symbol = semanticModel.GetSymbolInfo(node).Symbol;
@@ -55,7 +62,16 @@ namespace DSharp.Compiler.Preprocessing.Lowering
         {
             if (methodSymbol.Arity != node.Arity)
             {
-                return ParseName(methodSymbol.ToDisplayString(displayFormat)).WithTriviaFrom(node);
+                //Note: When parsing an aliased type as part of the methods display it will represent it as the non aliased type. As such we need to ensure we add the missing namespaces.
+                var symbolName = methodSymbol.ToDisplayString(displayFormat);
+
+                requiredUsings.Add(methodSymbol.ContainingNamespace.ToDisplayString(namespaceUsingsFormat));
+                if(methodSymbol.ReturnType is IArrayTypeSymbol array)
+                {
+                    requiredUsings.Add(array.ElementType.ContainingNamespace.ToDisplayString(namespaceUsingsFormat));
+                }
+
+                return ParseName(symbolName).WithTriviaFrom(node);
             }
 
             return base.VisitIdentifierName(node);

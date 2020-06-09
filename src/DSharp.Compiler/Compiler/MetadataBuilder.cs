@@ -558,7 +558,8 @@ namespace DSharp.Compiler.Compiler
                     if (initializer.Value != null && initializer.Value.NodeType == ParseNodeType.Literal)
                     {
                         symbol.SetConstant();
-                        symbol.Value = ((LiteralToken)initializer.Value.Token).LiteralValue;
+                        var literalToken = initializer?.Value?.Token as LiteralToken;
+                        symbol.Value = literalToken?.LiteralValue;
                     }
 
                     // TODO: Handle other constant cases that can be evaluated at compile

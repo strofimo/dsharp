@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using DSharp.Compiler.Errors;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace DSharp.Compiler.Preprocessing
@@ -8,16 +10,18 @@ namespace DSharp.Compiler.Preprocessing
     {
         private readonly HashSet<string> paths;
         private readonly string intermediarySourceFolder;
+        private readonly IErrorHandler errorHandler;
 
-        public IntermediarySourceManager(string intermediarySourceFolder)
+        public IntermediarySourceManager(string intermediarySourceFolder, IErrorHandler errorHandler)
         {
             this.paths = new HashSet<string>();
             this.intermediarySourceFolder = intermediarySourceFolder;
+            this.errorHandler = errorHandler;
         }
 
         public void Write(CSharpCompilation compilation)
         {
-            if(string.IsNullOrEmpty(intermediarySourceFolder))
+            if (string.IsNullOrEmpty(intermediarySourceFolder))
             {
                 return;
             }
@@ -31,7 +35,23 @@ namespace DSharp.Compiler.Preprocessing
                 var fileName = Path.GetFileNameWithoutExtension(filePath);
                 fileName = GetAvailableFileName(fileName, extension);
                 var path = Path.Combine(intermediarySourceFolder, fileName);
-                File.WriteAllText(path, syntaxTree.GetText().ToString());
+
+                try
+                {
+                    using (FileStream stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
+                    using (StreamWriter writer = new StreamWriter(stream))
+                    {
+                        syntaxTree.GetText().Write(writer);
+                    }
+                }
+                catch (Exception e)
+                {
+                    errorHandler.ReportWarning(
+                        new CompilerError(
+                            (int)CompilerErrorCode.LowererError,
+                            $"Unable to write intermediary file '{fileName}'.{Environment.NewLine}Message:{e.Message},{Environment.NewLine}Stack:{e.StackTrace}",
+                            filePath));
+                }
             }
         }
 

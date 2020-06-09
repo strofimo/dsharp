@@ -140,8 +140,8 @@ namespace DSharp.Compiler
             CodeModelValidator codeModelValidator = new CodeModelValidator(this);
             CodeModelProcessor validationProcessor = new CodeModelProcessor(codeModelValidator, options);
 
-            this.compilation = GetPreprocessedCompilation();
-            var sources = options.Sources.Select(s => GetPreprocessedSource(compilation, s));
+            compilation = GetPreprocessedCompilation();
+            IEnumerable<IStreamSource> sources = options.Sources.Select(s => GetPreprocessedSource(compilation, s));
 
             foreach (IStreamSource source in sources)
             {
@@ -175,8 +175,12 @@ namespace DSharp.Compiler
                 new OperatorOverloadRewriter(),
             };
 
-            IntermediarySourceManager intermediarySourceManager = new IntermediarySourceManager(options.IntermediarySourceFolder);
-            return new CompilationPreprocessor(intermediarySourceManager).Preprocess(compilation, lowerers);
+            compilation = CompilationPreprocessor.Preprocess(compilation, lowerers);
+
+            IntermediarySourceManager intermediarySourceManager = new IntermediarySourceManager(options.IntermediarySourceFolder, errorHandler);
+            intermediarySourceManager?.Write(compilation);
+
+            return compilation;
         }
 
         private IStreamSource GetPreprocessedSource(CSharpCompilation comp, IStreamSource source)
@@ -469,10 +473,22 @@ namespace DSharp.Compiler
             }
 
             //TODO: Look at adding a logger interface
-            LogError(MapErrorLocation(error, compilation));
+            WriteError(MapErrorLocation(error, compilation));
         }
 
-        private void LogError(CompilerError error)
+        void IErrorHandler.ReportWarning(CompilerError error)
+        {
+            if (errorHandler != null)
+            {
+                errorHandler.ReportWarning(MapErrorLocation(error, compilation));
+                return;
+            }
+
+            //TODO: Look at adding a logger interface
+            WriteError(MapErrorLocation(error, compilation));
+        }
+
+        private void WriteError(CompilerError error)
         {
             if (error.ColumnNumber != null || error.LineNumber != null)
             {

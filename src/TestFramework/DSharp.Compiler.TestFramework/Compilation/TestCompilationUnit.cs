@@ -42,5 +42,10 @@ namespace DSharp.Compiler.TestFramework.Compilation
         {
             compilationErrors.Add(error);
         }
+
+        void IErrorHandler.ReportWarning(CompilerError error)
+        {
+            compilationErrors.Add(error);
+        }
     }
 }

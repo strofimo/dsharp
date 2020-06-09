@@ -29,7 +29,11 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
             if (requiresSystemUsing && !newRoot.Usings.Any(u => u.Name.ToString() == "System"))
             {
-                newRoot = newRoot.AddUsings(UsingDirective(ParseName("System").WithLeadingTrivia(Space)));
+                newRoot = newRoot.AddUsings(
+                    UsingDirective(
+                        ParseName("System").WithLeadingTrivia(Space)
+                        ).WithTrailingTrivia(CarriageReturnLineFeed)
+                    );
             }
 
             return newRoot;

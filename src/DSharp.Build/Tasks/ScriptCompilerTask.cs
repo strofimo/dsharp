@@ -544,7 +544,19 @@ namespace DSharp.Build.Tasks
             hasErrors = true;
         }
 
-        #region Implementation of IStreamSourceResolver
+        void IErrorHandler.ReportWarning(CompilerError error)
+        {
+            Log.LogWarning(
+                subcategory: string.Empty,
+                warningCode: error.FormattedErrorCode,
+                helpKeyword: string.Empty,
+                file: error.File,
+                lineNumber: error.LineNumber.GetValueOrDefault(),
+                endLineNumber: error.LineNumber.GetValueOrDefault(),
+                columnNumber: error.ColumnNumber.GetValueOrDefault(),
+                endColumnNumber: error.ColumnNumber.GetValueOrDefault(),
+                message: error.Description);
+        }
 
         IStreamSource IStreamSourceResolver.Resolve(string name)
         {
@@ -556,9 +568,6 @@ namespace DSharp.Build.Tasks
 
             return null;
         }
-
-        #endregion
-
 
         private sealed class TaskItemInputStreamSource : FileInputStreamSource
         {

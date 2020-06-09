@@ -907,7 +907,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 TypeSymbol templateType =
                     (TypeSymbol)symbolTable.FindSymbol(genericTypeName, contextSymbol, SymbolFilter.Types);
 
-                if (!templateType.IsGeneric || genericNameNode.TypeArguments.All( n => n is AtomicNameNode n1 && n1.Name == "__unknown"))
+                if (!templateType.IsGeneric || genericNameNode.TypeArguments.All(n => n is AtomicNameNode n1 && n1.Name == "__unknown"))
                 {
                     //generics ignored
                     return templateType;
@@ -918,7 +918,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 foreach (ParseNode argNode in genericNameNode.TypeArguments)
                 {
                     TypeSymbol argType = ResolveType(argNode, symbolTable, contextSymbol);
-                    if(argType == null)
+                    if (argType == null)
                     {
                         return null;
                     }
@@ -939,7 +939,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             if (node is NameNode nameNode)
             {
-                if(symbolTable.FindSymbol(nameNode.Name, contextSymbol, SymbolFilter.Types) is TypeSymbol typeSymbol)
+                if (symbolTable.FindSymbol(nameNode.Name, contextSymbol, SymbolFilter.Types) is TypeSymbol typeSymbol)
                 {
                     return typeSymbol;
                 }
@@ -950,16 +950,23 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 var parts = multiPartNameNode.Parts.Reverse();
                 var names = new List<string>();
 
-                foreach(var part in parts)
+                string multipartName = string.Join(".", multiPartNameNode.Parts.Select(nn => nn.Identifier.Identifier));
+                if (symbolTable.FindSymbol(multipartName, contextSymbol, SymbolFilter.Types) is TypeSymbol rootedType)
+                {
+                    return rootedType;
+                }
+
+                foreach (var part in parts)
                 {
                     names.Insert(0, part.Name);
                     var nestedTypeName = string.Join("$", names);
 
-                    if(symbolTable.FindSymbol(nestedTypeName, contextSymbol, SymbolFilter.Types) is TypeSymbol typeSymbol)
+                    if (symbolTable.FindSymbol(nestedTypeName, contextSymbol, SymbolFilter.Types) is TypeSymbol typeSymbol)
                     {
                         return typeSymbol;
                     }
                 }
+
             }
 
             return default;
@@ -1305,6 +1312,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             return CompareTypeName(foundType, name)
                 || string.Equals(foundType.Namespace, namespaceName)
+                || foundType.Namespace.EndsWith(namespaceName) // Partial namespace match
                 || GetAliasesFromContext(context)
                     .Select(a => name.Replace(a.Key, a.Value))
                     .Any(n => CompareTypeName(foundType, n));
