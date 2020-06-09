@@ -686,6 +686,7 @@ namespace DSharp.Compiler.Compiler
             Debug.Assert(objectExpression.EvaluatedType is ISymbolTable table);
 
             TypeSymbol evaluatedType = objectExpression.EvaluatedType;
+
             if (objectExpression is MethodExpression methodExpression && methodExpression.IsExtensionMethod)
             {
                 evaluatedType = methodExpression.Method.AssociatedType;
@@ -694,13 +695,8 @@ namespace DSharp.Compiler.Compiler
                     evaluatedType = ResolveGenericNameNode(node);
                 }
             }
-            NameNode memberName = node.RightChild as NameNode;
 
-            MethodSymbol extensionSymbol = symbolSet.ResolveExtensionMethodSymbol(evaluatedType, memberName?.Name, classContext?.GetNamespacesVisibleToClass());
-            if ((memberName is GenericNameNode && (extensionSymbol?.IsGeneric ?? false)) || (!(memberName is GenericNameNode) && (!extensionSymbol?.IsGeneric ?? false)))
-            {
-                return null;
-            }
+            NameNode memberName = node.RightChild as NameNode;
 
             memberSymbol = (MemberSymbol)evaluatedType.FindSymbol(memberName?.Name,
                 symbolContext,
