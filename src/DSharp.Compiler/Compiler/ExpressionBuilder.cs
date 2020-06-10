@@ -794,6 +794,7 @@ namespace DSharp.Compiler.Compiler
                         return extensionMethodInvocation;
                     }
                 }
+                // namespace?
                 else if (node.LeftChild.Token is IdentifierToken identifier)
                 {
                     TypeSymbol typeNode = ParseExtensionTypeNode(node, identifier);
