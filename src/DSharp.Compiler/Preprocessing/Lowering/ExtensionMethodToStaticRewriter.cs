@@ -13,12 +13,25 @@ namespace DSharp.Compiler.Preprocessing.Lowering
     public class ExtensionMethodToStaticRewriter : CSharpSyntaxRewriter, ILowerer
     {
         private SemanticModel sem;
-        private Dictionary<SyntaxNode, SyntaxNode> trackedNodes = new Dictionary<SyntaxNode, SyntaxNode>();
+        private Dictionary<string, string> typeAliases = new Dictionary<string, string>();
 
         public CompilationUnitSyntax Apply(Compilation compilation, CompilationUnitSyntax root)
         {
             sem = compilation.GetSemanticModel(root.SyntaxTree);
             var newRoot = Visit(root) as CompilationUnitSyntax;
+
+            if (typeAliases.Any())
+            {
+                var missingDirectives = typeAliases.Select(s => 
+                    UsingDirective(
+                        NameEquals(s.Key).WithLeadingTrivia(Whitespace(" ")),
+                        ParseName(s.Value).WithLeadingTrivia(Whitespace(" "))
+                    ).WithLeadingTrivia(CarriageReturn)
+                ).ToArray();
+
+                newRoot = newRoot.AddUsings(missingDirectives);
+            }
+
             return newRoot;
         }
 
@@ -29,8 +42,14 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
             if (symb != null && symb.IsExtensionMethod)
             {
-                var extensionClassName = symb.ContainingSymbol.Name;
-                
+                var extensionClass = symb.ContainingSymbol.ToDisplayString();
+                var extensionAlias = extensionClass.Replace(".", "_");
+
+                if (!typeAliases.ContainsKey(extensionAlias))
+                {
+                    typeAliases.Add(extensionAlias, extensionClass);
+                }
+
                 switch (newNode.Expression)
                 {
                     case MemberAccessExpressionSyntax memberExpression:
@@ -42,7 +61,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
                         return InvocationExpression(
                             MemberAccessExpression(
                                 memberExpression.Kind(),
-                                IdentifierName(extensionClassName),
+                                IdentifierName(extensionAlias),
                                 memberExpression.OperatorToken,
                                 memberExpression.Name),
                             newArguments);
@@ -53,7 +72,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
                        return InvocationExpression(
                             MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
-                                IdentifierName(extensionClassName),
+                                IdentifierName(extensionAlias),
                                 nameExpression.WithoutTrivia()),
                             newNode.ArgumentList);
                     }
