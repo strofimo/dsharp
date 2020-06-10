@@ -723,6 +723,11 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
+        "Name": "ExtensionMethods",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "Lambdas",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
