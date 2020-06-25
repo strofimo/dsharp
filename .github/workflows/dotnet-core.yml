@@ -20,6 +20,6 @@ jobs:
     - name: Install dependencies
       run: dotnet restore ".\src\DSharp.sln"
     - name: Build
-      run: dotnet build .\src\DSharp.sln --configuration Release --no-restore
+      run: dotnet build ".\src\DSharp.sln" --configuration Release --no-restore
     - name: Test
-      run: dotnet test .\src\DSharp.sln --no-restore --verbosity normal
+      run: dotnet test ".\src\DSharp.sln" --no-restore --verbosity normal
