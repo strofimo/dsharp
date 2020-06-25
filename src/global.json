@@ -1,5 +1,8 @@
 {
-  "msbuild-sdks": {
-    "dsharp.sdk": "1.0.0"
-  }
+    "msbuild-sdks": {
+        "dsharp.sdk": "1.0.0"
+    },
+    "sdk": {
+        "version": "5.0.100-preview.5"
+    }
 }

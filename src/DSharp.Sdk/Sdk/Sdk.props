@@ -5,7 +5,7 @@
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
-    <IsDSharpBuild>$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', 'net\d{2,3}'))</IsDSharpBuild>
+    <IsDSharpBuild>$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', 'net4\d{1,2}'))</IsDSharpBuild>
     <BuildingProject>true</BuildingProject>
     <UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
     <MinimumFrameworkVersion>4.0</MinimumFrameworkVersion>
