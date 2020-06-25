@@ -6,7 +6,7 @@ DSharp.Sdk builds upon the Sdk format in msbuild to simplify the project structu
 
 DSharp.Sdk supports multi-targeting using the following convention:
 
-***net framework*** builds be treated as DSharp, adding references to the dsharp custom mscorlib, invoking the transpiler and producing .js files. This is identified as any TFM beginning with net followed by 2 or 3 digits (net40, net471 etc)
+***net framework*** builds be treated as DSharp, adding references to the dsharp custom mscorlib, invoking the transpiler and producing .js files. This is identified as any TFM beginning with net followed by 2 or 3 digits (net471 etc)
 
 all other build targets will compile as normal, with framework references pointing to netstandard or netcoreapp as usual.
 
@@ -20,7 +20,7 @@ To create a new DSharp project is now as simple as updating the Sdk attribute in
 
 <Project Sdk="dsharp.sdk" Version="1.2.3">
   <PropertyGroup>
-    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 </Project>
 

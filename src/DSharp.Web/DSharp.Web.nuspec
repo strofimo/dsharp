@@ -13,7 +13,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\$configuration$\net40\DSharp.Web.*" target="lib\net0" />
     <file src="bin\$configuration$\net471\DSharp.Web.*" target="lib\net471" />
   </files>
 </package>
