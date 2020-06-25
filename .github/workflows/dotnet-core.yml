@@ -18,7 +18,7 @@ jobs:
       with:
         dotnet-version: 5.0.100-preview.5
     - name: Install dependencies
-      run: dotnet restore .\src\DSharp.sln
+      run: dotnet restore ".\src\DSharp.sln"
     - name: Build
       run: dotnet build .\src\DSharp.sln --configuration Release --no-restore
     - name: Test
