@@ -1,7 +1,9 @@
-﻿<Project Sdk="DSharp.Web.Sdk">
+﻿<Project Sdk="dsharp.web.sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net471</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <StartupObject>TodoApplication.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

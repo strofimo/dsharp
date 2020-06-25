@@ -3,11 +3,11 @@ using System.Html;
 
 namespace TodoApplication
 {
-    internal static class EntryPoint
+    public class Program
     {
         private static IApplication application;
 
-        static EntryPoint()
+        public static void Main(string[] args)
         {
             application = new TodoApplication();
             application.Run();

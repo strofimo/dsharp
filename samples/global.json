@@ -1,7 +1,7 @@
 {
     "msbuild-sdks": {
-        "DSharp.Sdk": "2.0.0-dev.0",
-        "DSharp.Web.Sdk": "2.0.0-dev.0"
+        "dsharp.sdk": "2.9.0-dev.80",
+        "dsharp.web.sdk": "2.9.0-dev.80"
     },
     "sdk": {
         "version": "5.0.100-preview.5"

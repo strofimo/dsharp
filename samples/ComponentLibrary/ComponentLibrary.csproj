@@ -1,4 +1,4 @@
-﻿<Project Sdk="DSharp.Web.Sdk">
+﻿<Project Sdk="dsharp.web.sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net471</TargetFrameworks>
