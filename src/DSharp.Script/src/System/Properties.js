@@ -1,6 +1,7 @@
 ﻿function createReadonlyProperty(instance, propertyName , value) {
     Object.defineProperty(instance, propertyName, {
-        get: function () { return value; }
+        get: function () { return value; },
+        enumerable: true
     });
 
     return value;
@@ -9,6 +10,7 @@
 function createPropertyGet(obj, propertyName, fn) {
     Object.defineProperty(obj, propertyName, {
         configurable: true,
+        enumerable: true,
         get: fn
     });
 }
@@ -16,6 +18,7 @@ function createPropertyGet(obj, propertyName, fn) {
 function createPropertySet(obj, propertyName, fn) {
     Object.defineProperty(obj, propertyName, {
         configurable: true,
+        enumerable: true,
         set: fn
     });
 }
@@ -24,7 +27,9 @@ function defineProperty(instance, propertyName, value) {
     var prop = value;
     Object.defineProperty(instance, propertyName, {
         get: function () { return prop; },
-        set: function (value) { prop = value; }
+        set: function (value) { prop = value; },
+        configurable: true,
+        enumerable: true
     });
 }
 function initializeObject(obj, initializerMap) {
