@@ -1,4 +1,18 @@
-﻿function DateTime() { }
+﻿function DateTime(year, month, day, hour, minute, second, millisecond)
+{
+    var constructorArgs = [];
+    if (year != null) constructorArgs.push(year);
+    if (month != null) constructorArgs.push(month - 1);
+    if (day != null) constructorArgs.push(day);
+    if (hour != null) constructorArgs.push(hour);
+    if (minute != null) constructorArgs.push(minute);
+    if (second != null) constructorArgs.push(second);
+    if (millisecond != null) constructorArgs.push(millisecond);
+
+    return new (Function.prototype.bind.apply(
+        Date, [null].concat(constructorArgs)
+    ));
+}
 
 createPropertyGet(DateTime, 'Now', function()
 {
@@ -26,6 +40,36 @@ DateTime.Equals = function (d1, d2)
     return parsedDate1.getTime() === parsedDate2.getTime();
 };
 
+Date.prototype.equals = function (other)
+{
+    return DateTime.Equals(this, other);
+}
+
+DateTime.CompareTo = function (d1, d2)
+{
+    var parsedDate1 = DateTime._parseIfString(d1);
+    var parsedDate2 = DateTime._parseIfString(d2);
+
+    if (parsedDate1 == null || parsedDate2 == null)
+    {
+        throw new Error("Cannot compare null Dates");
+    }
+
+    var d1t = parsedDate1.getTime();
+    var d2t = parsedDate2.getTime();
+
+    return d1t === d2t
+        ? 0
+        : d1t < d2t
+            ? -1
+            : 1;
+};
+
+Date.prototype.compareTo = function (other)
+{
+    return DateTime.CompareTo(this, other);
+}
+
 createPropertyGet(Date.prototype, 'Year', function ()
 {
     return DateTime.GetYear(this);
@@ -47,7 +91,7 @@ DateTime.GetMonth = function (date)
 {
     date = DateTime._parseIfString(date);
 
-    return date.getMonth();
+    return date.getMonth() + 1;
 };
 
 createPropertyGet(Date.prototype, 'Day', function ()

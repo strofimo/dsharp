@@ -1,0 +1,43 @@
+﻿"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+  // ComparableTest.TestClass
+
+  function TestClass() {
+    var obj = (function() {
+      var _obj_ = new TestObject();
+      _obj_.Text = 'Hello';
+      return _obj_;
+    })();
+    var x = obj.compare(obj);
+    if (ss.canCast(obj, ss.IComparable_$1)) {
+      obj.Text = 'wow';
+    }
+  }
+  var TestClass$ = {
+
+  };
+
+
+  // ComparableTest.TestObject
+
+  function TestObject() {
+    ss.defineProperty(this, 'Text', null);
+  }
+  var TestObject$ = {
+    compare: function(other) {
+      return (this.Text === other.Text) ? 0 : -1;
+    }
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      TestClass: ss.defineClass(TestClass, TestClass$, [], null),
+      TestObject: ss.defineClass(TestObject, TestObject$, [], null, [ss.IComparable_$1])
+    });
+
+
+  return $exports;
+});
