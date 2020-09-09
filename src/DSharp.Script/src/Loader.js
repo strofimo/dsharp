@@ -10,6 +10,7 @@
         IEnumerable: defineInterface(IEnumerable),
         IEquatable_$1: defineInterface(IEquatable_$1),
         IComparable_$1: defineInterface(IComparable_$1),
+        ICloneable: defineInterface(ICloneable),
         IEnumerable_$1: defineInterface(IEnumerable_$1, [IEnumerable]),
         IEnumerator: defineInterface(IEnumerator),
         IEnumerator_$1: defineInterface(IEnumerator_$1, [IEnumerator]),
