@@ -56,14 +56,16 @@ namespace DSharp.Compiler.Generator
                     Writer.WriteLine($"m.{type.GeneratedName} = {{ $members: [");
                     Writer.Indent++;
                     WriteMembers(members, nullableType);
+                    Writer.WriteLine(" ] };");
                     Writer.Indent--;
-                    Writer.WriteLine($"}};");
                 }
             }
 
             Writer.Indent--;
             Writer.Write("})(");
-            Writer.Write(string.Join(",", dependencies.Select(d => $"ss.dependency({d})")));
+            Writer.Write(string.Join(",", dependencies.Select(d => d != DSharpStringResources.DSHARP_SCRIPT_NAME
+                ? $"ss.dependency({d})"
+                : DSharpStringResources.DSHARP_SCRIPT_NAME)));
             Writer.Write(");");
         }
 
