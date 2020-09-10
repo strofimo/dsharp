@@ -106,6 +106,8 @@
 
         module: module,
         modules: _modules,
+        meta: _meta,
+        importMetadata: importMetadata,
 
         isClass: isClass,
         isInterface: isInterface,
