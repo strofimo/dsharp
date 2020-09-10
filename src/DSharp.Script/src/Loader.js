@@ -106,6 +106,7 @@
 
         module: module,
         modules: _modules,
+        dependency: dependency,
         meta: _meta,
         importMetadata: importMetadata,
 

@@ -378,7 +378,7 @@ namespace DSharp.Compiler
                 {
                     if (dependency.ConstReferenceCount <= 0)
                     {
-                        Console.Error.WriteLine($"WARN: Unnecessary dependency to '{dependency.Identifier}'.");
+                        Console.WriteLine($"WARN: Unnecessary dependency to '{dependency.Identifier}'.");
                     }
 
                     continue;

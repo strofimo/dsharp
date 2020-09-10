@@ -39,10 +39,10 @@ namespace DSharp.Compiler.Generator
             var types = CollectEmittableTypes(symbolSet)
                 .OrderBy(t => t, typeComparer);
 
-            string dependenciesList = string.Join(",", GenerateDependenciesList(symbolSet));
+            List<string> dependencies = GenerateDependenciesList(symbolSet);
 
             Writer.Write("(function(");
-            Writer.Write(dependenciesList);
+            Writer.Write(string.Join(",", dependencies));
             Writer.WriteLine(") {");
             Writer.Indent++;
             Writer.WriteLine("\"use strict\"");
@@ -53,17 +53,17 @@ namespace DSharp.Compiler.Generator
             {
                 if (GetMembers(type) is IEnumerable<MemberSymbol> members && members.Any())
                 {
-                    Writer.WriteLine($"m.{type.GeneratedName}.$members = [");
+                    Writer.WriteLine($"m.{type.GeneratedName} = {{ $members: [");
                     Writer.Indent++;
                     WriteMembers(members, nullableType);
                     Writer.Indent--;
-                    Writer.WriteLine("];");
+                    Writer.WriteLine($"}};");
                 }
             }
 
             Writer.Indent--;
             Writer.Write("})(");
-            Writer.Write(dependenciesList);
+            Writer.Write(string.Join(",", dependencies.Select(d => $"ss.dependency({d})")));
             Writer.Write(");");
         }
 
@@ -83,7 +83,7 @@ namespace DSharp.Compiler.Generator
                 {
                     if (dependency.ConstReferenceCount <= 0)
                     {
-                        Console.Error.WriteLine($"WARN: Unnecessary dependency to '{dependency.Identifier}'.");
+                        Console.WriteLine($"WARN: Unnecessary dependency to '{dependency.Identifier}'.");
                     }
 
                     continue;

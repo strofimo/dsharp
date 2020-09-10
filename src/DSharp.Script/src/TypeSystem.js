@@ -18,6 +18,12 @@ function importMetadata() {
     }
 }
 
+// resolves an internal dependency (module -> global)
+function dependency(name) {
+    if (_modules[name] != null) return _modules[name];
+    return window[name];
+}
+
 function createType(typeName, typeInfo, typeRegistry) {
     // The typeInfo is either an array of information representing
     // classes and interfaces, or an object representing enums and resources
