@@ -1,8 +1,22 @@
 var _modules = {};
+var _meta = {};
 var _genericConstructorCache = {};
 
 var _classMarker = 'class';
 var _interfaceMarker = 'interface';
+
+/// imports metadata info onto the types, this is needed to avoid namespace conflicts
+function importMetadata() {
+    for (var moduleName in _meta) {
+        var module = ss.modules[moduleName];
+        if (module != null) {
+            var metadata = _meta[moduleName];
+            for (var type in metadata) {
+                extend(module[type], metadata[type]);
+            }
+        }
+    }
+}
 
 function createType(typeName, typeInfo, typeRegistry) {
     // The typeInfo is either an array of information representing

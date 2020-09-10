@@ -40,6 +40,7 @@ function defineProperty(instance, propertyName, value) {
         writable: true
     });
 }
+
 function initializeObject(obj, initializerMap) {
     if (!isValue(obj) || !isValue(initializerMap)) {
         return obj;

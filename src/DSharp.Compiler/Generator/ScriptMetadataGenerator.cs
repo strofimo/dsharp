@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Generator
@@ -39,19 +40,21 @@ namespace DSharp.Compiler.Generator
             var types = CollectEmittableTypes(symbolSet)
                 .OrderBy(t => t, typeComparer);
 
+            string dependenciesList = string.Join(",", GenerateDependenciesList(symbolSet));
+
             Writer.Write("(function(");
-            Writer.Write(string.Join(",", symbols.Dependencies.Select(d=>d.Identifier)));
+            Writer.Write(dependenciesList);
             Writer.WriteLine(") {");
             Writer.Indent++;
             Writer.WriteLine("\"use strict\"");
             Writer.WriteLine("var Void = null;");
-            Writer.WriteLine($"var module = ss.modules['{symbols.ScriptName}'];");
+            Writer.WriteLine($"var m = {DSharpStringResources.DSHARP_SCRIPT_NAME}.meta['{symbols.ScriptName}'] = {{}};");
 
             foreach (TypeSymbol type in types)
             {
                 if (GetMembers(type) is IEnumerable<MemberSymbol> members && members.Any())
                 {
-                    Writer.WriteLine($"module.{type.GeneratedName}.$members = [");
+                    Writer.WriteLine($"m.{type.GeneratedName}.$members = [");
                     Writer.Indent++;
                     WriteMembers(members, nullableType);
                     Writer.Indent--;
@@ -61,8 +64,36 @@ namespace DSharp.Compiler.Generator
 
             Writer.Indent--;
             Writer.Write("})(");
-            Writer.Write(string.Join(",", symbols.Dependencies.Select(d=>d.Identifier)));
+            Writer.Write(dependenciesList);
             Writer.Write(");");
+        }
+
+        private List<string> GenerateDependenciesList(SymbolSet symbols)
+        {
+            List<string> dependencies = new List<string>();
+
+            foreach (ScriptReference dependency in symbols.Dependencies)
+            {
+                if (dependency.DelayLoaded)
+                {
+                    continue;
+                }
+
+                if (dependency.TypeReferenceCount <= 0
+                    && dependency.Identifier != DSharpStringResources.DSHARP_SCRIPT_NAME)
+                {
+                    if (dependency.ConstReferenceCount <= 0)
+                    {
+                        Console.Error.WriteLine($"WARN: Unnecessary dependency to '{dependency.Identifier}'.");
+                    }
+
+                    continue;
+                }
+
+                dependencies.Add(dependency.Identifier);
+            }
+
+            return dependencies;
         }
 
         private IEnumerable<MemberSymbol> GetMembers(TypeSymbol type)
