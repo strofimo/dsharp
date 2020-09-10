@@ -64,7 +64,7 @@ namespace DSharp.Compiler.Generator
             Writer.Indent--;
             Writer.Write("})(");
             Writer.Write(string.Join(",", dependencies.Select(d => d != DSharpStringResources.DSHARP_SCRIPT_NAME
-                ? $"ss.dependency({d})"
+                ? $"ss.dependency('{d}')"
                 : DSharpStringResources.DSHARP_SCRIPT_NAME)));
             Writer.Write(");");
         }
