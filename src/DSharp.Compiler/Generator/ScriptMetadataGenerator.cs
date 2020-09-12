@@ -193,7 +193,7 @@ namespace DSharp.Compiler.Generator
             Writer.Write(", ");
             Writer.Write("Type: eval(\"try{");
             Writer.Write(type);
-            Writer.Write(";}catch{}\"");
+            Writer.Write("}catch{}\")");
             Writer.Write("}");
         }
 
