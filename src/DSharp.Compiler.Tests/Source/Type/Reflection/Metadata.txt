@@ -1,7 +1,7 @@
 ss.registerMetadataImporter(function(){(function(ss) {
   "use strict"
   var Void = null;
-  var Type = function(){};
+  var Type = Function;
   var module = ss.modules['test'];
   module.MyClass.$members = [
     {MemberType: 8,Name: 'getDelegate', Type: eval("try{Function}catch{}")},

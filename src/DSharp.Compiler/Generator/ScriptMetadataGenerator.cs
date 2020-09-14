@@ -48,7 +48,7 @@ namespace DSharp.Compiler.Generator
             Writer.Indent++;
             Writer.WriteLine("\"use strict\"");
             Writer.WriteLine("var Void = null;");
-            Writer.WriteLine("var Type = function(){};");
+            Writer.WriteLine("var Type = Function;");
             Writer.WriteLine($"var module = {DSharpStringResources.DSHARP_SCRIPT_NAME}.modules['{symbols.ScriptName}'];");
 
             foreach (TypeSymbol type in types)
